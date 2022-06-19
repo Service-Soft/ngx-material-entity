@@ -1,0 +1,67 @@
+<h1 class="title">{{title}}</h1>
+
+<div>
+    <mat-form-field class="search-input">
+        <mat-label>{{searchLabel ? searchLabel : 'Search'}}</mat-label>
+        <input matInput (keyup)="applyFilter($event)">
+    </mat-form-field>
+    <button *ngIf="multiSelectActions?.length"
+        class="actions-button"
+        [class.width-50]="allowCreate"
+        [class.width-100]="!allowCreate"
+        [matMenuTriggerFor]="menu"
+        mat-raised-button>
+        {{multiSelectLabel ? multiSelectLabel : 'Actions'}}
+    </button>
+    <mat-menu #menu="matMenu">
+        <button *ngFor="let action of multiSelectActions"
+            [disabled]="multiActionDisabled(action)"
+            (click)="action.action(selection.selected)"
+            mat-menu-item>
+            {{action.displayName}}
+        </button>
+    </mat-menu>
+
+    <button *ngIf="allowCreate"
+        class="create-button"
+        [class.width-50]="multiSelectActions?.length"
+        [class.width-100]="!multiSelectActions?.length"
+        (click)="createEntity()"
+        mat-raised-button>
+        {{createButtonLabel ? createButtonLabel : 'Create'}}
+    </button>
+</div>
+
+<div class="mat-elevation-z8">
+    <mat-table *ngIf="dataSource" [dataSource]="dataSource" matSort>
+
+        <!-- select Column -->
+        <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? masterToggle() : null"
+                    [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let module" class="module">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(module) : null"
+                    [checked]="selection.isSelected(module)">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+    
+        <ng-container *ngFor="let dCol of displayColumns" [matColumnDef]="dCol.displayName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{dCol.displayName}} </mat-header-cell>
+            <mat-cell class="entity" [class.enabled]="allowEdit" (click)="editEntity(entity)" *matCellDef="let entity">
+                {{dCol.value(entity)}}
+            </mat-cell>
+        </ng-container>
+    
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    
+    <mat-paginator *ngIf="dataSource" id="paginator" [length]="dataSource.filteredData.length"
+        [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50]">
+    </mat-paginator>
+</div>

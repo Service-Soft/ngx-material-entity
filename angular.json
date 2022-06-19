@@ -1,7 +1,163 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1,
-  "newProjectRoot": "projects",
-  "projects": {
-  }
+    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+    "version": 1,
+    "newProjectRoot": "projects",
+    "projects": {
+        "ngx-material-entity": {
+            "projectType": "library",
+            "root": "projects/ngx-material-entity",
+            "sourceRoot": "projects/ngx-material-entity/src",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:ng-packagr",
+                    "options": {
+                        "project": "projects/ngx-material-entity/ng-package.json"
+                    },
+                    "configurations": {
+                        "production": {
+                            "tsConfig": "projects/ngx-material-entity/tsconfig.lib.prod.json"
+                        },
+                        "development": {
+                            "tsConfig": "projects/ngx-material-entity/tsconfig.lib.json"
+                        }
+                    },
+                    "defaultConfiguration": "production"
+                },
+                "test": {
+                    "builder": "@angular-devkit/build-angular:karma",
+                    "options": {
+                        "main": "projects/ngx-material-entity/src/test.ts",
+                        "tsConfig": "projects/ngx-material-entity/tsconfig.spec.json",
+                        "karmaConfig": "projects/ngx-material-entity/karma.conf.js"
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-eslint/builder:lint",
+                    "options": {
+                        "lintFilePatterns": [
+                            "projects/ngx-material-entity/**/*.ts",
+                            "projects/ngx-material-entity/**/*.html"
+                        ]
+                    }
+                }
+            }
+        },
+        "ngx-material-entity-showcase": {
+            "projectType": "application",
+            "schematics": {
+                "@schematics/angular:component": {
+                    "style": "scss"
+                },
+                "@schematics/angular:application": {
+                    "strict": true
+                }
+            },
+            "root": "projects/ngx-material-entity-showcase",
+            "sourceRoot": "projects/ngx-material-entity-showcase/src",
+            "prefix": "app",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "outputPath": "dist/ngx-material-entity-showcase",
+                        "index": "projects/ngx-material-entity-showcase/src/index.html",
+                        "main": "projects/ngx-material-entity-showcase/src/main.ts",
+                        "polyfills": "projects/ngx-material-entity-showcase/src/polyfills.ts",
+                        "tsConfig": "projects/ngx-material-entity-showcase/tsconfig.app.json",
+                        "inlineStyleLanguage": "scss",
+                        "assets": [
+                            "projects/ngx-material-entity-showcase/src/favicon.ico",
+                            "projects/ngx-material-entity-showcase/src/assets"
+                        ],
+                        "styles": [
+                            "projects/ngx-material-entity-showcase/src/styles.scss",
+                            "./node_modules/bootstrap/dist/css/bootstrap.min.css"
+                        ],
+                        "scripts": []
+                    },
+                    "configurations": {
+                        "production": {
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "500kb",
+                                    "maximumError": "1mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "2kb",
+                                    "maximumError": "4kb"
+                                }
+                            ],
+                            "fileReplacements": [
+                                {
+                                    "replace": "projects/ngx-material-entity-showcase/src/environments/environment.ts",
+                                    "with": "projects/ngx-material-entity-showcase/src/environments/environment.prod.ts"
+                                }
+                            ],
+                            "outputHashing": "all"
+                        },
+                        "development": {
+                            "buildOptimizer": false,
+                            "optimization": false,
+                            "vendorChunk": true,
+                            "extractLicenses": false,
+                            "sourceMap": true,
+                            "namedChunks": true
+                        }
+                    },
+                    "defaultConfiguration": "production"
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "configurations": {
+                        "production": {
+                            "browserTarget": "ngx-material-entity-showcase:build:production"
+                        },
+                        "development": {
+                            "browserTarget": "ngx-material-entity-showcase:build:development"
+                        }
+                    },
+                    "defaultConfiguration": "development"
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "ngx-material-entity-showcase:build"
+                    }
+                },
+                "test": {
+                    "builder": "@angular-devkit/build-angular:karma",
+                    "options": {
+                        "main": "projects/ngx-material-entity-showcase/src/test.ts",
+                        "polyfills": "projects/ngx-material-entity-showcase/src/polyfills.ts",
+                        "tsConfig": "projects/ngx-material-entity-showcase/tsconfig.spec.json",
+                        "karmaConfig": "projects/ngx-material-entity-showcase/karma.conf.js",
+                        "inlineStyleLanguage": "scss",
+                        "assets": [
+                            "projects/ngx-material-entity-showcase/src/favicon.ico",
+                            "projects/ngx-material-entity-showcase/src/assets"
+                        ],
+                        "styles": [
+                            "projects/ngx-material-entity-showcase/src/styles.scss"
+                        ],
+                        "scripts": []
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-eslint/builder:lint",
+                    "options": {
+                        "lintFilePatterns": [
+                            "projects/ngx-material-entity-showcase/**/*.ts",
+                            "projects/ngx-material-entity-showcase/**/*.html"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "defaultProject": "ngx-material-entity",
+    "cli": {
+        "defaultCollection": "@angular-eslint/schematics"
+    }
 }
