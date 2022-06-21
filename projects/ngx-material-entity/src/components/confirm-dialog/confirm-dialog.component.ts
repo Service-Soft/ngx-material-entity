@@ -9,6 +9,9 @@ import { ConfirmDialogData } from './confirm-dialog-data';
 })
 export class ConfirmDialogComponent implements OnInit {
 
+    /**
+     * Used for the checkbox to confirm the action
+     */
     confirm = false;
 
     constructor(

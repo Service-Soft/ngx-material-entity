@@ -5,6 +5,9 @@ import { string } from '../decorators/string.decorator';
  */
 export abstract class Entity {
 
+    /**
+     * A unique identifier for the Entity
+     */
     @string({
         omitForCreate: true,
         omitForUpdate: true,

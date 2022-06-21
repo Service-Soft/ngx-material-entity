@@ -5,7 +5,6 @@ import { DecoratorTypes } from './base/decorator-types.enum';
 
 /**
  * Decorator for setting and getting object propery metadata.
- * If u want to display a relation to another Entity you can use one of the relation decorators.
  * @param metadata The metadata of the object property
  */
 export function object(metadata: DefaultObjectDecoratorConfig) {

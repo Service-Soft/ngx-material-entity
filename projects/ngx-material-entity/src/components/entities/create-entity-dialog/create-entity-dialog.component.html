@@ -5,6 +5,7 @@
         <ngx-material-entity-input *ngFor="let key of entityKeys"
             [entity]="data.entity"
             [propertyKey]="key"
+            [hideOmitForCreate]="true"
             required>
         </ngx-material-entity-input>
     </form>

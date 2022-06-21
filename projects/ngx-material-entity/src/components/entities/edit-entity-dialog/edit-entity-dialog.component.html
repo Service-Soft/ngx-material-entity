@@ -12,7 +12,8 @@
         <ngx-material-entity-input *ngFor="let key of entityKeys"
             [entity]="data.entity"
             [propertyKey]="key"
-            required>
+            [hideOmitForEdit]="true"
+            >
         </ngx-material-entity-input>
     </form>
 </mat-dialog-content>

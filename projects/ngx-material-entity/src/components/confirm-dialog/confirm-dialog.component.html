@@ -13,12 +13,14 @@
     <button *ngIf="data.type === 'delete'"
         mat-raised-button color="warn"
         (click)="confirmAction()"
+        [disabled]="data.requireConfirmation && !confirm"
         class="confirm-button">
         {{data.confirmButtonLabel ? data.confirmButtonLabel : 'Delete'}}
     </button>
     <button *ngIf="data.type !== 'delete'"
         mat-raised-button
         (click)="confirmAction()"
+        [disabled]="data.requireConfirmation && !confirm"
         class="confirm-button">
         {{data.confirmButtonLabel ? data.confirmButtonLabel : data.type === 'info-only' ? 'Ok' : 'Confirm'}}
     </button>

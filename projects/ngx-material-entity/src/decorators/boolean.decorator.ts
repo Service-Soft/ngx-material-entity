@@ -19,7 +19,7 @@ export function boolean(metadata: CheckboxBooleanDecoratorConfig | ToggleBoolean
 }
 
 /**
- * Interface definition for the @boolean metadata
+ * The Definition for the @boolean metadata
  */
 abstract class BooleanDecoratorConfig extends PropertyDecoratorConfig {
     /**

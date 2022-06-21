@@ -1,4 +1,5 @@
-<div [ngSwitch]="type">
+<div [ngSwitch]="type"
+    *ngIf="!(hideOmitForCreate && metadata.omitForCreate) && !(hideOmitForEdit && metadata.omitForUpdate)">
     <!-------------------------------------------->
     <!-----------------Strings-------------------->
     <!-------------------------------------------->
@@ -144,7 +145,12 @@
                 the current key in the loop received by the keyvalue direction as the propertyKey
                 and the getValidationErrorMessage of the current component
             -->
-            <ngx-material-entity-input [entity]="objectProperty" [propertyKey]="item.key" [getValidationErrorMessage]="getValidationErrorMessage"></ngx-material-entity-input>
+            <ngx-material-entity-input [entity]="objectProperty"
+                [propertyKey]="item.key"
+                [getValidationErrorMessage]="getValidationErrorMessage"
+                [hideOmitForCreate]="hideOmitForCreate"
+                [hideOmitForEdit]="hideOmitForEdit">
+            </ngx-material-entity-input>
         </div>
     </div>
 

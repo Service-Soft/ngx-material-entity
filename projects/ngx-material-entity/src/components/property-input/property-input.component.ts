@@ -36,13 +36,21 @@ export class PropertyInputComponent<EntityType extends Entity> implements OnInit
     getValidationErrorMessage!: (model: NgModel) => string;
 
     /**
-     * The metadata type. Is received internally from the "EntityUtilities.getPropertyType()" method.
+     * Whether to hide a value if it is omitted for creation.
+     * Is used internally for the object property.
      */
-    type!: DecoratorTypes;
+    @Input()
+    hideOmitForCreate?: boolean;
 
     /**
-     * The metadata. Is received internally from the "EntityUtilities.getPropertyMetadata()" method.
+     * Whether to hide a value if it is omitted for editing.
+     * Is used internally for the object property.
      */
+    @Input()
+    hideOmitForEdit?: boolean;
+
+    type!: DecoratorTypes;
+
     metadata!: PropertyDecoratorConfig;
 
     metadataDefaultString!: DefaultStringDecoratorConfig;
@@ -61,7 +69,7 @@ export class PropertyInputComponent<EntityType extends Entity> implements OnInit
     readonly DecoratorTypes = DecoratorTypes;
 
     /**
-     * Helpert method needed to recursively generate property input components (used eg. with the object)
+     * Helper method needed to recursively generate property input components (used eg. with the object)
      */
     trackByFn(index: unknown): unknown {
         return index;

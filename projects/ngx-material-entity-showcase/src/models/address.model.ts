@@ -28,6 +28,20 @@ export class Address extends Entity {
     })
     city!: string;
 
+    @string({
+        displayName: 'omitForCreate',
+        displayStyle: 'line',
+        omitForCreate: true
+    })
+    omitForCreate!: string;
+
+    @string({
+        displayName: 'omitForEdit',
+        displayStyle: 'line',
+        omitForUpdate: true
+    })
+    omitForEdit!: string;
+
     constructor(entity?: Address) {
         super();
         EntityUtilities.new(this, entity);

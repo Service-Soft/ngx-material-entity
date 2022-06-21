@@ -13,19 +13,40 @@ import { CreateEntityDialogData } from './create-entity-dialog/create-entity-dia
 import { EditEntityDialogComponent } from './edit-entity-dialog/edit-entity-dialog.component';
 import { EditEntityDialogData } from './edit-entity-dialog/edit-entity-dialog-data';
 
+/**
+ * The Definition of a Column inside the table.
+ */
 export interface DisplayColumn<EntityType extends Entity> {
+    /**
+     * The name inside the header.
+     */
     displayName: string;
+    /**
+     * A method to get the value inside an entry
+     */
     value: (entity: EntityType) => string;
 }
 
+/**
+ * The Definition of an Action that can be run on multiple selected entities
+ */
 export interface MultiSelectAction<EntityType extends Entity> {
+    /**
+     * The name of the action
+     */
     displayName: string;
+    /**
+     * The action itself
+     */
     action: (entity: EntityType[]) => unknown;
+    /**
+     * A method that defines whether or not the action can be used.
+     * Defaults to true.
+     */
     enabled?: (entity: EntityType[]) => boolean;
 }
 
 //TODO comment
-//TODO add multi select action support
 @Component({
     selector: 'ngx-material-entities',
     templateUrl: './entities.component.html',
@@ -38,9 +59,8 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
      @Input()
     title!: string;
     /**
-     * The definition of the columns to display. Consists of the key inside the Entity,
-     * the displayName to show in the header of the row and the value, which is a function that generates
-     * The value to display inside a column
+     * The definition of the columns to display. Consists of the displayName to show in the header of the row
+     * and the value, which is a function that generates the value to display inside a column
      */
     @Input()
     displayColumns!: DisplayColumn<EntityType>[];
@@ -73,9 +93,9 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
     @Input()
     edit?: (entity: EntityType) => unknown;
     /**
-     * Takes a method to run when you click on a entity.
-     * If you don't need any special editing of entries you can also omit this.
-     * In that case a default edit dialog is generated.
+     * Takes a method to run when you click on the new button.
+     * If you don't need anything special you can also omit this.
+     * In that case a default create dialog is generated.
      */
     @Input()
     create?: (entity: EntityType) => unknown;
@@ -85,17 +105,17 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
     @Input()
     searchString?: (enity: EntityType) => string;
     /**
-     * Defines, whether or not the user can add new entities.
+     * Defines whether or not the user can add new entities.
      */
     @Input()
     allowCreate!: boolean;
     /**
-     * Defines, whether or not the user can edit entities.
+     * Defines whether or not the user can edit entities.
      */
     @Input()
     allowEdit!: boolean;
     /**
-     * Defines, whether or not the user can delete entities.
+     * Defines whether or not the user can delete entities.
      */
      @Input()
     allowDelete!: boolean;
@@ -148,9 +168,7 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
     editDialogCancelButtonLabel?: string;
 
 
-    /**
-     * The entityService that handles api requests like fetching all the data to display inside the table.
-     */
+    
     private entityService!: EntityService<EntityType>;
     private onDestroy = new Subject<void>();
     @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;

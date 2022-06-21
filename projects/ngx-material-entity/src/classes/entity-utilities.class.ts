@@ -5,19 +5,18 @@ import { DefaultNumberDecoratorConfig } from '../decorators/number.decorator';
 import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, TextboxStringDecoratorConfig } from '../decorators/string.decorator';
 import { Entity } from './entity-model.class';
 
+/**
+ * Contains HelperMethods around handling Entities and their property-metadata
+ */
 export abstract class EntityUtilities {
-
     /**
-     * Gets the properties to leave out for updating from the property-decorators
-     * @returns The properties which should be left out for creating a new Entity
+     * Gets the properties to omit when updating the entity
+     * @returns The properties which should be left out for updating a new Entity
      */
      static getOmitForUpdate<EntityType extends Entity>(entity: EntityType): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
-        // iterates through all properties
         for (const key of Reflect.ownKeys(entity)) {
-            // gets the metadata of the property (if it exists)
             const metadata: PropertyDecoratorConfig = Reflect.getMetadata('metadata', entity, key);
-            // pushes the property name on the result if it should be omitted for updating
             if (metadata.omitForUpdate) {
                 res.push(key as keyof EntityType);
             }
@@ -26,16 +25,13 @@ export abstract class EntityUtilities {
     }
 
     /**
-     * Gets the properties to leave out for creation from the property-decorators
+     * Gets the properties to omit when creating new entities
      * @returns The properties which should be left out for creating a new Entity
      */
     static getOmitForCreate<EntityType extends Entity>(entity: EntityType): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
-        // iterates through all properties
         for (const key of Reflect.ownKeys(entity)) {
-            // gets the metadata of the property (if it exists)
             const metadata: PropertyDecoratorConfig = Reflect.getMetadata('metadata', entity, key);
-            // pushes the property name on the result if it should be omitted for creation
             if (metadata.omitForCreate) {
                 res.push(key as keyof EntityType);
             }
@@ -69,8 +65,8 @@ export abstract class EntityUtilities {
     }
 
     /**
-     * Gets the type of the property.
-     * @param entity entity The entity with the property to get the type from
+     * Gets the type of the property-metadata.
+     * @param entity The entity with the property to get the type from
      * @param propertyKey The property on the given Entity to get the type from
      * @returns The type of the metadata
      */
@@ -105,6 +101,12 @@ export abstract class EntityUtilities {
     static construct = this.new;
     static build = this.new;
 
+    /**
+     * Checks if the values on an entity are valid.
+     * Also checks all the validators given by the metadata ("required", "maxLength" etc.)
+     * @param entity The entity to validate.
+     * @returns Whether or not the entity is valid.
+     */
     static isEntityValid<EntityType extends Entity>(entity: EntityType): boolean {
         for (const key in entity) {
             if (!this.isPropertyValid(entity, key)) {
@@ -113,6 +115,12 @@ export abstract class EntityUtilities {
         }
         return true;
     }
+    /**
+     * Checks if a single property value is valid
+     * @param entity The entity where the property is from
+     * @param key The name of the property
+     * @returns Whether or not the property value is valid
+     */
     private static isPropertyValid<EntityType extends Entity>(entity: EntityType, key: keyof EntityType): boolean {
         const type = this.getPropertyType(entity, key);
         const metadata: PropertyDecoratorConfig = this.getPropertyMetadata(entity, key, type);
@@ -176,6 +184,13 @@ export abstract class EntityUtilities {
         }
         return true;
     }
+
+    /**
+     * Checks if an entity is "dirty" (if its values have changed)
+     * @param entity The entity after all changes
+     * @param entityPriorChanges The entity before the changes
+     * @returns Whether or not the entity is dirty
+     */
     static dirty(entity: Entity, entityPriorChanges: Entity): boolean {
         if (!entityPriorChanges) {
             return false;
@@ -190,11 +205,12 @@ export abstract class EntityUtilities {
             }
         }
     }
+
     /**
      * Compares two Entities and returns their difference in an object
-     * @param entity The first object to compare
-     * @param entityPriorChanges The second object to compare
-     * @returns The difference between the two Entities in form of an object
+     * @param entity The first entity to compare
+     * @param entityPriorChanges The second entity to compare
+     * @returns The difference between the two Entities in form of a Partial
      */
     static difference<EntityType extends Entity>(entity: EntityType, entityPriorChanges: EntityType): Partial<EntityType> {
         const res: Partial<EntityType> = {};

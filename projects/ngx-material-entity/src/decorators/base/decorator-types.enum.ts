@@ -21,7 +21,9 @@ export enum DecoratorTypes {
     ARRAY = 'array'
 }
 
-//TODO Comment
+/**
+ * Gives the metadata-config Type based ont the DecoratorTypes enum
+ */
 export type DecoratorType<T> =
     T extends DecoratorTypes.STRING ? DefaultStringDecoratorConfig :
     T extends DecoratorTypes.STRING_TEXTBOX ? TextboxStringDecoratorConfig :

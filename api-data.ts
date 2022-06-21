@@ -15,7 +15,9 @@ export const data: ApiData = {
                 street: 'Schultenstraße',
                 number: '5',
                 postcode: '45739',
-                city: 'Oer-Erkenschwick'
+                city: 'Oer-Erkenschwick',
+                omitForCreate: 'omitForCreate',
+                omitForEdit: 'omitForEdit'
             }
         }
     ]
