@@ -9,8 +9,18 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+      # runs npm i inside the root directory
+      - name: npm i root
+        run: |
+          cd $GITHUB_WORKSPACE
+          npm i
+      # runs npm i inside the ngx-material-entity directory
+      - name: npm i
+        run: |
+          cd $GITHUB_WORKSPACE/projects/ngx-material-entity
+          npm i
       # runs jest tests
-      - name:  Jest
+      - name: Jest
         run: |
           cd $GITHUB_WORKSPACE
           npm run test
