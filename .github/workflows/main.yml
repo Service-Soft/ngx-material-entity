@@ -33,5 +33,5 @@ jobs:
             - name: Create Pull Request
               uses: peter-evans/create-pull-request@v4
               with:
-                  github_token: ${{ github.token }}
+                  token: ${{ github.token }}
                   branch: "dev"
