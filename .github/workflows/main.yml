@@ -1,0 +1,28 @@
+name: Testing
+# Controls when the action will run.
+on: push
+# workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+      # runs jest tests
+      - name:  Jest
+        run: |
+          cd $GITHUB_WORKSPACE
+          npm run test
+          
+  automerge:
+    needs: test
+    if: ${{ success() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: automerge
+        uses: mtanzi/action-automerge@v1
+        with:
+          github_token: ${{ github.token }}
+          source: 'development'
+          target: 'master'
