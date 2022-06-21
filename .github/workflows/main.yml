@@ -25,13 +25,14 @@ jobs:
                   cd $GITHUB_WORKSPACE
                   npm run test
 
-    createPR:
+    automerge:
         needs: test
         if: ${{ success() }}
         runs-on: ubuntu-latest
         steps:
-            - name: Create Pull Request
-              uses: peter-evans/create-pull-request@v4
+            - name: automerge
+              uses: mtanzi/action-automerge@v1
               with:
-                  token: ${{ github.token }}
-                  branch: "dev"
+                  github_token: ${{ github.token }}
+                  source: "dev"
+                  target: "master"
