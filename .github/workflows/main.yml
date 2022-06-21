@@ -34,5 +34,5 @@ jobs:
         uses: mtanzi/action-automerge@v1
         with:
           github_token: ${{ github.token }}
-          source: 'development'
+          source: 'dev'
           target: 'master'
