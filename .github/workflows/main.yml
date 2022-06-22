@@ -24,15 +24,3 @@ jobs:
               run: |
                   cd $GITHUB_WORKSPACE
                   npm run test
-
-    automerge:
-        needs: test
-        if: ${{ success() }}
-        runs-on: ubuntu-latest
-        steps:
-            - name: automerge
-              uses: mtanzi/action-automerge@v1
-              with:
-                  github_token: ${{ github.token }}
-                  source: "dev"
-                  target: "master"
