@@ -46,7 +46,6 @@ export interface MultiSelectAction<EntityType extends Entity> {
     enabled?: (entity: EntityType[]) => boolean;
 }
 
-//TODO comment
 @Component({
     selector: 'ngx-material-entities',
     templateUrl: './entities.component.html',
