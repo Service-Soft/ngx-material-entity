@@ -25,7 +25,7 @@ export class ArrayDecoratorConfig extends PropertyDecoratorConfig {
     itemType: DecoratorTypes;
 
     constructor(metadata: ArrayDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate);
+        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
         this.canBeEmpty = metadata.canBeEmpty;
         this.itemType = metadata.itemType;
     }

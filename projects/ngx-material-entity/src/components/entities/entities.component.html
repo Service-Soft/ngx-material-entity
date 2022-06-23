@@ -1,18 +1,23 @@
 <h1 class="title">{{title}}</h1>
 
-<div>
-    <mat-form-field class="search-input">
+<div class="row">
+    <mat-form-field class="col-lg-8 col-md-6 col-sm-12">
         <mat-label>{{searchLabel ? searchLabel : 'Search'}}</mat-label>
         <input matInput (keyup)="applyFilter($event)">
     </mat-form-field>
-    <button *ngIf="multiSelectActions?.length"
-        class="actions-button"
-        [class.width-50]="allowCreate"
-        [class.width-100]="!allowCreate"
-        [matMenuTriggerFor]="menu"
-        mat-raised-button>
-        {{multiSelectLabel ? multiSelectLabel : 'Actions'}}
-    </button>
+    <div *ngIf="multiSelectActions?.length"
+        [class.col-lg-2]="allowCreate"
+        [class.col-lg-4]="!allowCreate"
+        [class.col-md-3]="allowCreate"
+        [class.col-md-6]="!allowCreate"
+        [class.col-sm-6]="allowCreate"
+        [class.col-sm-12]="!allowCreate">
+        <button class="actions-button"
+            [matMenuTriggerFor]="menu"
+            mat-raised-button>
+            {{multiSelectLabel ? multiSelectLabel : 'Actions'}}
+        </button>
+    </div>
     <mat-menu #menu="matMenu">
         <button *ngFor="let action of multiSelectActions"
             [disabled]="multiActionDisabled(action)"
@@ -22,14 +27,19 @@
         </button>
     </mat-menu>
 
-    <button *ngIf="allowCreate"
-        class="create-button"
-        [class.width-50]="multiSelectActions?.length"
-        [class.width-100]="!multiSelectActions?.length"
-        (click)="createEntity()"
-        mat-raised-button>
-        {{createButtonLabel ? createButtonLabel : 'Create'}}
-    </button>
+    <div *ngIf="allowCreate"
+        [class.col-lg-2]="multiSelectActions?.length"
+        [class.col-lg-4]="!multiSelectActions?.length"
+        [class.col-md-3]="multiSelectActions?.length"
+        [class.col-md-6]="!multiSelectActions?.length"
+        [class.col-sm-6]="multiSelectActions?.length"
+        [class.col-sm-12]="!multiSelectActions?.length">
+        <button class="create-button"
+            (click)="createEntity()"
+            mat-raised-button>
+            {{createButtonLabel ? createButtonLabel : 'Create'}}
+        </button>
+    </div>
 </div>
 
 <div class="mat-elevation-z8">

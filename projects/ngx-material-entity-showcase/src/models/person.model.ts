@@ -12,7 +12,8 @@ export class Person extends Entity {
 
     @string({
         displayName: 'Nachname',
-        displayStyle: 'line'
+        displayStyle: 'line',
+        // lineBreakAfter: true
     })
     lastname!: string;
 
@@ -26,7 +27,8 @@ export class Person extends Entity {
     @object({
         displayName: 'Adresse',
         displayStyle: 'inline',
-        type: Address
+        type: Address,
+        defaultWidths: [12, 12, 12]
     })
     address!: Address;
 
