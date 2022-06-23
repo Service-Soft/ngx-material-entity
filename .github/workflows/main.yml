@@ -1,4 +1,4 @@
-name: Testing
+name: CI
 # Controls when the action will run.
 on: push
 # workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -19,6 +19,11 @@ jobs:
               run: |
                   cd $GITHUB_WORKSPACE/projects/ngx-material-entity
                   npm i
+            # runs 
+            - name: Linting
+              run: |
+                  cd $GITHUB_WORKSPACE
+                  npm run lint
             # runs jest tests
             - name: Jest
               run: |
