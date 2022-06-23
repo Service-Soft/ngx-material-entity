@@ -44,6 +44,30 @@ export class EditEntityDialogComponent<EntityType extends Entity> implements OnI
         this.entityKeys = this.entityKeys.filter(k => !omitUpdateKeys.includes(k));
     }
 
+    getWidth(key: keyof EntityType, type: 'lg' | 'md' | 'sm'): number {
+        const metadata = EntityUtilities.getPropertyMetadata(this.data.entity, key, EntityUtilities.getPropertyType(this.data.entity, key));
+        if (metadata.defaultWidths) {
+            switch (type) {
+                case 'lg':
+                    return metadata.defaultWidths[0];
+                case 'md':
+                    return metadata.defaultWidths[1];
+                case 'sm':
+                    return metadata.defaultWidths[2];
+                default:
+                    throw new Error('Something went wrong getting the width');
+            }
+        }
+        else {
+            throw new Error('Something went wrong getting the width');
+        }
+    }
+
+    // getLinebreakAfter(key: keyof EntityType): boolean {
+    //     const metadata = EntityUtilities.getPropertyMetadata(this.data.entity, key, EntityUtilities.getPropertyType(this.data.entity, key));
+    //     return metadata.lineBreakAfter ? metadata.lineBreakAfter : false;
+    // }
+
     edit() {
         this.entityService.update(this.data.entity, this.entityPriorChanges).then(() => this.dialogRef.close());
     }

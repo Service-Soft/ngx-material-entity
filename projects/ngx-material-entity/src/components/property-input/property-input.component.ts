@@ -102,4 +102,34 @@ export class PropertyInputComponent<EntityType extends Entity> implements OnInit
             this.getValidationErrorMessage = getValidationErrorMessage;
         }
     }
+
+    getWidth<T extends Entity>(entity: T, key: keyof T, type: 'lg' | 'md' | 'sm'): number {
+        const metadata = EntityUtilities.getPropertyMetadata(entity, key, EntityUtilities.getPropertyType(entity, key));
+        if (metadata.defaultWidths) {
+            switch (type) {
+                case 'lg':
+                    return metadata.defaultWidths[0];
+                case 'md':
+                    return metadata.defaultWidths[1];
+                case 'sm':
+                    return metadata.defaultWidths[2];
+                default:
+                    throw new Error('Something went wrong getting the lg-width');
+            }
+        }
+        else {
+            throw new Error('Something went wrong getting the lg-width');
+        }
+    }
+
+    getObjectProperties(): (keyof Entity)[] {
+        const res: (keyof Entity)[] = [];
+        for (const property in this.objectProperty) {
+            const metadata = EntityUtilities.getPropertyMetadata(this.objectProperty, property as keyof Entity, EntityUtilities.getPropertyType(this.objectProperty, property as keyof Entity));
+            if (!(this.hideOmitForCreate && metadata.omitForCreate) && !(this.hideOmitForEdit && metadata.omitForUpdate)) {
+                res.push(property as keyof Entity);
+            }
+        }
+        return res;
+    }
 }

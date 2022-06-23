@@ -9,7 +9,8 @@ export class Address extends Entity {
 
     @string({
         displayName: 'Hausnummer',
-        displayStyle: 'line'
+        displayStyle: 'line',
+        defaultWidths: [3, 3, 6]
     })
     number!: string;
 
@@ -18,7 +19,8 @@ export class Address extends Entity {
         displayStyle: 'line',
         minLength: 5,
         maxLength: 5,
-        regex: new RegExp('^[0-9]+$')
+        regex: new RegExp('^[0-9]+$'),
+        defaultWidths: [3, 3, 6]
     })
     postcode!: string;
 

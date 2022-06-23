@@ -42,7 +42,7 @@ export class DropdownBooleanDecoratorConfig extends BooleanDecoratorConfig {
     dropdownFalse: string | { (args: unknown): string };
 
     constructor(metadata: DropdownBooleanDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate);
+        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
         this.displayStyle = metadata.displayStyle;
         this.dropdownTrue = metadata.dropdownTrue;
         this.dropdownFalse = metadata.dropdownFalse;
@@ -53,7 +53,7 @@ export class CheckboxBooleanDecoratorConfig extends BooleanDecoratorConfig {
     override displayStyle: 'checkbox';
 
     constructor(metadata: CheckboxBooleanDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate);
+        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
         this.displayStyle = metadata.displayStyle;
     }
 }
@@ -61,7 +61,7 @@ export class ToggleBooleanDecoratorConfig extends BooleanDecoratorConfig {
     override displayStyle: 'toggle';
 
     constructor(metadata: ToggleBooleanDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate);
+        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
         this.displayStyle = metadata.displayStyle;
     }
 }

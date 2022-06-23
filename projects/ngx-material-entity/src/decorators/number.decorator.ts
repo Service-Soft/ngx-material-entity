@@ -37,7 +37,7 @@ export class DefaultNumberDecoratorConfig extends NumberDecoratorConfig {
     max?: number;
 
     constructor(metadata: DefaultNumberDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate);
+        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
         this.displayStyle = metadata.displayStyle;
         this.min = metadata.min;
         this.max = metadata.max;
@@ -52,7 +52,7 @@ export class DropdownNumberDecoratorConfig extends NumberDecoratorConfig {
     dropdownValues?: { displayName: string, value: number }[];
 
     constructor(metadata: DropdownNumberDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate);
+        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
         this.displayStyle = metadata.displayStyle;
         this.dropdownValues = metadata.dropdownValues;
     }

@@ -37,6 +37,25 @@ export class CreateEntityDialogComponent<EntityType extends Entity> implements O
         this.entityKeys = this.entityKeys.filter(k => !omitCreateKeys.includes(k));
     }
 
+    getWidth(key: keyof EntityType, type: 'lg' | 'md' | 'sm'): number {
+        const metadata = EntityUtilities.getPropertyMetadata(this.data.entity, key, EntityUtilities.getPropertyType(this.data.entity, key));
+        if (metadata.defaultWidths) {
+            switch (type) {
+                case 'lg':
+                    return metadata.defaultWidths[0];
+                case 'md':
+                    return metadata.defaultWidths[1];
+                case 'sm':
+                    return metadata.defaultWidths[2];
+                default:
+                    throw new Error('Something went wrong getting the width');
+            }
+        }
+        else {
+            throw new Error('Something went wrong getting the width');
+        }
+    }
+
     create() {
         this.entityService.create(this.data.entity).then(() => this.dialogRef.close());
     }

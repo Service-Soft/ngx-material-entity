@@ -8,6 +8,7 @@ Can even generate complete and highly customizable CRUD-Tables for them.
 # Table of Contents
 - [NgxMaterialEntity](#ngxmaterialentity)
 - [Table of Contents](#table-of-contents)
+- [Requirements](#requirements)
 - [Basic Usage](#basic-usage)
   - [Create your entity](#create-your-entity)
   - [Use the input for your entity property](#use-the-input-for-your-entity-property)
@@ -30,6 +31,13 @@ Can even generate complete and highly customizable CRUD-Tables for them.
 - [Entities Configuration](#entities-configuration)
   - [Display Columns](#display-columns)
   - [Multiselect Actions](#multiselect-actions)
+<br>
+<br>
+
+# Requirements
+This package relies on the [angular material library](https://material.angular.io/guide/getting-started) to render its components.
+<br>
+It also uses [bootstrap](https://getbootstrap.com/) for responsive design.
 <br>
 <br>
 
@@ -181,7 +189,16 @@ omitForCreate?: boolean;
  * @default false
  */
 omitForUpdate?: boolean;
+/**
+ * Defines the width of the input property when used inside the default create or edit dialog.
+ * Has 3 bootstrap values for different breakpoints for simple responsive design.
+ * @var firstValue: col-lg-{{firstValue}}
+ * @var secondValue: col-md-{{secondValue}}
+ * @var thirdValue: col-sm-{{thirdValue}}
+ */
+defaultWidths?: [cols, cols, cols];
 ```
+For more information regarding the defaultWidths see the bootstrap guide about the [Grid system](https://getbootstrap.com/docs/5.0/layout/grid/).
 <br>
 <br>
 

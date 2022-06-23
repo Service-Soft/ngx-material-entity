@@ -35,7 +35,7 @@ export class DefaultObjectDecoratorConfig extends ObjectDecoratorConfig {
     sectionTitle?: string;
 
     constructor(metadata: DefaultObjectDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate);
+        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
         this.displayStyle = metadata.displayStyle;
         this.type = metadata.type;
         this.sectionTitle = metadata.sectionTitle;
