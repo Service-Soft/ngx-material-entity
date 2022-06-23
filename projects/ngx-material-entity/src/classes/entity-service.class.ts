@@ -30,11 +30,11 @@ export abstract class EntityService<EntityType extends Entity> {
     /**
      * gets the entities in an array from the internal entitiesSubject
      */
-    get entities() {
+    get entities(): EntityType[] {
         return this.entitiesSubject.value;
     }
 
-    constructor(private readonly http: HttpClient) { }
+    constructor(private readonly http: HttpClient) {}
 
     /**
      * Creates a new Entity and pushes it to the entities array
@@ -43,7 +43,8 @@ export abstract class EntityService<EntityType extends Entity> {
      * @returns A Promise of the created entity
      */
     async create(entity: EntityType): Promise<EntityType> {
-        const e = await firstValueFrom(this.http.post<EntityType>(this.baseUrl, omit(entity, EntityUtilities.getOmitForCreate(entity))));
+        const body = omit(entity, EntityUtilities.getOmitForCreate(entity));
+        const e = await firstValueFrom(this.http.post<EntityType>(this.baseUrl, body));
         this.entities.push(e);
         this.entitiesSubject.next(this.entities);
         return e;
@@ -71,8 +72,13 @@ export abstract class EntityService<EntityType extends Entity> {
             EntityUtilities.difference(entity, entityPriorChanges),
             EntityUtilities.getOmitForUpdate(entity)
         );
-        const updatedEntity = await firstValueFrom(this.http.patch<EntityType>(`${this.baseUrl}/${entityPriorChanges.id}`, omitBy(reqBody, isNil)));
-        this.entities[this.entities.findIndex(e => e.id === entityPriorChanges.id)] = updatedEntity;
+        const updatedEntity = await firstValueFrom(
+            this.http.patch<EntityType>(
+                `${this.baseUrl}/${entityPriorChanges.id}`,
+                omitBy(reqBody, isNil)
+            )
+        );
+        this.entities[this.entities.findIndex((e) => e.id === entityPriorChanges.id)] = updatedEntity;
         this.entitiesSubject.next(this.entities);
     }
 
@@ -82,7 +88,9 @@ export abstract class EntityService<EntityType extends Entity> {
      */
     async delete(id: string): Promise<void> {
         await firstValueFrom(this.http.delete<void>(`${this.baseUrl}/${id}`));
-        this.entities.splice(this.entities.findIndex(e => e.id === id), 1);
+        this.entities.splice(
+            this.entities.findIndex((e) => e.id === id), 1
+        );
         this.entitiesSubject.next(this.entities);
     }
 }

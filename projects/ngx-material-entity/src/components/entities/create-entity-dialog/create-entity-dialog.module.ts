@@ -7,18 +7,8 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
-    declarations: [
-        CreateEntityDialogComponent
-    ],
-    imports: [
-        CommonModule,
-        PropertyInputModule,
-        MatDialogModule,
-        FormsModule,
-        MatButtonModule
-    ],
-    exports: [
-        CreateEntityDialogComponent
-    ]
+    declarations: [CreateEntityDialogComponent],
+    imports: [CommonModule, PropertyInputModule, MatDialogModule, FormsModule, MatButtonModule],
+    exports: [CreateEntityDialogComponent]
 })
-export class CreateEntityDialogModule { }
+export class CreateEntityDialogModule {}

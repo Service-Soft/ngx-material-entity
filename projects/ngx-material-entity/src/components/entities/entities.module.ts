@@ -12,9 +12,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
-    declarations: [
-        EntitiesComponent
-    ],
+    declarations: [EntitiesComponent],
     imports: [
         CommonModule,
         MatInputModule,
@@ -27,8 +25,6 @@ import { MatDialogModule } from '@angular/material/dialog';
         MatMenuModule,
         MatDialogModule
     ],
-    exports: [
-        EntitiesComponent
-    ]
+    exports: [EntitiesComponent]
 })
-export class EntitiesModule { }
+export class EntitiesModule {}

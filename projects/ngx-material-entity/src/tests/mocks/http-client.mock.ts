@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Observable, of } from 'rxjs';
@@ -17,7 +21,7 @@ export class HttpClientMock {
     }
     patch(url: string, body: any): Observable<any> {
         const id = this.getIdFromUrl(url);
-        const res = this.exampleData[this.exampleData.findIndex(e => e.id === id)];
+        const res = this.exampleData[this.exampleData.findIndex((e) => e.id === id)];
         for (const key of Reflect.ownKeys(body)) {
             if (res[key]) {
                 res[key] = body[key];
@@ -26,7 +30,7 @@ export class HttpClientMock {
         return of(res);
     }
     delete(url: string): Observable<any> {
-        this.exampleData.splice(this.exampleData.findIndex(e => e.id === this.getIdFromUrl(url)), 1);
+        this.exampleData.splice(this.exampleData.findIndex((e) => e.id === this.getIdFromUrl(url)), 1);
         return of(undefined);
     }
 

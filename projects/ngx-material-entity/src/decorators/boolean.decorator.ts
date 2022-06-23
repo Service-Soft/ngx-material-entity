@@ -6,7 +6,9 @@ import { DecoratorTypes } from './base/decorator-types.enum';
  * Decorator for setting and getting string propery metadata
  * @param metadata The metadata of the string property
  */
-export function boolean(metadata: CheckboxBooleanDecoratorConfig | ToggleBooleanDecoratorConfig | DropdownBooleanDecoratorConfig) {
+export function boolean(
+    metadata: CheckboxBooleanDecoratorConfig | ToggleBooleanDecoratorConfig | DropdownBooleanDecoratorConfig
+): (target: object, propertyKey: string) => void {
     if (metadata.displayStyle === 'dropdown') {
         return baseProperty(new DropdownBooleanDecoratorConfig(metadata), DecoratorTypes.BOOLEAN_DROPDOWN);
     }
@@ -42,7 +44,14 @@ export class DropdownBooleanDecoratorConfig extends BooleanDecoratorConfig {
     dropdownFalse: string | { (args: unknown): string };
 
     constructor(metadata: DropdownBooleanDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
+        super(
+            metadata.displayName,
+            metadata.display,
+            metadata.required,
+            metadata.omitForCreate,
+            metadata.omitForUpdate,
+            metadata.defaultWidths
+        );
         this.displayStyle = metadata.displayStyle;
         this.dropdownTrue = metadata.dropdownTrue;
         this.dropdownFalse = metadata.dropdownFalse;
@@ -53,7 +62,14 @@ export class CheckboxBooleanDecoratorConfig extends BooleanDecoratorConfig {
     override displayStyle: 'checkbox';
 
     constructor(metadata: CheckboxBooleanDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
+        super(
+            metadata.displayName,
+            metadata.display,
+            metadata.required,
+            metadata.omitForCreate,
+            metadata.omitForUpdate,
+            metadata.defaultWidths
+        );
         this.displayStyle = metadata.displayStyle;
     }
 }
@@ -61,7 +77,14 @@ export class ToggleBooleanDecoratorConfig extends BooleanDecoratorConfig {
     override displayStyle: 'toggle';
 
     constructor(metadata: ToggleBooleanDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
+        super(
+            metadata.displayName,
+            metadata.display,
+            metadata.required,
+            metadata.omitForCreate,
+            metadata.omitForUpdate,
+            metadata.defaultWidths
+        );
         this.displayStyle = metadata.displayStyle;
     }
 }

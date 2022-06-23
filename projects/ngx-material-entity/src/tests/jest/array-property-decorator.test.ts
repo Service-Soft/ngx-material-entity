@@ -39,7 +39,6 @@ class Address extends Entity {
 }
 
 class TestEntity extends Entity {
-
     @array({
         itemType: DecoratorTypes.OBJECT,
         displayName: 'Adressen',
@@ -72,10 +71,7 @@ const address2 = new Address(addressData2);
 
 const testEntityData: TestEntity = {
     id: '1',
-    addresses: [
-        address1,
-        address2
-    ]
+    addresses: [address1, address2]
 };
 const testEntity = new TestEntity(testEntityData);
 
@@ -85,14 +81,30 @@ test('should have array Metadata', () => {
     expect(metdata.canBeEmpty).toBe(false);
 });
 test('should have metadata on array items', () => {
-    const streetMetadata1 = EntityUtilities.getPropertyMetadata(testEntity.addresses[0], 'street', DecoratorTypes.STRING);
-    const numberMetadata1 = EntityUtilities.getPropertyMetadata(testEntity.addresses[0], 'number', DecoratorTypes.STRING);
-    const postcodeMetadata1 = EntityUtilities.getPropertyMetadata(testEntity.addresses[0], 'postcode', DecoratorTypes.STRING);
-    const cityMetadata1 = EntityUtilities.getPropertyMetadata(testEntity.addresses[0], 'city', DecoratorTypes.STRING);
-    const streetMetadata2 = EntityUtilities.getPropertyMetadata(testEntity.addresses[1], 'street', DecoratorTypes.STRING);
-    const numberMetadata2 = EntityUtilities.getPropertyMetadata(testEntity.addresses[1], 'number', DecoratorTypes.STRING);
-    const postcodeMetadata2 = EntityUtilities.getPropertyMetadata(testEntity.addresses[1], 'postcode', DecoratorTypes.STRING);
-    const cityMetadata2 = EntityUtilities.getPropertyMetadata(testEntity.addresses[1], 'city', DecoratorTypes.STRING);
+    const streetMetadata1 = EntityUtilities.getPropertyMetadata(
+        testEntity.addresses[0], 'street', DecoratorTypes.STRING
+    );
+    const numberMetadata1 = EntityUtilities.getPropertyMetadata(
+        testEntity.addresses[0], 'number', DecoratorTypes.STRING
+    );
+    const postcodeMetadata1 = EntityUtilities.getPropertyMetadata(
+        testEntity.addresses[0], 'postcode', DecoratorTypes.STRING
+    );
+    const cityMetadata1 = EntityUtilities.getPropertyMetadata(
+        testEntity.addresses[0], 'city', DecoratorTypes.STRING
+    );
+    const streetMetadata2 = EntityUtilities.getPropertyMetadata(
+        testEntity.addresses[1], 'street', DecoratorTypes.STRING
+    );
+    const numberMetadata2 = EntityUtilities.getPropertyMetadata(
+        testEntity.addresses[1], 'number', DecoratorTypes.STRING
+    );
+    const postcodeMetadata2 = EntityUtilities.getPropertyMetadata(
+        testEntity.addresses[1], 'postcode', DecoratorTypes.STRING
+    );
+    const cityMetadata2 = EntityUtilities.getPropertyMetadata(
+        testEntity.addresses[1], 'city', DecoratorTypes.STRING
+    );
     expect(streetMetadata1).toBeDefined();
     expect(numberMetadata1).toBeDefined();
     expect(postcodeMetadata1).toBeDefined();

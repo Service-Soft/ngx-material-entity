@@ -4,10 +4,9 @@ import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
 import { boolean } from '../../decorators/boolean.decorator';
 
 class TestEntity extends Entity {
-
     @boolean({
         displayStyle: 'checkbox',
-        displayName: 'company?',
+        displayName: 'company?'
     })
     boolean!: boolean;
 

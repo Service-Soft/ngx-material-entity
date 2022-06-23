@@ -4,7 +4,6 @@ import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
 import { string } from '../../decorators/string.decorator';
 
 class TestEntity extends Entity {
-
     @string({
         displayName: 'Name',
         displayStyle: 'line'

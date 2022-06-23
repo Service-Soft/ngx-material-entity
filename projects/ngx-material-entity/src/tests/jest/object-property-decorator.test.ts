@@ -39,7 +39,6 @@ class Address extends Entity {
 }
 
 class TestEntity extends Entity {
-
     @object({
         type: Address,
         displayName: 'Adresse',

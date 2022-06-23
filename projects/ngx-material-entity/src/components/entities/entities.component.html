@@ -1,77 +1,68 @@
-<h1 class="title">{{title}}</h1>
+<h1 class="title">{{ title }}</h1>
 
 <div class="row">
     <mat-form-field class="col-lg-8 col-md-6 col-sm-12">
-        <mat-label>{{searchLabel ? searchLabel : 'Search'}}</mat-label>
-        <input matInput (keyup)="applyFilter($event)">
+        <mat-label>{{ searchLabel ? searchLabel : 'Search' }}</mat-label>
+        <input matInput (keyup)="applyFilter($event)" />
     </mat-form-field>
-    <div *ngIf="multiSelectActions?.length"
+    <div
+        *ngIf="multiSelectActions?.length"
         [class.col-lg-2]="allowCreate"
         [class.col-lg-4]="!allowCreate"
         [class.col-md-3]="allowCreate"
         [class.col-md-6]="!allowCreate"
         [class.col-sm-6]="allowCreate"
-        [class.col-sm-12]="!allowCreate">
-        <button class="actions-button"
-            [matMenuTriggerFor]="menu"
-            mat-raised-button>
-            {{multiSelectLabel ? multiSelectLabel : 'Actions'}}
+        [class.col-sm-12]="!allowCreate"
+    >
+        <button class="actions-button" [matMenuTriggerFor]="menu" mat-raised-button>
+            {{ multiSelectLabel ? multiSelectLabel : 'Actions' }}
         </button>
     </div>
     <mat-menu #menu="matMenu">
-        <button *ngFor="let action of multiSelectActions"
-            [disabled]="multiActionDisabled(action)"
-            (click)="action.action(selection.selected)"
-            mat-menu-item>
-            {{action.displayName}}
+        <button *ngFor="let action of multiSelectActions" [disabled]="multiActionDisabled(action)" (click)="action.action(selection.selected)" mat-menu-item>
+            {{ action.displayName }}
         </button>
     </mat-menu>
 
-    <div *ngIf="allowCreate"
+    <div
+        *ngIf="allowCreate"
         [class.col-lg-2]="multiSelectActions?.length"
         [class.col-lg-4]="!multiSelectActions?.length"
         [class.col-md-3]="multiSelectActions?.length"
         [class.col-md-6]="!multiSelectActions?.length"
         [class.col-sm-6]="multiSelectActions?.length"
-        [class.col-sm-12]="!multiSelectActions?.length">
-        <button class="create-button"
-            (click)="createEntity()"
-            mat-raised-button>
-            {{createButtonLabel ? createButtonLabel : 'Create'}}
+        [class.col-sm-12]="!multiSelectActions?.length"
+    >
+        <button class="create-button" (click)="createEntity()" mat-raised-button>
+            {{ createButtonLabel ? createButtonLabel : 'Create' }}
         </button>
     </div>
 </div>
 
 <div class="mat-elevation-z8">
     <mat-table *ngIf="dataSource" [dataSource]="dataSource" matSort>
-
         <!-- select Column -->
         <ng-container matColumnDef="select">
             <mat-header-cell *matHeaderCellDef>
-                <mat-checkbox (change)="$event ? masterToggle() : null"
-                    [checked]="selection.hasValue() && isAllSelected()"
-                    [indeterminate]="selection.hasValue() && !isAllSelected()">
-                </mat-checkbox>
+                <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()" [indeterminate]="selection.hasValue() && !isAllSelected()"> </mat-checkbox>
             </mat-header-cell>
             <mat-cell *matCellDef="let module" class="module">
-                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(module) : null"
-                    [checked]="selection.isSelected(module)">
-                </mat-checkbox>
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(module) : null" [checked]="selection.isSelected(module)"> </mat-checkbox>
             </mat-cell>
         </ng-container>
-    
+
         <ng-container *ngFor="let dCol of displayColumns" [matColumnDef]="dCol.displayName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> {{dCol.displayName}} </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                {{ dCol.displayName }}
+            </mat-header-cell>
             <mat-cell class="entity" [class.enabled]="allowEdit" (click)="editEntity(entity)" *matCellDef="let entity">
-                {{dCol.value(entity)}}
+                {{ dCol.value(entity) }}
             </mat-cell>
         </ng-container>
-    
+
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     </mat-table>
-    
-    <mat-paginator *ngIf="dataSource" id="paginator" [length]="dataSource.filteredData.length"
-        [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50]">
-    </mat-paginator>
+
+    <mat-paginator *ngIf="dataSource" id="paginator" [length]="dataSource.filteredData.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50]"> </mat-paginator>
 </div>

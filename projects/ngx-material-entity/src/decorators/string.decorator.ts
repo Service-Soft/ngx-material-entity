@@ -6,11 +6,14 @@ import { DecoratorTypes } from './base/decorator-types.enum';
  * Decorator for setting and getting string propery metadata
  * @param metadata The metadata of the string property
  */
-export function string(metadata: DropdownStringDecoratorConfig | AutocompleteStringDecoratorConfig | DefaultStringDecoratorConfig | TextboxStringDecoratorConfig) {
+export function string(
+    metadata: DropdownStringDecoratorConfig | AutocompleteStringDecoratorConfig
+        | DefaultStringDecoratorConfig | TextboxStringDecoratorConfig
+): (target: object, propertyKey: string) => void {
     if (metadata.displayStyle === 'dropdown') {
         return baseProperty(new DropdownStringDecoratorConfig(metadata), DecoratorTypes.STRING_DROPDOWN);
     }
-    else if(metadata.displayStyle === 'autocomplete') {
+    else if (metadata.displayStyle === 'autocomplete') {
         return baseProperty(new AutocompleteStringDecoratorConfig(metadata), DecoratorTypes.STRING_AUTOCOMPLETE);
     }
     else if (metadata.displayStyle === 'textbox') {
@@ -40,7 +43,14 @@ export class DropdownStringDecoratorConfig extends StringDecoratorConfig {
     dropdownValues: { displayName: string, value: string }[];
 
     constructor(metadata: DropdownStringDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
+        super(
+            metadata.displayName,
+            metadata.display,
+            metadata.required,
+            metadata.omitForCreate,
+            metadata.omitForUpdate,
+            metadata.defaultWidths
+        );
         this.displayStyle = metadata.displayStyle;
         this.dropdownValues = metadata.dropdownValues;
     }
@@ -62,7 +72,14 @@ export class DefaultStringDecoratorConfig extends StringDecoratorConfig {
     regex?: RegExp;
 
     constructor(metadata: DefaultStringDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
+        super(
+            metadata.displayName,
+            metadata.display,
+            metadata.required,
+            metadata.omitForCreate,
+            metadata.omitForUpdate,
+            metadata.defaultWidths
+        );
         this.displayStyle = metadata.displayStyle;
         this.minLength = metadata.minLength;
         this.maxLength = metadata.maxLength;
@@ -81,7 +98,14 @@ export class TextboxStringDecoratorConfig extends StringDecoratorConfig {
     maxLength?: number;
 
     constructor(metadata: TextboxStringDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
+        super(
+            metadata.displayName,
+            metadata.display,
+            metadata.required,
+            metadata.omitForCreate,
+            metadata.omitForUpdate,
+            metadata.defaultWidths
+        );
         this.displayStyle = metadata.displayStyle;
         this.minLength = metadata.minLength;
         this.maxLength = metadata.maxLength;
@@ -108,7 +132,13 @@ export class AutocompleteStringDecoratorConfig extends StringDecoratorConfig {
     regex?: RegExp;
 
     constructor(metadata: AutocompleteStringDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
+        super(
+            metadata.displayName,
+            metadata.display,
+            metadata.required,
+            metadata.omitForCreate,
+            metadata.omitForUpdate,
+            metadata.defaultWidths);
         this.displayStyle = metadata.displayStyle;
         this.autocompleteValues = metadata.autocompleteValues;
         this.minLength = metadata.minLength;

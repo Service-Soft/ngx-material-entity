@@ -10,9 +10,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
-    declarations: [
-        PropertyInputComponent
-    ],
+    declarations: [PropertyInputComponent],
     imports: [
         CommonModule,
         MatInputModule,
@@ -23,8 +21,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
         MatCheckboxModule,
         MatSlideToggleModule
     ],
-    exports: [
-        PropertyInputComponent
-    ]
+    exports: [PropertyInputComponent]
 })
-export class PropertyInputModule { }
+export class PropertyInputModule {}

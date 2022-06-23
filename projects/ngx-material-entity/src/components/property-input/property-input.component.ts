@@ -125,8 +125,15 @@ export class PropertyInputComponent<EntityType extends Entity> implements OnInit
     getObjectProperties(): (keyof Entity)[] {
         const res: (keyof Entity)[] = [];
         for (const property in this.objectProperty) {
-            const metadata = EntityUtilities.getPropertyMetadata(this.objectProperty, property as keyof Entity, EntityUtilities.getPropertyType(this.objectProperty, property as keyof Entity));
-            if (!(this.hideOmitForCreate && metadata.omitForCreate) && !(this.hideOmitForEdit && metadata.omitForUpdate)) {
+            const metadata = EntityUtilities.getPropertyMetadata(
+                this.objectProperty,
+                property as keyof Entity,
+                EntityUtilities.getPropertyType(this.objectProperty, property as keyof Entity)
+            );
+            if (
+                !(this.hideOmitForCreate && metadata.omitForCreate)
+                && !(this.hideOmitForEdit && metadata.omitForUpdate)
+            ) {
                 res.push(property as keyof Entity);
             }
         }

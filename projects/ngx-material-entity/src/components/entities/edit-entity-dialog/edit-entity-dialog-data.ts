@@ -9,33 +9,33 @@ export interface EditEntityDialogData<EntityType extends Entity> {
     /**
      * The entity to edit
      */
-    entity: EntityType;
-     /**
+    entity: EntityType,
+    /**
      * The Entity Service class used for updating/deleting the entity.
      */
-    EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>;
+    EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
     /**
      * The title of the dialog
      */
-    title: string;
+    title: string,
     /**
      * The label for the edit button.
      * Defaults to "Save".
      */
-    editButtonLabel?: string;
+    editButtonLabel?: string,
     /**
      * The label for the cancel-button.
      * Defaults to "Cancel".
      */
-    cancelButtonLabel?: string;
+    cancelButtonLabel?: string,
     /**
      * Whether or not the user should be able to delete the entity.
      * Defaults to true.
      */
-    allowDelete?: boolean;
+    allowDelete?: boolean,
     /**
      * The label for the delete-button.
      * Defaults to "Delete".
      */
-    deleteButtonLabel?: string;
+    deleteButtonLabel?: string
 }

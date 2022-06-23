@@ -14,7 +14,6 @@ import { ConfirmDialogData } from '../../confirm-dialog/confirm-dialog-data';
     styleUrls: ['./edit-entity-dialog.component.scss']
 })
 export class EditEntityDialogComponent<EntityType extends Entity> implements OnInit {
-
     EntityUtilities = EntityUtilities;
 
     entityKeys!: (keyof EntityType)[];
@@ -34,18 +33,19 @@ export class EditEntityDialogComponent<EntityType extends Entity> implements OnI
     ngOnInit(): void {
         this.dialogRef.disableClose = true;
         this.setEntityKeys();
-        this.entityService = this.injector.get(this.data.EntityServiceClass);
+        this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
         this.entityPriorChanges = cloneDeep(this.data.entity);
     }
 
-    private setEntityKeys() {
+    private setEntityKeys(): void {
         this.entityKeys = Reflect.ownKeys(this.data.entity) as (keyof EntityType)[];
         const omitUpdateKeys = EntityUtilities.getOmitForUpdate(this.data.entity);
-        this.entityKeys = this.entityKeys.filter(k => !omitUpdateKeys.includes(k));
+        this.entityKeys = this.entityKeys.filter((k) => !omitUpdateKeys.includes(k));
     }
 
     getWidth(key: keyof EntityType, type: 'lg' | 'md' | 'sm'): number {
-        const metadata = EntityUtilities.getPropertyMetadata(this.data.entity, key, EntityUtilities.getPropertyType(this.data.entity, key));
+        const propertyType = EntityUtilities.getPropertyType(this.data.entity, key);
+        const metadata = EntityUtilities.getPropertyMetadata(this.data.entity, key, propertyType);
         if (metadata.defaultWidths) {
             switch (type) {
                 case 'lg':
@@ -63,16 +63,12 @@ export class EditEntityDialogComponent<EntityType extends Entity> implements OnI
         }
     }
 
-    // getLinebreakAfter(key: keyof EntityType): boolean {
-    //     const metadata = EntityUtilities.getPropertyMetadata(this.data.entity, key, EntityUtilities.getPropertyType(this.data.entity, key));
-    //     return metadata.lineBreakAfter ? metadata.lineBreakAfter : false;
-    // }
-
-    edit() {
+    edit(): void {
         this.entityService.update(this.data.entity, this.entityPriorChanges).then(() => this.dialogRef.close());
     }
 
-    delete() {
+    //TODO Replace with @Input() parameters
+    delete(): void {
         const dialogData: ConfirmDialogData = {
             text: ['Do you really want to delete this Account?'],
             type: 'delete',
@@ -83,7 +79,7 @@ export class EditEntityDialogComponent<EntityType extends Entity> implements OnI
             confirmationText: 'Das kann nicht rückgängig gemacht werden'
         };
         const dialogref = this.dialog.open(ConfirmDialogComponent, {
-            data: dialogData,
+            data: dialogData
         });
         dialogref.afterClosed().subscribe((res: number) => {
             if (res === 1) {
@@ -91,11 +87,11 @@ export class EditEntityDialogComponent<EntityType extends Entity> implements OnI
             }
         });
     }
-    private confirmDelete() {
+    private confirmDelete(): void {
         this.entityService.delete(this.entityPriorChanges.id).then(() => this.dialogRef.close());
     }
 
-    cancel() {
+    cancel(): void {
         this.dialogRef.close();
     }
 }

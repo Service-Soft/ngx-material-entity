@@ -49,7 +49,7 @@ export abstract class PropertyDecoratorConfig {
         required: boolean = true,
         omitForCreate: boolean = false,
         omitForUpdate: boolean = false,
-        defaultWidths: [cols, cols, cols] = [6, 6, 12],
+        defaultWidths: [cols, cols, cols] = [6, 6, 12]
         // lineBreakAfter: boolean = false
     ) {
         this.displayName = displayName;
