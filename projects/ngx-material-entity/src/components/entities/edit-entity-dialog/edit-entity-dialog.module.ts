@@ -8,19 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { ConfirmDialogModule } from '../../confirm-dialog/confirm-dialog.module';
 
 @NgModule({
-    declarations: [
-        EditEntityDialogComponent
-    ],
-    imports: [
-        CommonModule,
-        PropertyInputModule,
-        MatDialogModule,
-        FormsModule,
-        MatButtonModule,
-        ConfirmDialogModule
-    ],
-    exports: [
-        EditEntityDialogComponent
-    ]
+    declarations: [EditEntityDialogComponent],
+    imports: [CommonModule, PropertyInputModule, MatDialogModule, FormsModule, MatButtonModule, ConfirmDialogModule],
+    exports: [EditEntityDialogComponent]
 })
-export class EditEntityDialogModule { }
+export class EditEntityDialogModule {}

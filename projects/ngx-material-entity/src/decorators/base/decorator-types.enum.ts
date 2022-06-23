@@ -24,16 +24,26 @@ export enum DecoratorTypes {
 /**
  * Gives the metadata-config Type based ont the DecoratorTypes enum
  */
-export type DecoratorType<T> =
-    T extends DecoratorTypes.STRING ? DefaultStringDecoratorConfig :
-    T extends DecoratorTypes.STRING_TEXTBOX ? TextboxStringDecoratorConfig :
-    T extends DecoratorTypes.STRING_DROPDOWN ? DropdownStringDecoratorConfig :
-    T extends DecoratorTypes.STRING_AUTOCOMPLETE ? AutocompleteStringDecoratorConfig :
-    T extends DecoratorTypes.NUMBER ? DefaultNumberDecoratorConfig :
-    T extends DecoratorTypes.NUMBER_DROPDOWN ? DropdownNumberDecoratorConfig :
-    T extends DecoratorTypes.BOOLEAN_CHECKBOX ? CheckboxBooleanDecoratorConfig :
-    T extends DecoratorTypes.BOOLEAN_TOGGLE ? CheckboxBooleanDecoratorConfig :
-    T extends DecoratorTypes.BOOLEAN_DROPDOWN ? DropdownBooleanDecoratorConfig :
-    T extends DecoratorTypes.OBJECT ? DefaultObjectDecoratorConfig :
-    T extends DecoratorTypes.ARRAY ? ArrayDecoratorConfig :
-    never;
+export type DecoratorType<T> = T extends DecoratorTypes.STRING
+    ? DefaultStringDecoratorConfig
+    : T extends DecoratorTypes.STRING_TEXTBOX
+    ? TextboxStringDecoratorConfig
+    : T extends DecoratorTypes.STRING_DROPDOWN
+    ? DropdownStringDecoratorConfig
+    : T extends DecoratorTypes.STRING_AUTOCOMPLETE
+    ? AutocompleteStringDecoratorConfig
+    : T extends DecoratorTypes.NUMBER
+    ? DefaultNumberDecoratorConfig
+    : T extends DecoratorTypes.NUMBER_DROPDOWN
+    ? DropdownNumberDecoratorConfig
+    : T extends DecoratorTypes.BOOLEAN_CHECKBOX
+    ? CheckboxBooleanDecoratorConfig
+    : T extends DecoratorTypes.BOOLEAN_TOGGLE
+    ? CheckboxBooleanDecoratorConfig
+    : T extends DecoratorTypes.BOOLEAN_DROPDOWN
+    ? DropdownBooleanDecoratorConfig
+    : T extends DecoratorTypes.OBJECT
+    ? DefaultObjectDecoratorConfig
+    : T extends DecoratorTypes.ARRAY
+    ? ArrayDecoratorConfig
+    : never;

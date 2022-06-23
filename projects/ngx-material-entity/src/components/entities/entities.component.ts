@@ -20,11 +20,11 @@ export interface DisplayColumn<EntityType extends Entity> {
     /**
      * The name inside the header.
      */
-    displayName: string;
+    displayName: string,
     /**
      * A method to get the value inside an entry
      */
-    value: (entity: EntityType) => string;
+    value: (entity: EntityType) => string
 }
 
 /**
@@ -34,16 +34,16 @@ export interface MultiSelectAction<EntityType extends Entity> {
     /**
      * The name of the action
      */
-    displayName: string;
+    displayName: string,
     /**
      * The action itself
      */
-    action: (entity: EntityType[]) => unknown;
+    action: (entity: EntityType[]) => unknown,
     /**
      * A method that defines whether or not the action can be used.
      * Defaults to true.
      */
-    enabled?: (entity: EntityType[]) => boolean;
+    enabled?: (entity: EntityType[]) => boolean
 }
 
 @Component({
@@ -55,7 +55,7 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
     /**
      * The title of the table
      */
-     @Input()
+    @Input()
     title!: string;
     /**
      * The definition of the columns to display. Consists of the displayName to show in the header of the row
@@ -116,7 +116,7 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
     /**
      * Defines whether or not the user can delete entities.
      */
-     @Input()
+    @Input()
     allowDelete!: boolean;
     /**
      * All Actions that you want to run on multiple entities can be defined here.
@@ -140,12 +140,12 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
     /**
      * The label on the create-button of the default create-dialog. Defaults to "Create".
      */
-     @Input()
+    @Input()
     createDialogCreateButtonLabel?: string;
     /**
      * The label on the cancel-button for the default create-dialog. Defaults to "Cancel".
      */
-     @Input()
+    @Input()
     createDialogCancelButtonLabel?: string;
 
 
@@ -167,9 +167,9 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
     editDialogCancelButtonLabel?: string;
 
 
-    
+
     private entityService!: EntityService<EntityType>;
-    private onDestroy = new Subject<void>();
+    private readonly onDestroy = new Subject<void>();
     @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort!: MatSort;
     @ViewChild('filter', { static: true }) filter!: string;
@@ -177,20 +177,20 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
     dataSource: MatTableDataSource<EntityType> = new MatTableDataSource();
     selection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
 
-    constructor(
-        private readonly dialog: MatDialog,
-        private readonly injector: Injector
-    ) { }
+    constructor(private readonly dialog: MatDialog, private readonly injector: Injector) {}
 
     ngOnInit(): void {
         this.validateInput();
 
-        this.entityService = this.injector.get(this.EntityServiceClass);
+        this.entityService = this.injector.get(this.EntityServiceClass) as EntityService<EntityType>;
 
-        const givenDisplayColumns = this.displayColumns.map(v => v.displayName);
+        const givenDisplayColumns = this.displayColumns.map((v) => v.displayName);
         if (this.multiSelectActions?.length) {
-            if (givenDisplayColumns.find(s => s === 'select')) {
-                throw new Error('The name "select" for a display column is reserved for the multi-select action functionality. Please choose a different name.');
+            if (givenDisplayColumns.find((s) => s === 'select')) {
+                throw new Error(
+                    `The name "select" for a display column is reserved for the multi-select action functionality.
+                    Please choose a different name.`
+                );
             }
             this.displayedColumns = ['select'].concat(givenDisplayColumns);
         }
@@ -199,7 +199,7 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
         }
 
         this.dataSource.sortingDataAccessor = (entity: EntityType, header: string) => {
-            return this.displayColumns.find(dp => dp.displayName === header)?.value(entity) as string;
+            return this.displayColumns.find((dp) => dp.displayName === header)?.value(entity) as string;
         };
         this.dataSource.sort = this.sort;
         if (this.searchString) {
@@ -207,19 +207,19 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
                 const searchStr = this.searchString?.(entity) as string;
                 const formattedSearchString = searchStr.toLowerCase();
                 const formattedFilterString = filter.toLowerCase();
-                return formattedSearchString.indexOf(formattedFilterString) !== -1;
+                return formattedSearchString.includes(formattedFilterString);
             };
         }
         this.dataSource.filter = this.filter;
         this.dataSource.paginator = this.paginator;
 
-        this.entityService.entitiesSubject.pipe(takeUntil(this.onDestroy)).subscribe(entities => {
+        this.entityService.entitiesSubject.pipe(takeUntil(this.onDestroy)).subscribe((entities) => {
             this.dataSource.data = entities;
         });
         this.entityService.read();
     }
 
-    private validateInput() {
+    private validateInput(): void {
         if (!this.displayColumns) {
             throw new Error('Missing required Input data "displayColumns"');
         }
@@ -229,24 +229,30 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
         if (!this.EntityServiceClass) {
             throw new Error('Missing required Input data "EntityServiceClass"');
         }
-        if (this.allowCreate !== false && this.allowCreate !== true) {
+        if (this.allowCreate && !this.allowCreate) {
             this.allowCreate = true;
         }
-        if (!this.allowEdit !== false && this.allowEdit !== true) {
+        if (!this.allowEdit && !this.allowEdit) {
             this.allowEdit = true;
         }
-        if (!this.allowDelete !== false && this.allowDelete !== true) {
+        if (!this.allowDelete && !this.allowDelete) {
             this.allowDelete = true;
         }
         if ((this.allowEdit || this.allowCreate) && !this.EntityClass) {
-            throw new Error('Missing required Input data "EntityClass". You can only omit this value if you can neither create or update entities.');
+            throw new Error(`
+                Missing required Input data "EntityClass".
+                You can only omit this value if you can neither create or update entities.`
+            );
         }
         if (this.allowCreate && !this.create && !this.createDialogTitle) {
-            throw new Error('Missing required Input data "createDialogTitle". You can only omit this value when creation is disallowed or done with a custom create method.');
+            throw new Error(
+                `Missing required Input data "createDialogTitle".
+                You can only omit this value when creation is disallowed or done with a custom create method.`
+            );
         }
     }
 
-    editEntity(entity: EntityType) {
+    editEntity(entity: EntityType): void {
         if (this.allowEdit) {
             if (this.edit) {
                 this.edit(new this.EntityClass(entity));
@@ -256,7 +262,7 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
             }
         }
     }
-    private editDefault(entity: EntityType) {
+    private editDefault(entity: EntityType): void {
         const dialogData: EditEntityDialogData<EntityType> = {
             entity: entity,
             EntityServiceClass: this.EntityServiceClass,
@@ -272,16 +278,17 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
         });
     }
 
-    createEntity() {
+    createEntity(): void {
         if (this.allowCreate) {
             if (this.create) {
                 this.create(new this.EntityClass());
-            } else {
+            }
+            else {
                 this.createDefault(new this.EntityClass());
             }
         }
     }
-    private createDefault(entity: EntityType) {
+    private createDefault(entity: EntityType): void {
         const dialogData: CreateEntityDialogData<EntityType> = {
             entity: entity,
             EntityServiceClass: this.EntityServiceClass,
@@ -295,7 +302,7 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
         });
     }
 
-    multiActionDisabled(action: MultiSelectAction<EntityType>) {
+    multiActionDisabled(action: MultiSelectAction<EntityType>): boolean {
         if (!this.selection.selected.length) {
             return true;
         }
@@ -305,12 +312,12 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
         return false;
     }
 
-    masterToggle() {
+    masterToggle(): void {
         if (this.isAllSelected()) {
             this.selection.clear();
         }
         else {
-            this.dataSource.data.forEach(row => this.selection.select(row));
+            this.dataSource.data.forEach((row) => this.selection.select(row));
         }
     }
 

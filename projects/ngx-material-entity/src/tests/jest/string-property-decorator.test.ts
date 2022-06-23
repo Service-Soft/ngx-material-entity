@@ -4,7 +4,6 @@ import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
 import { string } from '../../decorators/string.decorator';
 
 class TestEntity extends Entity {
-
     @string({
         displayStyle: 'line',
         displayName: 'Name',
@@ -26,10 +25,7 @@ class TestEntity extends Entity {
     @string({
         displayStyle: 'autocomplete',
         displayName: 'Name',
-        autocompleteValues: [
-            'Mr.',
-            'Ms.'
-        ]
+        autocompleteValues: ['Mr.', 'Ms.']
     })
     nameAutocomplete!: string;
 
@@ -57,15 +53,17 @@ test('nameDropdown should have stringDropdown Metadata', () => {
     const metdata = EntityUtilities.getPropertyMetadata(testEntity, 'nameDropdown', DecoratorTypes.STRING_DROPDOWN);
     expect(metdata).toBeDefined();
     expect(metdata.displayStyle).toBe('dropdown');
-    expect(metdata.dropdownValues).toEqual(
-        [
-            { displayName: 'John Smith', value: 'johnSmith' },
-            { displayName: 'Jane Smith', value: 'janeSmith' }
-        ]
-    );
+    expect(metdata.dropdownValues).toEqual([
+        { displayName: 'John Smith', value: 'johnSmith' },
+        { displayName: 'Jane Smith', value: 'janeSmith' }
+    ]);
 });
 test('should have stringAutocomplete Metadata', () => {
-    const metdata = EntityUtilities.getPropertyMetadata(testEntity, 'nameAutocomplete', DecoratorTypes.STRING_AUTOCOMPLETE);
+    const metdata = EntityUtilities.getPropertyMetadata(
+        testEntity,
+        'nameAutocomplete',
+        DecoratorTypes.STRING_AUTOCOMPLETE
+    );
     expect(metdata).toBeDefined();
     expect(metdata.displayStyle).toBe('autocomplete');
     expect(metdata.autocompleteValues).toEqual(['Mr.', 'Ms.']);

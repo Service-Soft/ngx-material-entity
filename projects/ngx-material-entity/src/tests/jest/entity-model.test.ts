@@ -3,7 +3,6 @@ import { EntityUtilities } from '../../classes/entity-utilities.class';
 import { string } from '../../decorators/string.decorator';
 
 export class TestEntity extends Entity {
-
     @string({
         displayName: 'Name',
         displayStyle: 'line'
@@ -17,7 +16,6 @@ export class TestEntity extends Entity {
 }
 
 class TestEntityConstruct extends Entity {
-
     @string({
         displayName: 'Name',
         displayStyle: 'line'
@@ -31,7 +29,6 @@ class TestEntityConstruct extends Entity {
 }
 
 class TestEntityBuild extends Entity {
-
     @string({
         displayName: 'Name',
         displayStyle: 'line'
@@ -51,8 +48,14 @@ test('Should create a new entity', () => {
 });
 test('All creation methods should have the same outcome', () => {
     const testEntityNew = new TestEntity({ id: '1', name: 'John Smith' });
-    const testEntityConstruct = new TestEntityConstruct({ id: '1', name: 'John Smith' });
-    const testEntityBuild = new TestEntityBuild({ id: '1', name: 'John Smith' });
+    const testEntityConstruct = new TestEntityConstruct({
+        id: '1',
+        name: 'John Smith'
+    });
+    const testEntityBuild = new TestEntityBuild({
+        id: '1',
+        name: 'John Smith'
+    });
     expect(testEntityNew).toEqual(testEntityConstruct);
     expect(testEntityNew).toEqual(testEntityBuild);
     expect(testEntityConstruct).toEqual(testEntityBuild);

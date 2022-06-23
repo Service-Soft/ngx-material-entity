@@ -7,7 +7,7 @@ import { DecoratorTypes } from './base/decorator-types.enum';
  * Decorator for setting and getting object propery metadata.
  * @param metadata The metadata of the object property
  */
-export function object(metadata: DefaultObjectDecoratorConfig) {
+export function object(metadata: DefaultObjectDecoratorConfig): (target: object, propertyKey: string) => void {
     return baseProperty(new DefaultObjectDecoratorConfig(metadata), DecoratorTypes.OBJECT);
 }
 
@@ -22,7 +22,8 @@ abstract class ObjectDecoratorConfig extends PropertyDecoratorConfig {
 
     /**
      * How to display the object.
-     * @inline The objects properties are added as input fields in an section of the entity. Useful if the object only contains a few properties (e.g. a address on a user).
+     * @inline The objects properties are added as input fields in an section of the entity.
+     * Useful if the object only contains a few properties (e.g. a address on a user).
      */
     displayStyle!: 'inline';
 }
@@ -35,7 +36,14 @@ export class DefaultObjectDecoratorConfig extends ObjectDecoratorConfig {
     sectionTitle?: string;
 
     constructor(metadata: DefaultObjectDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
+        super(
+            metadata.displayName,
+            metadata.display,
+            metadata.required,
+            metadata.omitForCreate,
+            metadata.omitForUpdate,
+            metadata.defaultWidths
+        );
         this.displayStyle = metadata.displayStyle;
         this.type = metadata.type;
         this.sectionTitle = metadata.sectionTitle;

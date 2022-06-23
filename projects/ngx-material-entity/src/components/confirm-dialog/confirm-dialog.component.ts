@@ -8,7 +8,6 @@ import { ConfirmDialogData } from './confirm-dialog-data';
     styleUrls: ['./confirm-dialog.component.scss']
 })
 export class ConfirmDialogComponent implements OnInit {
-
     /**
      * Used for the checkbox to confirm the action
      */
@@ -17,15 +16,20 @@ export class ConfirmDialogComponent implements OnInit {
     constructor(
         private readonly dialogRef: MatDialogRef<ConfirmDialogComponent>,
         @Inject(MAT_DIALOG_DATA)
-        readonly data: ConfirmDialogData,
-    ) { }
-    
+        readonly data: ConfirmDialogData
+    ) {}
+
     ngOnInit(): void {
         if (this.data.requireConfirmation && !this.data.confirmationText) {
-            throw new Error('Missing required Input "confirmationText". You can only omit this if you dont have "requireConfirmation" set');
+            throw new Error(`
+                Missing required Input "confirmationText".
+                You can only omit this if you dont have "requireConfirmation" set`
+            );
         }
         if (!this.data.requireConfirmation && this.data.confirmationText) {
-            throw new Error('The "confirmationText" will never be shown because "requireConfirmation" is not set to true');
+            throw new Error(
+                'The "confirmationText" will never be shown because "requireConfirmation" is not set to true'
+            );
         }
         if (this.data.requireConfirmation !== true && this.data.requireConfirmation !== false) {
             this.data.requireConfirmation = false;

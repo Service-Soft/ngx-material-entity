@@ -6,7 +6,7 @@ import { PropertyDecoratorConfig } from './base/property-decorator-config.interf
  * Decorator for setting and getting array propery metadata
  * @param metadata The metadata of the array property
  */
-export function array(metadata: ArrayDecoratorConfig) {
+export function array(metadata: ArrayDecoratorConfig): (target: object, propertyKey: string) => void {
     return baseProperty(new ArrayDecoratorConfig(metadata), DecoratorTypes.ARRAY);
 }
 
@@ -25,7 +25,14 @@ export class ArrayDecoratorConfig extends PropertyDecoratorConfig {
     itemType: DecoratorTypes;
 
     constructor(metadata: ArrayDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
+        super(
+            metadata.displayName,
+            metadata.display,
+            metadata.required,
+            metadata.omitForCreate,
+            metadata.omitForUpdate,
+            metadata.defaultWidths
+        );
         this.canBeEmpty = metadata.canBeEmpty;
         this.itemType = metadata.itemType;
     }

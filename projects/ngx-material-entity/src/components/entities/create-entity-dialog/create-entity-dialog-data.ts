@@ -9,23 +9,23 @@ export interface CreateEntityDialogData<EntityType extends Entity> {
     /**
      * An empty entity that is used as the data model.
      */
-    entity: EntityType;
+    entity: EntityType,
     /**
      * The Entity Service class used for the create request.
      */
-    EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>;
+    EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
     /**
      * The title of the dialog.
      */
-    title: string;
+    title: string,
     /**
      * The label of the create-button.
      * Defaults to "Create".
      */
-    createButtonLabel?: string;
+    createButtonLabel?: string,
     /**
      * The label of the cancel-button.
      * Defaults to "Cancel".
      */
-    cancelButtonLabel?: string;
+    cancelButtonLabel?: string
 }

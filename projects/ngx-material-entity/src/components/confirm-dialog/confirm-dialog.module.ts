@@ -7,18 +7,8 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
-    declarations: [
-        ConfirmDialogComponent
-    ],
-    imports: [
-        CommonModule,
-        MatDialogModule,
-        FormsModule,
-        MatCheckboxModule,
-        MatButtonModule
-    ],
-    exports: [
-        ConfirmDialogComponent
-    ]
+    declarations: [ConfirmDialogComponent],
+    imports: [CommonModule, MatDialogModule, FormsModule, MatCheckboxModule, MatButtonModule],
+    exports: [ConfirmDialogComponent]
 })
-export class ConfirmDialogModule { }
+export class ConfirmDialogModule {}

@@ -13,10 +13,10 @@ export abstract class EntityUtilities {
      * Gets the properties to omit when updating the entity
      * @returns The properties which should be left out for updating a new Entity
      */
-     static getOmitForUpdate<EntityType extends Entity>(entity: EntityType): (keyof EntityType)[] {
+    static getOmitForUpdate<EntityType extends Entity>(entity: EntityType): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
         for (const key of Reflect.ownKeys(entity)) {
-            const metadata: PropertyDecoratorConfig = Reflect.getMetadata('metadata', entity, key);
+            const metadata = Reflect.getMetadata('metadata', entity, key) as PropertyDecoratorConfig;
             if (metadata.omitForUpdate) {
                 res.push(key as keyof EntityType);
             }
@@ -31,7 +31,7 @@ export abstract class EntityUtilities {
     static getOmitForCreate<EntityType extends Entity>(entity: EntityType): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
         for (const key of Reflect.ownKeys(entity)) {
-            const metadata: PropertyDecoratorConfig = Reflect.getMetadata('metadata', entity, key);
+            const metadata = Reflect.getMetadata('metadata', entity, key) as PropertyDecoratorConfig;
             if (metadata.omitForCreate) {
                 res.push(key as keyof EntityType);
             }
@@ -53,14 +53,20 @@ export abstract class EntityUtilities {
         type: T
     ): DecoratorType<T> {
         try {
-            const metadata = Reflect.getMetadata('metadata', entity, propertyKey as string);
+            const metadata = Reflect.getMetadata('metadata', entity, propertyKey as string) as DecoratorType<T>;
             if (!metadata) {
-                throw new Error(`Could not find metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`);
+                throw new Error(
+                    `Could not find metadata for property ${String(propertyKey)}
+                    on the entity ${JSON.stringify(entity)}`
+                );
             }
-            return metadata as DecoratorType<T>;
+            return metadata ;
         }
         catch (error) {
-            throw new Error(`Could not find metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`);
+            throw new Error(
+                `Could not find metadata for property ${String(propertyKey)}
+                on the entity ${JSON.stringify(entity)}`
+            );
         }
     }
 
@@ -70,23 +76,33 @@ export abstract class EntityUtilities {
      * @param propertyKey The property on the given Entity to get the type from
      * @returns The type of the metadata
      */
-    static getPropertyType<EntityType extends Entity>(entity: EntityType, propertyKey: keyof EntityType): DecoratorTypes {
+    static getPropertyType<EntityType extends Entity>(
+        entity: EntityType, propertyKey: keyof EntityType
+    ): DecoratorTypes {
         try {
-            const propertyType = Reflect.getMetadata('type', entity, propertyKey as string | symbol);
+            const propertyType = Reflect.getMetadata('type', entity, propertyKey as string) as DecoratorTypes;
             if (!propertyType) {
-                throw new Error(`Could not find type metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`);
+                throw new Error(
+                    `Could not find type metadata for property ${String(propertyKey)}
+                    on the entity ${JSON.stringify(entity)}`
+                );
             }
             return propertyType;
-        } 
+        }
         catch (error) {
-            throw new Error(`Could not find type metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`);
+            throw new Error(
+                `Could not find type metadata for property ${String(propertyKey)}
+                on the entity ${JSON.stringify(entity)}`
+            );
         }
     }
 
     /**
      * Sets all property values based on a given entity data-object.
      * @param entity The data object to get the property values from.
-     * @param target the target object that needs to be constructed (if called inside a Entity constructor its usually this)
+     * @param target
+     * the target object that needs to be constructed
+     * (if called inside a Entity constructor its usually this)
      * @alias new
      * @alias build
      * @alias construct
@@ -98,7 +114,9 @@ export abstract class EntityUtilities {
             }
         }
     }
+    // eslint-disable-next-line @typescript-eslint/member-ordering
     static construct = this.new;
+    // eslint-disable-next-line @typescript-eslint/member-ordering
     static build = this.new;
 
     /**
@@ -135,40 +153,64 @@ export abstract class EntityUtilities {
         }
         switch (type) {
             case DecoratorTypes.STRING:
-                if (metadataDefaultString.maxLength && ((entity[key] as unknown as string).length > metadataDefaultString.maxLength)) {
+                if (
+                    metadataDefaultString.maxLength
+                    && (entity[key] as unknown as string).length > metadataDefaultString.maxLength
+                ) {
                     return false;
                 }
-                if (metadataDefaultString.minLength && ((entity[key] as unknown as string).length < metadataDefaultString.minLength)) {
+                if (
+                    metadataDefaultString.minLength
+                    && (entity[key] as unknown as string).length < metadataDefaultString.minLength
+                ) {
                     return false;
                 }
-                if (metadataDefaultString.regex && !(entity[key] as unknown as string).match(metadataDefaultString.regex)) {
+                if (
+                    metadataDefaultString.regex
+                    && !(entity[key] as unknown as string).match(metadataDefaultString.regex)
+                ) {
                     return false;
                 }
                 break;
             case DecoratorTypes.STRING_AUTOCOMPLETE:
-                if (metadataAutocompleteString.maxLength && ((entity[key] as unknown as string).length > metadataAutocompleteString.maxLength)) {
+                if (
+                    metadataAutocompleteString.maxLength
+                    && (entity[key] as unknown as string).length > metadataAutocompleteString.maxLength
+                ) {
                     return false;
                 }
-                if (metadataAutocompleteString.minLength && ((entity[key] as unknown as string).length < metadataAutocompleteString.minLength)) {
+                if (
+                    metadataAutocompleteString.minLength
+                    && (entity[key] as unknown as string).length < metadataAutocompleteString.minLength
+                ) {
                     return false;
                 }
-                if (metadataAutocompleteString.regex && (entity[key] as unknown as string).match(metadataAutocompleteString.regex)) {
+                if (
+                    metadataAutocompleteString.regex
+                    && (entity[key] as unknown as string).match(metadataAutocompleteString.regex)
+                ) {
                     return false;
                 }
                 break;
             case DecoratorTypes.STRING_TEXTBOX:
-                if (metadataTextboxString.maxLength && ((entity[key] as unknown as string).length > metadataTextboxString.maxLength)) {
+                if (
+                    metadataTextboxString.maxLength
+                    && (entity[key] as unknown as string).length > metadataTextboxString.maxLength
+                ) {
                     return false;
                 }
-                if (metadataTextboxString.minLength && ((entity[key] as unknown as string).length < metadataTextboxString.minLength)) {
+                if (
+                    metadataTextboxString.minLength
+                    && (entity[key] as unknown as string).length < metadataTextboxString.minLength
+                ) {
                     return false;
                 }
                 break;
             case DecoratorTypes.NUMBER:
-                if (metadataDefaultNumber.max && ((entity[key] as unknown as number) > metadataDefaultNumber.max)) {
+                if (metadataDefaultNumber.max && (entity[key] as unknown as number) > metadataDefaultNumber.max) {
                     return false;
                 }
-                if (metadataDefaultNumber.min && ((entity[key] as unknown as number) > metadataDefaultNumber.min)) {
+                if (metadataDefaultNumber.min && (entity[key] as unknown as number) > metadataDefaultNumber.min) {
                     return false;
                 }
                 break;
@@ -212,10 +254,13 @@ export abstract class EntityUtilities {
      * @param entityPriorChanges The second entity to compare
      * @returns The difference between the two Entities in form of a Partial
      */
-    static difference<EntityType extends Entity>(entity: EntityType, entityPriorChanges: EntityType): Partial<EntityType> {
+    static difference<EntityType extends Entity>(
+        entity: EntityType,
+        entityPriorChanges: EntityType
+    ): Partial<EntityType> {
         const res: Partial<EntityType> = {};
         for (const key in entity) {
-            if (!(isEqual(entity[key], entityPriorChanges[key]))) {
+            if (!isEqual(entity[key], entityPriorChanges[key])) {
                 res[key] = entity[key];
             }
         }

@@ -4,10 +4,9 @@ import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
 import { number } from '../../decorators/number.decorator';
 
 class TestEntity extends Entity {
-
     @number({
         displayStyle: 'line',
-        displayName: 'total price',
+        displayName: 'total price'
     })
     number!: number;
 
@@ -45,13 +44,11 @@ test('should have numberDropdown Metadata', () => {
     const metdata = EntityUtilities.getPropertyMetadata(testEntity, 'numberDropdown', DecoratorTypes.NUMBER_DROPDOWN);
     expect(metdata).toBeDefined();
     expect(metdata.displayStyle).toBe('dropdown');
-    expect(metdata.dropdownValues).toEqual(
-        [
-            { displayName: '1', value: 1 },
-            { displayName: '5', value: 5 },
-            { displayName: '10', value: 10 },
-            { displayName: '15', value: 15 },
-            { displayName: '20', value: 20 }
-        ]
-    );
+    expect(metdata.dropdownValues).toEqual([
+        { displayName: '1', value: 1 },
+        { displayName: '5', value: 5 },
+        { displayName: '10', value: 10 },
+        { displayName: '15', value: 15 },
+        { displayName: '20', value: 20 }
+    ]);
 });

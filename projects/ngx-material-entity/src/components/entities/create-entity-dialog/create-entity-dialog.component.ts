@@ -11,7 +11,6 @@ import { CreateEntityDialogData } from './create-entity-dialog-data';
     styleUrls: ['./create-entity-dialog.component.scss']
 })
 export class CreateEntityDialogComponent<EntityType extends Entity> implements OnInit {
-
     EntityUtilities = EntityUtilities;
 
     entityKeys!: (keyof EntityType)[];
@@ -28,17 +27,18 @@ export class CreateEntityDialogComponent<EntityType extends Entity> implements O
     ngOnInit(): void {
         this.dialogRef.disableClose = true;
         this.setEntityKeys();
-        this.entityService = this.injector.get(this.data.EntityServiceClass);
+        this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
     }
 
-    private setEntityKeys() {
+    private setEntityKeys(): void {
         this.entityKeys = Reflect.ownKeys(this.data.entity) as (keyof EntityType)[];
         const omitCreateKeys = EntityUtilities.getOmitForCreate(this.data.entity);
-        this.entityKeys = this.entityKeys.filter(k => !omitCreateKeys.includes(k));
+        this.entityKeys = this.entityKeys.filter((k) => !omitCreateKeys.includes(k));
     }
 
     getWidth(key: keyof EntityType, type: 'lg' | 'md' | 'sm'): number {
-        const metadata = EntityUtilities.getPropertyMetadata(this.data.entity, key, EntityUtilities.getPropertyType(this.data.entity, key));
+        const propertyType = EntityUtilities.getPropertyType(this.data.entity, key);
+        const metadata = EntityUtilities.getPropertyMetadata(this.data.entity, key, propertyType);
         if (metadata.defaultWidths) {
             switch (type) {
                 case 'lg':
@@ -56,11 +56,11 @@ export class CreateEntityDialogComponent<EntityType extends Entity> implements O
         }
     }
 
-    create() {
+    create(): void {
         this.entityService.create(this.data.entity).then(() => this.dialogRef.close());
     }
 
-    cancel() {
+    cancel(): void {
         this.dialogRef.close();
     }
 }

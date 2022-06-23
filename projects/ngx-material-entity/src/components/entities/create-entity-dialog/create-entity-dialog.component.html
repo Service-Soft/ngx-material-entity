@@ -1,12 +1,13 @@
-<h2 mat-dialog-title>{{data.title}}</h2>
+<h2 mat-dialog-title>{{ data.title }}</h2>
 
 <mat-dialog-content>
     <form #form="ngForm" class="row">
-        <ngx-material-entity-input *ngFor="let key of entityKeys"
+        <ngx-material-entity-input
+            *ngFor="let key of entityKeys"
             [entity]="data.entity"
             [propertyKey]="key"
             [hideOmitForCreate]="true"
-            class="col-lg-{{getWidth(key, 'lg')}} col-md-{{getWidth(key, 'md')}} col-sm-{{getWidth(key, 'sm')}}"
+            class="col-lg-{{ getWidth(key, 'lg') }} col-md-{{ getWidth(key, 'md') }} col-sm-{{ getWidth(key, 'sm') }}"
         >
         </ngx-material-entity-input>
     </form>
@@ -14,9 +15,9 @@
 
 <mat-dialog-actions>
     <button mat-raised-button (click)="create()" [disabled]="!EntityUtilities.isEntityValid(data.entity)">
-        {{data.createButtonLabel ? data.createButtonLabel : 'Create'}}
+        {{ data.createButtonLabel ? data.createButtonLabel : 'Create' }}
     </button>
     <button mat-raised-button (click)="cancel()" class="cancel-button">
-        {{data.cancelButtonLabel ? data.cancelButtonLabel : 'Cancel'}}
+        {{ data.cancelButtonLabel ? data.cancelButtonLabel : 'Cancel' }}
     </button>
 </mat-dialog-actions>

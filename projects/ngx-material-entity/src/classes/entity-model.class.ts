@@ -4,7 +4,6 @@ import { string } from '../decorators/string.decorator';
  * The base Entity class.
  */
 export abstract class Entity {
-
     /**
      * A unique identifier for the Entity
      */

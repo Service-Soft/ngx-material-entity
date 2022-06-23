@@ -6,7 +6,9 @@ import { DecoratorTypes } from './base/decorator-types.enum';
  * Decorator for setting and getting string propery metadata
  * @param metadata The metadata of the string property
  */
-export function number(metadata: DefaultNumberDecoratorConfig | DropdownNumberDecoratorConfig) {
+export function number(
+    metadata: DefaultNumberDecoratorConfig | DropdownNumberDecoratorConfig
+): (target: object, propertyKey: string) => void {
     if (metadata.displayStyle === 'dropdown') {
         return baseProperty(new DropdownNumberDecoratorConfig(metadata), DecoratorTypes.NUMBER_DROPDOWN);
     }
@@ -37,7 +39,14 @@ export class DefaultNumberDecoratorConfig extends NumberDecoratorConfig {
     max?: number;
 
     constructor(metadata: DefaultNumberDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
+        super(
+            metadata.displayName,
+            metadata.display,
+            metadata.required,
+            metadata.omitForCreate,
+            metadata.omitForUpdate,
+            metadata.defaultWidths
+        );
         this.displayStyle = metadata.displayStyle;
         this.min = metadata.min;
         this.max = metadata.max;
@@ -52,7 +61,14 @@ export class DropdownNumberDecoratorConfig extends NumberDecoratorConfig {
     dropdownValues?: { displayName: string, value: number }[];
 
     constructor(metadata: DropdownNumberDecoratorConfig) {
-        super(metadata.displayName, metadata.display, metadata.required, metadata.omitForCreate, metadata.omitForUpdate, metadata.defaultWidths);
+        super(
+            metadata.displayName,
+            metadata.display,
+            metadata.required,
+            metadata.omitForCreate,
+            metadata.omitForUpdate,
+            metadata.defaultWidths
+        );
         this.displayStyle = metadata.displayStyle;
         this.dropdownValues = metadata.dropdownValues;
     }
