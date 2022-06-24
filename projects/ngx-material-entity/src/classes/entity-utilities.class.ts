@@ -267,6 +267,12 @@ export abstract class EntityUtilities {
         return res;
     }
 
+    /**
+     * compare function for sorting entity keys by their order value
+     * @param a first key of entity
+     * @param b second key of entity
+     * @param entity current entity (used to get metadata of entity keys)
+     */
     static compareOrder<EntityType extends Entity>(a: keyof EntityType, b: keyof EntityType, entity: EntityType): number {
         const metadataA = EntityUtilities.getPropertyMetadata(entity, a, EntityUtilities.getPropertyType(entity, a));
         const metadataB = EntityUtilities.getPropertyMetadata(entity, b, EntityUtilities.getPropertyType(entity, b));
@@ -281,6 +287,13 @@ export abstract class EntityUtilities {
         return ((metadataA.order as number) - (metadataB.order as number));
     }
 
+    /**
+     * gets the bootstrap column values for "lg", "md", "sm"
+     * @param entity entity to get the bootstrap column values of the key 
+     * @param key key of the property to get bootstrap column values from
+     * @param type defines for which screensize the column values should be returned 
+     * @returns bootstrap column value
+     */
     static getWidth<EntityType extends Entity>(entity: EntityType, key: keyof EntityType, type: 'lg' | 'md' | 'sm'): number {
         const propertyType = EntityUtilities.getPropertyType(entity, key);
         const metadata = EntityUtilities.getPropertyMetadata(entity, key, propertyType);
