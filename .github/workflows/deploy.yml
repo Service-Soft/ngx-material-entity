@@ -1,10 +1,7 @@
 name: Deploy
 
 on:
-    pull_request:
-        types: [closed]
-        branches:
-            - dev
+    workflow_dispatch:
 
 jobs:
     build:
@@ -29,4 +26,3 @@ jobs:
               with:
                   token: ${{ secrets.NPM_TOKEN }}
                   package: ./dist/ngx-material-entity/package.json
-                  greater-version-only: true
