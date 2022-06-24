@@ -36,7 +36,11 @@ export abstract class PropertyDecoratorConfig {
      * @var thirdValue: col-sm-{{thirdValue}}
      */
     defaultWidths?: [cols, cols, cols];
-
+    /**
+     * Specifies order of the input property when used inside the default create or edit dialog.
+     * Ordering is ascending
+     * @default -1 (sets this property at the end)
+     */
     order?: number;
 
     /**

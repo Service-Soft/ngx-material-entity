@@ -197,6 +197,12 @@ omitForUpdate?: boolean;
  * @var thirdValue: col-sm-{{thirdValue}}
  */
 defaultWidths?: [cols, cols, cols];
+/**
+ * Specifies order of the input property when used inside the default create or edit dialog.
+ * Ordering is ascending
+ * @default -1 (sets this property at the end)
+ */
+order?: number;
 ```
 For more information regarding the defaultWidths see the bootstrap guide about the [Grid system](https://getbootstrap.com/docs/5.0/layout/grid/).
 <br>
