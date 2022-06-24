@@ -67,16 +67,15 @@ export class EditEntityDialogComponent<EntityType extends Entity> implements OnI
         this.entityService.update(this.data.entity, this.entityPriorChanges).then(() => this.dialogRef.close());
     }
 
-    //TODO Replace with @Input() parameters
     delete(): void {
         const dialogData: ConfirmDialogData = {
-            text: ['Do you really want to delete this Account?'],
+            text: this.data.confirmDeleteText ? this.data.confirmDeleteText : ['Do you really want to delete this?'],
             type: 'delete',
-            confirmButtonLabel: 'Bestätigen',
-            cancelButtonLabel: 'Abbrechen',
-            title: 'Bestätigen?',
-            requireConfirmation: true,
-            confirmationText: 'Das kann nicht rückgängig gemacht werden'
+            confirmButtonLabel: this.data.confirmDeleteButtonLabel ? this.data.confirmDeleteButtonLabel : 'Confirm',
+            cancelButtonLabel: this.data.cancelDeleteButtonLabel ? this.data.cancelDeleteButtonLabel : 'Cancel',
+            title: this.data.confirmDeleteDialogTitle ? this.data.confirmDeleteDialogTitle : 'Delete',
+            requireConfirmation: this.data.confirmDeleteRequireConfirmation ? this.data.confirmDeleteRequireConfirmation : false,
+            confirmationText: this.data.confirmDeleteConfirmationText ? this.data.confirmDeleteConfirmationText : undefined,
         };
         const dialogref = this.dialog.open(ConfirmDialogComponent, {
             data: dialogData

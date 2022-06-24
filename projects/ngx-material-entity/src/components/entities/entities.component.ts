@@ -136,7 +136,7 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
      * The title of the default create-dialog.
      */
     @Input()
-    createDialogTitle?: string;
+    createDialogTitle!: string;
     /**
      * The label on the create-button of the default create-dialog. Defaults to "Create".
      */
@@ -154,17 +154,53 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
      * The title of the default edit-dialog.
      */
     @Input()
-    editDialogTitle?: string;
+    editDialogTitle!: string;
     /**
      * The label on the confirm-button of the default edit-dialog. Defaults to "Save".
      */
     @Input()
-    editDialogCreateButtonLabel?: string;
+    editDialogConfirmButtonLabel?: string;
+    /**
+     * The label on the delete-button of the default edit-dialog. Defaults to "Delete".
+     */
+    @Input()
+    editDialogDeleteButtonLabel?: string;
     /**
      * The label on the cancel-button for the default edit-dialog. Defaults to "Cancel".
      */
     @Input()
     editDialogCancelButtonLabel?: string;
+    /**
+     * The text inside the confirm delete dialog.
+     * Each string inside the array is a paragraph.
+     */
+    @Input()
+    confirmDeleteText?: string[];
+    /**
+     * The label on the button that confirms the deletion of an entity.
+     */
+    @Input()
+    confirmDeleteButtonLabel?: string;
+    /**
+     * The label on the button that cancels the deletion of an entity.
+     */
+    @Input()
+    cancelDeleteButtonLabel?: string;
+    /**
+     * The title of the dialog where you have to either confirm or cancel the deletion of an entity.
+     */
+    @Input()
+    confirmDeleteDialogTitle?: string;
+    /**
+     * Whether or not a checkbox needs to be checked before being able to click on the confirm-delete-button
+     */
+    @Input()
+    confirmDeleteRequireConfirmation?: boolean;
+    /**
+     * The text next to the checkbox
+     */
+    @Input()
+    confirmDeleteConfirmationText?: string
 
 
 
@@ -229,13 +265,13 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
         if (!this.EntityServiceClass) {
             throw new Error('Missing required Input data "EntityServiceClass"');
         }
-        if (this.allowCreate && !this.allowCreate) {
+        if (this.allowCreate === undefined) {
             this.allowCreate = true;
         }
-        if (!this.allowEdit && !this.allowEdit) {
+        if (this.allowEdit === undefined) {
             this.allowEdit = true;
         }
-        if (!this.allowDelete && !this.allowDelete) {
+        if (this.allowDelete === undefined) {
             this.allowDelete = true;
         }
         if ((this.allowEdit || this.allowCreate) && !this.EntityClass) {
@@ -248,6 +284,12 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
             throw new Error(
                 `Missing required Input data "createDialogTitle".
                 You can only omit this value when creation is disallowed or done with a custom create method.`
+            );
+        }
+        if (this.allowEdit && !this.edit && !this.editDialogTitle) {
+            throw new Error(
+                `Missing required Input data "editDialogTitle".
+                You can only omit this value when editing is disallowed or done with a custom edit method.`
             );
         }
     }
@@ -266,11 +308,17 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
         const dialogData: EditEntityDialogData<EntityType> = {
             entity: entity,
             EntityServiceClass: this.EntityServiceClass,
-            title: 'Editieren',
-            editButtonLabel: 'Speichern',
-            cancelButtonLabel: 'Abbrechen',
+            title: this.editDialogTitle,
+            editButtonLabel: this.editDialogConfirmButtonLabel,
+            cancelButtonLabel: this.editDialogCancelButtonLabel,
             allowDelete: this.allowDelete,
-            deleteButtonLabel: 'Löschen'
+            deleteButtonLabel: this.editDialogDeleteButtonLabel,
+            confirmDeleteText: this.confirmDeleteText,
+            confirmDeleteButtonLabel: this.confirmDeleteButtonLabel,
+            cancelDeleteButtonLabel: this.cancelDeleteButtonLabel,
+            confirmDeleteDialogTitle: this.confirmDeleteDialogTitle,
+            confirmDeleteRequireConfirmation: this.confirmDeleteRequireConfirmation,
+            confirmDeleteConfirmationText: this.confirmDeleteConfirmationText
         };
         this.dialog.open(EditEntityDialogComponent, {
             data: dialogData,
@@ -292,7 +340,7 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
         const dialogData: CreateEntityDialogData<EntityType> = {
             entity: entity,
             EntityServiceClass: this.EntityServiceClass,
-            title: this.createDialogTitle as string,
+            title: this.createDialogTitle,
             createButtonLabel: this.createDialogCreateButtonLabel,
             cancelButtonLabel: this.createDialogCancelButtonLabel
         };

@@ -37,5 +37,31 @@ export interface EditEntityDialogData<EntityType extends Entity> {
      * The label for the delete-button.
      * Defaults to "Delete".
      */
-    deleteButtonLabel?: string
+    deleteButtonLabel?: string,
+
+    /**
+     * The text inside the confirm delete dialog.
+     * Each string inside the array is a paragraph.
+     */
+    confirmDeleteText?: string[],
+    /**
+     * The label on the button that confirms the deletion of an entity.
+     */
+    confirmDeleteButtonLabel?: string,
+    /**
+     * The label on the button that cancels the deletion of an entity.
+     */
+    cancelDeleteButtonLabel?: string,
+    /**
+     * The title of the dialog where you have to either confirm or cancel the deletion of an entity.
+     */
+    confirmDeleteDialogTitle?: string,
+    /**
+     * Whether or not a checkbox needs to be checked before being able to click on the confirm-delete-button
+     */
+    confirmDeleteRequireConfirmation?: boolean,
+    /**
+     * The text next to the checkbox
+     */
+    confirmDeleteConfirmationText?: string
 }

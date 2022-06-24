@@ -492,7 +492,7 @@ multiSelectLabel?: string;
  * The title of the default create-dialog.
  */
 @Input()
-createDialogTitle?: string;
+createDialogTitle!: string;
 /**
  * The label on the create-button of the default create-dialog. Defaults to "Create".
  */
@@ -510,17 +510,53 @@ createDialogCancelButtonLabel?: string;
  * The title of the default edit-dialog.
  */
 @Input()
-editDialogTitle?: string;
+editDialogTitle!: string;
 /**
  * The label on the confirm-button of the default edit-dialog. Defaults to "Save".
  */
 @Input()
-editDialogCreateButtonLabel?: string;
+editDialogConfirmButtonLabel?: string;
+/**
+ * The label on the delete-button of the default edit-dialog. Defaults to "Delete".
+ */
+@Input()
+editDialogDeleteButtonLabel?: string;
 /**
  * The label on the cancel-button for the default edit-dialog. Defaults to "Cancel".
  */
 @Input()
 editDialogCancelButtonLabel?: string;
+/**
+ * The text inside the confirm delete dialog.
+ * Each string inside the array is a paragraph.
+ */
+@Input()
+confirmDeleteText?: string[];
+/**
+ * The label on the button that confirms the deletion of an entity.
+ */
+@Input()
+confirmDeleteButtonLabel?: string;
+/**
+ * The label on the button that cancels the deletion of an entity.
+ */
+@Input()
+cancelDeleteButtonLabel?: string;
+/**
+ * The title of the dialog where you have to either confirm or cancel the deletion of an entity.
+ */
+@Input()
+confirmDeleteDialogTitle?: string;
+/**
+ * Whether or not a checkbox needs to be checked before being able to click on the confirm-delete-button
+ */
+@Input()
+confirmDeleteRequireConfirmation?: boolean;
+/**
+ * The text next to the checkbox
+ */
+@Input()
+confirmDeleteConfirmationText?: string
 ```
 
 ## Display Columns
