@@ -4,7 +4,7 @@ on:
     pull_request:
         types: [closed]
         branches:
-            - master
+            - dev
 
 jobs:
     build:
@@ -12,8 +12,6 @@ jobs:
         if: github.event.pull_request.merged
         steps:
             - uses: actions/checkout@v3
-              with:
-                ref: master
             - name: build package
               run: |
                   cd $GITHUB_WORKSPACE
