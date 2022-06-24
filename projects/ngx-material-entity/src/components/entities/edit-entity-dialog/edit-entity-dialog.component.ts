@@ -22,13 +22,15 @@ export class EditEntityDialogComponent<EntityType extends Entity> implements OnI
 
     entityPriorChanges!: EntityType;
 
+    getWidth = EntityUtilities.getWidth;
+
     constructor(
         @Inject(MAT_DIALOG_DATA)
         public data: EditEntityDialogData<EntityType>,
         public dialogRef: MatDialogRef<EditEntityDialogComponent<EntityType>>,
         private readonly injector: Injector,
         private readonly dialog: MatDialog
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.dialogRef.disableClose = true;
@@ -40,27 +42,8 @@ export class EditEntityDialogComponent<EntityType extends Entity> implements OnI
     private setEntityKeys(): void {
         this.entityKeys = Reflect.ownKeys(this.data.entity) as (keyof EntityType)[];
         const omitUpdateKeys = EntityUtilities.getOmitForUpdate(this.data.entity);
-        this.entityKeys = this.entityKeys.filter((k) => !omitUpdateKeys.includes(k));
-    }
-
-    getWidth(key: keyof EntityType, type: 'lg' | 'md' | 'sm'): number {
-        const propertyType = EntityUtilities.getPropertyType(this.data.entity, key);
-        const metadata = EntityUtilities.getPropertyMetadata(this.data.entity, key, propertyType);
-        if (metadata.defaultWidths) {
-            switch (type) {
-                case 'lg':
-                    return metadata.defaultWidths[0];
-                case 'md':
-                    return metadata.defaultWidths[1];
-                case 'sm':
-                    return metadata.defaultWidths[2];
-                default:
-                    throw new Error('Something went wrong getting the width');
-            }
-        }
-        else {
-            throw new Error('Something went wrong getting the width');
-        }
+        this.entityKeys = this.entityKeys.filter((k) => !omitUpdateKeys.includes(k))
+            .sort((a, b) => EntityUtilities.compareOrder(a, b, this.data.entity));
     }
 
     edit(): void {

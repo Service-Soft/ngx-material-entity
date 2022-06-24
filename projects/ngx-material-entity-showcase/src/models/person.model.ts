@@ -6,13 +6,15 @@ import { Address } from './address.model';
 export class Person extends Entity {
     @string({
         displayName: 'Vorname',
-        displayStyle: 'line'
+        displayStyle: 'line',
+        order: 2
     })
     firstname!: string;
 
     @string({
         displayName: 'Nachname',
         displayStyle: 'line',
+        order: 3
         // lineBreakAfter: true
     })
     lastname!: string;
@@ -20,6 +22,7 @@ export class Person extends Entity {
     @string({
         displayName: 'Anrede',
         displayStyle: 'autocomplete',
+        order: 1,
         autocompleteValues: ['Herr', 'Frau']
     })
     formOfAddress!: string;

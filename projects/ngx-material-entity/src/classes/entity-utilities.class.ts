@@ -266,4 +266,38 @@ export abstract class EntityUtilities {
         }
         return res;
     }
+
+    static compareOrder<EntityType extends Entity>(a: keyof EntityType, b: keyof EntityType, entity: EntityType): number {
+        const metadataA = EntityUtilities.getPropertyMetadata(entity, a, EntityUtilities.getPropertyType(entity, a));
+        const metadataB = EntityUtilities.getPropertyMetadata(entity, b, EntityUtilities.getPropertyType(entity, b));
+
+        if (metadataA.order === -1) {
+            return 1;
+        }
+        else if (metadataB.order === -1) {
+            return 0;
+        }
+
+        return ((metadataA.order as number) - (metadataB.order as number));
+    }
+
+    static getWidth<EntityType extends Entity>(entity: EntityType, key: keyof EntityType, type: 'lg' | 'md' | 'sm'): number {
+        const propertyType = EntityUtilities.getPropertyType(entity, key);
+        const metadata = EntityUtilities.getPropertyMetadata(entity, key, propertyType);
+        if (metadata.defaultWidths) {
+            switch (type) {
+                case 'lg':
+                    return metadata.defaultWidths[0];
+                case 'md':
+                    return metadata.defaultWidths[1];
+                case 'sm':
+                    return metadata.defaultWidths[2];
+                default:
+                    throw new Error('Something went wrong getting the width');
+            }
+        }
+        else {
+            throw new Error('Something went wrong getting the width');
+        }
+    }
 }

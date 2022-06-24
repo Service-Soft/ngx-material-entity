@@ -49,7 +49,8 @@ export class DropdownStringDecoratorConfig extends StringDecoratorConfig {
             metadata.required,
             metadata.omitForCreate,
             metadata.omitForUpdate,
-            metadata.defaultWidths
+            metadata.defaultWidths,
+            metadata.order
         );
         this.displayStyle = metadata.displayStyle;
         this.dropdownValues = metadata.dropdownValues;
@@ -78,7 +79,8 @@ export class DefaultStringDecoratorConfig extends StringDecoratorConfig {
             metadata.required,
             metadata.omitForCreate,
             metadata.omitForUpdate,
-            metadata.defaultWidths
+            metadata.defaultWidths,
+            metadata.order
         );
         this.displayStyle = metadata.displayStyle;
         this.minLength = metadata.minLength;
@@ -104,7 +106,8 @@ export class TextboxStringDecoratorConfig extends StringDecoratorConfig {
             metadata.required,
             metadata.omitForCreate,
             metadata.omitForUpdate,
-            metadata.defaultWidths
+            metadata.defaultWidths,
+            metadata.order
         );
         this.displayStyle = metadata.displayStyle;
         this.minLength = metadata.minLength;
@@ -138,7 +141,9 @@ export class AutocompleteStringDecoratorConfig extends StringDecoratorConfig {
             metadata.required,
             metadata.omitForCreate,
             metadata.omitForUpdate,
-            metadata.defaultWidths);
+            metadata.defaultWidths,
+            metadata.order
+        );
         this.displayStyle = metadata.displayStyle;
         this.autocompleteValues = metadata.autocompleteValues;
         this.minLength = metadata.minLength;
