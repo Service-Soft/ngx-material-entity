@@ -1,0 +1,23 @@
+name: Deploy
+
+on:
+    pull_request:
+        types: [closed]
+        branches:
+            - master
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        if: github.event.pull_request.merged
+        steps:
+            - uses: actions/checkout@v3
+            - name: build package
+              run: |
+                  cd $GITHUB_WORKSPACE
+                  ng build ngx-material-entity
+            - uses: JS-DevTools/npm-publish@v1
+              with:
+                  token: ${{ secrets.NPM_TOKEN }}
+                  package: $GITHUB_WORKSPACE/dist/ngx-material-entity/package.json
+                  greater-version-only: true
