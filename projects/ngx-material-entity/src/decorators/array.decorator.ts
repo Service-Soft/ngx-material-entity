@@ -31,7 +31,8 @@ export class ArrayDecoratorConfig extends PropertyDecoratorConfig {
             metadata.required,
             metadata.omitForCreate,
             metadata.omitForUpdate,
-            metadata.defaultWidths
+            metadata.defaultWidths,
+            metadata.order
         );
         this.canBeEmpty = metadata.canBeEmpty;
         this.itemType = metadata.itemType;

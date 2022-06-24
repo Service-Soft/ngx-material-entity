@@ -45,7 +45,8 @@ export class DefaultNumberDecoratorConfig extends NumberDecoratorConfig {
             metadata.required,
             metadata.omitForCreate,
             metadata.omitForUpdate,
-            metadata.defaultWidths
+            metadata.defaultWidths,
+            metadata.order
         );
         this.displayStyle = metadata.displayStyle;
         this.min = metadata.min;
@@ -67,7 +68,8 @@ export class DropdownNumberDecoratorConfig extends NumberDecoratorConfig {
             metadata.required,
             metadata.omitForCreate,
             metadata.omitForUpdate,
-            metadata.defaultWidths
+            metadata.defaultWidths,
+            metadata.order
         );
         this.displayStyle = metadata.displayStyle;
         this.dropdownValues = metadata.dropdownValues;

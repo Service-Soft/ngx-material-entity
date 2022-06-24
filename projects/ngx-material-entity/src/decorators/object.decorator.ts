@@ -42,7 +42,8 @@ export class DefaultObjectDecoratorConfig extends ObjectDecoratorConfig {
             metadata.required,
             metadata.omitForCreate,
             metadata.omitForUpdate,
-            metadata.defaultWidths
+            metadata.defaultWidths,
+            metadata.order
         );
         this.displayStyle = metadata.displayStyle;
         this.type = metadata.type;

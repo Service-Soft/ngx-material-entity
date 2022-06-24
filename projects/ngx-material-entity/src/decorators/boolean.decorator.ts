@@ -50,7 +50,8 @@ export class DropdownBooleanDecoratorConfig extends BooleanDecoratorConfig {
             metadata.required,
             metadata.omitForCreate,
             metadata.omitForUpdate,
-            metadata.defaultWidths
+            metadata.defaultWidths,
+            metadata.order
         );
         this.displayStyle = metadata.displayStyle;
         this.dropdownTrue = metadata.dropdownTrue;
@@ -68,7 +69,8 @@ export class CheckboxBooleanDecoratorConfig extends BooleanDecoratorConfig {
             metadata.required,
             metadata.omitForCreate,
             metadata.omitForUpdate,
-            metadata.defaultWidths
+            metadata.defaultWidths,
+            metadata.order
         );
         this.displayStyle = metadata.displayStyle;
     }
@@ -83,7 +85,8 @@ export class ToggleBooleanDecoratorConfig extends BooleanDecoratorConfig {
             metadata.required,
             metadata.omitForCreate,
             metadata.omitForUpdate,
-            metadata.defaultWidths
+            metadata.defaultWidths,
+            metadata.order
         );
         this.displayStyle = metadata.displayStyle;
     }
