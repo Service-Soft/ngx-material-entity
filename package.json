@@ -5,6 +5,7 @@
         "ng": "ng",
         "start": "ng serve",
         "build": "ng build --watch",
+        "build:prod": "ng build ngx-material-entity",
         "test": "jest --config projects/ngx-material-entity/jest.config.json",
         "api": "ts-node api.ts",
         "lint": "eslint projects/ngx-material-entity",
