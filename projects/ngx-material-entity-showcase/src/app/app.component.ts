@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { MultiSelectAction } from 'ngx-material-entity';
-import { DisplayColumn, EntityUtilities } from 'ngx-material-entity';
+import { EntitiesData } from 'ngx-material-entity';
 import { Person } from '../models/person.model';
 import { PersonService } from '../services/person.service';
 
@@ -10,24 +9,36 @@ import { PersonService } from '../services/person.service';
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-
-    EntityClass = Person;
-    EntityServiceClass = PersonService;
-    displayColumns: DisplayColumn<Person>[] = [
-        {
-            displayName: 'Name',
-            value: (entity: Person) => entity.firstname + ' ' + entity.lastname
+    entitiesData: EntitiesData<Person> = {
+        baseData: {
+            title: 'Personen',
+            displayColumns: [
+                {
+                    displayName: 'Name',
+                    value: (entity: Person) => `${entity.firstname} ${entity.lastname}`
+                },
+                {
+                    displayName: 'Adresse',
+                    value: (entity: Person) => `${entity.address.street} ${entity.address.number}, ${entity.address.postcode} ${entity.address.city}`
+                }
+            ],
+            EntityClass: Person,
+            EntityServiceClass: PersonService,
+            multiSelectActions: [
+                {
+                    displayName: 'Logge Vornamen',
+                    action: (entities: Person[]) => entities.forEach(e => console.log(e.firstname)),
+                    requireConfirmDialog: (entities: Person[]) => true
+                }
+            ],
+            allowDelete: (entity: Person) => false
         },
-        {
-            displayName: 'Adresse',
-            value: (entity: Person) => `${entity.address.street} ${entity.address.number}, ${entity.address.postcode} ${entity.address.city}`
+        createDialogData: {
+            title: 'Person erstellen'
+        },
+        editDialogData: {
+            title: (entity: Person) => `Person #${entity.id}`,
+            deleteRequiresConfirmDialog: false,
         }
-    ];
-    title: string = 'Personen';
-    multiSelectActions: MultiSelectAction<Person>[] = [
-        {
-            displayName: 'Logge Vornamen',
-            action: (entities: Person[]) => entities.forEach(e => console.log(e.firstname))
-        }
-    ];
+    }
 }

@@ -289,9 +289,9 @@ export abstract class EntityUtilities {
 
     /**
      * gets the bootstrap column values for "lg", "md", "sm"
-     * @param entity entity to get the bootstrap column values of the key 
+     * @param entity entity to get the bootstrap column values of the key
      * @param key key of the property to get bootstrap column values from
-     * @param type defines for which screensize the column values should be returned 
+     * @param type defines for which screensize the column values should be returned
      * @returns bootstrap column value
      */
     static getWidth<EntityType extends Entity>(entity: EntityType, key: keyof EntityType, type: 'lg' | 'md' | 'sm'): number {

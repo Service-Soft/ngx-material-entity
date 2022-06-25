@@ -8,43 +8,12 @@ import { Entity } from '../../classes/entity-model.class';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateEntityDialogComponent } from './create-entity-dialog/create-entity-dialog.component';
-import { HttpClient } from '@angular/common/http';
 import { CreateEntityDialogData } from './create-entity-dialog/create-entity-dialog-data';
 import { EditEntityDialogComponent } from './edit-entity-dialog/edit-entity-dialog.component';
 import { EditEntityDialogData } from './edit-entity-dialog/edit-entity-dialog-data';
-
-/**
- * The Definition of a Column inside the table.
- */
-export interface DisplayColumn<EntityType extends Entity> {
-    /**
-     * The name inside the header.
-     */
-    displayName: string,
-    /**
-     * A method to get the value inside an entry
-     */
-    value: (entity: EntityType) => string
-}
-
-/**
- * The Definition of an Action that can be run on multiple selected entities
- */
-export interface MultiSelectAction<EntityType extends Entity> {
-    /**
-     * The name of the action
-     */
-    displayName: string,
-    /**
-     * The action itself
-     */
-    action: (entity: EntityType[]) => unknown,
-    /**
-     * A method that defines whether or not the action can be used.
-     * Defaults to true.
-     */
-    enabled?: (entity: EntityType[]) => boolean
-}
+import { MultiSelectAction, EntitiesData, CreateDialogData, EditDialogData } from './entities-data';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
 
 @Component({
     selector: 'ngx-material-entities',
@@ -52,157 +21,12 @@ export interface MultiSelectAction<EntityType extends Entity> {
     styleUrls: ['./entities.component.scss']
 })
 export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnDestroy {
-    /**
-     * The title of the table
-     */
-    @Input()
-    title!: string;
-    /**
-     * The definition of the columns to display. Consists of the displayName to show in the header of the row
-     * and the value, which is a function that generates the value to display inside a column
-     */
-    @Input()
-    displayColumns!: DisplayColumn<EntityType>[];
-    /**
-     * The label on the search bar. Defaults to "Search".
-     */
-    @Input()
-    searchLabel?: string;
-    /**
-     * The label on the button for adding new entities. Defaults to "Create".
-     */
-    @Input()
-    createButtonLabel?: string;
-    /**
-     * The Class of the entities to manage
-     */
-    @Input()
-    EntityClass!: new (entity?: EntityType) => EntityType;
-    /**
-     * The Class of the service that handles the entities.
-     * Needs to be injectable and an extension of the "EntityService"-Class
-     */
-    @Input()
-    EntityServiceClass!: new (httpClient: HttpClient) => EntityService<EntityType>;
-    /**
-     * Takes a custom edit method which runs when you click on a entity.
-     * If you don't need any special editing of entries you can also omit this.
-     * In that case a default edit dialog is generated.
-     */
-    @Input()
-    edit?: (entity: EntityType) => unknown;
-    /**
-     * Takes a method to run when you click on the new button.
-     * If you don't need anything special you can also omit this.
-     * In that case a default create dialog is generated.
-     */
-    @Input()
-    create?: (entity: EntityType) => unknown;
-    /**
-     * Defines how the search string of entities is generated.
-     */
-    @Input()
-    searchString?: (enity: EntityType) => string;
-    /**
-     * Defines whether or not the user can add new entities.
-     */
-    @Input()
-    allowCreate!: boolean;
-    /**
-     * Defines whether or not the user can edit entities.
-     */
-    @Input()
-    allowEdit!: boolean;
-    /**
-     * Defines whether or not the user can delete entities.
-     */
-    @Input()
-    allowDelete!: boolean;
-    /**
-     * All Actions that you want to run on multiple entities can be defined here.
-     * (e.g. download as zip-file or mass delete)
-     */
-    @Input()
-    multiSelectActions?: MultiSelectAction<EntityType>[];
-    /**
-     * The Label for the button that opens all multi-actions.
-     */
-    @Input()
-    multiSelectLabel?: string;
-
-
 
     /**
-     * The title of the default create-dialog.
+     * The configuration for the entities-component
      */
     @Input()
-    createDialogTitle!: string;
-    /**
-     * The label on the create-button of the default create-dialog. Defaults to "Create".
-     */
-    @Input()
-    createDialogCreateButtonLabel?: string;
-    /**
-     * The label on the cancel-button for the default create-dialog. Defaults to "Cancel".
-     */
-    @Input()
-    createDialogCancelButtonLabel?: string;
-
-
-
-    /**
-     * The title of the default edit-dialog.
-     */
-    @Input()
-    editDialogTitle!: string;
-    /**
-     * The label on the confirm-button of the default edit-dialog. Defaults to "Save".
-     */
-    @Input()
-    editDialogConfirmButtonLabel?: string;
-    /**
-     * The label on the delete-button of the default edit-dialog. Defaults to "Delete".
-     */
-    @Input()
-    editDialogDeleteButtonLabel?: string;
-    /**
-     * The label on the cancel-button for the default edit-dialog. Defaults to "Cancel".
-     */
-    @Input()
-    editDialogCancelButtonLabel?: string;
-    /**
-     * The text inside the confirm delete dialog.
-     * Each string inside the array is a paragraph.
-     */
-    @Input()
-    confirmDeleteText?: string[];
-    /**
-     * The label on the button that confirms the deletion of an entity.
-     */
-    @Input()
-    confirmDeleteButtonLabel?: string;
-    /**
-     * The label on the button that cancels the deletion of an entity.
-     */
-    @Input()
-    cancelDeleteButtonLabel?: string;
-    /**
-     * The title of the dialog where you have to either confirm or cancel the deletion of an entity.
-     */
-    @Input()
-    confirmDeleteDialogTitle?: string;
-    /**
-     * Whether or not a checkbox needs to be checked before being able to click on the confirm-delete-button
-     */
-    @Input()
-    confirmDeleteRequireConfirmation?: boolean;
-    /**
-     * The text next to the checkbox
-     */
-    @Input()
-    confirmDeleteConfirmationText?: string
-
-
+    entitiesData!: EntitiesData<EntityType>;
 
     private entityService!: EntityService<EntityType>;
     private readonly onDestroy = new Subject<void>();
@@ -218,10 +42,10 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
     ngOnInit(): void {
         this.validateInput();
 
-        this.entityService = this.injector.get(this.EntityServiceClass) as EntityService<EntityType>;
+        this.entityService = this.injector.get(this.entitiesData.baseData.EntityServiceClass) as EntityService<EntityType>;
 
-        const givenDisplayColumns = this.displayColumns.map((v) => v.displayName);
-        if (this.multiSelectActions?.length) {
+        const givenDisplayColumns = this.entitiesData.baseData.displayColumns.map((v) => v.displayName);
+        if (this.entitiesData.baseData.multiSelectActions?.length) {
             if (givenDisplayColumns.find((s) => s === 'select')) {
                 throw new Error(
                     `The name "select" for a display column is reserved for the multi-select action functionality.
@@ -235,12 +59,12 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
         }
 
         this.dataSource.sortingDataAccessor = (entity: EntityType, header: string) => {
-            return this.displayColumns.find((dp) => dp.displayName === header)?.value(entity) as string;
+            return this.entitiesData.baseData.displayColumns.find((dp) => dp.displayName === header)?.value(entity) as string;
         };
         this.dataSource.sort = this.sort;
-        if (this.searchString) {
+        if (this.entitiesData.baseData.searchString) {
             this.dataSource.filterPredicate = (entity: EntityType, filter: string) => {
-                const searchStr = this.searchString?.(entity) as string;
+                const searchStr = this.entitiesData.baseData.searchString?.(entity) as string;
                 const formattedSearchString = searchStr.toLowerCase();
                 const formattedFilterString = filter.toLowerCase();
                 return formattedSearchString.includes(formattedFilterString);
@@ -256,98 +80,134 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
     }
 
     private validateInput(): void {
-        if (!this.displayColumns) {
+        if (!this.entitiesData.baseData.displayColumns) {
             throw new Error('Missing required Input data "displayColumns"');
         }
-        if (!this.title) {
+        if (!this.entitiesData.baseData.title) {
             throw new Error('Missing required Input data "title"');
         }
-        if (!this.EntityServiceClass) {
+        if (!this.entitiesData.baseData.EntityServiceClass) {
             throw new Error('Missing required Input data "EntityServiceClass"');
         }
-        if (this.allowCreate === undefined) {
-            this.allowCreate = true;
+        if (this.entitiesData.baseData.allowCreate === undefined) {
+            this.entitiesData.baseData.allowCreate = true;
         }
-        if (this.allowEdit === undefined) {
-            this.allowEdit = true;
+        if (this.entitiesData.baseData.allowEdit === undefined) {
+            this.entitiesData.baseData.allowEdit = () => true;
         }
-        if (this.allowDelete === undefined) {
-            this.allowDelete = true;
+        if (this.entitiesData.baseData.allowDelete === undefined) {
+            this.entitiesData.baseData.allowDelete = () => true;
         }
-        if ((this.allowEdit || this.allowCreate) && !this.EntityClass) {
+        if (
+            (
+                this.entitiesData.baseData.allowEdit !== (() => false)
+                || this.entitiesData.baseData.allowDelete !== (() => false)
+                || this.entitiesData.baseData.allowCreate
+            )
+            && !this.entitiesData.baseData.EntityClass
+        ) {
             throw new Error(`
                 Missing required Input data "EntityClass".
                 You can only omit this value if you can neither create or update entities.`
             );
         }
-        if (this.allowCreate && !this.create && !this.createDialogTitle) {
+        if (this.entitiesData.baseData.allowCreate && !this.entitiesData.baseData.create && !this.entitiesData.createDialogData) {
             throw new Error(
-                `Missing required Input data "createDialogTitle".
+                `Missing required Input data "createDialogData".
                 You can only omit this value when creation is disallowed or done with a custom create method.`
             );
         }
-        if (this.allowEdit && !this.edit && !this.editDialogTitle) {
+        if (
+            (
+                this.entitiesData.baseData.allowEdit !== (() => false)
+                || this.entitiesData.baseData.allowDelete !== (() => false)
+            )
+            && !this.entitiesData.baseData.edit
+            && !this.entitiesData.editDialogData
+        ) {
             throw new Error(
-                `Missing required Input data "editDialogTitle".
-                You can only omit this value when editing is disallowed or done with a custom edit method.`
+                `Missing required Input data "editDialogData".
+                You can only omit this value when editing and deleting is disallowed or done with a custom edit method.`
             );
         }
     }
 
     editEntity(entity: EntityType): void {
-        if (this.allowEdit) {
-            if (this.edit) {
-                this.edit(new this.EntityClass(entity));
+        if (this.entitiesData.baseData.allowEdit?.(entity)) {
+            if (this.entitiesData.baseData.edit) {
+                this.entitiesData.baseData.edit(new this.entitiesData.baseData.EntityClass(entity));
             }
             else {
-                this.editDefault(new this.EntityClass(entity));
+                this.editDefault(new this.entitiesData.baseData.EntityClass(entity));
             }
         }
     }
     private editDefault(entity: EntityType): void {
         const dialogData: EditEntityDialogData<EntityType> = {
             entity: entity,
-            EntityServiceClass: this.EntityServiceClass,
-            title: this.editDialogTitle,
-            editButtonLabel: this.editDialogConfirmButtonLabel,
-            cancelButtonLabel: this.editDialogCancelButtonLabel,
-            allowDelete: this.allowDelete,
-            deleteButtonLabel: this.editDialogDeleteButtonLabel,
-            confirmDeleteText: this.confirmDeleteText,
-            confirmDeleteButtonLabel: this.confirmDeleteButtonLabel,
-            cancelDeleteButtonLabel: this.cancelDeleteButtonLabel,
-            confirmDeleteDialogTitle: this.confirmDeleteDialogTitle,
-            confirmDeleteRequireConfirmation: this.confirmDeleteRequireConfirmation,
-            confirmDeleteConfirmationText: this.confirmDeleteConfirmationText
+            EntityServiceClass: this.entitiesData.baseData.EntityServiceClass,
+            allowDelete: this.entitiesData.baseData.allowDelete as (entity: EntityType) => boolean,
+            editDialogData: this.entitiesData.editDialogData as EditDialogData<EntityType>
         };
         this.dialog.open(EditEntityDialogComponent, {
             data: dialogData,
-            minWidth: '60%'
+            minWidth: '60%',
+            autoFocus: false,
+            restoreFocus: false
         });
     }
 
     createEntity(): void {
-        if (this.allowCreate) {
-            if (this.create) {
-                this.create(new this.EntityClass());
+        if (this.entitiesData.baseData.allowCreate) {
+            if (this.entitiesData.baseData.create) {
+                this.entitiesData.baseData.create(new this.entitiesData.baseData.EntityClass());
             }
             else {
-                this.createDefault(new this.EntityClass());
+                this.createDefault(new this.entitiesData.baseData.EntityClass());
             }
         }
     }
     private createDefault(entity: EntityType): void {
         const dialogData: CreateEntityDialogData<EntityType> = {
             entity: entity,
-            EntityServiceClass: this.EntityServiceClass,
-            title: this.createDialogTitle,
-            createButtonLabel: this.createDialogCreateButtonLabel,
-            cancelButtonLabel: this.createDialogCancelButtonLabel
+            EntityServiceClass: this.entitiesData.baseData.EntityServiceClass,
+            createDialogData: this.entitiesData.createDialogData as CreateDialogData
         };
         this.dialog.open(CreateEntityDialogComponent, {
             data: dialogData,
-            minWidth: '60%'
+            minWidth: '60%',
+            autoFocus: false,
+            restoreFocus: false
         });
+    }
+
+    runMultiAction(action: MultiSelectAction<EntityType>): void {
+        if (!action.requireConfirmDialog || !action.requireConfirmDialog(this.selection.selected)) {
+            return this.confirmRunMultiAction(action);
+        }
+        const dialogData: ConfirmDialogData = {
+            // eslint-disable-next-line max-len
+            text: action.confirmDialogData?.text ? action.confirmDialogData?.text : [`Do you really want to run this action on ${this.selection.selected.length} entries?`],
+            type: 'default',
+            confirmButtonLabel: action.confirmDialogData?.confirmButtonLabel ? action.confirmDialogData?.confirmButtonLabel : 'Confirm',
+            cancelButtonLabel: action.confirmDialogData?.cancelButtonLabel ? action.confirmDialogData?.cancelButtonLabel : 'Cancel',
+            title: action.confirmDialogData?.title ? action.confirmDialogData?.title : action.displayName,
+            requireConfirmation: action.confirmDialogData?.requireConfirmation ? action.confirmDialogData?.requireConfirmation : false,
+            confirmationText: action.confirmDialogData?.confirmationText ? action.confirmDialogData?.confirmationText : undefined
+        };
+        const dialogref = this.dialog.open(ConfirmDialogComponent, {
+            data: dialogData,
+            autoFocus: false,
+            restoreFocus: false
+        });
+        dialogref.afterClosed().subscribe((res: number) => {
+            if (res === 1) {
+                this.confirmRunMultiAction(action);
+            }
+        });
+    }
+    private confirmRunMultiAction(action: MultiSelectAction<EntityType>): void {
+        action.action(this.selection.selected);
     }
 
     multiActionDisabled(action: MultiSelectAction<EntityType>): boolean {

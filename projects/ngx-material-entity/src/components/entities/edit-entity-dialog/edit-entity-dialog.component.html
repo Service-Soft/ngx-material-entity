@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>
-    {{ data.title }}
-    <button mat-raised-button (click)="delete()" color="warn" class="delete-button" tabindex="-1">
-        {{ data.deleteButtonLabel ? data.deleteButtonLabel : 'Delete' }}
+    {{ data.editDialogData.title(data.entity) }}
+    <button *ngIf="data.allowDelete(data.entity)" mat-raised-button (click)="delete()" color="warn" class="delete-button" tabindex="-1">
+        {{ data.editDialogData.deleteButtonLabel ? data.editDialogData.deleteButtonLabel : 'Delete' }}
     </button>
 </h2>
 
@@ -20,9 +20,9 @@
 
 <mat-dialog-actions>
     <button mat-raised-button (click)="edit()" [disabled]="!EntityUtilities.isEntityValid(data.entity) || !EntityUtilities.dirty(data.entity, entityPriorChanges)">
-        {{ data.editButtonLabel ? data.editButtonLabel : 'Save' }}
+        {{ data.editDialogData.confirmButtonLabel ? data.editDialogData.confirmButtonLabel : 'Save' }}
     </button>
     <button mat-raised-button (click)="cancel()" class="cancel-button">
-        {{ data.cancelButtonLabel ? data.cancelButtonLabel : 'Cancel' }}
+        {{ data.editDialogData.cancelButtonLabel ? data.editDialogData.cancelButtonLabel : 'Cancel' }}
     </button>
 </mat-dialog-actions>

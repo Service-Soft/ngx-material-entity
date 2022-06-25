@@ -1,9 +1,11 @@
 import { Component, Inject, Injector, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EntityService } from '../../../classes/entity-service.class';
 import { Entity } from '../../../classes/entity-model.class';
 import { EntityUtilities } from '../../../classes/entity-utilities.class';
 import { CreateEntityDialogData } from './create-entity-dialog-data';
+import { ConfirmDialogData } from '../../confirm-dialog/confirm-dialog-data';
+import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 
 @Component({
     selector: 'ngx-material-entity-create-dialog',
@@ -23,7 +25,8 @@ export class CreateEntityDialogComponent<EntityType extends Entity> implements O
         @Inject(MAT_DIALOG_DATA)
         public data: CreateEntityDialogData<EntityType>,
         public dialogRef: MatDialogRef<CreateEntityDialogComponent<EntityType>>,
-        private readonly injector: Injector
+        private readonly injector: Injector,
+        private readonly dialog: MatDialog
     ) { }
 
     ngOnInit(): void {
@@ -40,6 +43,36 @@ export class CreateEntityDialogComponent<EntityType extends Entity> implements O
     }
 
     create(): void {
+        if (this.data.createDialogData.createRequiresConfirmDialog === false) {
+            return this.confirmCreate();
+        }
+        const dialogData: ConfirmDialogData = {
+            // eslint-disable-next-line max-len
+            text: this.data.createDialogData.confirmCreateDialogData?.text ? this.data.createDialogData.confirmCreateDialogData?.text : ['Do you really want to create this entity?'],
+            type: 'default',
+            // eslint-disable-next-line max-len
+            confirmButtonLabel: this.data.createDialogData.confirmCreateDialogData?.confirmButtonLabel ? this.data.createDialogData.confirmCreateDialogData?.confirmButtonLabel : 'Create',
+            // eslint-disable-next-line max-len
+            cancelButtonLabel: this.data.createDialogData.confirmCreateDialogData?.cancelButtonLabel ? this.data.createDialogData.confirmCreateDialogData?.cancelButtonLabel : 'Cancel',
+            // eslint-disable-next-line max-len
+            title: this.data.createDialogData.confirmCreateDialogData?.title ? this.data.createDialogData.confirmCreateDialogData?.title : 'Create',
+            // eslint-disable-next-line max-len
+            requireConfirmation: this.data.createDialogData.confirmCreateDialogData?.requireConfirmation ? this.data.createDialogData.confirmCreateDialogData?.requireConfirmation : false,
+            // eslint-disable-next-line max-len
+            confirmationText: this.data.createDialogData.confirmCreateDialogData?.confirmationText ? this.data.createDialogData.confirmCreateDialogData?.confirmationText : undefined,
+        };
+        const dialogref = this.dialog.open(ConfirmDialogComponent, {
+            data: dialogData,
+            autoFocus: false,
+            restoreFocus: false
+        });
+        dialogref.afterClosed().subscribe((res: number) => {
+            if (res === 1) {
+                this.confirmCreate();
+            }
+        });
+    }
+    private confirmCreate(): void {
         this.entityService.create(this.data.entity).then(() => this.dialogRef.close());
     }
 
