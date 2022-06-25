@@ -47,21 +47,61 @@ export class EditEntityDialogComponent<EntityType extends Entity> implements OnI
     }
 
     edit(): void {
+        if (this.data.editDialogData.editRequiresConfirmDialog === false) {
+            return this.confirmEdit();
+        }
+        const dialogData: ConfirmDialogData = {
+            // eslint-disable-next-line max-len
+            text: this.data.editDialogData.confirmEditDialogData?.text ? this.data.editDialogData.confirmEditDialogData?.text : ['Do you really want to edit this entity?'],
+            type: 'default',
+            // eslint-disable-next-line max-len
+            confirmButtonLabel: this.data.editDialogData.confirmEditDialogData?.confirmButtonLabel ? this.data.editDialogData.confirmEditDialogData?.confirmButtonLabel : 'Confirm',
+            // eslint-disable-next-line max-len
+            cancelButtonLabel: this.data.editDialogData.confirmEditDialogData?.cancelButtonLabel ? this.data.editDialogData.confirmEditDialogData?.cancelButtonLabel : 'Cancel',
+            title: this.data.editDialogData.confirmEditDialogData?.title ? this.data.editDialogData.confirmEditDialogData?.title : 'Edit',
+            // eslint-disable-next-line max-len
+            requireConfirmation: this.data.editDialogData.confirmEditDialogData?.requireConfirmation ? this.data.editDialogData.confirmEditDialogData?.requireConfirmation : false,
+            // eslint-disable-next-line max-len
+            confirmationText: this.data.editDialogData.confirmEditDialogData?.confirmationText ? this.data.editDialogData.confirmEditDialogData?.confirmationText : undefined,
+        };
+        const dialogref = this.dialog.open(ConfirmDialogComponent, {
+            data: dialogData,
+            autoFocus: false,
+            restoreFocus: false
+        });
+        dialogref.afterClosed().subscribe((res: number) => {
+            if (res === 1) {
+                this.confirmEdit();
+            }
+        });
+    }
+    private confirmEdit(): void {
         this.entityService.update(this.data.entity, this.entityPriorChanges).then(() => this.dialogRef.close());
     }
 
     delete(): void {
+        if (this.data.editDialogData.deleteRequiresConfirmDialog === false) {
+            return this.confirmDelete();
+        }
         const dialogData: ConfirmDialogData = {
-            text: this.data.confirmDeleteText ? this.data.confirmDeleteText : ['Do you really want to delete this?'],
+            // eslint-disable-next-line max-len
+            text: this.data.editDialogData.confirmDeleteDialogData?.text ? this.data.editDialogData.confirmDeleteDialogData?.text : ['Do you really want to delete this entity?'],
             type: 'delete',
-            confirmButtonLabel: this.data.confirmDeleteButtonLabel ? this.data.confirmDeleteButtonLabel : 'Confirm',
-            cancelButtonLabel: this.data.cancelDeleteButtonLabel ? this.data.cancelDeleteButtonLabel : 'Cancel',
-            title: this.data.confirmDeleteDialogTitle ? this.data.confirmDeleteDialogTitle : 'Delete',
-            requireConfirmation: this.data.confirmDeleteRequireConfirmation ? this.data.confirmDeleteRequireConfirmation : false,
-            confirmationText: this.data.confirmDeleteConfirmationText ? this.data.confirmDeleteConfirmationText : undefined,
+            // eslint-disable-next-line max-len
+            confirmButtonLabel: this.data.editDialogData.confirmDeleteDialogData?.confirmButtonLabel ? this.data.editDialogData.confirmDeleteDialogData?.confirmButtonLabel : 'Delete',
+            // eslint-disable-next-line max-len
+            cancelButtonLabel: this.data.editDialogData.confirmDeleteDialogData?.cancelButtonLabel ? this.data.editDialogData.confirmDeleteDialogData?.cancelButtonLabel : 'Cancel',
+            // eslint-disable-next-line max-len
+            title: this.data.editDialogData.confirmDeleteDialogData?.title ? this.data.editDialogData.confirmDeleteDialogData?.title : 'Delete',
+            // eslint-disable-next-line max-len
+            requireConfirmation: this.data.editDialogData.confirmDeleteDialogData?.requireConfirmation ? this.data.editDialogData.confirmDeleteDialogData?.requireConfirmation : false,
+            // eslint-disable-next-line max-len
+            confirmationText: this.data.editDialogData.confirmDeleteDialogData?.confirmationText ? this.data.editDialogData.confirmDeleteDialogData?.confirmationText : undefined,
         };
         const dialogref = this.dialog.open(ConfirmDialogComponent, {
-            data: dialogData
+            data: dialogData,
+            autoFocus: false,
+            restoreFocus: false
         });
         dialogref.afterClosed().subscribe((res: number) => {
             if (res === 1) {

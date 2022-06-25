@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ data.title }}</h2>
+<h2 mat-dialog-title>{{ data.createDialogData.title }}</h2>
 
 <mat-dialog-content>
     <form #form="ngForm" class="row">
@@ -15,9 +15,9 @@
 
 <mat-dialog-actions>
     <button mat-raised-button (click)="create()" [disabled]="!EntityUtilities.isEntityValid(data.entity)">
-        {{ data.createButtonLabel ? data.createButtonLabel : 'Create' }}
+        {{ data.createDialogData.createButtonLabel ? data.createDialogData.createButtonLabel : 'Create' }}
     </button>
     <button mat-raised-button (click)="cancel()" class="cancel-button">
-        {{ data.cancelButtonLabel ? data.cancelButtonLabel : 'Cancel' }}
+        {{ data.createDialogData.cancelButtonLabel ? data.createDialogData.cancelButtonLabel : 'Cancel' }}
     </button>
 </mat-dialog-actions>

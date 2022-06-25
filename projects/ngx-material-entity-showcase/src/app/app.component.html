@@ -1,14 +1,5 @@
 <div style="padding: 50px;">
-    <ngx-material-entities
-        [displayColumns]="displayColumns"
-        [title]="title"
-        [EntityServiceClass]="EntityServiceClass"
-        [EntityClass]="EntityClass"
-        [multiSelectActions]="multiSelectActions"
-        [createDialogTitle]="'Erstellen'"
-        [editDialogTitle]="'Bearbeiten'"
-        [confirmDeleteRequireConfirmation]="true"
-        [confirmDeleteConfirmationText]="'This can\'t be undone'">
+    <ngx-material-entities [entitiesData]="entitiesData">
     </ngx-material-entities>
 </div>
 <router-outlet></router-outlet>
