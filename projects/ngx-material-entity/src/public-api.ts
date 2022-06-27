@@ -32,6 +32,7 @@ export * from './components/property-input/property-input.component';
 export * from './components/get-validation-error-message.function';
 
 // decorators
+export * from './decorators/base/decorator-types.enum';
 export * from './decorators/array.decorator';
 export * from './decorators/boolean.decorator';
 export * from './decorators/number.decorator';

@@ -42,7 +42,9 @@ class TestEntity extends Entity {
     @array({
         itemType: DecoratorTypes.OBJECT,
         displayName: 'Adressen',
-        canBeEmpty: false
+        displayStyle: 'table',
+        arrayItem: new Address(),
+        displayColumns: []
     })
     addresses!: Address[];
 
@@ -78,7 +80,10 @@ const testEntity = new TestEntity(testEntityData);
 test('should have array Metadata', () => {
     const metdata = EntityUtilities.getPropertyMetadata(testEntity, 'addresses', DecoratorTypes.ARRAY);
     expect(metdata).toBeDefined();
-    expect(metdata.canBeEmpty).toBe(false);
+    expect(metdata.arrayItem).toBeDefined();
+    expect(metdata.displayStyle).toEqual('table');
+    expect(metdata.itemType).toEqual(DecoratorTypes.OBJECT);
+    expect(metdata.displayColumns).toEqual([]);
 });
 test('should have metadata on array items', () => {
     const streetMetadata1 = EntityUtilities.getPropertyMetadata(

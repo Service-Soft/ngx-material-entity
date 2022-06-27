@@ -9,6 +9,9 @@ import { PersonService } from '../services/person.service';
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
+    constructor(private readonly personService: PersonService) {}
+
     entitiesData: EntitiesData<Person> = {
         baseData: {
             title: 'Personen',
@@ -27,7 +30,11 @@ export class AppComponent {
             multiSelectActions: [
                 {
                     displayName: 'Logge Vornamen',
-                    action: (entities: Person[]) => entities.forEach(e => console.log(e.firstname)),
+                    action: (entities: Person[]) => entities.forEach(e => console.log(e.firstname))
+                },
+                {
+                    displayName: 'Löschen',
+                    action: (entities: Person[]) => entities.forEach(e => this.personService.delete(e.id)),
                     requireConfirmDialog: (entities: Person[]) => true
                 }
             ],
