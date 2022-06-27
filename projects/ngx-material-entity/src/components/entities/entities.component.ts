@@ -3,7 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { EntityService } from '../../classes/entity-service.class';
-import { Subject, takeUntil } from 'rxjs';
+import { firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { Entity } from '../../classes/entity-model.class';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatDialog } from '@angular/material/dialog';
@@ -75,6 +75,7 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
 
         this.entityService.entitiesSubject.pipe(takeUntil(this.onDestroy)).subscribe((entities) => {
             this.dataSource.data = entities;
+            this.selection.clear();
         });
         this.entityService.read();
     }
@@ -149,11 +150,20 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
             allowDelete: this.entitiesData.baseData.allowDelete as (entity: EntityType) => boolean,
             editDialogData: this.entitiesData.editDialogData as EditDialogData<EntityType>
         };
-        this.dialog.open(EditEntityDialogComponent, {
-            data: dialogData,
-            minWidth: '60%',
-            autoFocus: false,
-            restoreFocus: false
+        firstValueFrom(
+            this.dialog.open(EditEntityDialogComponent, {
+                data: dialogData,
+                minWidth: '60%',
+                autoFocus: false,
+                restoreFocus: false
+            }).afterClosed()
+        ).then((res: number) => {
+            if (res === 0) {
+                const data = this.dataSource.data;
+                data[this.dataSource.data.findIndex((e) => e.id === entity.id)] = entity;
+                this.dataSource.data = data;
+                this.selection.clear();
+            }
         });
     }
 

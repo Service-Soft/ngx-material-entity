@@ -52,7 +52,7 @@ export class EditEntityDialogComponent<EntityType extends Entity> implements OnI
         }
         const dialogData: ConfirmDialogData = {
             // eslint-disable-next-line max-len
-            text: this.data.editDialogData.confirmEditDialogData?.text ? this.data.editDialogData.confirmEditDialogData?.text : ['Do you really want to edit this entity?'],
+            text: this.data.editDialogData.confirmEditDialogData?.text ? this.data.editDialogData.confirmEditDialogData?.text : ['Do you really want to save all changes?'],
             type: 'default',
             // eslint-disable-next-line max-len
             confirmButtonLabel: this.data.editDialogData.confirmEditDialogData?.confirmButtonLabel ? this.data.editDialogData.confirmEditDialogData?.confirmButtonLabel : 'Confirm',
@@ -76,7 +76,7 @@ export class EditEntityDialogComponent<EntityType extends Entity> implements OnI
         });
     }
     private confirmEdit(): void {
-        this.entityService.update(this.data.entity, this.entityPriorChanges).then(() => this.dialogRef.close());
+        this.entityService.update(this.data.entity, this.entityPriorChanges).then(() => this.dialogRef.close(1));
     }
 
     delete(): void {
@@ -110,10 +110,11 @@ export class EditEntityDialogComponent<EntityType extends Entity> implements OnI
         });
     }
     private confirmDelete(): void {
-        this.entityService.delete(this.entityPriorChanges.id).then(() => this.dialogRef.close());
+        this.entityService.delete(this.entityPriorChanges.id).then(() => this.dialogRef.close(2));
     }
 
     cancel(): void {
-        this.dialogRef.close();
+        EntityUtilities.resetChangesOnEntity(this.data.entity, this.entityPriorChanges);
+        this.dialogRef.close(0);
     }
 }

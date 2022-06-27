@@ -29,7 +29,7 @@ export function string(
  */
 abstract class StringDecoratorConfig extends PropertyDecoratorConfig {
     /**
-     * Whether to display the string in a single line or in a textbox
+     * How to display the string
      */
     displayStyle!: 'line' | 'textbox' | 'autocomplete' | 'dropdown';
 }

@@ -3,6 +3,7 @@ import { DecoratorType, DecoratorTypes } from '../decorators/base/decorator-type
 import { PropertyDecoratorConfig } from '../decorators/base/property-decorator-config.interface';
 import { DefaultNumberDecoratorConfig } from '../decorators/number.decorator';
 import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, TextboxStringDecoratorConfig } from '../decorators/string.decorator';
+import { EntityArrayDecoratorConfig } from '../decorators/array.decorator';
 import { Entity } from './entity-model.class';
 
 /**
@@ -123,11 +124,12 @@ export abstract class EntityUtilities {
      * Checks if the values on an entity are valid.
      * Also checks all the validators given by the metadata ("required", "maxLength" etc.)
      * @param entity The entity to validate.
+     * @param omit Whether to check for creatiung or editing validity
      * @returns Whether or not the entity is valid.
      */
-    static isEntityValid<EntityType extends Entity>(entity: EntityType): boolean {
+    static isEntityValid<EntityType extends Entity>(entity: EntityType, omit: 'create' | 'edit'): boolean {
         for (const key in entity) {
-            if (!this.isPropertyValid(entity, key)) {
+            if (!this.isPropertyValid(entity, key, omit)) {
                 return false;
             }
         }
@@ -139,7 +141,7 @@ export abstract class EntityUtilities {
      * @param key The name of the property
      * @returns Whether or not the property value is valid
      */
-    private static isPropertyValid<EntityType extends Entity>(entity: EntityType, key: keyof EntityType): boolean {
+    private static isPropertyValid<EntityType extends Entity>(entity: EntityType, key: keyof EntityType, omit: 'create' | 'edit'): boolean {
         const type = this.getPropertyType(entity, key);
         const metadata: PropertyDecoratorConfig = this.getPropertyMetadata(entity, key, type);
         const metadataDefaultString = metadata as DefaultStringDecoratorConfig;
@@ -147,7 +149,15 @@ export abstract class EntityUtilities {
         const metadataAutocompleteString = metadata as AutocompleteStringDecoratorConfig;
         const metadataDefaultNumber = metadata as DefaultNumberDecoratorConfig;
         const objectProperty = entity[key] as unknown as EntityType;
+        const metadataEntityArray = metadata as EntityArrayDecoratorConfig<Entity>;
+        const arrayItems = entity[key] as unknown as [];
 
+        if (metadata.omitForCreate && omit === 'create') {
+            return true;
+        }
+        if (metadata.omitForUpdate && omit === 'edit') {
+            return true;
+        }
         if (metadata.required && !entity[key]) {
             return false;
         }
@@ -216,13 +226,20 @@ export abstract class EntityUtilities {
                 break;
             case DecoratorTypes.OBJECT:
                 for (const parameterKey in objectProperty) {
-                    if (!this.isPropertyValid(objectProperty, parameterKey)) {
+                    if (!this.isPropertyValid(objectProperty, parameterKey, omit)) {
                         return false;
                     }
                 }
                 break;
-            default:
+            case DecoratorTypes.ARRAY_STRING_CHIPS:
+            case DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS:
+            case DecoratorTypes.ARRAY:
+                if (metadataEntityArray.required && !arrayItems.length) {
+                    return false;
+                }
                 break;
+            default:
+                throw new Error(`Could not validate the input because the DecoratorType ${type} is not known`);
         }
         return true;
     }
@@ -311,6 +328,17 @@ export abstract class EntityUtilities {
         }
         else {
             throw new Error('Something went wrong getting the width');
+        }
+    }
+
+    /**
+     * Resets all changes on an entity
+     * @param entity The entity to reset
+     * @param entityPriorChanges The entity before any changes
+     */
+    static resetChangesOnEntity<EntityType extends Entity>(entity: EntityType, entityPriorChanges: EntityType): void {
+        for (const key in entityPriorChanges) {
+            Reflect.set(entity, key, Reflect.get(entityPriorChanges, key));
         }
     }
 }

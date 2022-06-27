@@ -10,7 +10,6 @@
                 [(ngModel)]="entity[propertyKey]"
                 [name]="propertyKey.toString()"
                 #model="ngModel"
-                [required]="metadata.required ? metadata.required : false"
                 [pattern]="metadataDefaultString.regex ? metadataDefaultString.regex : '[\\s\\S]*'"
                 [minlength]="metadataDefaultString.minLength ? metadataDefaultString.minLength : null"
                 [maxlength]="metadataDefaultString.maxLength ? metadataDefaultString.maxLength : null"
@@ -29,7 +28,6 @@
                 #model="ngModel"
                 cdkTextareaAutosize
                 cdkAutosizeMinRows="10"
-                [required]="metadata.required ? metadata.required : false"
                 [minlength]="metadataTextboxString.minLength ? metadataTextboxString.minLength : null"
                 [maxlength]="metadataTextboxString.maxLength ? metadataTextboxString.maxLength : null"
             >
@@ -47,14 +45,12 @@
                 [name]="propertyKey.toString()"
                 #model="ngModel"
                 [matAutocomplete]="auto"
-                (keyup)="filterAutocompleteStrings(entity[propertyKey])"
-                [required]="metadata.required ? metadata.required : false"
                 [minlength]="metadataAutocompleteString.minLength ? metadataAutocompleteString.minLength : null"
                 [maxlength]="metadataAutocompleteString.maxLength ? metadataAutocompleteString.maxLength : null"
                 [pattern]="metadataAutocompleteString.regex ? metadataAutocompleteString.regex : '[\\s\\S]*'"
             />
             <mat-autocomplete #auto="matAutocomplete">
-                <mat-option *ngFor="let value of filteredAutocompleteStrings" [value]="value">
+                <mat-option *ngFor="let value of metadataAutocompleteString.autocompleteValues" [value]="value">
                     {{ value }}
                 </mat-option>
             </mat-autocomplete>
@@ -65,7 +61,7 @@
     <div *ngSwitchCase="DecoratorTypes.STRING_DROPDOWN">
         <mat-form-field>
             <mat-label>{{ metadata.displayName }}</mat-label>
-            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required ? metadata.required : false">
+            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel">
                 <mat-option *ngFor="let value of metadataDropdownString.dropdownValues" [value]="value.value">{{ value.displayName }}</mat-option>
             </mat-select>
             <mat-error>{{ getValidationErrorMessage(model) }}</mat-error>
@@ -77,7 +73,7 @@
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_CHECKBOX">
         <mat-form-field>
-            <mat-checkbox [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required ? metadata.required : false">
+            <mat-checkbox [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel">
                 {{ metadata.displayName }}
             </mat-checkbox>
             <!-- hidden input is needed so that the checkbox can be used inside a mat-form-field -->
@@ -88,7 +84,7 @@
 
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_TOGGLE">
         <mat-form-field>
-            <mat-slide-toggle [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required ? metadata.required : false">
+            <mat-slide-toggle [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel">
                 {{ metadata.displayName }}
             </mat-slide-toggle>
             <!-- hidden input is needed so that the toggle can be used inside a mat-form-field -->
@@ -100,7 +96,7 @@
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_DROPDOWN">
         <mat-form-field>
             <mat-label>{{ metadata.displayName }}</mat-label>
-            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required ? metadata.required : false">
+            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel">
                 <mat-option [value]="undefined">-</mat-option>
                 <mat-option [value]="true">{{ metadataDropdownBoolean.dropdownTrue }}</mat-option>
                 <mat-option [value]="false">{{ metadataDropdownBoolean.dropdownFalse }}</mat-option>
@@ -121,7 +117,6 @@
                 [(ngModel)]="entity[propertyKey]"
                 [name]="propertyKey.toString()"
                 #model="ngModel"
-                [required]="metadata.required ? metadata.required : false"
                 [min]="metadataDefaultNumber.min ? metadataDefaultNumber.min : null"
                 [max]="metadataDefaultNumber.max ? metadataDefaultNumber.max : null"
             />
@@ -132,7 +127,7 @@
     <div *ngSwitchCase="DecoratorTypes.NUMBER_DROPDOWN">
         <mat-form-field>
             <mat-label>{{ metadata.displayName }}</mat-label>
-            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required ? metadata.required : false">
+            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel">
                 <mat-option *ngFor="let value of metadataDropdownNumber.dropdownValues" [value]="value.value">{{ value.displayName }}</mat-option>
             </mat-select>
             <mat-error>{{ getValidationErrorMessage(model) }}</mat-error>
@@ -152,7 +147,7 @@
                 the current key in the loop received by the keyvalue direction as the propertyKey
                 and the getValidationErrorMessage of the current component
             -->
-            <ngx-material-entity-input
+            <internal-property-input
                 *ngFor="let key of getObjectProperties(); let i = index; trackBy: trackByFn"
                 [entity]="objectProperty"
                 [propertyKey]="key"
@@ -161,89 +156,8 @@
                 [hideOmitForEdit]="hideOmitForEdit"
                 class="col-lg-{{ getWidth(objectProperty, key, 'lg') }} col-md-{{ getWidth(objectProperty, key, 'md') }} col-sm-{{ getWidth(objectProperty, key, 'sm') }}"
             >
-            </ngx-material-entity-input>
+            </internal-property-input>
         </div>
-    </div>
-
-    <!-------------------------------------------->
-    <!-------------------Array-------------------->
-    <!-------------------------------------------->
-    <div *ngSwitchCase="DecoratorTypes.ARRAY">
-        <array-entities-table
-            [arrayItems]="entityArrayValues"
-            [metadata]="metadataEntityArray"
-            [getValidationErrorMessage]="getValidationErrorMessage"
-            [omit]="hideOmitForCreate ? 'create' : 'edit'"
-        >
-        </array-entities-table>
-    </div>
-
-    <div *ngSwitchCase="DecoratorTypes.ARRAY_STRING_CHIPS">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-chip-list #chipList
-                [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel"
-                [required]="metadata.required ? metadata.required : false"
-            >
-                <mat-chip *ngFor="let value of stringChipsArrayValues" (removed)="removeStringChipArrayValue(value)">
-                    {{value}}
-                    <button matChipRemove *ngIf="metadataStringChipsArray.deleteHtml" [innerHtml]="metadataStringChipsArray.deleteHtml">
-                    </button>
-                    <button matChipRemove *ngIf="!metadataStringChipsArray.deleteHtml">
-                        <mat-icon>cancel</mat-icon>
-                    </button>
-                </mat-chip>
-                <input matInput
-                    [matChipInputFor]="chipList"
-                    [matChipInputAddOnBlur]="true"
-                    (matChipInputTokenEnd)="addStringChipArrayValue($event)"
-                    [(ngModel)]="chipsInput" [name]="propertyKey.toString()" #chipsModel="ngModel"
-                    [minlength]='metadataStringChipsArray.minLength ? metadataStringChipsArray.minLength : null'
-                    [maxlength]='metadataStringChipsArray.maxLength ? metadataStringChipsArray.maxLength : null'
-                    [pattern]="metadataStringChipsArray.regex ? metadataStringChipsArray.regex : '[\\s\\S]*'"
-                >
-                <mat-error *ngIf="chipsModel.errors">{{getValidationErrorMessage(chipsModel)}}</mat-error>
-            </mat-chip-list>
-            <mat-error *ngIf="!chipsModel.errors">{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
-    </div>
-
-    <div *ngSwitchCase="DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-chip-list #chipList
-                [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel"
-                [required]="metadata.required ? metadata.required : false"
-            >
-                <mat-chip *ngFor="let value of stringChipsArrayValues" (removed)="removeStringChipArrayValue(value)">
-                    {{value}}
-                    <button matChipRemove *ngIf="metadataStringChipsArray.deleteHtml" [innerHtml]="metadataStringChipsArray.deleteHtml">
-                    </button>
-                    <button matChipRemove *ngIf="!metadataStringChipsArray.deleteHtml">
-                        <mat-icon>cancel</mat-icon>
-                    </button>
-                </mat-chip>
-                <input matInput
-                    [matChipInputFor]="chipList"
-                    [matAutocomplete]="auto"
-                    [matChipInputAddOnBlur]="true"
-                    (matChipInputTokenEnd)="addStringChipArrayValue($event)"
-                    (keyup)="filterAutocompleteStrings(chipsInput)"
-                    [(ngModel)]="chipsInput" [name]="propertyKey.toString()" #chipsModel="ngModel"
-                    #chipsElement
-                    [minlength]='metadataStringChipsArray.minLength ? metadataStringChipsArray.minLength : null'
-                    [maxlength]='metadataStringChipsArray.maxLength ? metadataStringChipsArray.maxLength : null'
-                    [pattern]="metadataStringChipsArray.regex ? metadataStringChipsArray.regex : '[\\s\\S]*'"
-                >
-                <mat-error *ngIf="chipsModel.errors">{{getValidationErrorMessage(chipsModel)}}</mat-error>
-            </mat-chip-list>
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event, chipsElement)">
-                <mat-option *ngFor="let value of filteredAutocompleteStrings" [value]="value">
-                  {{value}}
-                </mat-option>
-            </mat-autocomplete>
-            <mat-error *ngIf="!chipsModel.errors">{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
     </div>
 
     <div *ngSwitchDefault>ERROR: The type {{ type }} is not known.</div>

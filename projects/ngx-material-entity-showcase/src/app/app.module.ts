@@ -1,4 +1,4 @@
-import { Injector, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { PropertyInputModule } from 'ngx-material-entity';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -6,6 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { EntitiesModule } from 'ngx-material-entity';
 import { HttpClientModule } from '@angular/common/http';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
     declarations: [
@@ -17,7 +18,8 @@ import { HttpClientModule } from '@angular/common/http';
         AppRoutingModule,
         PropertyInputModule,
         EntitiesModule,
-        HttpClientModule
+        HttpClientModule,
+        MatIconModule
     ],
     providers: [],
     bootstrap: [AppComponent]

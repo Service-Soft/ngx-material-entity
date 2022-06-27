@@ -9,6 +9,10 @@ import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, Dropdo
 import { DropdownBooleanDecoratorConfig } from '../../decorators/boolean.decorator';
 import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig } from '../../decorators/number.decorator';
 import { DefaultObjectDecoratorConfig } from '../../decorators/object.decorator';
+import { AutocompleteStringChipsArrayDecoratorConfig, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from '../../decorators/array.decorator';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { cloneDeep } from 'lodash';
 
 @Component({
     selector: 'ngx-material-entity-input',
@@ -56,6 +60,8 @@ export class PropertyInputComponent<EntityType extends Entity> implements OnInit
     metadataDefaultString!: DefaultStringDecoratorConfig;
     metadataTextboxString!: TextboxStringDecoratorConfig;
     metadataAutocompleteString!: AutocompleteStringDecoratorConfig;
+    autocompleteStrings!: string[];
+    filteredAutocompleteStrings!: string[];
     metadataDropdownString!: DropdownStringDecoratorConfig;
 
     metadataDropdownBoolean!: DropdownBooleanDecoratorConfig;
@@ -66,7 +72,19 @@ export class PropertyInputComponent<EntityType extends Entity> implements OnInit
     metadataDefaultObject!: DefaultObjectDecoratorConfig;
     objectProperty!: Entity;
 
+    metadataEntityArray!: EntityArrayDecoratorConfig<Entity>;
+    entityArrayValues!: Entity[];
+    metadataStringChipsArray!: StringChipsArrayDecoratorConfig;
+    stringChipsArrayValues!: string[];
+    chipsInput: string = '';
+
+    metadataAutocompleteStringChipsArray!: AutocompleteStringChipsArrayDecoratorConfig;
+
     readonly DecoratorTypes = DecoratorTypes;
+
+    getWidth = EntityUtilities.getWidth;
+
+    constructor() {}
 
     /**
      * Helper method needed to recursively generate property input components (used eg. with the object)
@@ -87,7 +105,11 @@ export class PropertyInputComponent<EntityType extends Entity> implements OnInit
 
         this.metadataDefaultString = this.metadata as DefaultStringDecoratorConfig;
         this.metadataTextboxString = this.metadata as TextboxStringDecoratorConfig;
+
         this.metadataAutocompleteString = this.metadata as AutocompleteStringDecoratorConfig;
+        this.autocompleteStrings = this.metadataAutocompleteString.autocompleteValues;
+        this.filteredAutocompleteStrings = cloneDeep(this.autocompleteStrings);
+
         this.metadataDropdownString = this.metadata as DropdownStringDecoratorConfig;
 
         this.metadataDropdownBoolean = this.metadata as DropdownBooleanDecoratorConfig;
@@ -98,27 +120,34 @@ export class PropertyInputComponent<EntityType extends Entity> implements OnInit
         this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfig;
         this.objectProperty = this.entity[this.propertyKey] as unknown as Entity;
 
-        if (!this.getValidationErrorMessage) {
-            this.getValidationErrorMessage = getValidationErrorMessage;
-        }
-    }
-
-    getWidth<T extends Entity>(entity: T, key: keyof T, type: 'lg' | 'md' | 'sm'): number {
-        const metadata = EntityUtilities.getPropertyMetadata(entity, key, EntityUtilities.getPropertyType(entity, key));
-        if (metadata.defaultWidths) {
-            switch (type) {
-                case 'lg':
-                    return metadata.defaultWidths[0];
-                case 'md':
-                    return metadata.defaultWidths[1];
-                case 'sm':
-                    return metadata.defaultWidths[2];
-                default:
-                    throw new Error('Something went wrong getting the lg-width');
+        this.metadataEntityArray = this.metadata as EntityArrayDecoratorConfig<Entity>;
+        if (this.metadataEntityArray.EntityClass) {
+            if (!this.entity[this.propertyKey]) {
+                (this.entity[this.propertyKey] as unknown as Entity[]) = [];
+            }
+            this.entityArrayValues = this.entity[this.propertyKey] as unknown as Entity[];
+            if (this.metadataEntityArray.createInline === undefined) {
+                this.metadataEntityArray.createInline = true;
+            }
+            if (!this.metadataEntityArray.createInline && !this.metadataEntityArray.createDialogData) {
+                this.metadataEntityArray.createDialogData = {
+                    title: 'Add'
+                }
             }
         }
-        else {
-            throw new Error('Something went wrong getting the lg-width');
+
+        this.metadataStringChipsArray = this.metadata as StringChipsArrayDecoratorConfig;
+        if (
+            this.metadataStringChipsArray.itemType
+            && (this.entity[this.propertyKey] as unknown as string[])?.length
+        ) {
+            this.stringChipsArrayValues = (this.entity[this.propertyKey] as unknown as string[]);
+        }
+
+        this.metadataAutocompleteStringChipsArray = this.metadata as AutocompleteStringChipsArrayDecoratorConfig;
+
+        if (!this.getValidationErrorMessage) {
+            this.getValidationErrorMessage = getValidationErrorMessage;
         }
     }
 
@@ -137,6 +166,63 @@ export class PropertyInputComponent<EntityType extends Entity> implements OnInit
                 res.push(property as keyof Entity);
             }
         }
-        return res;
+        return res.sort((a, b) => EntityUtilities.compareOrder(a, b, this.objectProperty));
+    }
+
+    addStringChipArrayValue(event: MatChipInputEvent): void {
+        const value = (event.value || '').trim();
+        if (value) {
+            if (this.metadataStringChipsArray.minLength && value.length < this.metadataStringChipsArray.minLength) {
+                return;
+            }
+            if (this.metadataStringChipsArray.maxLength && value.length > this.metadataStringChipsArray.maxLength) {
+                return;
+            }
+            if (this.metadataStringChipsArray.regex  && !value.match(this.metadataStringChipsArray.regex)) {
+                return;
+            }
+            if (!this.stringChipsArrayValues) {
+                if (!this.entity[this.propertyKey] as unknown as string[]) {
+                    (this.entity[this.propertyKey] as unknown as string[]) = [];
+                }
+                this.stringChipsArrayValues = this.entity[this.propertyKey] as unknown as string[];
+            }
+            this.stringChipsArrayValues.push(value);
+        }
+        event.chipInput!.clear();
+    }
+
+    removeStringChipArrayValue(value: string): void {
+        this.stringChipsArrayValues.splice(this.stringChipsArrayValues.indexOf(value), 1);
+        if (!this.stringChipsArrayValues.length) {
+            (this.entity[this.propertyKey] as unknown) = undefined;
+            this.stringChipsArrayValues = this.entity[this.propertyKey] as unknown as string[];
+        }
+    }
+
+    selected(event: MatAutocompleteSelectedEvent, chipsInput: HTMLInputElement): void {
+        const value = (event.option.viewValue || '').trim();
+        if (this.metadataStringChipsArray.minLength && value.length < this.metadataStringChipsArray.minLength) {
+            return;
+        }
+        if (this.metadataStringChipsArray.maxLength && value.length > this.metadataStringChipsArray.maxLength) {
+            return;
+        }
+        if (this.metadataStringChipsArray.regex  && !value.match(this.metadataStringChipsArray.regex)) {
+            return;
+        }
+        if (!this.stringChipsArrayValues) {
+            if (!this.entity[this.propertyKey] as unknown as string[]) {
+                (this.entity[this.propertyKey] as unknown as string[]) = [];
+            }
+            this.stringChipsArrayValues = this.entity[this.propertyKey] as unknown as string[];
+        }
+        this.stringChipsArrayValues.push(value);
+        chipsInput.value = '';
+    }
+
+    filterAutocompleteStrings(input: unknown): void {
+        const filterValue = (input as string).toLowerCase();
+        this.filteredAutocompleteStrings = this.autocompleteStrings.filter(s => s.toLowerCase().includes(filterValue));
     }
 }

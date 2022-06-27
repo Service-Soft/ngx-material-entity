@@ -42,8 +42,7 @@ class TestEntity extends Entity {
     @object({
         type: Address,
         displayName: 'Adresse',
-        displayStyle: 'inline',
-        sectionTitle: 'Adressdaten'
+        displayStyle: 'inline'
     })
     address!: Address;
 
