@@ -8,7 +8,7 @@
         "build:prod": "ng build ngx-material-entity",
         "test": "jest --config projects/ngx-material-entity/jest.config.json",
         "api": "ts-node api.ts",
-        "lint": "eslint projects/ngx-material-entity",
+        "lint": "eslint projects/ngx-material-entity --max-warnings 0",
         "lint:fix": "eslint projects/ngx-material-entity --fix" 
     },
     "private": true,
