@@ -1,7 +1,7 @@
 <div class="mat-elevation-z8" style="border-radius: 5px;padding: 15px;margin-bottom: 15px;margin-top: 15px;">
 
     <div style="padding-bottom: 10px">
-        <b>{{ metadata.displayName }}</b>
+        <b>{{metadata.displayName}}</b>
     </div>
     <div class="row" *ngIf="metadata.createInline">
         <internal-property-input
@@ -10,7 +10,7 @@
             [propertyKey]="key"
             [hideOmitForCreate]="true"
             [getValidationErrorMessage]="getValidationErrorMessage"
-            class="col-lg-{{ getWidth(arrayItem, key, 'lg') }} col-md-{{ getWidth(arrayItem, key, 'md') }} col-sm-{{ getWidth(arrayItem, key, 'sm') }}"
+            class="col-lg-{{getWidth(arrayItem, key, 'lg')}}col-md-{{getWidth(arrayItem, key, 'md')}}col-sm-{{getWidth(arrayItem, key, 'sm')}}"
         >
         </internal-property-input>
     </div>

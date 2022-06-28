@@ -19,7 +19,11 @@ jobs:
               run: |
                   cd $GITHUB_WORKSPACE/projects/ngx-material-entity
                   npm i
-            # runs 
+            - name: build package
+              run: |
+                  cd $GITHUB_WORKSPACE
+                  npm run build:prod
+            # runs
             - name: Linting
               run: |
                   cd $GITHUB_WORKSPACE

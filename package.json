@@ -8,8 +8,8 @@
         "build:prod": "ng build ngx-material-entity && ncp ./README.md ./dist/ngx-material-entity/README.md",
         "test": "jest --config projects/ngx-material-entity/jest.config.json",
         "api": "ts-node api.ts",
-        "lint": "eslint projects/ngx-material-entity --max-warnings 0",
-        "lint:fix": "eslint projects/ngx-material-entity --fix"
+        "lint": "eslint projects --max-warnings 0",
+        "lint:fix": "eslint projects --fix"
     },
     "private": true,
     "dependencies": {

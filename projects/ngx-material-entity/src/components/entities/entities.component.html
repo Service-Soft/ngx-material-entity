@@ -1,8 +1,8 @@
-<h1 class="title">{{ entitiesData.baseData.title }}</h1>
+<h1 class="title">{{entitiesData.baseData.title}}</h1>
 
 <div class="row">
     <mat-form-field class="col-lg-8 col-md-6 col-sm-12">
-        <mat-label>{{ entitiesData.baseData.searchLabel ? entitiesData.baseData.searchLabel : 'Search' }}</mat-label>
+        <mat-label>{{entitiesData.baseData.searchLabel ? entitiesData.baseData.searchLabel : 'Search'}}</mat-label>
         <input matInput (keyup)="applyFilter($event)" />
     </mat-form-field>
     <div
@@ -15,12 +15,12 @@
         [class.col-sm-12]="!entitiesData.baseData.allowCreate"
     >
         <button class="actions-button" [matMenuTriggerFor]="menu" mat-raised-button>
-            {{ entitiesData.baseData.multiSelectLabel ? entitiesData.baseData.multiSelectLabel : 'Actions' }}
+            {{entitiesData.baseData.multiSelectLabel ? entitiesData.baseData.multiSelectLabel : 'Actions'}}
         </button>
     </div>
     <mat-menu #menu="matMenu">
         <button *ngFor="let action of entitiesData.baseData.multiSelectActions" [disabled]="multiActionDisabled(action)" (click)="runMultiAction(action)" mat-menu-item>
-            {{ action.displayName }}
+            {{action.displayName}}
         </button>
     </mat-menu>
 
@@ -34,7 +34,7 @@
         [class.col-sm-12]="!entitiesData.baseData.multiSelectActions?.length"
     >
         <button class="create-button" (click)="createEntity()" mat-raised-button>
-            {{ entitiesData.baseData.createButtonLabel ? entitiesData.baseData.createButtonLabel : 'Create' }}
+            {{entitiesData.baseData.createButtonLabel ? entitiesData.baseData.createButtonLabel : 'Create'}}
         </button>
     </div>
 </div>
@@ -53,10 +53,10 @@
 
         <ng-container *ngFor="let dCol of entitiesData.baseData.displayColumns" [matColumnDef]="dCol.displayName">
             <mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{ dCol.displayName }}
+                {{dCol.displayName}}
             </mat-header-cell>
             <mat-cell class="entity" [class.enabled]="entitiesData.baseData.allowEdit?.(entity)" (click)="editEntity(entity)" *matCellDef="let entity">
-                {{ dCol.value(entity) }}
+                {{dCol.value(entity)}}
             </mat-cell>
         </ng-container>
 

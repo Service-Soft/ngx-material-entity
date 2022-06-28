@@ -1,22 +1,22 @@
-<h2 mat-dialog-title *ngIf="data.title">{{ data.title }}</h2>
+<h2 mat-dialog-title *ngIf="data.title">{{data.title}}</h2>
 
 <mat-dialog-content>
-    <p *ngFor="let paragraph of data.text">{{ paragraph }}</p>
+    <p *ngFor="let paragraph of data.text">{{paragraph}}</p>
     <div *ngIf="data.requireConfirmation" class="checkbox-wrapper">
         <mat-checkbox [(ngModel)]="confirm" name="confirm">
-            {{ data.confirmationText }}
+            {{data.confirmationText}}
         </mat-checkbox>
     </div>
 </mat-dialog-content>
 
 <mat-dialog-actions>
     <button *ngIf="data.type === 'delete'" mat-raised-button color="warn" (click)="confirmAction()" [disabled]="data.requireConfirmation && !confirm" class="confirm-button">
-        {{ data.confirmButtonLabel ? data.confirmButtonLabel : 'Delete' }}
+        {{data.confirmButtonLabel ? data.confirmButtonLabel : 'Delete'}}
     </button>
     <button *ngIf="data.type !== 'delete'" mat-raised-button (click)="confirmAction()" [disabled]="data.requireConfirmation && !confirm" class="confirm-button">
-        {{ data.confirmButtonLabel ? data.confirmButtonLabel : data.type === 'info-only' ? 'Ok' : 'Confirm' }}
+        {{data.confirmButtonLabel ? data.confirmButtonLabel : data.type === 'info-only' ? 'Ok' : 'Confirm'}}
     </button>
     <button mat-raised-button (click)="cancel()" class="cancel-button">
-        {{ data.cancelButtonLabel ? data.cancelButtonLabel : 'Cancel' }}
+        {{data.cancelButtonLabel ? data.cancelButtonLabel : 'Cancel'}}
     </button>
 </mat-dialog-actions>

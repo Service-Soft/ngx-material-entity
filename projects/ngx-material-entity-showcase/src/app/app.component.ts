@@ -10,8 +10,6 @@ import { PersonService } from '../services/person.service';
 })
 export class AppComponent {
 
-    constructor(private readonly personService: PersonService) {}
-
     entitiesData: EntitiesData<Person> = {
         baseData: {
             title: 'Personen',
@@ -22,6 +20,7 @@ export class AppComponent {
                 },
                 {
                     displayName: 'Adresse',
+                    // eslint-disable-next-line max-len
                     value: (entity: Person) => `${entity.address.street} ${entity.address.number}, ${entity.address.postcode} ${entity.address.city}`
                 }
             ],
@@ -30,15 +29,16 @@ export class AppComponent {
             multiSelectActions: [
                 {
                     displayName: 'Logge Vornamen',
+                    // eslint-disable-next-line no-console
                     action: (entities: Person[]) => entities.forEach(e => console.log(e.firstname))
                 },
                 {
                     displayName: 'Löschen',
                     action: (entities: Person[]) => entities.forEach(e => this.personService.delete(e.id)),
-                    requireConfirmDialog: (entities: Person[]) => true
+                    requireConfirmDialog: () => true
                 }
             ],
-            allowDelete: (entity: Person) => false
+            allowDelete: () => false
         },
         createDialogData: {
             title: 'Person erstellen'
@@ -48,4 +48,6 @@ export class AppComponent {
             deleteRequiresConfirmDialog: false,
         }
     }
+
+    constructor(private readonly personService: PersonService) {}
 }
