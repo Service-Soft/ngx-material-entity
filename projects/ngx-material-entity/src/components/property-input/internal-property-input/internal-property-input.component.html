@@ -4,7 +4,7 @@
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.STRING">
         <mat-form-field>
-            <mat-label>{{ metadata.displayName }}</mat-label>
+            <mat-label>{{metadata.displayName}}</mat-label>
             <input
                 matInput
                 [(ngModel)]="entity[propertyKey]"
@@ -14,13 +14,13 @@
                 [minlength]="metadataDefaultString.minLength ? metadataDefaultString.minLength : null"
                 [maxlength]="metadataDefaultString.maxLength ? metadataDefaultString.maxLength : null"
             />
-            <mat-error>{{ getValidationErrorMessage(model) }}</mat-error>
+            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
         </mat-form-field>
     </div>
 
     <div *ngSwitchCase="DecoratorTypes.STRING_TEXTBOX">
         <mat-form-field>
-            <mat-label>{{ metadata.displayName }}</mat-label>
+            <mat-label>{{metadata.displayName}}</mat-label>
             <textarea
                 matInput
                 [(ngModel)]="entity[propertyKey]"
@@ -32,13 +32,13 @@
                 [maxlength]="metadataTextboxString.maxLength ? metadataTextboxString.maxLength : null"
             >
             </textarea>
-            <mat-error>{{ getValidationErrorMessage(model) }}</mat-error>
+            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
         </mat-form-field>
     </div>
 
     <div *ngSwitchCase="DecoratorTypes.STRING_AUTOCOMPLETE">
         <mat-form-field>
-            <mat-label>{{ metadata.displayName }}</mat-label>
+            <mat-label>{{metadata.displayName}}</mat-label>
             <input
                 matInput
                 [(ngModel)]="entity[propertyKey]"
@@ -51,20 +51,20 @@
             />
             <mat-autocomplete #auto="matAutocomplete">
                 <mat-option *ngFor="let value of metadataAutocompleteString.autocompleteValues" [value]="value">
-                    {{ value }}
+                    {{value}}
                 </mat-option>
             </mat-autocomplete>
-            <mat-error>{{ getValidationErrorMessage(model) }}</mat-error>
+            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
         </mat-form-field>
     </div>
 
     <div *ngSwitchCase="DecoratorTypes.STRING_DROPDOWN">
         <mat-form-field>
-            <mat-label>{{ metadata.displayName }}</mat-label>
+            <mat-label>{{metadata.displayName}}</mat-label>
             <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel">
-                <mat-option *ngFor="let value of metadataDropdownString.dropdownValues" [value]="value.value">{{ value.displayName }}</mat-option>
+                <mat-option *ngFor="let value of metadataDropdownString.dropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
             </mat-select>
-            <mat-error>{{ getValidationErrorMessage(model) }}</mat-error>
+            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
         </mat-form-field>
     </div>
 
@@ -74,34 +74,34 @@
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_CHECKBOX">
         <mat-form-field>
             <mat-checkbox [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel">
-                {{ metadata.displayName }}
+                {{metadata.displayName}}
             </mat-checkbox>
             <!-- hidden input is needed so that the checkbox can be used inside a mat-form-field -->
             <textarea matInput hidden></textarea>
-            <mat-error>{{ getValidationErrorMessage(model) }}</mat-error>
+            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
         </mat-form-field>
     </div>
 
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_TOGGLE">
         <mat-form-field>
             <mat-slide-toggle [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel">
-                {{ metadata.displayName }}
+                {{metadata.displayName}}
             </mat-slide-toggle>
             <!-- hidden input is needed so that the toggle can be used inside a mat-form-field -->
             <textarea matInput hidden></textarea>
-            <mat-error>{{ getValidationErrorMessage(model) }}</mat-error>
+            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
         </mat-form-field>
     </div>
 
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_DROPDOWN">
         <mat-form-field>
-            <mat-label>{{ metadata.displayName }}</mat-label>
+            <mat-label>{{metadata.displayName}}</mat-label>
             <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel">
                 <mat-option [value]="undefined">-</mat-option>
-                <mat-option [value]="true">{{ metadataDropdownBoolean.dropdownTrue }}</mat-option>
-                <mat-option [value]="false">{{ metadataDropdownBoolean.dropdownFalse }}</mat-option>
+                <mat-option [value]="true">{{metadataDropdownBoolean.dropdownTrue}}</mat-option>
+                <mat-option [value]="false">{{metadataDropdownBoolean.dropdownFalse}}</mat-option>
             </mat-select>
-            <mat-error>{{ getValidationErrorMessage(model) }}</mat-error>
+            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
         </mat-form-field>
     </div>
 
@@ -110,7 +110,7 @@
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.NUMBER">
         <mat-form-field>
-            <mat-label>{{ metadata.displayName }}</mat-label>
+            <mat-label>{{metadata.displayName}}</mat-label>
             <input
                 matInput
                 type="number"
@@ -120,17 +120,17 @@
                 [min]="metadataDefaultNumber.min ? metadataDefaultNumber.min : null"
                 [max]="metadataDefaultNumber.max ? metadataDefaultNumber.max : null"
             />
-            <mat-error>{{ getValidationErrorMessage(model) }}</mat-error>
+            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
         </mat-form-field>
     </div>
 
     <div *ngSwitchCase="DecoratorTypes.NUMBER_DROPDOWN">
         <mat-form-field>
-            <mat-label>{{ metadata.displayName }}</mat-label>
+            <mat-label>{{metadata.displayName}}</mat-label>
             <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel">
-                <mat-option *ngFor="let value of metadataDropdownNumber.dropdownValues" [value]="value.value">{{ value.displayName }}</mat-option>
+                <mat-option *ngFor="let value of metadataDropdownNumber.dropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
             </mat-select>
-            <mat-error>{{ getValidationErrorMessage(model) }}</mat-error>
+            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
         </mat-form-field>
     </div>
 
@@ -138,7 +138,7 @@
     <!-------------------Object------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.OBJECT">
-        <b>{{ metadataDefaultObject.displayName }}</b>
+        <b>{{metadataDefaultObject.displayName}}</b>
         <!-- iterates over the object properties -->
         <div class="row">
             <!--
@@ -154,11 +154,11 @@
                 [getValidationErrorMessage]="getValidationErrorMessage"
                 [hideOmitForCreate]="hideOmitForCreate"
                 [hideOmitForEdit]="hideOmitForEdit"
-                class="col-lg-{{ getWidth(objectProperty, key, 'lg') }} col-md-{{ getWidth(objectProperty, key, 'md') }} col-sm-{{ getWidth(objectProperty, key, 'sm') }}"
+                class="col-lg-{{getWidth(objectProperty, key, 'lg')}}col-md-{{getWidth(objectProperty, key, 'md')}}col-sm-{{getWidth(objectProperty, key, 'sm')}}"
             >
             </internal-property-input>
         </div>
     </div>
 
-    <div *ngSwitchDefault>ERROR: The type {{ type }} is not known.</div>
+    <div *ngSwitchDefault>ERROR: The type {{type}}is not known.</div>
 </div>

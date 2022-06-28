@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ data.createDialogData.title }}</h2>
+<h2 mat-dialog-title>{{data.createDialogData.title}}</h2>
 
 <mat-dialog-content>
     <form #form="ngForm" class="row">
@@ -8,7 +8,7 @@
             [propertyKey]="key"
             [hideOmitForCreate]="true"
             [getValidationErrorMessage]="data.getValidationErrorMessage"
-            class="col-lg-{{ getWidth(data.entity, key, 'lg') }} col-md-{{ getWidth(data.entity, key, 'md') }} col-sm-{{ getWidth(data.entity, key, 'sm') }}"
+            class="col-lg-{{getWidth(data.entity, key, 'lg')}}col-md-{{getWidth(data.entity, key, 'md')}}col-sm-{{getWidth(data.entity, key, 'sm')}}"
         >
         </internal-property-input>
     </form>
@@ -16,9 +16,9 @@
 
 <mat-dialog-actions>
     <button mat-raised-button (click)="create()" [disabled]="!EntityUtilities.isEntityValid(data.entity, 'create')">
-        {{ data.createDialogData.createButtonLabel ? data.createDialogData.createButtonLabel : 'Add' }}
+        {{data.createDialogData.createButtonLabel ? data.createDialogData.createButtonLabel : 'Add'}}
     </button>
     <button mat-raised-button (click)="cancel()" class="cancel-button">
-        {{ data.createDialogData.cancelButtonLabel ? data.createDialogData.cancelButtonLabel : 'Cancel' }}
+        {{data.createDialogData.cancelButtonLabel ? data.createDialogData.cancelButtonLabel : 'Cancel'}}
     </button>
 </mat-dialog-actions>
