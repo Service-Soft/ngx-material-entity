@@ -2,14 +2,22 @@
     "name": "ngx-material-entity",
     "version": "0.0.0",
     "scripts": {
-        "ng": "ng",
-        "start": "ng serve",
-        "build": "ng build --watch",
-        "build:prod": "ng build ngx-material-entity && ncp ./README.md ./dist/ngx-material-entity/README.md",
+        "stack": "run-s clear:dist stack:only",
+        "showcase": "ng serve ngx-material-entity-showcase",
+        "build:watch": "ng build ngx-material-entity --watch",
+        "api": "nodemon --watch api-data.ts --watch api.ts api.ts",
         "test": "jest --config projects/ngx-material-entity/jest.config.json",
-        "api": "ts-node api.ts",
         "lint": "eslint projects --max-warnings 0",
-        "lint:fix": "eslint projects --fix"
+        "lint:fix": "eslint projects --fix",
+        "stack:only": "concurrently --kill-others 'npm run build:watch' 'run-s waitOn:build api' 'run-s waitOn:build showcase'",
+        "clear:dist": "rimraf dist/ngx-material-entity",
+        "waitOn:build": "wait-on dist/ngx-material-entity",
+        "build": "ng build ngx-material-entity",
+        "build:prod": "run-s build copyToDist",
+        "copyToDist": "run-s copyToDist:readme copyToDist:contributing copyToDist:license",
+        "copyToDist:readme": "ncp ./README.md ./dist/ngx-material-entity/README.md",
+        "copyToDist:contributing": "ncp ./CONTRIBUTING.md ./dist/ngx-material-entity/CONTRIBUTING.md",
+        "copyToDist:license": "ncp ./LICENSE.md ./dist/ngx-material-entity/LICENSE.md"
     },
     "private": true,
     "dependencies": {
@@ -45,6 +53,7 @@
         "@types/node": "^12.11.1",
         "@typescript-eslint/eslint-plugin": "5.27.1",
         "@typescript-eslint/parser": "5.27.1",
+        "concurrently": "^7.2.2",
         "eslint": "^8.17.0",
         "jasmine-core": "~4.0.0",
         "json-server": "^0.17.0",
@@ -55,8 +64,10 @@
         "karma-jasmine-html-reporter": "~1.7.0",
         "ncp": "^2.0.0",
         "ng-packagr": "^13.0.0",
+        "nodemon": "^2.0.18",
+        "npm-run-all": "^4.1.5",
         "ts-jest": "^28.0.4",
-        "ts-node": "^10.8.1",
-        "typescript": "~4.6.2"
+        "typescript": "~4.6.2",
+        "wait-on": "^6.0.1"
     }
 }

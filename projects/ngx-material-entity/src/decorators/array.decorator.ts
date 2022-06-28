@@ -28,11 +28,11 @@ export interface ArrayTableDisplayColumn<EntityType extends Entity> {
     /**
      * The name inside the header.
      */
-     displayName: string,
-     /**
-      * A method to get the value inside an row
-      */
-     value: (entity: EntityType) => string
+    displayName: string,
+    /**
+     * A method to get the value inside an row
+     */
+    value: (entity: EntityType) => string
 }
 
 /**
