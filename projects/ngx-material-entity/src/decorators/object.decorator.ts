@@ -30,10 +30,6 @@ abstract class ObjectDecoratorConfig extends PropertyDecoratorConfig {
 
 export class DefaultObjectDecoratorConfig extends ObjectDecoratorConfig {
     override displayStyle: 'inline';
-    /**
-     * (optional) The title of the section containing all object properties. Defaults to the display name.
-     */
-    sectionTitle?: string;
 
     constructor(metadata: DefaultObjectDecoratorConfig) {
         super(
@@ -42,10 +38,10 @@ export class DefaultObjectDecoratorConfig extends ObjectDecoratorConfig {
             metadata.required,
             metadata.omitForCreate,
             metadata.omitForUpdate,
-            metadata.defaultWidths
+            metadata.defaultWidths,
+            metadata.order
         );
         this.displayStyle = metadata.displayStyle;
         this.type = metadata.type;
-        this.sectionTitle = metadata.sectionTitle;
     }
 }

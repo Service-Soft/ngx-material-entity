@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>
+    {{data.editDialogData.title(data.entity)}}
+    <button *ngIf="data.allowDelete(data.entity)" mat-raised-button (click)="delete()" color="warn" class="delete-button" tabindex="-1">
+        {{data.editDialogData.deleteButtonLabel ? data.editDialogData.deleteButtonLabel : 'Delete'}}
+    </button>
+</h2>
+
+<mat-dialog-content>
+    <form #form="ngForm" class="row">
+        <ngx-mat-entity-input
+            *ngFor="let key of entityKeys"
+            [entity]="data.entity"
+            [propertyKey]="key"
+            [hideOmitForEdit]="true"
+            class="col-lg-{{getWidth(data.entity, key, 'lg')}} col-md-{{getWidth(data.entity, key, 'md')}} col-sm-{{getWidth(data.entity, key, 'sm')}}"
+        >
+        </ngx-mat-entity-input>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-raised-button (click)="edit()" [disabled]="!EntityUtilities.isEntityValid(data.entity, 'edit') || !EntityUtilities.dirty(data.entity, entityPriorChanges)">
+        {{data.editDialogData.confirmButtonLabel ? data.editDialogData.confirmButtonLabel : 'Save'}}
+    </button>
+    <button mat-raised-button (click)="cancel()" class="cancel-button">
+        {{data.editDialogData.cancelButtonLabel ? data.editDialogData.cancelButtonLabel : 'Cancel'}}
+    </button>
+</mat-dialog-actions>

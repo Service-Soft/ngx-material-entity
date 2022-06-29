@@ -1,21 +1,20 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { DecoratorTypes } from '../../../decorators/base/decorator-types.enum';
+import { PropertyDecoratorConfig } from '../../../decorators/base/property-decorator-config.interface';
+import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig } from '../../../decorators/number.decorator';
+import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, DropdownStringDecoratorConfig, TextboxStringDecoratorConfig } from '../../../decorators/string.decorator';
+import { DropdownBooleanDecoratorConfig } from '../../../decorators/boolean.decorator';
+import { Entity } from '../../../classes/entity-model.class';
+import { DefaultObjectDecoratorConfig } from '../../../decorators/object.decorator';
+import { EntityUtilities } from '../../../classes/entity-utilities.class';
 import { NgModel } from '@angular/forms';
-import { EntityUtilities } from '../../classes/entity-utilities.class';
-import { Entity } from '../../classes/entity-model.class';
-import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
-import { PropertyDecoratorConfig } from '../../decorators/base/property-decorator-config.interface';
-import { getValidationErrorMessage } from '../get-validation-error-message.function';
-import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, DropdownStringDecoratorConfig, TextboxStringDecoratorConfig } from '../../decorators/string.decorator';
-import { DropdownBooleanDecoratorConfig } from '../../decorators/boolean.decorator';
-import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig } from '../../decorators/number.decorator';
-import { DefaultObjectDecoratorConfig } from '../../decorators/object.decorator';
 
 @Component({
-    selector: 'ngx-material-entity-input',
-    templateUrl: './property-input.component.html',
-    styleUrls: ['./property-input.component.scss']
+    selector: 'ngx-mat-entity-internal-input',
+    templateUrl: './internal-input.component.html',
+    styleUrls: ['./internal-input.component.scss']
 })
-export class PropertyInputComponent<EntityType extends Entity> implements OnInit {
+export class NgxMatEntityInternalInputComponent<EntityType extends Entity> implements OnInit {
     /**
      * The entity on which the property exists. Used in conjuction with the "propertyKey"
      * to determine the property for which the input should be generated.
@@ -30,12 +29,6 @@ export class PropertyInputComponent<EntityType extends Entity> implements OnInit
     propertyKey!: keyof EntityType;
 
     /**
-     * (optional) A custom function to generate the error-message for invalid inputs.
-     */
-    @Input()
-    getValidationErrorMessage!: (model: NgModel) => string;
-
-    /**
      * Whether to hide a value if it is omitted for creation.
      * Is used internally for the object property.
      */
@@ -48,6 +41,12 @@ export class PropertyInputComponent<EntityType extends Entity> implements OnInit
      */
     @Input()
     hideOmitForEdit?: boolean;
+
+    /**
+     * (optional) A custom function to generate the error-message for invalid inputs.
+     */
+    @Input()
+    getValidationErrorMessage!: (model: NgModel) => string;
 
     type!: DecoratorTypes;
 
@@ -67,6 +66,8 @@ export class PropertyInputComponent<EntityType extends Entity> implements OnInit
     objectProperty!: Entity;
 
     readonly DecoratorTypes = DecoratorTypes;
+
+    getWidth = EntityUtilities.getWidth;
 
     /**
      * Helper method needed to recursively generate property input components (used eg. with the object)
@@ -97,29 +98,6 @@ export class PropertyInputComponent<EntityType extends Entity> implements OnInit
 
         this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfig;
         this.objectProperty = this.entity[this.propertyKey] as unknown as Entity;
-
-        if (!this.getValidationErrorMessage) {
-            this.getValidationErrorMessage = getValidationErrorMessage;
-        }
-    }
-
-    getWidth<T extends Entity>(entity: T, key: keyof T, type: 'lg' | 'md' | 'sm'): number {
-        const metadata = EntityUtilities.getPropertyMetadata(entity, key, EntityUtilities.getPropertyType(entity, key));
-        if (metadata.defaultWidths) {
-            switch (type) {
-                case 'lg':
-                    return metadata.defaultWidths[0];
-                case 'md':
-                    return metadata.defaultWidths[1];
-                case 'sm':
-                    return metadata.defaultWidths[2];
-                default:
-                    throw new Error('Something went wrong getting the lg-width');
-            }
-        }
-        else {
-            throw new Error('Something went wrong getting the lg-width');
-        }
     }
 
     getObjectProperties(): (keyof Entity)[] {
@@ -127,16 +105,16 @@ export class PropertyInputComponent<EntityType extends Entity> implements OnInit
         for (const property in this.objectProperty) {
             const metadata = EntityUtilities.getPropertyMetadata(
                 this.objectProperty,
-                property as keyof Entity,
-                EntityUtilities.getPropertyType(this.objectProperty, property as keyof Entity)
+                 property as keyof Entity,
+                 EntityUtilities.getPropertyType(this.objectProperty, property as keyof Entity)
             );
             if (
                 !(this.hideOmitForCreate && metadata.omitForCreate)
-                && !(this.hideOmitForEdit && metadata.omitForUpdate)
+                 && !(this.hideOmitForEdit && metadata.omitForUpdate)
             ) {
                 res.push(property as keyof Entity);
             }
         }
-        return res;
+        return res.sort((a, b) => EntityUtilities.compareOrder(a, b, this.objectProperty));
     }
 }

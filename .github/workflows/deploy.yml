@@ -1,7 +1,10 @@
 name: Deploy
 
 on:
-    workflow_dispatch:
+    pull_request:
+        types: [closed]
+        branches:
+            - release
 
 jobs:
     build:

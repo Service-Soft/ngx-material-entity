@@ -2,8 +2,8 @@
 Create Entities and define how to display them directly on their properties.
 <br>
 Can even generate complete and highly customizable CRUD-Tables for them.
-<br>
-<br>
+
+[![CI/CD](https://github.com/tim-fabian/ngx-material-entity/actions/workflows/main.yml/badge.svg?branch=release)](https://github.com/tim-fabian/ngx-material-entity/actions/workflows/main.yml)
 
 # Table of Contents
 - [NgxMaterialEntity](#ngxmaterialentity)
@@ -27,30 +27,27 @@ Can even generate complete and highly customizable CRUD-Tables for them.
   - [@boolean checkbox](#boolean-checkbox)
   - [@boolean dropdown](#boolean-dropdown)
   - [@object default](#object-default)
-- [PropertyInput Configuration](#propertyinput-configuration)
-- [Entities Configuration](#entities-configuration)
+  - [@array](#array)
+  - [@array entity](#array-entity)
+  - [@array string chips](#array-string-chips)
+  - [@array string chips autocomplete](#array-string-chips-autocomplete)
+- [NgxMatEntityInput Configuration](#ngxmatentityinput-configuration)
+- [NgxMatEntityTable Configuration](#ngxmatentitytable-configuration)
   - [Display Columns](#display-columns)
   - [Multiselect Actions](#multiselect-actions)
-<br>
-<br>
 
 # Requirements
 This package relies on the [angular material library](https://material.angular.io/guide/getting-started) to render its components.
 <br>
 It also uses [bootstrap](https://getbootstrap.com/) for responsive design.
-<br>
-<br>
 
 # Basic Usage
 ## Create your entity
 Create your entity and define Metadata directly on the properties:
-<div style="background-color: #d9d28d; color: black; padding: 10px; border-radius: 7px; border: 2px solid #d4c533">
-    IMPORTANT:
-    <br>
-    You need to always create an entity with the "new" keyword.
-    Otherwise the metadata on the properties won't get generated.
-</div>
-<br>
+> :warning: IMPORTANT:
+> <br>
+> You need to always create an entity with the "new" keyword.
+> Otherwise the metadata on the properties won't get generated.
 
 ```typescript
 import { Entity, EntityUtilities, string } from 'ngx-material-entity';
@@ -76,18 +73,16 @@ export class MyEntity extends Entity {
 }
 ```
 For a list of all decorators and configuration options see [PropertyDecorators](#propertydecorators).
-<br>
-<br>
 
 ## Use the input for your entity property
-You can import the ```PropertyInputModule``` anywhere in your code:
+You can import the ```NgxMatEntityInputModule``` anywhere in your code:
 
 ```typescript
-import { PropertyInputModule } from 'ngx-material-entity';
+import { NgxMatEntityInputModule } from 'ngx-material-entity';
 
 ...
     imports: [
-        PropertyInputModule
+        NgxMatEntityInputModule
     ]
 ...
 ```
@@ -95,17 +90,15 @@ import { PropertyInputModule } from 'ngx-material-entity';
 In the html you can then define:
 
 ```html
-<ngx-material-entity-input
+<ngx-mat-entity-input
     [entity]="myEntity"
     [propertyKey]="myString">
-</ngx-material-entity-input>
+</ngx-mat-entity-input>
 ```
 
 This snippet automatically generates an material input for "myString" based on the metadata you defined earlier.
 <br>
 For a list of all configuration options for the input see [PropertyInput Configuration](#propertyinput-configuration).
-<br>
-<br>
 
 ## Generate a complete CRUD Table for your entity
 ### Create a Service for your entity
@@ -124,18 +117,16 @@ export class MyEntityService extends EntityService<MyEntity> {
     }
 }
 ```
-<br>
-<br>
 
 ### Define the CRUD-Element
-Import the ```EntitiesModule``` anywhere in your code:
+Import the `NgxMatEntityTableModule` anywhere in your code:
 
 ```typescript
-import { EntitiesModule } from 'ngx-material-entity';
+import { NgxMatEntityTableModule } from 'ngx-material-entity';
 
 ...
     imports: [
-        EntitiesModule
+        NgxMatEntityTableModule
     ]
 ...
 ```
@@ -143,23 +134,19 @@ import { EntitiesModule } from 'ngx-material-entity';
 In the html you can then define:
 
 ```html
-<ngx-material-entities
+<ngx-mat-entity-table
     [displayColumns]="displayColumns"
     [title]="title"
     [EntityServiceClass]="MyEntityService"
     [EntityClass]="MyEntity"
     [multiSelectActions]="multiSelectActions"
     [createDialogTitle]="'Custom Create Dialog Title'">
-</ngx-material-entities>
+</ngx-mat-entity-table>
 ```
-For a list of all configuration options see [Entities Configuration](#entities-configuration).
-<br>
-<br>
+For a list of all configuration options see [NgxMatEntityTable Configuration](#ngxmatentitytable-configuration).
 
 # PropertyDecorators
 The property decorators contain all the metadata of an entity property.
-<br>
-<br>
 
 ## base
 Contains information that is universally defined on every property.
@@ -197,10 +184,14 @@ omitForUpdate?: boolean;
  * @var thirdValue: col-sm-{{thirdValue}}
  */
 defaultWidths?: [cols, cols, cols];
+/**
+ * Specifies order of the input property when used inside the default create or edit dialog.
+ * Ordering is ascending
+ * @default -1 (sets this property at the end)
+ */
+order?: number;
 ```
 For more information regarding the defaultWidths see the bootstrap guide about the [Grid system](https://getbootstrap.com/docs/5.0/layout/grid/).
-<br>
-<br>
 
 ## @string default
 The "default" display of a string value. Inside a single line mat-input.
@@ -220,8 +211,6 @@ maxLength?: number;
  */
 regex?: RegExp;
 ```
-<br>
-<br>
 
 ## @string dropdown
 Displays a string as a dropdown where the user can input one of the defined dropdownValues.
@@ -234,8 +223,6 @@ override displayStyle: 'dropdown';
  */
 dropdownValues: { displayName: string, value: string }[];
 ```
-<br>
-<br>
 
 ## @string textbox
 Displays a string as a textbox.
@@ -251,8 +238,6 @@ minLength?: number;
  */
 maxLength?: number;
 ```
-<br>
-<br>
 
 ## @string autocomplete
 Just like the default @string, but the user has additional autocomplete values to quickly input data.
@@ -276,8 +261,6 @@ maxLength?: number;
  */
 regex?: RegExp;
 ```
-<br>
-<br>
 
 ## @number default
 The "default" display of a number value. Inside a single line mat-input.
@@ -293,8 +276,6 @@ min?: number;
  */
 max?: number;
 ```
-<br>
-<br>
 
 ## @number dropdown
 Displays the numbers in a dropdown
@@ -307,8 +288,6 @@ override displayStyle: 'dropdown';
  */
 dropdownValues: { displayName: string, value: number }[];
 ```
-<br>
-<br>
 
 ## @boolean toggle
 Displays the boolean value as a MatSlideToggle
@@ -316,8 +295,6 @@ Displays the boolean value as a MatSlideToggle
 ```typescript
 override displayStyle: 'toggle';
 ```
-<br>
-<br>
 
 ## @boolean checkbox
 Displays the boolean value as a MatCheckbox
@@ -325,8 +302,6 @@ Displays the boolean value as a MatCheckbox
 ```typescript
 override displayStyle: 'checkbox';
 ```
-<br>
-<br>
 
 ## @boolean dropdown
 Displays the boolean value as a MatCheckbox
@@ -344,8 +319,6 @@ dropdownTrue: string | { (args: unknown): string };
  */
 dropdownFalse: string | { (args: unknown): string };
 ```
-<br>
-<br>
 
 ## @object default
 Displays an entity object inline.
@@ -357,10 +330,133 @@ override displayStyle: 'inline';
  */
 sectionTitle?: string;
 ```
-<br>
-<br>
 
-# PropertyInput Configuration
+## @array
+```typescript
+/**
+ * Base definition for the @array metadata
+ */
+abstract class ArrayDecoratorConfig extends PropertyDecoratorConfig {
+    /**
+     * How to display the items
+     */
+    displayStyle!: 'table' | 'chips';
+
+    /**
+     * The type of the items inside the array
+     */
+    itemType!: DecoratorTypes;
+
+    /**
+     * The error-message to display when the array is required but contains no values
+     */
+    missingErrorMessage?: string;
+}
+```
+## @array entity
+```typescript
+/**
+ * Definition for an array of Entities
+ */
+export class EntityArrayDecoratorConfig<EntityType extends Entity> extends ArrayDecoratorConfig {
+    override itemType: DecoratorTypes.OBJECT;
+    override displayStyle: 'table';
+
+    /**
+     * The EntityClass used for generating the create inputs
+     */
+    EntityClass!: new (entity?: EntityType) => EntityType;
+
+    /**
+     * The definition of the columns to display. Consists of the displayName to show in the header of the row
+     * and the value, which is a function that generates the value to display inside a column
+     */
+    displayColumns: ArrayTableDisplayColumn<EntityType>[];
+
+    /**
+     * The data for the add-item-dialog.
+     * Can be omitted when adding items inline.
+     */
+    createDialogData?: CreateDialogData
+
+    /**
+     * Whether or not the form for adding items to the array
+     * should be displayed inline.
+     * @default true
+     */
+    createInline?: boolean
+}
+```
+
+## @array string chips
+```typescript
+/**
+ * Definition for an array of strings displayed as a chips list
+ */
+export class StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
+    override itemType: DecoratorTypes.STRING;
+    override displayStyle: 'chips';
+
+    /**
+     * The html inside the delete-button.
+     * Please note that custom tags such as <mat-icon></mat-icon>
+     * need to be defined as known elements, otherwise the sanitizer will remove them.
+     * You can however work around this by using `<span class="material-icons"></span>`
+     * @default <mat-icon>cancel</mat-icon>
+     */
+    deleteHtml?: string
+    /**
+     * (optional) The minimum required length of the string
+     */
+    minLength?: number;
+    /**
+     * (optional) The maximum required length of the string
+     */
+    maxLength?: number;
+    /**
+     * (optional) A regex used for validation
+     */
+    regex?: RegExp;
+}
+```
+
+## @array string chips autocomplete
+```typescript
+/**
+ * Definition for an array of autocomplete strings displayed as a chips list
+ */
+export class AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
+    override itemType: DecoratorTypes.STRING_AUTOCOMPLETE;
+    override displayStyle: 'chips';
+
+    /**
+     * The html inside the delete-button.
+     * Please note that custom tags such as <mat-icon></mat-icon>
+     * need to be defined as known elements, otherwise the sanitizer will remove them.
+     * You can however work around this by using `<span class="material-icons"></span>`
+     * @default <mat-icon>cancel</mat-icon>
+     */
+    deleteHtml?: string;
+    /**
+     * The autocomplete values
+     */
+    autocompleteValues: string[];
+    /**
+     * (optional) The minimum required length of the string
+     */
+    minLength?: number;
+    /**
+     * (optional) The maximum required length of the string
+     */
+    maxLength?: number;
+    /**
+     * (optional) A regex used for validation
+     */
+    regex?: RegExp;
+}
+```
+
+# NgxMatEntityInput Configuration
 With the property input you can generate an input field based on the metadata you defined on your property.
 <br>
 Configuration options are:
@@ -399,11 +495,9 @@ hideOmitForCreate?: boolean;
 @Input()
 hideOmitForEdit?: boolean;
 ```
-<br>
-<br>
 
-# Entities Configuration
-With the ngx-material-entities component you can create a complete CRUD functionality for your entities.
+# NgxMatEntityTable Configuration
+With the `ngx-mat-entity-table` component you can create a complete CRUD functionality for your entities.
 <br>
 As this component is highly configurable and allows you to either create your own create and edit implementations or use the default out of the box  dialogs for that.
 

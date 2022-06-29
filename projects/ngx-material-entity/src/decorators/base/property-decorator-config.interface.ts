@@ -36,6 +36,12 @@ export abstract class PropertyDecoratorConfig {
      * @var thirdValue: col-sm-{{thirdValue}}
      */
     defaultWidths?: [cols, cols, cols];
+    /**
+     * Specifies order of the input property when used inside the default create or edit dialog.
+     * Ordering is ascending
+     * @default -1 (sets this property at the end)
+     */
+    order?: number;
 
     /**
      * Defines, Whether or not there should be a line break after this input.
@@ -49,7 +55,8 @@ export abstract class PropertyDecoratorConfig {
         required: boolean = true,
         omitForCreate: boolean = false,
         omitForUpdate: boolean = false,
-        defaultWidths: [cols, cols, cols] = [6, 6, 12]
+        defaultWidths: [cols, cols, cols] = [6, 6, 12],
+        order?: number
         // lineBreakAfter: boolean = false
     ) {
         this.displayName = displayName;
@@ -58,6 +65,17 @@ export abstract class PropertyDecoratorConfig {
         this.omitForCreate = omitForCreate;
         this.omitForUpdate = omitForUpdate;
         this.defaultWidths = defaultWidths;
+
+        if (order) {
+            if (order < 0) {
+                throw new Error('order must be at least 0');
+            }
+
+            this.order = order;
+        }
+        else {
+            this.order = -1;
+        }
         // this.lineBreakAfter = lineBreakAfter;
     }
 }

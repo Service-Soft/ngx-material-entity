@@ -7,14 +7,14 @@ export interface ConfirmDialogData {
     /**
      * An array of paragraphs to display inside the dialog body
      */
-    text: string[],
+    text?: string[],
     /**
      * The type of the Confirm Dialog. Changes the button layout. Can be either:
      * @value 'default': A confirm- and a cancel-button
      * @value 'delete': Like default but the confirm-button is red
      * @value 'info-only': Only a cancel-button
      */
-    type: ConfirmDialogTypes,
+    type?: ConfirmDialogTypes,
     /**
      * The label of the button that confirms the dialog.
      * In case of the 'delete' Dialog this is the string that is shown on the delete-button.
