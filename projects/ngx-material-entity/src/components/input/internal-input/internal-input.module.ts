@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PropertyInputComponent } from './property-input.component';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,12 +7,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { ArrayEntitiesTableModule } from './array-entities-table/array-entities-table.module';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { NgxMatEntityInternalInputComponent } from './internal-input.component';
 
 @NgModule({
-    declarations: [PropertyInputComponent],
+    declarations: [NgxMatEntityInternalInputComponent],
     imports: [
         CommonModule,
         MatInputModule,
@@ -23,10 +21,8 @@ import { MatIconModule } from '@angular/material/icon';
         MatAutocompleteModule,
         MatCheckboxModule,
         MatSlideToggleModule,
-        ArrayEntitiesTableModule,
-        MatChipsModule,
-        MatIconModule
+        MatTableModule
     ],
-    exports: [PropertyInputComponent]
+    exports: [NgxMatEntityInternalInputComponent]
 })
-export class PropertyInputModule {}
+export class NgxMatEntityInternalInputModule {}

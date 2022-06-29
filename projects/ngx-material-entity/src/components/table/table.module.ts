@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EntitiesComponent } from './entities.component';
+import { NgxMatEntityTableComponent } from './table.component';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,7 +12,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
-    declarations: [EntitiesComponent],
+    declarations: [NgxMatEntityTableComponent],
     imports: [
         CommonModule,
         MatInputModule,
@@ -25,6 +25,6 @@ import { MatDialogModule } from '@angular/material/dialog';
         MatMenuModule,
         MatDialogModule
     ],
-    exports: [EntitiesComponent]
+    exports: [NgxMatEntityTableComponent]
 })
-export class EntitiesModule {}
+export class NgxMatEntityTableModule {}

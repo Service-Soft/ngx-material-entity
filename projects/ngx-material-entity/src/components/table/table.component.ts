@@ -7,20 +7,20 @@ import { firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { Entity } from '../../classes/entity-model.class';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatDialog } from '@angular/material/dialog';
-import { CreateEntityDialogComponent } from './create-entity-dialog/create-entity-dialog.component';
-import { CreateEntityDialogData } from './create-entity-dialog/create-entity-dialog-data';
-import { EditEntityDialogComponent } from './edit-entity-dialog/edit-entity-dialog.component';
-import { EditEntityDialogData } from './edit-entity-dialog/edit-entity-dialog-data';
-import { MultiSelectAction, EntitiesData, CreateDialogData, EditDialogData } from './entities-data';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { NgxMatEntityCreateDialogComponent } from './create-dialog/create-entity-dialog.component';
+import { CreateEntityDialogData } from './create-dialog/create-entity-dialog-data';
+import { NgxMatEntityEditDialogComponent } from './edit-dialog/edit-entity-dialog.component';
+import { EditEntityDialogData } from './edit-dialog/edit-entity-dialog-data';
+import { MultiSelectAction, EntitiesData, CreateDialogData, EditDialogData } from './table-data';
+import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
 
 @Component({
-    selector: 'ngx-material-entities',
-    templateUrl: './entities.component.html',
-    styleUrls: ['./entities.component.scss']
+    selector: 'ngx-mat-entity-table',
+    templateUrl: './table.component.html',
+    styleUrls: ['./table.component.scss']
 })
-export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnDestroy {
+export class NgxMatEntityTableComponent<EntityType extends Entity> implements OnInit, OnDestroy {
 
     /**
      * The configuration for the entities-component
@@ -151,7 +151,7 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
             editDialogData: this.entitiesData.editDialogData as EditDialogData<EntityType>
         };
         firstValueFrom(
-            this.dialog.open(EditEntityDialogComponent, {
+            this.dialog.open( NgxMatEntityEditDialogComponent, {
                 data: dialogData,
                 minWidth: '60%',
                 autoFocus: false,
@@ -183,7 +183,7 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
             EntityServiceClass: this.entitiesData.baseData.EntityServiceClass,
             createDialogData: this.entitiesData.createDialogData as CreateDialogData
         };
-        this.dialog.open(CreateEntityDialogComponent, {
+        this.dialog.open(NgxMatEntityCreateDialogComponent, {
             data: dialogData,
             minWidth: '60%',
             autoFocus: false,
@@ -205,7 +205,7 @@ export class EntitiesComponent<EntityType extends Entity> implements OnInit, OnD
             requireConfirmation: action.confirmDialogData?.requireConfirmation ? action.confirmDialogData?.requireConfirmation : false,
             confirmationText: action.confirmDialogData?.confirmationText ? action.confirmDialogData?.confirmationText : undefined
         };
-        const dialogref = this.dialog.open(ConfirmDialogComponent, {
+        const dialogref = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false

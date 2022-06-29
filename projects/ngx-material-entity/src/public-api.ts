@@ -14,20 +14,20 @@ export * from './components/confirm-dialog/confirm-dialog-data';
 export * from './components/confirm-dialog/confirm-dialog.component';
 export * from './components/confirm-dialog/confirm-dialog.module';
 
-export * from './components/entities/entities-data';
-export * from './components/entities/entities.component';
-export * from './components/entities/entities.module';
+export * from './components/table/table-data';
+export * from './components/table/table.component';
+export * from './components/table/table.module';
 
-export * from './components/entities/create-entity-dialog/create-entity-dialog-data';
-export * from './components/entities/create-entity-dialog/create-entity-dialog.module';
-export * from './components/entities/create-entity-dialog/create-entity-dialog.component';
+export * from './components/table/create-dialog/create-entity-dialog-data';
+export * from './components/table/create-dialog/create-entity-dialog.module';
+export * from './components/table/create-dialog/create-entity-dialog.component';
 
-export * from './components/entities/edit-entity-dialog/edit-entity-dialog-data';
-export * from './components/entities/edit-entity-dialog/edit-entity-dialog.module';
-export * from './components/entities/edit-entity-dialog/edit-entity-dialog.component';
+export * from './components/table/edit-dialog/edit-entity-dialog-data';
+export * from './components/table/edit-dialog/edit-entity-dialog.module';
+export * from './components/table/edit-dialog/edit-entity-dialog.component';
 
-export * from './components/property-input/property-input.module';
-export * from './components/property-input/property-input.component';
+export * from './components/input/input.module';
+export * from './components/input/input.component';
 
 export * from './components/get-validation-error-message.function';
 

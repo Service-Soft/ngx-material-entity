@@ -147,7 +147,7 @@
                 the current key in the loop received by the keyvalue direction as the propertyKey
                 and the getValidationErrorMessage of the current component
             -->
-            <internal-property-input
+            <ngx-mat-entity-internal-input
                 *ngFor="let key of getObjectProperties(); let i = index; trackBy: trackByFn"
                 [entity]="objectProperty"
                 [propertyKey]="key"
@@ -156,7 +156,7 @@
                 [hideOmitForEdit]="hideOmitForEdit"
                 class="col-lg-{{getWidth(objectProperty, key, 'lg')}} col-md-{{getWidth(objectProperty, key, 'md')}} col-sm-{{getWidth(objectProperty, key, 'sm')}}"
             >
-            </internal-property-input>
+            </ngx-mat-entity-internal-input>
         </div>
     </div>
 

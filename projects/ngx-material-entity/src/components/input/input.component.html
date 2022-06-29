@@ -152,7 +152,7 @@
                 the current key in the loop received by the keyvalue direction as the propertyKey
                 and the getValidationErrorMessage of the current component
             -->
-            <ngx-material-entity-input
+            <ngx-mat-entity-input
                 *ngFor="let key of getObjectProperties(); let i = index; trackBy: trackByFn"
                 [entity]="objectProperty"
                 [propertyKey]="key"
@@ -161,7 +161,7 @@
                 [hideOmitForEdit]="hideOmitForEdit"
                 class="col-lg-{{getWidth(objectProperty, key, 'lg')}} col-md-{{getWidth(objectProperty, key, 'md')}} col-sm-{{getWidth(objectProperty, key, 'sm')}}"
             >
-            </ngx-material-entity-input>
+            </ngx-mat-entity-input>
         </div>
     </div>
 
@@ -169,13 +169,13 @@
     <!-------------------Array-------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.ARRAY">
-        <array-entities-table
+        <ngx-mat-entity-array-table
             [arrayItems]="entityArrayValues"
             [metadata]="metadataEntityArray"
             [getValidationErrorMessage]="getValidationErrorMessage"
             [omit]="hideOmitForCreate ? 'create' : 'edit'"
         >
-        </array-entities-table>
+        </ngx-mat-entity-array-table>
     </div>
 
     <div *ngSwitchCase="DecoratorTypes.ARRAY_STRING_CHIPS">

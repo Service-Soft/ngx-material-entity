@@ -2,9 +2,13 @@
     "root": true,
     "overrides": [
         {
-            "files": ["*.ts"],
+            "files": [
+                "*.ts"
+            ],
             "parserOptions": {
-                "project": ["tsconfig.json"],
+                "project": [
+                    "tsconfig.json"
+                ],
                 "createDefaultProgram": true
             },
             "extends": [
@@ -12,12 +16,16 @@
                 "plugin:@angular-eslint/template/process-inline-templates"
             ],
             "rules": {
-                "function-call-argument-newline": ["warn", "consistent"],
+                "function-call-argument-newline": [
+                    "warn",
+                    "consistent"
+                ],
                 "@angular-eslint/component-selector": [
                     "warn",
                     {
                         "style": "kebab-case",
-                        "type": "element"
+                        "type": "element",
+                        "prefix": "ngx-mat-entity"
                     }
                 ],
                 "@angular-eslint/directive-selector": [
@@ -63,7 +71,11 @@
                 "@typescript-eslint/member-ordering": [
                     "warn",
                     {
-                        "default": ["field", "constructor", "method"]
+                        "default": [
+                            "field",
+                            "constructor",
+                            "method"
+                        ]
                     }
                 ],
                 "@typescript-eslint/method-signature-style": "warn",
@@ -71,7 +83,9 @@
                     "warn",
                     {
                         "selector": "enum",
-                        "format": ["PascalCase"]
+                        "format": [
+                            "PascalCase"
+                        ]
                     }
                 ],
                 "@typescript-eslint/no-base-to-string": "warn",
@@ -110,7 +124,10 @@
                 "no-array-constructor": "warn",
                 "no-console": "warn",
                 "no-const-assign": "warn",
-                "eol-last": ["warn", "never"],
+                "eol-last": [
+                    "warn",
+                    "never"
+                ],
                 "brace-style": [
                     "warn",
                     "stroustrup",
@@ -118,11 +135,20 @@
                         "allowSingleLine": false
                     }
                 ],
-                "array-bracket-newline": ["warn", "consistent"],
-                "array-element-newline": ["warn", "consistent"],
+                "array-bracket-newline": [
+                    "warn",
+                    "consistent"
+                ],
+                "array-element-newline": [
+                    "warn",
+                    "consistent"
+                ],
                 "curly": "warn",
                 "keyword-spacing": "warn",
-                "quotes": ["warn", "single"],
+                "quotes": [
+                    "warn",
+                    "single"
+                ],
                 "max-len": [
                     "warn",
                     {
@@ -145,8 +171,12 @@
             }
         },
         {
-            "files": ["*.html"],
-            "extends": ["plugin:@angular-eslint/template/recommended"],
+            "files": [
+                "*.html"
+            ],
+            "extends": [
+                "plugin:@angular-eslint/template/recommended"
+            ],
             "rules": {
                 "@angular-eslint/template/eqeqeq": "warn",
                 "@angular-eslint/template/conditional-complexity": "warn",

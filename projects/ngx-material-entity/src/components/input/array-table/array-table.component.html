@@ -4,7 +4,7 @@
         <b>{{metadata.displayName}}</b>
     </div>
     <div class="row" *ngIf="metadata.createInline">
-        <internal-property-input
+        <ngx-mat-entity-internal-input
             *ngFor="let key of getObjectProperties(); let i = index; trackBy: trackByFn"
             [entity]="arrayItem"
             [propertyKey]="key"
@@ -12,7 +12,7 @@
             [getValidationErrorMessage]="getValidationErrorMessage"
             class="col-lg-{{getWidth(arrayItem, key, 'lg')}} col-md-{{getWidth(arrayItem, key, 'md')}} col-sm-{{getWidth(arrayItem, key, 'sm')}}"
         >
-        </internal-property-input>
+        </ngx-mat-entity-internal-input>
     </div>
     <div class="buttons">
         <button mat-raised-button

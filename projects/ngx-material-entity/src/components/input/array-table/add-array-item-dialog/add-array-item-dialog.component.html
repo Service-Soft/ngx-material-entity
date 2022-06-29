@@ -2,7 +2,7 @@
 
 <mat-dialog-content>
     <form #form="ngForm" class="row">
-        <internal-property-input
+        <ngx-mat-entity-internal-input
             *ngFor="let key of entityKeys"
             [entity]="data.entity"
             [propertyKey]="key"
@@ -10,7 +10,7 @@
             [getValidationErrorMessage]="data.getValidationErrorMessage"
             class="col-lg-{{getWidth(data.entity, key, 'lg')}} col-md-{{getWidth(data.entity, key, 'md')}} col-sm-{{getWidth(data.entity, key, 'sm')}}"
         >
-        </internal-property-input>
+        </ngx-mat-entity-internal-input>
     </form>
 </mat-dialog-content>
 
