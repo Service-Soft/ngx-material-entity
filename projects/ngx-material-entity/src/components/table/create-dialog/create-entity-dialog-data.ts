@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { EntityService } from '../../../classes/entity-service.class';
 import { Entity } from '../../../classes/entity-model.class';
-import { CreateDialogData } from '../entities-data';
+import { CreateDialogData } from '../table-data';
 
 /**
  * The Definition of the Create Entity Dialog Data

@@ -3,9 +3,9 @@ import { NgModel } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Entity } from '../../../../classes/entity-model.class';
 import { EntityUtilities } from '../../../../classes/entity-utilities.class';
-import { CreateDialogData } from '../../../entities/entities-data';
+import { CreateDialogData } from '../../../table/table-data';
 
-export interface CreateArrayItemDialogData<EntityType extends Entity> {
+export interface AddArrayItemDialogData<EntityType extends Entity> {
     /**
      * An empty entity that is used as the data model.
      */
@@ -21,11 +21,11 @@ export interface CreateArrayItemDialogData<EntityType extends Entity> {
 }
 
 @Component({
-    selector: 'create-array-item-dialog',
-    templateUrl: './create-array-item-dialog.component.html',
-    styleUrls: ['./create-array-item-dialog.component.scss']
+    selector: 'ngx-mat-entity-add-array-item-dialog',
+    templateUrl: './add-array-item-dialog.component.html',
+    styleUrls: ['./add-array-item-dialog.component.scss']
 })
-export class CreateArrayItemDialogComponent<EntityType extends Entity> implements OnInit {
+export class NgxMatEntityAddArrayItemDialogComponent<EntityType extends Entity> implements OnInit {
     EntityUtilities = EntityUtilities;
 
     entityKeys!: (keyof EntityType)[];
@@ -34,8 +34,8 @@ export class CreateArrayItemDialogComponent<EntityType extends Entity> implement
 
     constructor(
         @Inject(MAT_DIALOG_DATA)
-        public data: CreateArrayItemDialogData<EntityType>,
-        public dialogRef: MatDialogRef<CreateArrayItemDialogComponent<EntityType>>
+        public data: AddArrayItemDialogData<EntityType>,
+        public dialogRef: MatDialogRef<NgxMatEntityAddArrayItemDialogComponent<EntityType>>
     ) { }
 
     ngOnInit(): void {

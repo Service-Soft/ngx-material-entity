@@ -15,11 +15,11 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { cloneDeep } from 'lodash';
 
 @Component({
-    selector: 'ngx-material-entity-input',
-    templateUrl: './property-input.component.html',
-    styleUrls: ['./property-input.component.scss']
+    selector: 'ngx-mat-entity-input',
+    templateUrl: './input.component.html',
+    styleUrls: ['./input.component.scss']
 })
-export class PropertyInputComponent<EntityType extends Entity> implements OnInit {
+export class NgxMatEntityInputComponent<EntityType extends Entity> implements OnInit {
     /**
      * The entity on which the property exists. Used in conjuction with the "propertyKey"
      * to determine the property for which the input should be generated.

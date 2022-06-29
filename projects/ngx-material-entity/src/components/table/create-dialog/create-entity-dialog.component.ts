@@ -5,14 +5,14 @@ import { Entity } from '../../../classes/entity-model.class';
 import { EntityUtilities } from '../../../classes/entity-utilities.class';
 import { CreateEntityDialogData } from './create-entity-dialog-data';
 import { ConfirmDialogData } from '../../confirm-dialog/confirm-dialog-data';
-import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
+import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 
 @Component({
-    selector: 'ngx-material-entity-create-dialog',
+    selector: 'ngx-mat-entity-create-dialog',
     templateUrl: './create-entity-dialog.component.html',
     styleUrls: ['./create-entity-dialog.component.scss']
 })
-export class CreateEntityDialogComponent<EntityType extends Entity> implements OnInit {
+export class NgxMatEntityCreateDialogComponent<EntityType extends Entity> implements OnInit {
     EntityUtilities = EntityUtilities;
 
     entityKeys!: (keyof EntityType)[];
@@ -24,7 +24,7 @@ export class CreateEntityDialogComponent<EntityType extends Entity> implements O
     constructor(
         @Inject(MAT_DIALOG_DATA)
         public data: CreateEntityDialogData<EntityType>,
-        public dialogRef: MatDialogRef<CreateEntityDialogComponent<EntityType>>,
+        public dialogRef: MatDialogRef<NgxMatEntityCreateDialogComponent<EntityType>>,
         private readonly injector: Injector,
         private readonly dialog: MatDialog
     ) { }
@@ -61,7 +61,7 @@ export class CreateEntityDialogComponent<EntityType extends Entity> implements O
             // eslint-disable-next-line max-len
             confirmationText: this.data.createDialogData.confirmCreateDialogData?.confirmationText ? this.data.createDialogData.confirmCreateDialogData?.confirmationText : undefined,
         };
-        const dialogref = this.dialog.open(ConfirmDialogComponent, {
+        const dialogref = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false

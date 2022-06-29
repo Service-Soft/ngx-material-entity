@@ -3,18 +3,18 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ConfirmDialogData } from './confirm-dialog-data';
 
 @Component({
-    selector: 'ngx-material-confirm-dialog',
+    selector: 'ngx-mat-entity-confirm-dialog',
     templateUrl: './confirm-dialog.component.html',
     styleUrls: ['./confirm-dialog.component.scss']
 })
-export class ConfirmDialogComponent implements OnInit {
+export class NgxMatEntityConfirmDialogComponent implements OnInit {
     /**
      * Used for the checkbox to confirm the action
      */
     confirm = false;
 
     constructor(
-        private readonly dialogRef: MatDialogRef<ConfirmDialogComponent>,
+        private readonly dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent>,
         @Inject(MAT_DIALOG_DATA)
         readonly data: ConfirmDialogData
     ) {}

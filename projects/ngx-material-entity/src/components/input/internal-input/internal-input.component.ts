@@ -10,11 +10,11 @@ import { EntityUtilities } from '../../../classes/entity-utilities.class';
 import { NgModel } from '@angular/forms';
 
 @Component({
-    selector: 'internal-property-input',
-    templateUrl: './internal-property-input.component.html',
-    styleUrls: ['./internal-property-input.component.scss']
+    selector: 'ngx-mat-entity-internal-input',
+    templateUrl: './internal-input.component.html',
+    styleUrls: ['./internal-input.component.scss']
 })
-export class InternalPropertyInputComponent<EntityType extends Entity> implements OnInit {
+export class NgxMatEntityInternalInputComponent<EntityType extends Entity> implements OnInit {
     /**
      * The entity on which the property exists. Used in conjuction with the "propertyKey"
      * to determine the property for which the input should be generated.

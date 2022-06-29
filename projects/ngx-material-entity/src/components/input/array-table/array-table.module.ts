@@ -8,13 +8,13 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
-import { ArrayEntitiesTableComponent } from './array-entities-table.component';
-import { InternalPropertyInputModule } from '../internal-property-input/internal-property-input.module';
+import { NgxMatEntityArrayTableComponent } from './array-table.component';
+import { NgxMatEntityInternalInputModule } from '../internal-input/internal-input.module';
 import { MatButtonModule } from '@angular/material/button';
-import { CreateArrayItemDialogModule } from './create-array-item-dialog/create-array-item-dialog.module';
+import { NgxMatEntityAddArrayItemDialogModule } from './add-array-item-dialog/add-array-item-dialog.module';
 
 @NgModule({
-    declarations: [ArrayEntitiesTableComponent],
+    declarations: [NgxMatEntityArrayTableComponent],
     imports: [
         CommonModule,
         MatInputModule,
@@ -25,10 +25,10 @@ import { CreateArrayItemDialogModule } from './create-array-item-dialog/create-a
         MatCheckboxModule,
         MatSlideToggleModule,
         MatTableModule,
-        InternalPropertyInputModule,
+        NgxMatEntityInternalInputModule,
         MatButtonModule,
-        CreateArrayItemDialogModule
+        NgxMatEntityAddArrayItemDialogModule
     ],
-    exports: [ArrayEntitiesTableComponent]
+    exports: [NgxMatEntityArrayTableComponent]
 })
-export class ArrayEntitiesTableModule {}
+export class NgxMatEntityArrayTableModule {}

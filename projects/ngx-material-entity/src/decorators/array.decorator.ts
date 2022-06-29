@@ -1,5 +1,5 @@
 import { Entity } from '../classes/entity-model.class';
-import { CreateDialogData } from '../components/entities/entities-data';
+import { CreateDialogData } from '../components/table/table-data';
 import { baseProperty } from './base/base-property.decorator';
 import { DecoratorTypes } from './base/decorator-types.enum';
 import { PropertyDecoratorConfig } from './base/property-decorator-config.interface';

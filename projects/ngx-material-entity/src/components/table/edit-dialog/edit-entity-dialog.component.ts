@@ -5,15 +5,15 @@ import { Entity } from '../../../classes/entity-model.class';
 import { EntityUtilities } from '../../../classes/entity-utilities.class';
 import { cloneDeep } from 'lodash';
 import { EditEntityDialogData } from './edit-entity-dialog-data';
-import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
+import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogData } from '../../confirm-dialog/confirm-dialog-data';
 
 @Component({
-    selector: 'ngx-material-entity-edit-dialog',
+    selector: 'ngx-mat-entity-edit-dialog',
     templateUrl: './edit-entity-dialog.component.html',
     styleUrls: ['./edit-entity-dialog.component.scss']
 })
-export class EditEntityDialogComponent<EntityType extends Entity> implements OnInit {
+export class  NgxMatEntityEditDialogComponent<EntityType extends Entity> implements OnInit {
     EntityUtilities = EntityUtilities;
 
     entityKeys!: (keyof EntityType)[];
@@ -27,7 +27,7 @@ export class EditEntityDialogComponent<EntityType extends Entity> implements OnI
     constructor(
         @Inject(MAT_DIALOG_DATA)
         public data: EditEntityDialogData<EntityType>,
-        public dialogRef: MatDialogRef<EditEntityDialogComponent<EntityType>>,
+        public dialogRef: MatDialogRef<NgxMatEntityEditDialogComponent<EntityType>>,
         private readonly injector: Injector,
         private readonly dialog: MatDialog
     ) { }
@@ -64,7 +64,7 @@ export class EditEntityDialogComponent<EntityType extends Entity> implements OnI
             // eslint-disable-next-line max-len
             confirmationText: this.data.editDialogData.confirmEditDialogData?.confirmationText ? this.data.editDialogData.confirmEditDialogData?.confirmationText : undefined,
         };
-        const dialogref = this.dialog.open(ConfirmDialogComponent, {
+        const dialogref = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false
@@ -98,7 +98,7 @@ export class EditEntityDialogComponent<EntityType extends Entity> implements OnI
             // eslint-disable-next-line max-len
             confirmationText: this.data.editDialogData.confirmDeleteDialogData?.confirmationText ? this.data.editDialogData.confirmDeleteDialogData?.confirmationText : undefined,
         };
-        const dialogref = this.dialog.open(ConfirmDialogComponent, {
+        const dialogref = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false

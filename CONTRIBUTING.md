@@ -10,8 +10,10 @@ All development is done using github.
   - [Special guidelines for bug reports](#special-guidelines-for-bug-reports)
 - [Folder structure of the project](#folder-structure-of-the-project)
 - [Starting the project](#starting-the-project)
+- [Codestyle](#codestyle)
+  - [Decorator Configs / User Input](#decorator-configs--user-input)
+  - [Naming conventions](#naming-conventions)
 - [Workflow for submitting Code Changes](#workflow-for-submitting-code-changes)
-- [Use a Consistent Coding Style](#use-a-consistent-coding-style)
 - [License](#license)
 
 # Create an Issue
@@ -48,6 +50,31 @@ The main projects are the library itself which will be published to npm and an s
 > 1. the scripts should support Windows which means that commands like `cp` or even just chaining stuff with `&&` is not available and needed to be replaced with node alternatives.
 > 2. Some of the CD process is done here aswell
 
+# Codestyle
+This project is using eslint and requires all linting to pass in order to merge pull requests. It can happen that you need to use code that is against some of the rules (e.g. required use of "any"). In that case you can of course disable that rule at that specific point with
+<br>
+`// eslint-disable-next-line the-rule-to-disable`
+> You can run eslint with the command `npm run lint`
+> <br>
+> You can autofix some codestyle problems with `npm run lint:fix`
+
+## Decorator Configs / User Input
+Every Input the user can make (e.g. with the decorators or with @Input()) should be split up in two different models.
+
+The first model should be used internal and require all input. The second model should only require values where no default value can be set. The second model should only be used by the user and never internally.
+
+That way the components can be highly customizable without requiring the user to input the whole configuration. With the internal model that requires all values we also ensure that newly added configuration options aren't (as easily) forgotten somewhere.
+
+## Naming conventions
+
+All angular components / modules inside the library(projects/ngx-material-entity) should be named "`NgxMatEntity`MyGreatComponentOrModule".
+
+Their selector should follow the same logic:
+<br>
+"`ngx-mat-entity`-my-great-component-or-module"
+
+In the folder structure however, you are encouraged to leave the prefix out, because the user will never see this anyway.
+
 # Workflow for submitting Code Changes
 
 1. Create an issue if it not already exists.
@@ -62,12 +89,5 @@ The main projects are the library itself which will be published to npm and an s
 8. Rebase to dev and solve any merge-conflicts (`git rebase dev`)
 9. Issue that pull request!
 
-# Use a Consistent Coding Style
-This project is using eslint and requires all linting to pass in order to merge pull requests. It can happen that you need to use code that is against some of the rules (e.g. required use of "any"). In that case you can of course disable that rule at that specific point with
-<br>
-`// eslint-disable-next-line the-rule-to-disable`
-* You can run eslint with the command `npm run lint`
-* You can autofix some codestyle problems with `npm run lint:fix`
-
 # License
-By contributing, you agree that your contributions will be licensed under its MIT License.
+By contributing to this project, you agree that your contributions will be licensed under its MIT License.

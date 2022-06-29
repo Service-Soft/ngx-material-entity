@@ -8,15 +8,15 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { cloneDeep } from 'lodash';
 import { firstValueFrom } from 'rxjs';
-import { CreateArrayItemDialogComponent, CreateArrayItemDialogData } from './create-array-item-dialog/create-array-item-dialog.component';
-import { CreateDialogData } from '../../entities/entities-data';
+import { AddArrayItemDialogData, NgxMatEntityAddArrayItemDialogComponent } from './add-array-item-dialog/add-array-item-dialog.component';
+import { CreateDialogData } from '../../table/table-data';
 
 @Component({
-    selector: 'array-entities-table',
-    templateUrl: './array-entities-table.component.html',
-    styleUrls: ['./array-entities-table.component.scss']
+    selector: 'ngx-mat-entity-array-table',
+    templateUrl: './array-table.component.html',
+    styleUrls: ['./array-table.component.scss']
 })
-export class ArrayEntitiesTableComponent<EntityType extends Entity> implements OnInit {
+export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implements OnInit {
     @Input()
     arrayItems!: EntityType[];
 
@@ -80,14 +80,14 @@ export class ArrayEntitiesTableComponent<EntityType extends Entity> implements O
             EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
         }
         else {
-            const dialogData: CreateArrayItemDialogData<EntityType> = {
+            const dialogData: AddArrayItemDialogData<EntityType> = {
                 entity: this.arrayItem,
                 createDialogData: this.metadata.createDialogData as CreateDialogData,
                 getValidationErrorMessage: this.getValidationErrorMessage
             }
             firstValueFrom(
                 this.dialog.open(
-                    CreateArrayItemDialogComponent,
+                    NgxMatEntityAddArrayItemDialogComponent,
                     {
                         data: dialogData,
                         autoFocus: false,

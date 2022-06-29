@@ -31,8 +31,8 @@ Can even generate complete and highly customizable CRUD-Tables for them.
   - [@array entity](#array-entity)
   - [@array string chips](#array-string-chips)
   - [@array string chips autocomplete](#array-string-chips-autocomplete)
-- [PropertyInput Configuration](#propertyinput-configuration)
-- [Entities Configuration](#entities-configuration)
+- [NgxMatEntityInput Configuration](#ngxmatentityinput-configuration)
+- [NgxMatEntityTable Configuration](#ngxmatentitytable-configuration)
   - [Display Columns](#display-columns)
   - [Multiselect Actions](#multiselect-actions)
 
@@ -75,14 +75,14 @@ export class MyEntity extends Entity {
 For a list of all decorators and configuration options see [PropertyDecorators](#propertydecorators).
 
 ## Use the input for your entity property
-You can import the ```PropertyInputModule``` anywhere in your code:
+You can import the ```NgxMatEntityInputModule``` anywhere in your code:
 
 ```typescript
-import { PropertyInputModule } from 'ngx-material-entity';
+import { NgxMatEntityInputModule } from 'ngx-material-entity';
 
 ...
     imports: [
-        PropertyInputModule
+        NgxMatEntityInputModule
     ]
 ...
 ```
@@ -90,10 +90,10 @@ import { PropertyInputModule } from 'ngx-material-entity';
 In the html you can then define:
 
 ```html
-<ngx-material-entity-input
+<ngx-mat-entity-input
     [entity]="myEntity"
     [propertyKey]="myString">
-</ngx-material-entity-input>
+</ngx-mat-entity-input>
 ```
 
 This snippet automatically generates an material input for "myString" based on the metadata you defined earlier.
@@ -119,14 +119,14 @@ export class MyEntityService extends EntityService<MyEntity> {
 ```
 
 ### Define the CRUD-Element
-Import the ```EntitiesModule``` anywhere in your code:
+Import the `NgxMatEntityTableModule` anywhere in your code:
 
 ```typescript
-import { EntitiesModule } from 'ngx-material-entity';
+import { NgxMatEntityTableModule } from 'ngx-material-entity';
 
 ...
     imports: [
-        EntitiesModule
+        NgxMatEntityTableModule
     ]
 ...
 ```
@@ -134,16 +134,16 @@ import { EntitiesModule } from 'ngx-material-entity';
 In the html you can then define:
 
 ```html
-<ngx-material-entities
+<ngx-mat-entity-table
     [displayColumns]="displayColumns"
     [title]="title"
     [EntityServiceClass]="MyEntityService"
     [EntityClass]="MyEntity"
     [multiSelectActions]="multiSelectActions"
     [createDialogTitle]="'Custom Create Dialog Title'">
-</ngx-material-entities>
+</ngx-mat-entity-table>
 ```
-For a list of all configuration options see [Entities Configuration](#entities-configuration).
+For a list of all configuration options see [NgxMatEntityTable Configuration](#ngxmatentitytable-configuration).
 
 # PropertyDecorators
 The property decorators contain all the metadata of an entity property.
@@ -456,7 +456,7 @@ export class AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecoratorC
 }
 ```
 
-# PropertyInput Configuration
+# NgxMatEntityInput Configuration
 With the property input you can generate an input field based on the metadata you defined on your property.
 <br>
 Configuration options are:
@@ -496,8 +496,8 @@ hideOmitForCreate?: boolean;
 hideOmitForEdit?: boolean;
 ```
 
-# Entities Configuration
-With the ngx-material-entities component you can create a complete CRUD functionality for your entities.
+# NgxMatEntityTable Configuration
+With the `ngx-mat-entity-table` component you can create a complete CRUD functionality for your entities.
 <br>
 As this component is highly configurable and allows you to either create your own create and edit implementations or use the default out of the box  dialogs for that.
 
