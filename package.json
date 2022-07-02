@@ -5,7 +5,7 @@
         "stack": "run-s clear:dist stack:only",
         "showcase": "ng serve ngx-material-entity-showcase",
         "build:watch": "ng build ngx-material-entity --watch",
-        "api": "nodemon --watch api-data.ts --watch api.ts api.ts",
+        "api": "nodemon --watch api-data.ts --watch api.ts api.ts --watch dist/ngx-material-entity/public-api.d.ts",
         "test": "jest --config projects/ngx-material-entity/jest.config.json",
         "lint": "eslint projects --max-warnings 0",
         "lint:fix": "eslint projects --fix",
