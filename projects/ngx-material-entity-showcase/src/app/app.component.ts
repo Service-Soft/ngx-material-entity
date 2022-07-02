@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { EntitiesData } from 'ngx-material-entity';
+import { TableData } from 'ngx-material-entity';
 import { Person } from '../models/person.model';
 import { PersonService } from '../services/person.service';
 
@@ -10,7 +10,7 @@ import { PersonService } from '../services/person.service';
 })
 export class AppComponent {
 
-    entitiesData: EntitiesData<Person> = {
+    tableData: TableData<Person> = {
         baseData: {
             title: 'Personen',
             displayColumns: [

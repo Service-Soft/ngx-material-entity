@@ -18,5 +18,5 @@ export interface CreateEntityDialogData<EntityType extends Entity> {
     /**
      * The info of the generic create-dialog.
      */
-    createDialogData: CreateDialogData
+    createDialogData?: CreateDialogData
 }

@@ -8,12 +8,14 @@ import { Entity } from '../../classes/entity-model.class';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxMatEntityCreateDialogComponent } from './create-dialog/create-entity-dialog.component';
-import { CreateEntityDialogData } from './create-dialog/create-entity-dialog-data';
 import { NgxMatEntityEditDialogComponent } from './edit-dialog/edit-entity-dialog.component';
 import { EditEntityDialogData } from './edit-dialog/edit-entity-dialog-data';
-import { MultiSelectAction, EntitiesData, CreateDialogData, EditDialogData } from './table-data';
+import { MultiSelectAction, TableData } from './table-data';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
+import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
+import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from './create-dialog/create-entity-dialog-data.builder';
+import { TableDataBuilder, TableDataInternal } from './table-data.builder';
+import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from '../table/edit-dialog/edit-entity-dialog.builder';
 
 @Component({
     selector: 'ngx-mat-entity-table',
@@ -23,10 +25,12 @@ import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
 export class NgxMatEntityTableComponent<EntityType extends Entity> implements OnInit, OnDestroy {
 
     /**
-     * The configuration for the entities-component
+     * The configuration for the component
      */
     @Input()
-    entitiesData!: EntitiesData<EntityType>;
+    tableData!: TableData<EntityType>;
+
+    data!: TableDataInternal<EntityType>;
 
     private entityService!: EntityService<EntityType>;
     private readonly onDestroy = new Subject<void>();
@@ -40,18 +44,12 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
     constructor(private readonly dialog: MatDialog, private readonly injector: Injector) {}
 
     ngOnInit(): void {
-        this.validateInput();
+        this.data = new TableDataBuilder(this.tableData).tableData;
 
-        this.entityService = this.injector.get(this.entitiesData.baseData.EntityServiceClass) as EntityService<EntityType>;
+        this.entityService = this.injector.get(this.data.baseData.EntityServiceClass) as EntityService<EntityType>;
 
-        const givenDisplayColumns = this.entitiesData.baseData.displayColumns.map((v) => v.displayName);
-        if (this.entitiesData.baseData.multiSelectActions?.length) {
-            if (givenDisplayColumns.find((s) => s === 'select')) {
-                throw new Error(
-                    `The name "select" for a display column is reserved for the multi-select action functionality.
-                    Please choose a different name.`
-                );
-            }
+        const givenDisplayColumns = this.data.baseData.displayColumns.map((v) => v.displayName);
+        if (this.data.baseData.multiSelectActions.length) {
             this.displayedColumns = ['select'].concat(givenDisplayColumns);
         }
         else {
@@ -59,12 +57,12 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
         }
 
         this.dataSource.sortingDataAccessor = (entity: EntityType, header: string) => {
-            return this.entitiesData.baseData.displayColumns.find((dp) => dp.displayName === header)?.value(entity) as string;
+            return this.data.baseData.displayColumns.find((dp) => dp.displayName === header)?.value(entity) as string;
         };
         this.dataSource.sort = this.sort;
-        if (this.entitiesData.baseData.searchString) {
+        if (this.data.baseData.searchString) {
             this.dataSource.filterPredicate = (entity: EntityType, filter: string) => {
-                const searchStr = this.entitiesData.baseData.searchString?.(entity) as string;
+                const searchStr = this.data.baseData.searchString(entity) ;
                 const formattedSearchString = searchStr.toLowerCase();
                 const formattedFilterString = filter.toLowerCase();
                 return formattedSearchString.includes(formattedFilterString);
@@ -80,78 +78,29 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
         this.entityService.read();
     }
 
-    private validateInput(): void {
-        if (!this.entitiesData.baseData.displayColumns) {
-            throw new Error('Missing required Input data "displayColumns"');
-        }
-        if (!this.entitiesData.baseData.title) {
-            throw new Error('Missing required Input data "title"');
-        }
-        if (!this.entitiesData.baseData.EntityServiceClass) {
-            throw new Error('Missing required Input data "EntityServiceClass"');
-        }
-        if (this.entitiesData.baseData.allowCreate === undefined) {
-            this.entitiesData.baseData.allowCreate = true;
-        }
-        if (this.entitiesData.baseData.allowEdit === undefined) {
-            this.entitiesData.baseData.allowEdit = () => true;
-        }
-        if (this.entitiesData.baseData.allowDelete === undefined) {
-            this.entitiesData.baseData.allowDelete = () => true;
-        }
-        if (
-            (
-                this.entitiesData.baseData.allowEdit !== (() => false)
-                || this.entitiesData.baseData.allowDelete !== (() => false)
-                || this.entitiesData.baseData.allowCreate
-            )
-            && !this.entitiesData.baseData.EntityClass
-        ) {
-            throw new Error(`
-                Missing required Input data "EntityClass".
-                You can only omit this value if you can neither create or update entities.`
-            );
-        }
-        if (this.entitiesData.baseData.allowCreate && !this.entitiesData.baseData.create && !this.entitiesData.createDialogData) {
-            throw new Error(
-                `Missing required Input data "createDialogData".
-                You can only omit this value when creation is disallowed or done with a custom create method.`
-            );
-        }
-        if (
-            (
-                this.entitiesData.baseData.allowEdit !== (() => false)
-                || this.entitiesData.baseData.allowDelete !== (() => false)
-            )
-            && !this.entitiesData.baseData.edit
-            && !this.entitiesData.editDialogData
-        ) {
-            throw new Error(
-                `Missing required Input data "editDialogData".
-                You can only omit this value when editing and deleting is disallowed or done with a custom edit method.`
-            );
-        }
-    }
-
     editEntity(entity: EntityType): void {
-        if (this.entitiesData.baseData.allowEdit?.(entity)) {
-            if (this.entitiesData.baseData.edit) {
-                this.entitiesData.baseData.edit(new this.entitiesData.baseData.EntityClass(entity));
+        if (this.data.baseData.allowEdit(entity)) {
+            if (!this.data.baseData.EntityClass) {
+                throw new Error('No "EntityClass" specified for this table');
+            }
+            if (this.data.baseData.edit) {
+                this.data.baseData.edit(new this.data.baseData.EntityClass(entity));
             }
             else {
-                this.editDefault(new this.entitiesData.baseData.EntityClass(entity));
+                this.editDefault(new this.data.baseData.EntityClass(entity));
             }
         }
     }
     private editDefault(entity: EntityType): void {
-        const dialogData: EditEntityDialogData<EntityType> = {
+        const inputDialogData: EditEntityDialogData<EntityType> = {
             entity: entity,
-            EntityServiceClass: this.entitiesData.baseData.EntityServiceClass,
-            allowDelete: this.entitiesData.baseData.allowDelete as (entity: EntityType) => boolean,
-            editDialogData: this.entitiesData.editDialogData as EditDialogData<EntityType>
-        };
+            EntityServiceClass: this.data.baseData.EntityServiceClass,
+            allowDelete: this.data.baseData.allowDelete,
+            editDialogData: this.data.editDialogData
+        }
+        const dialogData: EditEntityDialogDataInternal<EntityType> = new EditEntityDialogDataBuilder(inputDialogData).editDialogData;
         firstValueFrom(
-            this.dialog.open( NgxMatEntityEditDialogComponent, {
+            this.dialog.open(NgxMatEntityEditDialogComponent, {
                 data: dialogData,
                 minWidth: '60%',
                 autoFocus: false,
@@ -168,21 +117,26 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
     }
 
     createEntity(): void {
-        if (this.entitiesData.baseData.allowCreate) {
-            if (this.entitiesData.baseData.create) {
-                this.entitiesData.baseData.create(new this.entitiesData.baseData.EntityClass());
+        if (this.data.baseData.allowCreate) {
+            if (!this.data.baseData.EntityClass) {
+                throw new Error('No "EntityClass" specified for this table');
+            }
+            if (this.data.baseData.create) {
+                this.data.baseData.create(new this.data.baseData.EntityClass());
             }
             else {
-                this.createDefault(new this.entitiesData.baseData.EntityClass());
+                this.createDefault(new this.data.baseData.EntityClass());
             }
         }
     }
     private createDefault(entity: EntityType): void {
-        const dialogData: CreateEntityDialogData<EntityType> = {
-            entity: entity,
-            EntityServiceClass: this.entitiesData.baseData.EntityServiceClass,
-            createDialogData: this.entitiesData.createDialogData as CreateDialogData
-        };
+        const dialogData: CreateEntityDialogDataInternal<EntityType> = new CreateEntityDialogDataBuilder(
+            {
+                entity: entity,
+                EntityServiceClass: this.data.baseData.EntityServiceClass,
+                createDialogData: this.data.createDialogData
+            }
+        ).createDialogData;
         this.dialog.open(NgxMatEntityCreateDialogComponent, {
             data: dialogData,
             minWidth: '60%',
@@ -195,16 +149,9 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
         if (!action.requireConfirmDialog || !action.requireConfirmDialog(this.selection.selected)) {
             return this.confirmRunMultiAction(action);
         }
-        const dialogData: ConfirmDialogData = {
-            // eslint-disable-next-line max-len
-            text: action.confirmDialogData?.text ? action.confirmDialogData?.text : [`Do you really want to run this action on ${this.selection.selected.length} entries?`],
-            type: 'default',
-            confirmButtonLabel: action.confirmDialogData?.confirmButtonLabel ? action.confirmDialogData?.confirmButtonLabel : 'Confirm',
-            cancelButtonLabel: action.confirmDialogData?.cancelButtonLabel ? action.confirmDialogData?.cancelButtonLabel : 'Cancel',
-            title: action.confirmDialogData?.title ? action.confirmDialogData?.title : action.displayName,
-            requireConfirmation: action.confirmDialogData?.requireConfirmation ? action.confirmDialogData?.requireConfirmation : false,
-            confirmationText: action.confirmDialogData?.confirmationText ? action.confirmDialogData?.confirmationText : undefined
-        };
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(action.confirmDialogData)
+            .withDefaultText([`Do you really want to run this action on ${this.selection.selected.length} entries?`])
+            .withDefaultTitle(action.displayName).confirmDialogData;
         const dialogref = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,

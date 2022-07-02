@@ -43,12 +43,6 @@ export abstract class PropertyDecoratorConfig {
      */
     order?: number;
 
-    /**
-     * Defines, Whether or not there should be a line break after this input.
-     * Is used inside the default create and edit dialogs.
-     */
-    // lineBreakAfter?: boolean;
-
     constructor(
         displayName: string,
         display: boolean = true,
@@ -57,7 +51,6 @@ export abstract class PropertyDecoratorConfig {
         omitForUpdate: boolean = false,
         defaultWidths: [cols, cols, cols] = [6, 6, 12],
         order?: number
-        // lineBreakAfter: boolean = false
     ) {
         this.displayName = displayName;
         this.display = display;
@@ -70,12 +63,10 @@ export abstract class PropertyDecoratorConfig {
             if (order < 0) {
                 throw new Error('order must be at least 0');
             }
-
             this.order = order;
         }
         else {
             this.order = -1;
         }
-        // this.lineBreakAfter = lineBreakAfter;
     }
 }

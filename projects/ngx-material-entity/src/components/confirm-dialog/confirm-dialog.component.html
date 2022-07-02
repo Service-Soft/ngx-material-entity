@@ -11,12 +11,12 @@
 
 <mat-dialog-actions>
     <button *ngIf="data.type === 'delete'" mat-raised-button color="warn" (click)="confirmAction()" [disabled]="data.requireConfirmation && !confirm" class="confirm-button">
-        {{data.confirmButtonLabel ? data.confirmButtonLabel : 'Delete'}}
+        {{data.confirmButtonLabel}}
     </button>
     <button *ngIf="data.type !== 'delete'" mat-raised-button (click)="confirmAction()" [disabled]="data.requireConfirmation && !confirm" class="confirm-button">
-        {{data.confirmButtonLabel ? data.confirmButtonLabel : data.type === 'info-only' ? 'Ok' : 'Confirm'}}
+        {{data.confirmButtonLabel}}
     </button>
     <button mat-raised-button (click)="cancel()" class="cancel-button">
-        {{data.cancelButtonLabel ? data.cancelButtonLabel : 'Cancel'}}
+        {{data.cancelButtonLabel}}
     </button>
 </mat-dialog-actions>

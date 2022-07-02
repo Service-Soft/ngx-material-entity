@@ -3,9 +3,10 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { EntityService } from '../../../classes/entity-service.class';
 import { Entity } from '../../../classes/entity-model.class';
 import { EntityUtilities } from '../../../classes/entity-utilities.class';
-import { CreateEntityDialogData } from './create-entity-dialog-data';
-import { ConfirmDialogData } from '../../confirm-dialog/confirm-dialog-data';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
+import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from './create-entity-dialog-data.builder';
+import { CreateEntityDialogData } from './create-entity-dialog-data';
 
 @Component({
     selector: 'ngx-mat-entity-create-dialog',
@@ -19,17 +20,20 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends Entity> implem
 
     entityService!: EntityService<EntityType>;
 
+    data!: CreateEntityDialogDataInternal<EntityType>;
+
     getWidth = EntityUtilities.getWidth;
 
     constructor(
         @Inject(MAT_DIALOG_DATA)
-        public data: CreateEntityDialogData<EntityType>,
+        private readonly inputData: CreateEntityDialogData<EntityType>,
         public dialogRef: MatDialogRef<NgxMatEntityCreateDialogComponent<EntityType>>,
         private readonly injector: Injector,
         private readonly dialog: MatDialog
-    ) { }
+    ) {}
 
     ngOnInit(): void {
+        this.data = new CreateEntityDialogDataBuilder(this.inputData).createDialogData;
         this.dialogRef.disableClose = true;
         this.setEntityKeys();
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
@@ -43,24 +47,14 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends Entity> implem
     }
 
     create(): void {
-        if (this.data.createDialogData.createRequiresConfirmDialog === false) {
+        if (!this.data.createDialogData?.createRequiresConfirmDialog) {
             return this.confirmCreate();
         }
-        const dialogData: ConfirmDialogData = {
-            // eslint-disable-next-line max-len
-            text: this.data.createDialogData.confirmCreateDialogData?.text ? this.data.createDialogData.confirmCreateDialogData?.text : ['Do you really want to create this entity?'],
-            type: 'default',
-            // eslint-disable-next-line max-len
-            confirmButtonLabel: this.data.createDialogData.confirmCreateDialogData?.confirmButtonLabel ? this.data.createDialogData.confirmCreateDialogData?.confirmButtonLabel : 'Create',
-            // eslint-disable-next-line max-len
-            cancelButtonLabel: this.data.createDialogData.confirmCreateDialogData?.cancelButtonLabel ? this.data.createDialogData.confirmCreateDialogData?.cancelButtonLabel : 'Cancel',
-            // eslint-disable-next-line max-len
-            title: this.data.createDialogData.confirmCreateDialogData?.title ? this.data.createDialogData.confirmCreateDialogData?.title : 'Create',
-            // eslint-disable-next-line max-len
-            requireConfirmation: this.data.createDialogData.confirmCreateDialogData?.requireConfirmation ? this.data.createDialogData.confirmCreateDialogData?.requireConfirmation : false,
-            // eslint-disable-next-line max-len
-            confirmationText: this.data.createDialogData.confirmCreateDialogData?.confirmationText ? this.data.createDialogData.confirmCreateDialogData?.confirmationText : undefined,
-        };
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.createDialogData?.confirmCreateDialogData)
+            .withDefaultText(['Do you really want to create this entity?'])
+            .withDefaultConfirmButtonLabel('Create')
+            .withDefaultTitle('Create')
+            .confirmDialogData;
         const dialogref = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,

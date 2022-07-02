@@ -52,6 +52,6 @@
     </mat-table>
 
     <div class="array-error" *ngIf="metadata.required && !dataSource.data.length">
-        {{metadata.missingErrorMessage ? metadata.missingErrorMessage : 'Needs to have at least one value'}}
+        {{metadata.missingErrorMessage}}
     </div>
 </div>

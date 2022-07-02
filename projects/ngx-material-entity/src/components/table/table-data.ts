@@ -56,6 +56,15 @@ export interface BaseData<EntityType extends Entity> {
      */
     displayColumns: DisplayColumn<EntityType>[],
     /**
+     * The Class of the service that handles the entities.
+     * Needs to be injectable and an extension of the "EntityService"-Class
+     */
+    EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
+    /**
+     * The Class of the entities to manage
+     */
+    EntityClass?: new (entity?: EntityType) => EntityType,
+    /**
      * The label on the search bar. Defaults to "Search".
      */
     searchLabel?: string,
@@ -63,15 +72,6 @@ export interface BaseData<EntityType extends Entity> {
      * The label on the button for adding new entities. Defaults to "Create".
      */
     createButtonLabel?: string,
-    /**
-     * The Class of the entities to manage
-     */
-    EntityClass: new (entity?: EntityType) => EntityType,
-    /**
-     * The Class of the service that handles the entities.
-     * Needs to be injectable and an extension of the "EntityService"-Class
-     */
-    EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
     /**
      * Takes a custom edit method which runs when you click on a entity.
      * If you don't need any special editing of entries you can also omit this.
@@ -117,7 +117,7 @@ export interface CreateDialogData {
     /**
      * The title of the default create-dialog.
      */
-    title: string,
+    title?: string,
     /**
      * The label on the create-button of the default create-dialog. Defaults to "Create".
      */
@@ -140,7 +140,7 @@ export interface EditDialogData<EntityType extends Entity> {
     /**
      * The title of the default edit-dialog.
      */
-    title: (entity: EntityType) => string,
+    title?: (entity: EntityType) => string,
     /**
      * The label on the confirm-button of the default edit-dialog. Defaults to "Save".
      */
@@ -173,9 +173,9 @@ export interface EditDialogData<EntityType extends Entity> {
     confirmEditDialogData?: ConfirmDialogData
 }
 
-export interface EntitiesData<EntityType extends Entity> {
+export interface TableData<EntityType extends Entity> {
     /**
-     * The base data for the entities-component.
+     * The base data for the table-component.
      * Includes stuff like the title for the table, what to display inside the rows etc.
      */
     baseData: BaseData<EntityType>,

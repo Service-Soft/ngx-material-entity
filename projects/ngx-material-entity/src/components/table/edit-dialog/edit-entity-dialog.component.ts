@@ -6,7 +6,8 @@ import { EntityUtilities } from '../../../classes/entity-utilities.class';
 import { cloneDeep } from 'lodash';
 import { EditEntityDialogData } from './edit-entity-dialog-data';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
-import { ConfirmDialogData } from '../../confirm-dialog/confirm-dialog-data';
+import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
+import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from './edit-entity-dialog.builder';
 
 @Component({
     selector: 'ngx-mat-entity-edit-dialog',
@@ -22,17 +23,20 @@ export class  NgxMatEntityEditDialogComponent<EntityType extends Entity> impleme
 
     entityPriorChanges!: EntityType;
 
+    data!: EditEntityDialogDataInternal<EntityType>;
+
     getWidth = EntityUtilities.getWidth;
 
     constructor(
         @Inject(MAT_DIALOG_DATA)
-        public data: EditEntityDialogData<EntityType>,
+        private readonly inputData: EditEntityDialogData<EntityType>,
         public dialogRef: MatDialogRef<NgxMatEntityEditDialogComponent<EntityType>>,
         private readonly injector: Injector,
         private readonly dialog: MatDialog
-    ) { }
+    ) {}
 
     ngOnInit(): void {
+        this.data = new EditEntityDialogDataBuilder(this.inputData).editDialogData;
         this.dialogRef.disableClose = true;
         this.setEntityKeys();
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
@@ -47,23 +51,14 @@ export class  NgxMatEntityEditDialogComponent<EntityType extends Entity> impleme
     }
 
     edit(): void {
-        if (this.data.editDialogData.editRequiresConfirmDialog === false) {
+        if (!this.data.editDialogData.editRequiresConfirmDialog) {
             return this.confirmEdit();
         }
-        const dialogData: ConfirmDialogData = {
-            // eslint-disable-next-line max-len
-            text: this.data.editDialogData.confirmEditDialogData?.text ? this.data.editDialogData.confirmEditDialogData?.text : ['Do you really want to save all changes?'],
-            type: 'default',
-            // eslint-disable-next-line max-len
-            confirmButtonLabel: this.data.editDialogData.confirmEditDialogData?.confirmButtonLabel ? this.data.editDialogData.confirmEditDialogData?.confirmButtonLabel : 'Confirm',
-            // eslint-disable-next-line max-len
-            cancelButtonLabel: this.data.editDialogData.confirmEditDialogData?.cancelButtonLabel ? this.data.editDialogData.confirmEditDialogData?.cancelButtonLabel : 'Cancel',
-            title: this.data.editDialogData.confirmEditDialogData?.title ? this.data.editDialogData.confirmEditDialogData?.title : 'Edit',
-            // eslint-disable-next-line max-len
-            requireConfirmation: this.data.editDialogData.confirmEditDialogData?.requireConfirmation ? this.data.editDialogData.confirmEditDialogData?.requireConfirmation : false,
-            // eslint-disable-next-line max-len
-            confirmationText: this.data.editDialogData.confirmEditDialogData?.confirmationText ? this.data.editDialogData.confirmEditDialogData?.confirmationText : undefined,
-        };
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.editDialogData.confirmEditDialogData)
+            .withDefaultText(['Do you really want to save all changes?'])
+            .withDefaultConfirmButtonLabel('Save')
+            .withDefaultTitle('Edit')
+            .confirmDialogData;
         const dialogref = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
@@ -80,24 +75,15 @@ export class  NgxMatEntityEditDialogComponent<EntityType extends Entity> impleme
     }
 
     delete(): void {
-        if (this.data.editDialogData.deleteRequiresConfirmDialog === false) {
+        if (!this.data.editDialogData.deleteRequiresConfirmDialog) {
             return this.confirmDelete();
         }
-        const dialogData: ConfirmDialogData = {
-            // eslint-disable-next-line max-len
-            text: this.data.editDialogData.confirmDeleteDialogData?.text ? this.data.editDialogData.confirmDeleteDialogData?.text : ['Do you really want to delete this entity?'],
-            type: 'delete',
-            // eslint-disable-next-line max-len
-            confirmButtonLabel: this.data.editDialogData.confirmDeleteDialogData?.confirmButtonLabel ? this.data.editDialogData.confirmDeleteDialogData?.confirmButtonLabel : 'Delete',
-            // eslint-disable-next-line max-len
-            cancelButtonLabel: this.data.editDialogData.confirmDeleteDialogData?.cancelButtonLabel ? this.data.editDialogData.confirmDeleteDialogData?.cancelButtonLabel : 'Cancel',
-            // eslint-disable-next-line max-len
-            title: this.data.editDialogData.confirmDeleteDialogData?.title ? this.data.editDialogData.confirmDeleteDialogData?.title : 'Delete',
-            // eslint-disable-next-line max-len
-            requireConfirmation: this.data.editDialogData.confirmDeleteDialogData?.requireConfirmation ? this.data.editDialogData.confirmDeleteDialogData?.requireConfirmation : false,
-            // eslint-disable-next-line max-len
-            confirmationText: this.data.editDialogData.confirmDeleteDialogData?.confirmationText ? this.data.editDialogData.confirmDeleteDialogData?.confirmationText : undefined,
-        };
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.editDialogData.confirmDeleteDialogData)
+            .withDefaultText(['Do you really want to delete this entity?'])
+            .withDefaultType('delete')
+            .withDefaultConfirmButtonLabel('Delete')
+            .withDefaultTitle('Delete')
+            .confirmDialogData;
         const dialogref = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,

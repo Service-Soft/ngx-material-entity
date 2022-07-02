@@ -3,7 +3,7 @@ Create Entities and define how to display them directly on their properties.
 <br>
 Can even generate complete and highly customizable CRUD-Tables for them.
 
-[![CI/CD](https://github.com/tim-fabian/ngx-material-entity/actions/workflows/main.yml/badge.svg?branch=release)](https://github.com/tim-fabian/ngx-material-entity/actions/workflows/main.yml)
+[![CI/CD](https://github.com/tim-fabian/ngx-material-entity/actions/workflows/main.yml/badge.svg?branch=release)](https://github.com/tim-fabian/ngx-material-entity/actions/workflows/main.yml) [![npm version](https://badge.fury.io/js/ngx-material-entity.svg)](https://badge.fury.io/js/ngx-material-entity)
 
 # Table of Contents
 - [NgxMaterialEntity](#ngxmaterialentity)

@@ -18,9 +18,9 @@ export interface EditEntityDialogData<EntityType extends Entity> {
     /**
      * The info of the generic edit-dialog.
      */
-    editDialogData: EditDialogData<EntityType>,
+    editDialogData?: EditDialogData<EntityType>,
     /**
      * Whether or not the user can delete this specific entity
      */
-    allowDelete: (entity: EntityType) => boolean
+    allowDelete?: (entity: EntityType) => boolean
 }
