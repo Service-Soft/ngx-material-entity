@@ -19,11 +19,12 @@ jobs:
               run: |
                   cd $GITHUB_WORKSPACE/projects/ngx-material-entity
                   npm i
+            # builds the library
             - name: build package
               run: |
                   cd $GITHUB_WORKSPACE
                   npm run build:prod
-            # runs
+            # runs linting
             - name: Linting
               run: |
                   cd $GITHUB_WORKSPACE
@@ -33,3 +34,8 @@ jobs:
               run: |
                   cd $GITHUB_WORKSPACE
                   npm run test
+            # updates codecov for the badge
+            - name: update codecov
+              uses: codecov/codecov-action@v3
+              with:
+                token: ${{ secrets.CODECOV_TOKEN }}

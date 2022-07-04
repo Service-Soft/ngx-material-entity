@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { EntityService } from '../../classes/entity-service.class';
+import { EntityService } from './entity-service.class';
 import { TestEntity } from './entity-model.test';
 import { HttpClientMock } from '../mocks/http-client.mock';
 

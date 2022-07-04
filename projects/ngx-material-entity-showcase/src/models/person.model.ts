@@ -1,5 +1,4 @@
-import { array, Entity, EntityUtilities, string, DecoratorTypes } from 'ngx-material-entity';
-import { object } from 'projects/ngx-material-entity/src/public-api';
+import { array, Entity, EntityUtilities, string, DecoratorTypes, object } from 'ngx-material-entity';
 import { Address } from './address.model';
 
 
@@ -15,7 +14,6 @@ export class Person extends Entity {
         displayName: 'Nachname',
         displayStyle: 'line',
         order: 3
-        // lineBreakAfter: true
     })
     lastname!: string;
 
@@ -23,7 +21,8 @@ export class Person extends Entity {
         displayName: 'Anrede',
         displayStyle: 'autocomplete',
         order: 1,
-        autocompleteValues: ['Herr', 'Frau']
+        autocompleteValues: ['Herr', 'Frau'],
+        defaultWidths: [3, 6, 6]
     })
     formOfAddress!: string;
 
@@ -64,7 +63,7 @@ export class Person extends Entity {
         displayName: 'Kategorien',
         itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
         displayStyle: 'chips',
-        deleteHtml: '<span class="material-icons">cancel</span>',
+        deleteHtml: '<span class="material-icons">home</span>',
         autocompleteValues: ['Elektronik', 'Lebensmittel'],
         minLength: 5
     })

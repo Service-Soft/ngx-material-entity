@@ -1,6 +1,6 @@
-import { Entity } from '../../classes/entity-model.class';
-import { EntityUtilities } from '../../classes/entity-utilities.class';
-import { string } from '../../decorators/string.decorator';
+import { Entity } from './entity-model.class';
+import { EntityUtilities } from './entity-utilities.class';
+import { string } from '../decorators/string.decorator';
 
 export class TestEntity extends Entity {
     @string({

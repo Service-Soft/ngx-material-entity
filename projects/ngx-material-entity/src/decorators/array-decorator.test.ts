@@ -1,8 +1,8 @@
-import { Entity } from '../../classes/entity-model.class';
-import { EntityUtilities } from '../../classes/entity-utilities.class';
-import { array } from '../../decorators/array.decorator';
-import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
-import { string } from '../../decorators/string.decorator';
+import { Entity } from '../classes/entity-model.class';
+import { EntityUtilities } from '../classes/entity-utilities.class';
+import { array } from './array.decorator';
+import { DecoratorTypes } from './base/decorator-types.enum';
+import { string } from './string.decorator';
 
 class Address extends Entity {
     @string({
@@ -86,30 +86,14 @@ test('should have array Metadata', () => {
     expect(metdata.displayColumns).toEqual([]);
 });
 test('should have metadata on array items', () => {
-    const streetMetadata1 = EntityUtilities.getPropertyMetadata(
-        testEntity.addresses[0], 'street', DecoratorTypes.STRING
-    );
-    const numberMetadata1 = EntityUtilities.getPropertyMetadata(
-        testEntity.addresses[0], 'number', DecoratorTypes.STRING
-    );
-    const postcodeMetadata1 = EntityUtilities.getPropertyMetadata(
-        testEntity.addresses[0], 'postcode', DecoratorTypes.STRING
-    );
-    const cityMetadata1 = EntityUtilities.getPropertyMetadata(
-        testEntity.addresses[0], 'city', DecoratorTypes.STRING
-    );
-    const streetMetadata2 = EntityUtilities.getPropertyMetadata(
-        testEntity.addresses[1], 'street', DecoratorTypes.STRING
-    );
-    const numberMetadata2 = EntityUtilities.getPropertyMetadata(
-        testEntity.addresses[1], 'number', DecoratorTypes.STRING
-    );
-    const postcodeMetadata2 = EntityUtilities.getPropertyMetadata(
-        testEntity.addresses[1], 'postcode', DecoratorTypes.STRING
-    );
-    const cityMetadata2 = EntityUtilities.getPropertyMetadata(
-        testEntity.addresses[1], 'city', DecoratorTypes.STRING
-    );
+    const streetMetadata1 = EntityUtilities.getPropertyMetadata(testEntity.addresses[0], 'street', DecoratorTypes.STRING);
+    const numberMetadata1 = EntityUtilities.getPropertyMetadata(testEntity.addresses[0], 'number', DecoratorTypes.STRING);
+    const postcodeMetadata1 = EntityUtilities.getPropertyMetadata(testEntity.addresses[0], 'postcode', DecoratorTypes.STRING);
+    const cityMetadata1 = EntityUtilities.getPropertyMetadata(testEntity.addresses[0], 'city', DecoratorTypes.STRING);
+    const streetMetadata2 = EntityUtilities.getPropertyMetadata(testEntity.addresses[1], 'street', DecoratorTypes.STRING);
+    const numberMetadata2 = EntityUtilities.getPropertyMetadata(testEntity.addresses[1], 'number', DecoratorTypes.STRING);
+    const postcodeMetadata2 = EntityUtilities.getPropertyMetadata(testEntity.addresses[1], 'postcode', DecoratorTypes.STRING);
+    const cityMetadata2 = EntityUtilities.getPropertyMetadata(testEntity.addresses[1], 'city', DecoratorTypes.STRING);
     expect(streetMetadata1).toBeDefined();
     expect(numberMetadata1).toBeDefined();
     expect(postcodeMetadata1).toBeDefined();
@@ -118,4 +102,26 @@ test('should have metadata on array items', () => {
     expect(numberMetadata2).toBeDefined();
     expect(postcodeMetadata2).toBeDefined();
     expect(cityMetadata2).toBeDefined();
+});
+test('should throw error for invalid itemType metadata', () => {
+    expect(
+        () => {
+            class ArrayTestEntity extends Entity {
+                @array({
+                    displayStyle: 'chips',
+                    displayName: 'Wrong itemType Array Value',
+                    itemType: 'invalidValue' as DecoratorTypes.STRING
+                })
+                wrongItemTypeArrayValue!: string[];
+                constructor(entity?: ArrayTestEntity) {
+                    super();
+                    EntityUtilities.new(this, entity);
+                }
+            }
+            new ArrayTestEntity({
+                id: '1',
+                wrongItemTypeArrayValue: ['42']
+            });
+        }
+    ).toThrow('Unknown itemType invalidValue');
 });
