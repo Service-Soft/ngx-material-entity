@@ -28,7 +28,7 @@ export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implemen
     getValidationErrorMessage!: (model: NgModel) => string;
 
     @Input()
-    omit!: 'create' | 'edit';
+    omit!: 'create' | 'update';
 
     dataSource!: MatTableDataSource<EntityType>;
 

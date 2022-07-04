@@ -1,8 +1,8 @@
-import { Entity } from '../../classes/entity-model.class';
-import { EntityUtilities } from '../../classes/entity-utilities.class';
-import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
-import { object } from '../../decorators/object.decorator';
-import { string } from '../../decorators/string.decorator';
+import { Entity } from '../classes/entity-model.class';
+import { EntityUtilities } from '../classes/entity-utilities.class';
+import { DecoratorTypes } from './base/decorator-types.enum';
+import { object } from './object.decorator';
+import { string } from './string.decorator';
 
 class Address extends Entity {
     @string({

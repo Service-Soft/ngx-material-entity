@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash';
 import { DecoratorType, DecoratorTypes } from '../decorators/base/decorator-types.enum';
-import { PropertyDecoratorConfig } from '../decorators/base/property-decorator-config.interface';
+import { cols, PropertyDecoratorConfig } from '../decorators/base/property-decorator-config.interface';
 import { DefaultNumberDecoratorConfig } from '../decorators/number.decorator';
 import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, TextboxStringDecoratorConfig } from '../decorators/string.decorator';
 import { EntityArrayDecoratorConfig } from '../decorators/array.decorator';
@@ -57,16 +57,14 @@ export abstract class EntityUtilities {
             const metadata = Reflect.getMetadata('metadata', entity, propertyKey as string) as DecoratorType<T>;
             if (!metadata) {
                 throw new Error(
-                    `Could not find metadata for property ${String(propertyKey)}
-                    on the entity ${JSON.stringify(entity)}`
+                    `Could not find metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`
                 );
             }
-            return metadata ;
+            return metadata;
         }
         catch (error) {
             throw new Error(
-                `Could not find metadata for property ${String(propertyKey)}
-                on the entity ${JSON.stringify(entity)}`
+                `Could not find metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`
             );
         }
     }
@@ -84,16 +82,14 @@ export abstract class EntityUtilities {
             const propertyType = Reflect.getMetadata('type', entity, propertyKey as string) as DecoratorTypes;
             if (!propertyType) {
                 throw new Error(
-                    `Could not find type metadata for property ${String(propertyKey)}
-                    on the entity ${JSON.stringify(entity)}`
+                    `Could not find type metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`
                 );
             }
             return propertyType;
         }
         catch (error) {
             throw new Error(
-                `Could not find type metadata for property ${String(propertyKey)}
-                on the entity ${JSON.stringify(entity)}`
+                `Could not find type metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`
             );
         }
     }
@@ -127,7 +123,7 @@ export abstract class EntityUtilities {
      * @param omit Whether to check for creatiung or editing validity
      * @returns Whether or not the entity is valid.
      */
-    static isEntityValid<EntityType extends Entity>(entity: EntityType, omit: 'create' | 'edit'): boolean {
+    static isEntityValid<EntityType extends Entity>(entity: EntityType, omit: 'create' | 'update'): boolean {
         for (const key in entity) {
             if (!this.isPropertyValid(entity, key, omit)) {
                 return false;
@@ -141,7 +137,11 @@ export abstract class EntityUtilities {
      * @param key The name of the property
      * @returns Whether or not the property value is valid
      */
-    private static isPropertyValid<EntityType extends Entity>(entity: EntityType, key: keyof EntityType, omit: 'create' | 'edit'): boolean {
+    private static isPropertyValid<EntityType extends Entity>(
+        entity: EntityType,
+        key: keyof EntityType,
+        omit: 'create' | 'update'
+    ): boolean {
         const type = this.getPropertyType(entity, key);
         const metadata: PropertyDecoratorConfig = this.getPropertyMetadata(entity, key, type);
         const metadataDefaultString = metadata as DefaultStringDecoratorConfig;
@@ -155,7 +155,7 @@ export abstract class EntityUtilities {
         if (metadata.omitForCreate && omit === 'create') {
             return true;
         }
-        if (metadata.omitForUpdate && omit === 'edit') {
+        if (metadata.omitForUpdate && omit === 'update') {
             return true;
         }
         if (metadata.required && !entity[key]) {
@@ -197,7 +197,7 @@ export abstract class EntityUtilities {
                 }
                 if (
                     metadataAutocompleteString.regex
-                    && (entity[key] as unknown as string).match(metadataAutocompleteString.regex)
+                    && !(entity[key] as unknown as string).match(metadataAutocompleteString.regex)
                 ) {
                     return false;
                 }
@@ -220,7 +220,7 @@ export abstract class EntityUtilities {
                 if (metadataDefaultNumber.max && (entity[key] as unknown as number) > metadataDefaultNumber.max) {
                     return false;
                 }
-                if (metadataDefaultNumber.min && (entity[key] as unknown as number) > metadataDefaultNumber.min) {
+                if (metadataDefaultNumber.min && (entity[key] as unknown as number) < metadataDefaultNumber.min) {
                     return false;
                 }
                 break;
@@ -295,10 +295,13 @@ export abstract class EntityUtilities {
         const metadataB = EntityUtilities.getPropertyMetadata(entity, b, EntityUtilities.getPropertyType(entity, b));
 
         if (metadataA.order === -1) {
+            if (metadataB.order === -1) {
+                return 0;
+            }
             return 1;
         }
         else if (metadataB.order === -1) {
-            return 0;
+            return -1;
         }
 
         return ((metadataA.order as number) - (metadataB.order as number));
@@ -312,9 +315,10 @@ export abstract class EntityUtilities {
      * @returns bootstrap column value
      */
     static getWidth<EntityType extends Entity>(entity: EntityType, key: keyof EntityType, type: 'lg' | 'md' | 'sm'): number {
-        const propertyType = EntityUtilities.getPropertyType(entity, key);
-        const metadata = EntityUtilities.getPropertyMetadata(entity, key, propertyType);
-        if (metadata.defaultWidths) {
+        try {
+            const propertyType = EntityUtilities.getPropertyType(entity, key);
+            const metadata = EntityUtilities.getPropertyMetadata(entity, key, propertyType);
+            metadata.defaultWidths = metadata.defaultWidths as [cols, cols, cols];
             switch (type) {
                 case 'lg':
                     return metadata.defaultWidths[0];
@@ -326,7 +330,7 @@ export abstract class EntityUtilities {
                     throw new Error('Something went wrong getting the width');
             }
         }
-        else {
+        catch (error) {
             throw new Error('Something went wrong getting the width');
         }
     }

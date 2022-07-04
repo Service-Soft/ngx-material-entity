@@ -19,7 +19,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button mat-raised-button (click)="edit()" [disabled]="!EntityUtilities.isEntityValid(data.entity, 'edit') || !EntityUtilities.dirty(data.entity, entityPriorChanges)">
+    <button mat-raised-button (click)="edit()" [disabled]="!EntityUtilities.isEntityValid(data.entity, 'update') || !EntityUtilities.dirty(data.entity, entityPriorChanges)">
         {{data.editDialogData.confirmButtonLabel}}
     </button>
     <button mat-raised-button (click)="cancel()" class="cancel-button">
