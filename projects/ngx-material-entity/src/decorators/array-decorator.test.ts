@@ -3,6 +3,7 @@ import { EntityUtilities } from '../classes/entity-utilities.class';
 import { array } from './array.decorator';
 import { DecoratorTypes } from './base/decorator-types.enum';
 import { string } from './string.decorator';
+import { expect } from '@jest/globals';
 
 class Address extends Entity {
     @string({

@@ -159,6 +159,15 @@ export class TableDataBuilder<EntityType extends Entity> {
     }
 }
 
+/**
+ * The default search function taken from googles mat table.
+ * This will be used if no custom search function is provided by the configuration.
+ *
+ * It generates a string from an entity which is then used to compare it to the search input.
+ *
+ * @param entity - An entity that is in the search.
+ * @returns The generated string of the given entity used for comparison with the search input.
+ */
 function defaultSearchFunction<EntityType extends Entity>(entity: EntityType): string {
     const searchString = Object.keys(entity as unknown as Record<string, unknown>)
         .reduce((currentTerm: string, key: string) => {

@@ -1,5 +1,5 @@
-/*
- * Public API Surface of ngx-material-entity
+/**
+ * Public API Surface of ngx-material-entity.
  */
 
 import 'reflect-metadata';

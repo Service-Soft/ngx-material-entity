@@ -4,7 +4,7 @@ import { Entity } from '../../../classes/entity-model.class';
 import { CreateDialogData } from '../table-data';
 
 /**
- * The Definition of the Create Entity Dialog Data
+ * The Definition of the Create Entity Dialog Data.
  */
 export interface CreateEntityDialogData<EntityType extends Entity> {
     /**

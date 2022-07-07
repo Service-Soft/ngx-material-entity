@@ -3,6 +3,7 @@ import { string } from '../string.decorator';
 import { Entity } from '../../classes/entity-model.class';
 import { TestEntityMockBuilder } from '../../mocks/test-entity.mock';
 import { DecoratorTypes } from './decorator-types.enum';
+import { expect } from '@jest/globals';
 
 describe('baseProperty', () => {
     test('id should have base Metadata', () => {

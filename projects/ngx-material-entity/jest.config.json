@@ -4,8 +4,16 @@
     },
     "bail": true,
     "silent": false,
-    "setupFiles": ["./jest.setup.ts"],
-    "roots": ["./src"],
+    "setupFiles": [
+        "./jest.setup.ts"
+    ],
+    "roots": [
+        "./src"
+    ],
+    "coveragePathIgnorePatterns": [
+        "/node_modules/",
+        "/mocks/"
+    ],
     "collectCoverage": true,
     "coverageDirectory": "../../coverage",
     "coverageThreshold": {

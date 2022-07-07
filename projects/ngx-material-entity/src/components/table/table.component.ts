@@ -25,7 +25,7 @@ import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from '../ta
 export class NgxMatEntityTableComponent<EntityType extends Entity> implements OnInit, OnDestroy {
 
     /**
-     * The configuration for the component
+     * The configuration for the component.
      */
     @Input()
     tableData!: TableData<EntityType>;

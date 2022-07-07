@@ -12,7 +12,7 @@ export interface AddArrayItemDialogData<EntityType extends Entity> {
      */
     createDialogData?: CreateDialogData,
     /**
-     * (optional) A custom function to generate the error-message for invalid inputs.
+     * A custom function to generate the error-message for invalid inputs.
      */
     getValidationErrorMessage?: (model: NgModel) => string
 }

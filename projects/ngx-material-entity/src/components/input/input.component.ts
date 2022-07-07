@@ -69,7 +69,7 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
     metadataDefaultNumber!: DefaultNumberDecoratorConfig;
     metadataDropdownNumber!: DropdownNumberDecoratorConfig;
 
-    metadataDefaultObject!: DefaultObjectDecoratorConfig;
+    metadataDefaultObject!: DefaultObjectDecoratorConfig<EntityType>;
     objectProperty!: Entity;
 
     metadataEntityArray!: EntityArrayDecoratorConfig<Entity>;
@@ -86,9 +86,6 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
 
     constructor() {}
 
-    /**
-     * Helper method needed to recursively generate property input components (used eg. with the object)
-     */
     trackByFn(index: unknown): unknown {
         return index;
     }
@@ -117,8 +114,8 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
         this.metadataDefaultNumber = this.metadata as DefaultNumberDecoratorConfig;
         this.metadataDropdownNumber = this.metadata as DropdownNumberDecoratorConfig;
 
-        this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfig;
-        this.objectProperty = this.entity[this.propertyKey] as unknown as Entity;
+        this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfig<EntityType>;
+        this.objectProperty = this.entity[this.propertyKey] as unknown as EntityType;
 
         this.metadataEntityArray = this.metadata as EntityArrayDecoratorConfig<Entity>;
         if (this.metadataEntityArray.EntityClass) {

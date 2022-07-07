@@ -2,8 +2,9 @@ import { NgModel } from '@angular/forms';
 
 /**
  * Generates a default error message for most validation errors.
- * @param model The ngModel to get the error from
- * @returns The Validation Error Message to display
+ *
+ * @param model - The ngModel to get the error from.
+ * @returns The Validation Error Message to display.
  */
 export function getValidationErrorMessage(model: NgModel): string {
     if (model.hasError('matDatepickerParse')) {

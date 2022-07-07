@@ -36,7 +36,9 @@ export class HttpClientMock {
 
     /**
      * Gets an id from a request url. Expects the id to be the value after the last slash.
-     * @param url The url to read the id from
+     *
+     * @param url - The url to read the id from.
+     * @returns The id of the given url.
      */
     private getIdFromUrl(url: string): string {
         const urlSegments: string[] = url.split('/');

@@ -9,12 +9,25 @@ import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 export class TestObjectEntity extends Entity {
     @string({
         displayStyle: 'line',
-        displayName: 'Max Length Value',
+        displayName: 'Object Max Length Value',
         maxLength: 4
     })
-    maxLengthValue!: string;
+    maxLengthStringValue!: string;
 
     constructor(entity?: TestObjectEntity) {
+        super();
+        EntityUtilities.new(this, entity);
+    }
+}
+
+export class TestObjectArrayEntity extends Entity {
+    @string({
+        displayStyle: 'line',
+        displayName: 'Array Object Value'
+    })
+    stringValue!: string;
+
+    constructor(entity?: TestObjectArrayEntity) {
         super();
         EntityUtilities.new(this, entity);
     }
@@ -69,21 +82,21 @@ export class TestEntity extends Entity {
         displayName: 'Max Length Value',
         maxLength: 4
     })
-    maxLengthValue!: string;
+    maxLengthStringValue!: string;
 
     @string({
         displayStyle: 'line',
         displayName: 'Min Length Value',
         minLength: 4
     })
-    minLengthValue!: string;
+    minLengthStringValue!: string;
 
     @string({
         displayStyle: 'line',
         displayName: 'Regex Value',
         regex: new RegExp('^[0-9]+$')
     })
-    regexValue!: string;
+    regexStringValue!: string;
 
     @string({
         displayStyle: 'autocomplete',
@@ -91,7 +104,7 @@ export class TestEntity extends Entity {
         autocompleteValues: ['Test', '123'],
         maxLength: 4
     })
-    maxLengthAutocompleteValue!: string;
+    maxLengthAutocompleteStringValue!: string;
 
     @string({
         displayStyle: 'autocomplete',
@@ -99,29 +112,29 @@ export class TestEntity extends Entity {
         autocompleteValues: ['Tests', '12345'],
         minLength: 4
     })
-    minLengthAutocompleteValue!: string;
+    minLengthAutocompleteStringValue!: string;
 
     @string({
         displayStyle: 'autocomplete',
-        displayName: 'Regex Value',
+        displayName: 'Regex Autocomplete Value',
         autocompleteValues: ['1234', '5678'],
         regex: new RegExp('^[0-9]+$')
     })
-    regexAutocompleteValue!: string;
+    regexAutocompleteStringValue!: string;
 
     @string({
         displayStyle: 'textbox',
         displayName: 'Max Length Textbox Value',
         maxLength: 4
     })
-    maxLengthTextboxValue!: string;
+    maxLengthTextboxStringValue!: string;
 
     @string({
         displayStyle: 'textbox',
         displayName: 'Min Length Textbox Value',
         minLength: 4
     })
-    minLengthTextboxValue!: string;
+    minLengthTextboxStringValue!: string;
 
     @number({
         displayStyle: 'line',
@@ -159,10 +172,27 @@ export class TestEntity extends Entity {
     })
     stringChipsAutocompleteArrayValue!: string[];
 
+    @array({
+        displayName: 'Entity Array',
+        itemType: DecoratorTypes.OBJECT,
+        displayStyle: 'table',
+        EntityClass: TestObjectArrayEntity,
+        displayColumns: [
+            {
+                displayName: 'Id',
+                value: (entity: TestObjectArrayEntity) => entity.id
+            },
+            {
+                displayName: 'String Value',
+                value: (entity: TestObjectArrayEntity) => entity.stringValue
+            }
+        ],
+    })
+    entityArrayValue!: TestObjectArrayEntity[];
+
     constructor(entity?: TestEntity) {
         super();
         EntityUtilities.new(this, entity);
-        this.objectValue = new TestObjectEntity(entity?.objectValue);
     }
 }
 
@@ -171,25 +201,31 @@ const testEntityData: TestEntity = {
     omitForCreateValue: 'omitForCreateValue',
     omitForUpdateValue: 'omitForUpdateValue',
     optionalValue: 'optional',
-    maxLengthValue: '1234',
-    minLengthValue: '12345678',
-    regexValue: '12345',
-    maxLengthAutocompleteValue: '1234',
-    minLengthAutocompleteValue: '12345678',
-    regexAutocompleteValue: '12345',
-    maxLengthTextboxValue: '1234',
-    minLengthTextboxValue: '12345678',
+    maxLengthStringValue: '1234',
+    minLengthStringValue: '12345678',
+    regexStringValue: '12345',
+    maxLengthAutocompleteStringValue: '1234',
+    minLengthAutocompleteStringValue: '12345678',
+    regexAutocompleteStringValue: '12345',
+    maxLengthTextboxStringValue: '1234',
+    minLengthTextboxStringValue: '12345678',
     minNumberValue: 42,
     maxNumberValue: 5,
     objectValue: {
         id: '1',
-        maxLengthValue: '1234'
+        maxLengthStringValue: '1234'
     },
     stringChipsArrayValue: ['01234', '56789'],
     stringChipsAutocompleteArrayValue: ['ABCDE', 'FGHIJ'],
     orderValue1: '1',
     orderValue2: '2',
-    orderValue3: '3'
+    orderValue3: '3',
+    entityArrayValue: [
+        {
+            id: '1',
+            stringValue: 'stringValue'
+        }
+    ]
 }
 
 export class TestEntityMockBuilder {
