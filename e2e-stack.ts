@@ -11,7 +11,7 @@ import { spawn } from 'cross-spawn';
 
 exec('npm run api');
 exec('npm run showcase');
-const cypress: ChildProcess = spawn('run-s waitOn:server cy:run', [], { stdio: 'inherit' }) as ChildProcess;
+const cypress: ChildProcess = spawn('run-s waitOn:server cy:run', [], { stdio: 'inherit' });
 
 cypress.on('close', (code: number) => {
     console.log('Cypress closed. Code:', code);
