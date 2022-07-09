@@ -6,13 +6,12 @@
 
 /* eslint-disable no-console */
 
-import { ChildProcess, execSync } from 'child_process';
-import { spawn } from 'cross-spawn';
+import { ChildProcess, exec, execSync } from 'child_process';
 
-spawn('nodemon ./api.ts', [], { stdio: 'inherit' });
-spawn('ng serve ngx-material-entity-showcase', [], { stdio: 'inherit' });
+exec('nodemon ./api.ts');
+exec('ng serve ngx-material-entity-showcase');
 execSync('wait-on http://localhost:4200');
-const cypress: ChildProcess = spawn('cypress run --browser chrome', [], { stdio: 'inherit' });
+const cypress: ChildProcess = exec('cypress run --browser chrome');
 
 cypress.on('close', (code: number) => {
     console.log('Cypress closed. Code:', code);
