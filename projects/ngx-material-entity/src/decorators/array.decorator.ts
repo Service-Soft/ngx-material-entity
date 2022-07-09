@@ -5,8 +5,11 @@ import { DecoratorTypes } from './base/decorator-types.enum';
 import { PropertyDecoratorConfig } from './base/property-decorator-config.interface';
 
 /**
- * Decorator for setting and getting array propery metadata
- * @param metadata The metadata of the array property
+ * Decorator for setting and getting array propery metadata.
+ *
+ * @param metadata - The metadata of the array property.
+ * @returns The method that defines the metadata.
+ * @throws When the given type of the array-items is unknown.
  */
 export function array<EntityType extends Entity>(
     metadata: EntityArrayDecoratorConfig<EntityType> | StringChipsArrayDecoratorConfig | AutocompleteStringChipsArrayDecoratorConfig
@@ -30,46 +33,46 @@ export interface ArrayTableDisplayColumn<EntityType extends Entity> {
      */
     displayName: string,
     /**
-     * A method to get the value inside an row
+     * A method to get the value inside an row.
      */
     value: (entity: EntityType) => string
 }
 
 /**
- * Interface definition for the @array metadata
+ * Interface definition for the @array metadata.
  */
 abstract class ArrayDecoratorConfig extends PropertyDecoratorConfig {
     /**
-     * How to display the string
+     * How to display the string.
      */
     displayStyle!: 'table' | 'chips';
 
     /**
-     * The type of the items inside the array
+     * The type of the items inside the array.
      */
     itemType!: DecoratorTypes;
 
     /**
-     * The error-message to display when the array is required but contains no values
+     * The error-message to display when the array is required but contains no values.
      */
     missingErrorMessage?: string;
 }
 
 /**
- * Definition for an array of Entities
+ * Definition for an array of Entities.
  */
 export class EntityArrayDecoratorConfig<EntityType extends Entity> extends ArrayDecoratorConfig {
     override itemType: DecoratorTypes.OBJECT;
     override displayStyle: 'table';
 
     /**
-     * The EntityClass used for generating the create inputs
+     * The EntityClass used for generating the create inputs.
      */
     EntityClass!: new (entity?: EntityType) => EntityType;
 
     /**
      * The definition of the columns to display. Consists of the displayName to show in the header of the row
-     * and the value, which is a function that generates the value to display inside a column
+     * and the value, which is a function that generates the value to display inside a column.
      */
     displayColumns: ArrayTableDisplayColumn<EntityType>[];
 
@@ -82,6 +85,7 @@ export class EntityArrayDecoratorConfig<EntityType extends Entity> extends Array
     /**
      * Whether or not the form for adding items to the array
      * should be displayed inline.
+     *
      * @default true
      */
     createInline?: boolean
@@ -107,7 +111,7 @@ export class EntityArrayDecoratorConfig<EntityType extends Entity> extends Array
 }
 
 /**
- * Definition for an array of strings displayed as a chips list
+ * Definition for an array of strings displayed as a chips list.
  */
 export class StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
     override itemType: DecoratorTypes.STRING;
@@ -117,20 +121,21 @@ export class StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
      * The html inside the delete-button.
      * Please note that custom tags such as <mat-icon></mat-icon>
      * need to be defined as known elements, otherwise the sanitizer will remove them.
-     * You can however work around this by using `<span class="material-icons"></span>`
+     * You can however work around this by using `<span class="material-icons"></span>`.
+     *
      * @default <mat-icon>cancel</mat-icon>
      */
     deleteHtml?: string
     /**
-     * (optional) The minimum required length of the string
+     * The minimum required length of the string.
      */
     minLength?: number;
     /**
-     * (optional) The maximum required length of the string
+     * The maximum required length of the string.
      */
     maxLength?: number;
     /**
-     * (optional) A regex used for validation
+     * A regex used for validation.
      */
     regex?: RegExp;
 
@@ -154,7 +159,7 @@ export class StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
 }
 
 /**
- * Definition for an array of autocomplete strings displayed as a chips list
+ * Definition for an array of autocomplete strings displayed as a chips list.
  */
 export class AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
     override itemType: DecoratorTypes.STRING_AUTOCOMPLETE;
@@ -164,24 +169,25 @@ export class AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecoratorC
      * The html inside the delete-button.
      * Please note that custom tags such as <mat-icon></mat-icon>
      * need to be defined as known elements, otherwise the sanitizer will remove them.
-     * You can however work around this by using `<span class="material-icons"></span>`
+     * You can however work around this by using `<span class="material-icons"></span>`.
+     *
      * @default <mat-icon>cancel</mat-icon>
      */
     deleteHtml?: string;
     /**
-     * The autocomplete values
+     * The autocomplete values.
      */
     autocompleteValues: string[];
     /**
-     * (optional) The minimum required length of the string
+     * The minimum required length of the string.
      */
     minLength?: number;
     /**
-     * (optional) The maximum required length of the string
+     * The maximum required length of the string.
      */
     maxLength?: number;
     /**
-     * (optional) A regex used for validation
+     * A regex used for validation.
      */
     regex?: RegExp;
 

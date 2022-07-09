@@ -3,8 +3,10 @@ import { baseProperty } from './base/base-property.decorator';
 import { DecoratorTypes } from './base/decorator-types.enum';
 
 /**
- * Decorator for setting and getting string propery metadata
- * @param metadata The metadata of the string property
+ * Decorator for setting and getting string propery metadata.
+ *
+ * @param metadata - The metadata of the string property.
+ * @returns The method that defines the metadata.
  */
 export function string(
     metadata: DropdownStringDecoratorConfig | AutocompleteStringDecoratorConfig
@@ -25,11 +27,11 @@ export function string(
 }
 
 /**
- * Interface definition for the @string metadata
+ * Definition for the @string metadata.
  */
 abstract class StringDecoratorConfig extends PropertyDecoratorConfig {
     /**
-     * How to display the string
+     * How to display the string.
      */
     displayStyle!: 'line' | 'textbox' | 'autocomplete' | 'dropdown';
 }
@@ -38,7 +40,7 @@ export class DropdownStringDecoratorConfig extends StringDecoratorConfig {
     override displayStyle: 'dropdown';
     /**
      * The values of the dropdown, consisting of a name to display and the actual value
-     * Can also receive a function to determine the values
+     * Can also receive a function to determine the values.
      */
     dropdownValues: { displayName: string, value: string }[];
 
@@ -60,15 +62,15 @@ export class DropdownStringDecoratorConfig extends StringDecoratorConfig {
 export class DefaultStringDecoratorConfig extends StringDecoratorConfig {
     override displayStyle: 'line';
     /**
-     * (optional) The minimum required length of the string
+     * The minimum required length of the string.
      */
     minLength?: number;
     /**
-     * (optional) The maximum required length of the string
+     * The maximum required length of the string.
      */
     maxLength?: number;
     /**
-     * (optional) A regex used for validation
+     * A regex used for validation.
      */
     regex?: RegExp;
 
@@ -91,11 +93,11 @@ export class DefaultStringDecoratorConfig extends StringDecoratorConfig {
 export class TextboxStringDecoratorConfig extends StringDecoratorConfig {
     override displayStyle: 'textbox';
     /**
-     * (optional) The minimum required length of the string
+     * The minimum required length of the string.
      */
     minLength?: number;
     /**
-     * (optional) The maximum required length of the string
+     * The maximum required length of the string.
      */
     maxLength?: number;
 
@@ -118,19 +120,19 @@ export class TextboxStringDecoratorConfig extends StringDecoratorConfig {
 export class AutocompleteStringDecoratorConfig extends StringDecoratorConfig {
     override displayStyle: 'autocomplete';
     /**
-     * The autocomplete values
+     * The autocomplete values.
      */
     autocompleteValues: string[];
     /**
-     * (optional) The minimum required length of the string
+     * The minimum required length of the string.
      */
     minLength?: number;
     /**
-     * (optional) The maximum required length of the string
+     * The maximum required length of the string.
      */
     maxLength?: number;
     /**
-     * (optional) A regex used for validation
+     * A regex used for validation.
      */
     regex?: RegExp;
 

@@ -1,17 +1,25 @@
 import { TestEntityMockBuilder, TestEntity } from '../mocks/test-entity.mock';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { EntityUtilities } from './entity-utilities.class';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isArray } from 'lodash';
 import { Entity } from './entity-model.class';
+import { expect } from '@jest/globals';
 
 const builder = new TestEntityMockBuilder();
 const testEntity: TestEntity = builder.testEntity;
 const testEntityWithoutData: TestEntity = builder.testEntityWithoutData;
 const testEntityWithoutMetadata: TestEntity = builder.testEntityData;
 
-function valueIsEntity(entity: unknown): entity is Entity {
-    if (entity && typeof entity === 'object') {
-        return Reflect.has(entity, 'id');
+
+/**
+ * Checks whether or not a given value is an Entity.
+ *
+ * @param value - The value to check.
+ * @returns Whether or not the given value is an Entity.
+ */
+function valueIsEntity(value: unknown): value is Entity {
+    if (value && typeof value === 'object') {
+        return Reflect.has(value, 'id');
     }
     else {
         return false;
@@ -37,6 +45,9 @@ describe('new', () => {
                 for (const k in value) {
                     expect(Reflect.get(value, k)).toBeUndefined();
                 }
+            }
+            else if (isArray(value)) {
+                expect(Reflect.get(testEntityWithoutData, key)).toEqual([]);
             }
             else {
                 expect(Reflect.get(testEntityWithoutData, key)).toBeUndefined();
@@ -103,61 +114,61 @@ describe('isEntityValid', () => {
     // STRING
     test('STRING maxLength', () => {
         const tE: TestEntity = cloneDeep(testEntity);
-        tE.maxLengthValue = '12345';
+        tE.maxLengthStringValue = '12345';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
-        tE.maxLengthValue = 'ABCD';
+        tE.maxLengthStringValue = 'ABCD';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('STRING minLength', () => {
         const tE: TestEntity = cloneDeep(testEntity);
-        tE.minLengthValue = '123';
+        tE.minLengthStringValue = '123';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
-        tE.minLengthValue = 'ABCDEFG';
+        tE.minLengthStringValue = 'ABCDEFG';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('STRING regex', () => {
         const tE: TestEntity = cloneDeep(testEntity);
-        tE.regexValue = '12345s';
+        tE.regexStringValue = '12345s';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
-        tE.regexValue = '54321';
+        tE.regexStringValue = '54321';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
 
     // STRING_AUTOCOMPLETE
     test('STRING_AUTOCOMPLETE maxLength', () => {
         const tE: TestEntity = cloneDeep(testEntity);
-        tE.maxLengthAutocompleteValue = '12345';
+        tE.maxLengthAutocompleteStringValue = '12345';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
-        tE.maxLengthAutocompleteValue = 'ABCD';
+        tE.maxLengthAutocompleteStringValue = 'ABCD';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('STRING_AUTOCOMPLETE minLength', () => {
         const tE: TestEntity = cloneDeep(testEntity);
-        tE.minLengthAutocompleteValue = '123';
+        tE.minLengthAutocompleteStringValue = '123';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
-        tE.minLengthAutocompleteValue = 'ABCDEFG';
+        tE.minLengthAutocompleteStringValue = 'ABCDEFG';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('STRING_AUTOCOMPLETE regex', () => {
-        testEntity.regexAutocompleteValue = '12345s';
+        testEntity.regexAutocompleteStringValue = '12345s';
         expect(EntityUtilities.isEntityValid(testEntity, 'create')).toBe(false);
-        testEntity.regexAutocompleteValue = '54321';
+        testEntity.regexAutocompleteStringValue = '54321';
         expect(EntityUtilities.isEntityValid(testEntity, 'create')).toBe(true);
     });
 
     // STRING_TEXTBOX
     test('STRING_TEXTBOX maxLength', () => {
         const tE: TestEntity = cloneDeep(testEntity);
-        tE.maxLengthTextboxValue = '12345';
+        tE.maxLengthTextboxStringValue = '12345';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
-        tE.maxLengthTextboxValue = 'ABCD';
+        tE.maxLengthTextboxStringValue = 'ABCD';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('STRING_TEXTBOX minLength', () => {
         const tE: TestEntity = cloneDeep(testEntity);
-        tE.minLengthTextboxValue = '123';
+        tE.minLengthTextboxStringValue = '123';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
-        tE.minLengthTextboxValue = 'ABCDEFG';
+        tE.minLengthTextboxStringValue = 'ABCDEFG';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
 
@@ -180,9 +191,9 @@ describe('isEntityValid', () => {
     // OBJECT
     test('OBJECT', () => {
         const tE: TestEntity = cloneDeep(testEntity);
-        tE.objectValue.maxLengthValue = '12345';
+        tE.objectValue.maxLengthStringValue = '12345';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
-        tE.objectValue.maxLengthValue = '1234';
+        tE.objectValue.maxLengthStringValue = '1234';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
 
@@ -197,7 +208,7 @@ describe('isEntityValid', () => {
 
     test('should throw error for unknown metadata type', () => {
         const tE: TestEntity = cloneDeep(testEntity);
-        Reflect.defineMetadata('type', 'invalid type', tE, 'maxLengthValue');
+        Reflect.defineMetadata('type', 'invalid type', tE, 'maxLengthStringValue');
         const expectedEm: string = 'Could not validate the input because the DecoratorType invalid type is not known';
         expect(() => EntityUtilities.isEntityValid(tE, 'create')).toThrow(expectedEm);
     });
@@ -228,25 +239,17 @@ describe('compareOrder', () => {
 
 describe('getWidth', () => {
     test('should get the default width', () => {
-        expect(EntityUtilities.getWidth(testEntity, 'maxLengthValue', 'lg')).toBe(6);
-        expect(EntityUtilities.getWidth(testEntity, 'maxLengthValue', 'md')).toBe(6);
-        expect(EntityUtilities.getWidth(testEntity, 'maxLengthValue', 'sm')).toBe(12);
+        expect(EntityUtilities.getWidth(testEntity, 'maxLengthStringValue', 'lg')).toBe(6);
+        expect(EntityUtilities.getWidth(testEntity, 'maxLengthStringValue', 'md')).toBe(6);
+        expect(EntityUtilities.getWidth(testEntity, 'maxLengthStringValue', 'sm')).toBe(12);
     });
-    test('should throw error for unknown screen size', () => {
-        const expectedEm: string = 'Something went wrong getting the width';
-        expect(() => EntityUtilities.getWidth(testEntity, 'maxLengthValue', 'invalid' as 'lg' | 'md' | 'sm')).toThrow(expectedEm);
-    });
-    test('should throw error if no metadata was found', () => {
-        const expectedEm: string = 'Something went wrong getting the width';
-        expect(() => EntityUtilities.getWidth(testEntityWithoutMetadata, 'maxLengthValue', 'sm')).toThrow(expectedEm);
-    })
 });
 
 describe('resetChangesOnEntity', () => {
     test('should reset entity', () => {
         const tE: TestEntity = cloneDeep(testEntity);
         const tEPriorChanges: TestEntity = cloneDeep(tE);
-        tE.minLengthValue = 'changed value';
+        tE.minLengthStringValue = 'changed value';
         expect(EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
         EntityUtilities.resetChangesOnEntity(tE, tEPriorChanges);
         expect(EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);

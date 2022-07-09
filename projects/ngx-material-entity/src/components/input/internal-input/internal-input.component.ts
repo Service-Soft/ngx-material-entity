@@ -62,16 +62,13 @@ export class NgxMatEntityInternalInputComponent<EntityType extends Entity> imple
     metadataDefaultNumber!: DefaultNumberDecoratorConfig;
     metadataDropdownNumber!: DropdownNumberDecoratorConfig;
 
-    metadataDefaultObject!: DefaultObjectDecoratorConfig;
+    metadataDefaultObject!: DefaultObjectDecoratorConfig<EntityType>;
     objectProperty!: Entity;
 
     readonly DecoratorTypes = DecoratorTypes;
 
     getWidth = EntityUtilities.getWidth;
 
-    /**
-     * Helper method needed to recursively generate property input components (used eg. with the object)
-     */
     trackByFn(index: unknown): unknown {
         return index;
     }
@@ -96,7 +93,7 @@ export class NgxMatEntityInternalInputComponent<EntityType extends Entity> imple
         this.metadataDefaultNumber = this.metadata as DefaultNumberDecoratorConfig;
         this.metadataDropdownNumber = this.metadata as DropdownNumberDecoratorConfig;
 
-        this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfig;
+        this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfig<EntityType>;
         this.objectProperty = this.entity[this.propertyKey] as unknown as Entity;
     }
 

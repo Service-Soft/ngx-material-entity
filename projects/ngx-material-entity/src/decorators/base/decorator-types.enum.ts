@@ -25,7 +25,7 @@ export enum DecoratorTypes {
 }
 
 /**
- * Gives the metadata-config Type based ont the DecoratorTypes enum
+ * Gives the metadata-config Type based on the DecoratorTypes enum.
  */
 export type DecoratorType<T> =
     T extends DecoratorTypes.STRING ? DefaultStringDecoratorConfig
@@ -37,7 +37,7 @@ export type DecoratorType<T> =
     : T extends DecoratorTypes.BOOLEAN_CHECKBOX ? CheckboxBooleanDecoratorConfig
     : T extends DecoratorTypes.BOOLEAN_TOGGLE ? ToggleBooleanDecoratorConfig
     : T extends DecoratorTypes.BOOLEAN_DROPDOWN ? DropdownBooleanDecoratorConfig
-    : T extends DecoratorTypes.OBJECT ? DefaultObjectDecoratorConfig
+    : T extends DecoratorTypes.OBJECT ? DefaultObjectDecoratorConfig<Entity>
     : T extends DecoratorTypes.ARRAY ? EntityArrayDecoratorConfig<Entity>
     : T extends DecoratorTypes.ARRAY_STRING_CHIPS ? StringChipsArrayDecoratorConfig
     : T extends DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS ? AutocompleteStringChipsArrayDecoratorConfig

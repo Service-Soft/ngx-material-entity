@@ -3,8 +3,10 @@ import { baseProperty } from './base/base-property.decorator';
 import { DecoratorTypes } from './base/decorator-types.enum';
 
 /**
- * Decorator for setting and getting string propery metadata
- * @param metadata The metadata of the string property
+ * Decorator for setting and getting string propery metadata.
+ *
+ * @param metadata - The metadata of the string property.
+ * @returns The method that defines the metadata.
  */
 export function number(
     metadata: DefaultNumberDecoratorConfig | DropdownNumberDecoratorConfig
@@ -18,11 +20,11 @@ export function number(
 }
 
 /**
- * Interface definition for the @number metadata
+ * Definition for the @number metadata.
  */
 abstract class NumberDecoratorConfig extends PropertyDecoratorConfig {
     /**
-     * Whether to display the number in a single line or as a dropdown
+     * Whether to display the number in a single line or as a dropdown.
      */
     displayStyle!: 'line' | 'dropdown';
 }
@@ -30,11 +32,11 @@ abstract class NumberDecoratorConfig extends PropertyDecoratorConfig {
 export class DefaultNumberDecoratorConfig extends NumberDecoratorConfig {
     override displayStyle: 'line';
     /**
-     * (optional) The minimum value of the number
+     * The minimum value of the number.
      */
     min?: number;
     /**
-     * (optional) The maximum value of the number
+     * The maximum value of the number.
      */
     max?: number;
 
@@ -57,7 +59,7 @@ export class DropdownNumberDecoratorConfig extends NumberDecoratorConfig {
     override displayStyle: 'dropdown';
     /**
      * The values of the dropdown, consisting of a name to display and the actual value
-     * Can also receive a function to determine the values
+     * Can also receive a function to determine the values.
      */
     dropdownValues?: { displayName: string, value: number }[];
 

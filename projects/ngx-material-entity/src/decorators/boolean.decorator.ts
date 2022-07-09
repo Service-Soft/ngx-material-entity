@@ -3,8 +3,10 @@ import { baseProperty } from './base/base-property.decorator';
 import { DecoratorTypes } from './base/decorator-types.enum';
 
 /**
- * Decorator for setting and getting string propery metadata
- * @param metadata The metadata of the string property
+ * Decorator for setting and getting string propery metadata.
+ *
+ * @param metadata - The metadata of the string property.
+ * @returns The method that defines the metadata.
  */
 export function boolean(
     metadata: CheckboxBooleanDecoratorConfig | ToggleBooleanDecoratorConfig | DropdownBooleanDecoratorConfig
@@ -21,11 +23,11 @@ export function boolean(
 }
 
 /**
- * The Definition for the @boolean metadata
+ * The Definition for the @boolean metadata.
  */
 abstract class BooleanDecoratorConfig extends PropertyDecoratorConfig {
     /**
-     * Whether to display the booleans as a checkbox, a toggle button or as a dropdown
+     * Whether to display the booleans as a checkbox, a toggle button or as a dropdown.
      */
     displayStyle!: 'checkbox' | 'dropdown' | 'toggle';
 }
@@ -39,7 +41,7 @@ export class DropdownBooleanDecoratorConfig extends BooleanDecoratorConfig {
     dropdownTrue: string | { (args: unknown): string };
     /**
      * The name of the false value if displayStyle dropdown is used.
-     * Can also receive a function to determine the name,
+     * Can also receive a function to determine the name,.
      */
     dropdownFalse: string | { (args: unknown): string };
 

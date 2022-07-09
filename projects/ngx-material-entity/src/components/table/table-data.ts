@@ -12,30 +12,32 @@ export interface DisplayColumn<EntityType extends Entity> {
      */
     displayName: string,
     /**
-     * A method to get the value inside an row
+     * A method to get the value inside an row.
      */
     value: (entity: EntityType) => string
 }
 
 /**
- * The Definition of an Action that can be run on multiple selected entities
+ * The Definition of an Action that can be run on multiple selected entities.
  */
 export interface MultiSelectAction<EntityType extends Entity> {
     /**
-     * The name of the action
+     * The name of the action.
      */
     displayName: string,
     /**
-     * The action itself
+     * The action itself.
      */
     action: (selectedEntities: EntityType[]) => unknown,
     /**
      * A method that defines whether or not the action can be used.
+     *
      * @default true
      */
     enabled?: (selectedEntities: EntityType[]) => boolean,
     /**
-     * A method that defines whether or not a confirm dialog is needed to run the action
+     * A method that defines whether or not a confirm dialog is needed to run the action.
+     *
      * @default false
      */
     requireConfirmDialog?: (selectedEntities: EntityType[]) => boolean,
@@ -47,21 +49,21 @@ export interface MultiSelectAction<EntityType extends Entity> {
 
 export interface BaseData<EntityType extends Entity> {
     /**
-     * The title of the table
+     * The title of the table.
      */
     title: string,
     /**
      * The definition of the columns to display. Consists of the displayName to show in the header of the row
-     * and the value, which is a function that generates the value to display inside a column
+     * and the value, which is a function that generates the value to display inside a column.
      */
     displayColumns: DisplayColumn<EntityType>[],
     /**
      * The Class of the service that handles the entities.
-     * Needs to be injectable and an extension of the "EntityService"-Class
+     * Needs to be injectable and an extension of the "EntityService"-Class.
      */
     EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
     /**
-     * The Class of the entities to manage
+     * The Class of the entities to manage.
      */
     EntityClass?: new (entity?: EntityType) => EntityType,
     /**
@@ -90,21 +92,23 @@ export interface BaseData<EntityType extends Entity> {
     searchString?: (enity: EntityType) => string,
     /**
      * Defines whether or not the user can add new entities.
+     *
      * @default true
      */
     allowCreate?: boolean,
     /**
      * Defines whether or not the user can edit entities.
+     *
      * @default () => true
      */
     allowEdit?: (entity: EntityType) => boolean,
     /**
-     * Whether or not the user can delete this specific entity
+     * Whether or not the user can delete this specific entity.
      */
     allowDelete?: (entity: EntityType) => boolean,
     /**
      * All Actions that you want to run on multiple entities can be defined here.
-     * (e.g. download as zip-file or mass delete)
+     * (e.g. Download as zip-file or mass delete).
      */
     multiSelectActions?: MultiSelectAction<EntityType>[],
     /**

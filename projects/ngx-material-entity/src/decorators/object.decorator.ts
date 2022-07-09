@@ -5,33 +5,38 @@ import { DecoratorTypes } from './base/decorator-types.enum';
 
 /**
  * Decorator for setting and getting object propery metadata.
- * @param metadata The metadata of the object property
+ *
+ * @param metadata - The metadata of the object property.
+ * @returns The method that defines the metadata.
  */
-export function object(metadata: DefaultObjectDecoratorConfig): (target: object, propertyKey: string) => void {
+export function object<EntityType extends Entity>(
+    metadata: DefaultObjectDecoratorConfig<EntityType>
+): (target: object, propertyKey: string) => void {
     return baseProperty(new DefaultObjectDecoratorConfig(metadata), DecoratorTypes.OBJECT);
 }
 
 /**
- * Interface definition for the @object metadata
+ * Definition for the @object metadata.
  */
-abstract class ObjectDecoratorConfig extends PropertyDecoratorConfig {
+abstract class ObjectDecoratorConfig<EntityType extends Entity> extends PropertyDecoratorConfig {
     /**
-     * The entity type of the object
+     * The entity type of the object.
      */
-    type!: typeof Entity;
+    type!: new (entity?: EntityType) => EntityType;
 
     /**
      * How to display the object.
-     * @inline The objects properties are added as input fields in an section of the entity.
-     * Useful if the object only contains a few properties (e.g. a address on a user).
+     *
+     * The objects properties are added as input fields in an section of the entity.
+     * Useful if the object only contains a few properties (e.g. A address on a user).
      */
     displayStyle!: 'inline';
 }
 
-export class DefaultObjectDecoratorConfig extends ObjectDecoratorConfig {
+export class DefaultObjectDecoratorConfig<EntityType extends Entity> extends ObjectDecoratorConfig<EntityType> {
     override displayStyle: 'inline';
 
-    constructor(metadata: DefaultObjectDecoratorConfig) {
+    constructor(metadata: DefaultObjectDecoratorConfig<EntityType>) {
         super(
             metadata.displayName,
             metadata.display,

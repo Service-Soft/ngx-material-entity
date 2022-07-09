@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { EntityService } from './entity-service.class';
 import { TestEntity } from './entity-model.test';
 import { HttpClientMock } from '../mocks/http-client.mock';
+import { expect } from '@jest/globals';
 
 export class TestEntityService extends EntityService<TestEntity> {
     baseUrl: string = 'http://api/test';

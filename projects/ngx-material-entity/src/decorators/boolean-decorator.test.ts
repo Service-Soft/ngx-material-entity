@@ -2,6 +2,7 @@ import { Entity } from '../classes/entity-model.class';
 import { EntityUtilities } from '../classes/entity-utilities.class';
 import { DecoratorTypes } from './base/decorator-types.enum';
 import { boolean } from './boolean.decorator';
+import { expect } from '@jest/globals';
 
 class BooleanTestEntity extends Entity {
     @boolean({
