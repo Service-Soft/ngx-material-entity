@@ -6,11 +6,11 @@
 
 /* eslint-disable no-console */
 
-import { ChildProcess, exec } from 'child_process';
+import { ChildProcess } from 'child_process';
 import { spawn } from 'cross-spawn';
 
-exec('npm run api');
-exec('npm run showcase');
+spawn('npm run api', [], { stdio: 'inherit' });
+spawn('npm run showcase', [], { stdio: 'inherit' });
 const cypress: ChildProcess = spawn('run-s waitOn:server cy:run', [], { stdio: 'inherit' });
 
 cypress.on('close', (code: number) => {
