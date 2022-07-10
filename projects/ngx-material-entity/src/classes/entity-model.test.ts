@@ -1,6 +1,6 @@
 import { Entity } from './entity-model.class';
 import { EntityUtilities } from './entity-utilities.class';
-import { string } from '../decorators/string.decorator';
+import { string } from '../decorators/string/string.decorator';
 import { expect } from '@jest/globals';
 
 export class TestEntity extends Entity {

@@ -10,7 +10,7 @@
                 [(ngModel)]="entity[propertyKey]"
                 [name]="propertyKey.toString()"
                 #model="ngModel"
-                [required]="metadata.required ? metadata.required : false"
+                [required]="metadata.required"
                 [pattern]="metadataDefaultString.regex ? metadataDefaultString.regex : '[\\s\\S]*'"
                 [minlength]="metadataDefaultString.minLength ? metadataDefaultString.minLength : null"
                 [maxlength]="metadataDefaultString.maxLength ? metadataDefaultString.maxLength : null"
@@ -29,7 +29,7 @@
                 #model="ngModel"
                 cdkTextareaAutosize
                 cdkAutosizeMinRows="10"
-                [required]="metadata.required ? metadata.required : false"
+                [required]="metadata.required"
                 [minlength]="metadataTextboxString.minLength ? metadataTextboxString.minLength : null"
                 [maxlength]="metadataTextboxString.maxLength ? metadataTextboxString.maxLength : null"
             >
@@ -48,7 +48,7 @@
                 #model="ngModel"
                 [matAutocomplete]="auto"
                 (keyup)="filterAutocompleteStrings(entity[propertyKey])"
-                [required]="metadata.required ? metadata.required : false"
+                [required]="metadata.required"
                 [minlength]="metadataAutocompleteString.minLength ? metadataAutocompleteString.minLength : null"
                 [maxlength]="metadataAutocompleteString.maxLength ? metadataAutocompleteString.maxLength : null"
                 [pattern]="metadataAutocompleteString.regex ? metadataAutocompleteString.regex : '[\\s\\S]*'"
@@ -65,7 +65,7 @@
     <div *ngSwitchCase="DecoratorTypes.STRING_DROPDOWN">
         <mat-form-field>
             <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required ? metadata.required : false">
+            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required">
                 <mat-option *ngFor="let value of metadataDropdownString.dropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
             </mat-select>
             <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
@@ -77,7 +77,7 @@
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_CHECKBOX">
         <mat-form-field>
-            <mat-checkbox [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required ? metadata.required : false">
+            <mat-checkbox [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required">
                 {{metadata.displayName}}
             </mat-checkbox>
             <!-- hidden input is needed so that the checkbox can be used inside a mat-form-field -->
@@ -88,7 +88,7 @@
 
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_TOGGLE">
         <mat-form-field>
-            <mat-slide-toggle [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required ? metadata.required : false">
+            <mat-slide-toggle [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required">
                 {{metadata.displayName}}
             </mat-slide-toggle>
             <!-- hidden input is needed so that the toggle can be used inside a mat-form-field -->
@@ -100,7 +100,7 @@
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_DROPDOWN">
         <mat-form-field>
             <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required ? metadata.required : false">
+            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required">
                 <mat-option [value]="undefined">-</mat-option>
                 <mat-option [value]="true">{{metadataDropdownBoolean.dropdownTrue}}</mat-option>
                 <mat-option [value]="false">{{metadataDropdownBoolean.dropdownFalse}}</mat-option>
@@ -121,7 +121,7 @@
                 [(ngModel)]="entity[propertyKey]"
                 [name]="propertyKey.toString()"
                 #model="ngModel"
-                [required]="metadata.required ? metadata.required : false"
+                [required]="metadata.required"
                 [min]="metadataDefaultNumber.min ? metadataDefaultNumber.min : null"
                 [max]="metadataDefaultNumber.max ? metadataDefaultNumber.max : null"
             />
@@ -132,7 +132,7 @@
     <div *ngSwitchCase="DecoratorTypes.NUMBER_DROPDOWN">
         <mat-form-field>
             <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required ? metadata.required : false">
+            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required">
                 <mat-option *ngFor="let value of metadataDropdownNumber.dropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
             </mat-select>
             <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
@@ -183,7 +183,7 @@
             <mat-label>{{metadata.displayName}}</mat-label>
             <mat-chip-list #chipList
                 [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel"
-                [required]="metadata.required ? metadata.required : false"
+                [required]="metadata.required"
             >
                 <mat-chip *ngFor="let value of stringChipsArrayValues" (removed)="removeStringChipArrayValue(value)">
                     {{value}}
@@ -213,7 +213,7 @@
             <mat-label>{{metadata.displayName}}</mat-label>
             <mat-chip-list #chipList
                 [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel"
-                [required]="metadata.required ? metadata.required : false"
+                [required]="metadata.required"
             >
                 <mat-chip *ngFor="let value of stringChipsArrayValues" (removed)="removeStringChipArrayValue(value)">
                     {{value}}

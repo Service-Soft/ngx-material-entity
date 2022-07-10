@@ -1,5 +1,5 @@
 import { EntityUtilities } from '../../classes/entity-utilities.class';
-import { string } from '../string.decorator';
+import { string } from '../string/string.decorator';
 import { Entity } from '../../classes/entity-model.class';
 import { TestEntityMockBuilder } from '../../mocks/test-entity.mock';
 import { DecoratorTypes } from './decorator-types.enum';
@@ -25,6 +25,7 @@ describe('baseProperty', () => {
                         order: -1
                     })
                     wrongOrderValue!: string;
+
                     constructor(entity?: BasePropertyTestEntity) {
                         super();
                         EntityUtilities.new(this, entity);

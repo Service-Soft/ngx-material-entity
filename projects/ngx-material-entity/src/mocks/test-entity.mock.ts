@@ -1,9 +1,9 @@
 import { Entity } from '../classes/entity-model.class';
 import { EntityUtilities } from '../classes/entity-utilities.class';
-import { string } from '../decorators/string.decorator';
-import { number } from '../decorators/number.decorator';
-import { object } from '../decorators/object.decorator';
-import { array } from '../decorators/array.decorator';
+import { string } from '../decorators/string/string.decorator';
+import { number } from '../decorators/number/number.decorator';
+import { object } from '../decorators/object/object.decorator';
+import { array } from '../decorators/array/array.decorator';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 
 export class TestObjectEntity extends Entity {

@@ -13,7 +13,7 @@ export abstract class PropertyDecoratorConfig {
     /**
      * The name of the property used as a label for form fields.
      */
-    displayName: string;
+    displayName!: string;
     /**
      * Whether or not the Property is required.
      *
@@ -46,32 +46,5 @@ export abstract class PropertyDecoratorConfig {
      *
      * @default -1 (sets this property at the end)
      */
-    order?: number;
-
-    constructor(
-        displayName: string,
-        display: boolean = true,
-        required: boolean = true,
-        omitForCreate: boolean = false,
-        omitForUpdate: boolean = false,
-        defaultWidths: [cols, cols, cols] = [6, 6, 12],
-        order?: number
-    ) {
-        this.displayName = displayName;
-        this.display = display;
-        this.required = required;
-        this.omitForCreate = omitForCreate;
-        this.omitForUpdate = omitForUpdate;
-        this.defaultWidths = defaultWidths;
-
-        if (order) {
-            if (order < 0) {
-                throw new Error('order must be at least 0');
-            }
-            this.order = order;
-        }
-        else {
-            this.order = -1;
-        }
-    }
+    order?: number
 }
