@@ -1,6 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, Input, OnInit } from '@angular/core';
-import { EntityArrayDecoratorConfig } from '../../../decorators/array.decorator';
 import { Entity } from '../../../classes/entity-model.class';
 import { EntityUtilities } from '../../../classes/entity-utilities.class';
 import { NgModel } from '@angular/forms';
@@ -8,8 +7,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { cloneDeep } from 'lodash';
 import { firstValueFrom } from 'rxjs';
-import { AddArrayItemDialogData, NgxMatEntityAddArrayItemDialogComponent } from './add-array-item-dialog/add-array-item-dialog.component';
-import { CreateDialogData } from '../../table/table-data';
+import { NgxMatEntityAddArrayItemDialogComponent } from './add-array-item-dialog/add-array-item-dialog.component';
+import { AddArrayItemDialogDataBuilder, AddArrayItemDialogDataInternal } from './add-array-item-dialog/add-array-item-dialog-data.builder';
+import { AddArrayItemDialogData } from './add-array-item-dialog/add-array-item-dialog-data';
+import { EntityArrayDecoratorConfigInternal } from '../../../decorators/array/array-decorator-internal.data';
 
 @Component({
     selector: 'ngx-mat-entity-array-table',
@@ -21,13 +22,13 @@ export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implemen
     arrayItems!: EntityType[];
 
     @Input()
-    metadata!: EntityArrayDecoratorConfig<EntityType>;
+    metadata!: EntityArrayDecoratorConfigInternal<EntityType>;
 
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
 
     @Input()
-    omit!: 'create' | 'edit';
+    omit!: 'create' | 'update';
 
     dataSource!: MatTableDataSource<EntityType>;
 
@@ -50,21 +51,21 @@ export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implemen
     }
 
     ngOnInit(): void {
-        this.validateInput();
-        const givenDisplayColumns = this.metadata.displayColumns.map((v) => v.displayName);
-        if (givenDisplayColumns.find((s) => s === 'select')) {
-            throw new Error(
-                `The name "select" for a display column is reserved.
-                Please choose a different name.`
-            );
-        }
+        const givenDisplayColumns: string[] = this.metadata.displayColumns.map((v) => v.displayName);
+        this.validateInput(givenDisplayColumns);
         this.displayedColumns = ['select'].concat(givenDisplayColumns);
         this.dataSource = new MatTableDataSource();
         this.dataSource.data = this.arrayItems;
         this.arrayItem = new this.metadata.EntityClass();
         this.arrayItemPriorChanges = cloneDeep(this.arrayItem);
     }
-    private validateInput(): void {
+    private validateInput(givenDisplayColumns: string[]): void {
+        if (givenDisplayColumns.find((s) => s === 'select')) {
+            throw new Error(
+                `The name "select" for a display column is reserved.
+                Please choose a different name.`
+            );
+        }
         if (!this.metadata.createInline && !this.metadata.createDialogData) {
             throw new Error(
                 `Missing required Input data "createDialogData".
@@ -80,11 +81,13 @@ export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implemen
             EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
         }
         else {
-            const dialogData: AddArrayItemDialogData<EntityType> = {
+            const dialogInputData: AddArrayItemDialogData<EntityType>= {
                 entity: this.arrayItem,
-                createDialogData: this.metadata.createDialogData as CreateDialogData,
+                createDialogData: this.metadata.createDialogData,
                 getValidationErrorMessage: this.getValidationErrorMessage
             }
+            const dialogData: AddArrayItemDialogDataInternal<EntityType> = new AddArrayItemDialogDataBuilder(dialogInputData)
+                .addArrayItemDialogData;
             firstValueFrom(
                 this.dialog.open(
                     NgxMatEntityAddArrayItemDialogComponent,

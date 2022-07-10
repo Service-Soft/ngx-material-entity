@@ -12,30 +12,32 @@ export interface DisplayColumn<EntityType extends Entity> {
      */
     displayName: string,
     /**
-     * A method to get the value inside an row
+     * A method to get the value inside an row.
      */
     value: (entity: EntityType) => string
 }
 
 /**
- * The Definition of an Action that can be run on multiple selected entities
+ * The Definition of an Action that can be run on multiple selected entities.
  */
 export interface MultiSelectAction<EntityType extends Entity> {
     /**
-     * The name of the action
+     * The name of the action.
      */
     displayName: string,
     /**
-     * The action itself
+     * The action itself.
      */
     action: (selectedEntities: EntityType[]) => unknown,
     /**
      * A method that defines whether or not the action can be used.
+     *
      * @default true
      */
     enabled?: (selectedEntities: EntityType[]) => boolean,
     /**
-     * A method that defines whether or not a confirm dialog is needed to run the action
+     * A method that defines whether or not a confirm dialog is needed to run the action.
+     *
      * @default false
      */
     requireConfirmDialog?: (selectedEntities: EntityType[]) => boolean,
@@ -47,14 +49,23 @@ export interface MultiSelectAction<EntityType extends Entity> {
 
 export interface BaseData<EntityType extends Entity> {
     /**
-     * The title of the table
+     * The title of the table.
      */
     title: string,
     /**
      * The definition of the columns to display. Consists of the displayName to show in the header of the row
-     * and the value, which is a function that generates the value to display inside a column
+     * and the value, which is a function that generates the value to display inside a column.
      */
     displayColumns: DisplayColumn<EntityType>[],
+    /**
+     * The Class of the service that handles the entities.
+     * Needs to be injectable and an extension of the "EntityService"-Class.
+     */
+    EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
+    /**
+     * The Class of the entities to manage.
+     */
+    EntityClass?: new (entity?: EntityType) => EntityType,
     /**
      * The label on the search bar. Defaults to "Search".
      */
@@ -63,15 +74,6 @@ export interface BaseData<EntityType extends Entity> {
      * The label on the button for adding new entities. Defaults to "Create".
      */
     createButtonLabel?: string,
-    /**
-     * The Class of the entities to manage
-     */
-    EntityClass: new (entity?: EntityType) => EntityType,
-    /**
-     * The Class of the service that handles the entities.
-     * Needs to be injectable and an extension of the "EntityService"-Class
-     */
-    EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
     /**
      * Takes a custom edit method which runs when you click on a entity.
      * If you don't need any special editing of entries you can also omit this.
@@ -90,21 +92,23 @@ export interface BaseData<EntityType extends Entity> {
     searchString?: (enity: EntityType) => string,
     /**
      * Defines whether or not the user can add new entities.
+     *
      * @default true
      */
     allowCreate?: boolean,
     /**
      * Defines whether or not the user can edit entities.
+     *
      * @default () => true
      */
     allowEdit?: (entity: EntityType) => boolean,
     /**
-     * Whether or not the user can delete this specific entity
+     * Whether or not the user can delete this specific entity.
      */
     allowDelete?: (entity: EntityType) => boolean,
     /**
      * All Actions that you want to run on multiple entities can be defined here.
-     * (e.g. download as zip-file or mass delete)
+     * (e.g. Download as zip-file or mass delete).
      */
     multiSelectActions?: MultiSelectAction<EntityType>[],
     /**
@@ -117,7 +121,7 @@ export interface CreateDialogData {
     /**
      * The title of the default create-dialog.
      */
-    title: string,
+    title?: string,
     /**
      * The label on the create-button of the default create-dialog. Defaults to "Create".
      */
@@ -140,7 +144,7 @@ export interface EditDialogData<EntityType extends Entity> {
     /**
      * The title of the default edit-dialog.
      */
-    title: (entity: EntityType) => string,
+    title?: (entity: EntityType) => string,
     /**
      * The label on the confirm-button of the default edit-dialog. Defaults to "Save".
      */
@@ -173,9 +177,9 @@ export interface EditDialogData<EntityType extends Entity> {
     confirmEditDialogData?: ConfirmDialogData
 }
 
-export interface EntitiesData<EntityType extends Entity> {
+export interface TableData<EntityType extends Entity> {
     /**
-     * The base data for the entities-component.
+     * The base data for the table-component.
      * Includes stuff like the title for the table, what to display inside the rows etc.
      */
     baseData: BaseData<EntityType>,

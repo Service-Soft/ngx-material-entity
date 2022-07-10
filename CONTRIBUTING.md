@@ -13,6 +13,7 @@ All development is done using github.
 - [Codestyle](#codestyle)
   - [Decorator Configs / User Input](#decorator-configs--user-input)
   - [Naming conventions](#naming-conventions)
+- [Tests](#tests)
 - [Workflow for submitting Code Changes](#workflow-for-submitting-code-changes)
 - [License](#license)
 
@@ -75,13 +76,18 @@ Their selector should follow the same logic:
 
 In the folder structure however, you are encouraged to leave the prefix out, because the user will never see this anyway.
 
+# Tests
+The testing consists of two test types:
+1. Unit Tests with Jest, should be used for everything that isn't an angular component
+2. E2E Tests using Cypress, should be used to test how angular components behave in the "real" world
+
 # Workflow for submitting Code Changes
 
 1. Create an issue if it not already exists.
 2. Create a branch for that specific issue (The best way to this is directly inside the issue on the right side under "Development". That way the the issue and the branch are automatically linked)
 3. Checkout the new branch
 4. Add your code
-5. Update / add tests.
+5. Update / add [tests](#tests).
 6. Update the documentation.
 7. Check that tests and linting passes.
    1. For tests: `npm run test`

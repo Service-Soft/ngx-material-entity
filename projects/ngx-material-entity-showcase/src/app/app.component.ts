@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { EntitiesData } from 'ngx-material-entity';
-import { Person } from '../models/person.model';
-import { PersonService } from '../services/person.service';
+import { TableData } from 'ngx-material-entity';
+import { TestEntity } from '../../../ngx-material-entity/src/mocks/test-entity.mock';
+import { TestEntityService } from '../services/test-entity.service';
 
 @Component({
     selector: 'app-root',
@@ -10,44 +10,29 @@ import { PersonService } from '../services/person.service';
 })
 export class AppComponent {
 
-    entitiesData: EntitiesData<Person> = {
+    tableData: TableData<TestEntity> = {
         baseData: {
-            title: 'Personen',
+            title: 'Test Entities',
             displayColumns: [
                 {
-                    displayName: 'Name',
-                    value: (entity: Person) => `${entity.firstname} ${entity.lastname}`
+                    displayName: 'Max and Min Strings',
+                    value: (entity: TestEntity) => `${entity.maxLengthStringValue} ${entity.minLengthStringValue}`
                 },
                 {
-                    displayName: 'Adresse',
-                    // eslint-disable-next-line max-len
-                    value: (entity: Person) => `${entity.address.street} ${entity.address.number}, ${entity.address.postcode} ${entity.address.city}`
+                    displayName: 'Object',
+                    value: (entity: TestEntity) => `#${entity.objectValue.id} ${entity.objectValue.maxLengthStringValue}`
                 }
             ],
-            EntityClass: Person,
-            EntityServiceClass: PersonService,
-            multiSelectActions: [
-                {
-                    displayName: 'Logge Vornamen',
-                    // eslint-disable-next-line no-console
-                    action: (entities: Person[]) => entities.forEach(e => console.log(e.firstname))
-                },
-                {
-                    displayName: 'Löschen',
-                    action: (entities: Person[]) => entities.forEach(e => this.personService.delete(e.id)),
-                    requireConfirmDialog: () => true
-                }
-            ],
-            allowDelete: () => false
+            EntityClass: TestEntity,
+            EntityServiceClass: TestEntityService
         },
         createDialogData: {
-            title: 'Person erstellen'
+            title: 'Create Test Entity'
         },
         editDialogData: {
-            title: (entity: Person) => `Person #${entity.id}`,
-            deleteRequiresConfirmDialog: false,
+            title: (entity: TestEntity) => `Test Entity #${entity.id}`
         }
     }
 
-    constructor(private readonly personService: PersonService) {}
+    constructor(private readonly personService: TestEntityService) {}
 }

@@ -4,11 +4,11 @@ import { Entity } from '../../../classes/entity-model.class';
 import { EditDialogData } from '../table-data';
 
 /**
- * The Definition of the Edit Entity Dialog Data
+ * The Definition of the Edit Entity Dialog Data.
  */
 export interface EditEntityDialogData<EntityType extends Entity> {
     /**
-     * The entity to edit
+     * The entity to edit.
      */
     entity: EntityType,
     /**
@@ -18,9 +18,9 @@ export interface EditEntityDialogData<EntityType extends Entity> {
     /**
      * The info of the generic edit-dialog.
      */
-    editDialogData: EditDialogData<EntityType>,
+    editDialogData?: EditDialogData<EntityType>,
     /**
-     * Whether or not the user can delete this specific entity
+     * Whether or not the user can delete this specific entity.
      */
-    allowDelete: (entity: EntityType) => boolean
+    allowDelete?: (entity: EntityType) => boolean
 }

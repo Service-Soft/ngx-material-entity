@@ -16,9 +16,9 @@
 
 <mat-dialog-actions>
     <button mat-raised-button (click)="create()" [disabled]="!EntityUtilities.isEntityValid(data.entity, 'create')">
-        {{data.createDialogData.createButtonLabel ? data.createDialogData.createButtonLabel : 'Add'}}
+        {{data.createDialogData.createButtonLabel}}
     </button>
     <button mat-raised-button (click)="cancel()" class="cancel-button">
-        {{data.createDialogData.cancelButtonLabel ? data.createDialogData.cancelButtonLabel : 'Cancel'}}
+        {{data.createDialogData.cancelButtonLabel}}
     </button>
 </mat-dialog-actions>

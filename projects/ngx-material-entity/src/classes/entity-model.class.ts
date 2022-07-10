@@ -1,11 +1,11 @@
-import { string } from '../decorators/string.decorator';
+import { string } from '../decorators/string/string.decorator';
 
 /**
  * The base Entity class.
  */
 export abstract class Entity {
     /**
-     * A unique identifier for the Entity
+     * A unique identifier for the Entity.
      */
     @string({
         omitForCreate: true,

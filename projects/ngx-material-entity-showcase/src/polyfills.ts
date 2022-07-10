@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/require-description-complete-sentence */
+/* eslint-disable jsdoc/check-indentation */
 /**
  * This file includes polyfills needed by Angular and is loaded before the app.
  * You can add your own extra polyfills to this file.

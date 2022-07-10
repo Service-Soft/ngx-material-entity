@@ -39,6 +39,46 @@
                             "projects/ngx-material-entity/**/*.html"
                         ]
                     }
+                },
+                "cypress-run": {
+                    "builder": "@briebug/cypress-schematic:cypress",
+                    "options": {
+                        "devServerTarget": "ngx-material-entity:serve",
+                        "configFile": "projects/ngx-material-entity/cypress.json"
+                    },
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "ngx-material-entity:serve:production"
+                        }
+                    }
+                },
+                "cypress-open": {
+                    "builder": "@briebug/cypress-schematic:cypress",
+                    "options": {
+                        "devServerTarget": "ngx-material-entity:serve",
+                        "watch": true,
+                        "headless": false,
+                        "configFile": "projects/ngx-material-entity/cypress.json"
+                    },
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "ngx-material-entity:serve:production"
+                        }
+                    }
+                },
+                "e2e": {
+                    "builder": "@briebug/cypress-schematic:cypress",
+                    "options": {
+                        "devServerTarget": "ngx-material-entity:serve",
+                        "watch": true,
+                        "headless": false,
+                        "configFile": "projects/ngx-material-entity/cypress.json"
+                    },
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "ngx-material-entity:serve:production"
+                        }
+                    }
                 }
             }
         },
@@ -151,6 +191,46 @@
                             "projects/ngx-material-entity-showcase/**/*.ts",
                             "projects/ngx-material-entity-showcase/**/*.html"
                         ]
+                    }
+                },
+                "cypress-run": {
+                    "builder": "@briebug/cypress-schematic:cypress",
+                    "options": {
+                        "devServerTarget": "ngx-material-entity-showcase:serve",
+                        "configFile": "projects/ngx-material-entity-showcase/cypress.json"
+                    },
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "ngx-material-entity-showcase:serve:production"
+                        }
+                    }
+                },
+                "cypress-open": {
+                    "builder": "@briebug/cypress-schematic:cypress",
+                    "options": {
+                        "devServerTarget": "ngx-material-entity-showcase:serve",
+                        "watch": true,
+                        "headless": false,
+                        "configFile": "projects/ngx-material-entity-showcase/cypress.json"
+                    },
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "ngx-material-entity-showcase:serve:production"
+                        }
+                    }
+                },
+                "e2e": {
+                    "builder": "@briebug/cypress-schematic:cypress",
+                    "options": {
+                        "devServerTarget": "ngx-material-entity-showcase:serve",
+                        "watch": true,
+                        "headless": false,
+                        "configFile": "projects/ngx-material-entity-showcase/cypress.json"
+                    },
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "ngx-material-entity-showcase:serve:production"
+                        }
                     }
                 }
             }

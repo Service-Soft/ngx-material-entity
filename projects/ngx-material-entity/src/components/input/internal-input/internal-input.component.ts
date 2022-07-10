@@ -1,13 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DecoratorTypes } from '../../../decorators/base/decorator-types.enum';
-import { PropertyDecoratorConfig } from '../../../decorators/base/property-decorator-config.interface';
-import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig } from '../../../decorators/number.decorator';
-import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, DropdownStringDecoratorConfig, TextboxStringDecoratorConfig } from '../../../decorators/string.decorator';
-import { DropdownBooleanDecoratorConfig } from '../../../decorators/boolean.decorator';
 import { Entity } from '../../../classes/entity-model.class';
-import { DefaultObjectDecoratorConfig } from '../../../decorators/object.decorator';
 import { EntityUtilities } from '../../../classes/entity-utilities.class';
 import { NgModel } from '@angular/forms';
+import { DropdownBooleanDecoratorConfigInternal } from '../../../decorators/boolean/boolean-decorator-internal.data';
+import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal } from '../../../decorators/number/number-decorator-internal.data';
+import { DefaultObjectDecoratorConfigInternal } from '../../../decorators/object/object-decorator-internal.data';
+import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../../../decorators/string/string-decorator-internal.data';
+import { PropertyDecoratorConfigInternal } from '../../../decorators/base/property-decorator-internal.data';
 
 @Component({
     selector: 'ngx-mat-entity-internal-input',
@@ -50,28 +50,25 @@ export class NgxMatEntityInternalInputComponent<EntityType extends Entity> imple
 
     type!: DecoratorTypes;
 
-    metadata!: PropertyDecoratorConfig;
+    metadata!: PropertyDecoratorConfigInternal;
 
-    metadataDefaultString!: DefaultStringDecoratorConfig;
-    metadataTextboxString!: TextboxStringDecoratorConfig;
-    metadataAutocompleteString!: AutocompleteStringDecoratorConfig;
-    metadataDropdownString!: DropdownStringDecoratorConfig;
+    metadataDefaultString!: DefaultStringDecoratorConfigInternal;
+    metadataTextboxString!: TextboxStringDecoratorConfigInternal;
+    metadataAutocompleteString!: AutocompleteStringDecoratorConfigInternal;
+    metadataDropdownString!: DropdownStringDecoratorConfigInternal;
 
-    metadataDropdownBoolean!: DropdownBooleanDecoratorConfig;
+    metadataDropdownBoolean!: DropdownBooleanDecoratorConfigInternal;
 
-    metadataDefaultNumber!: DefaultNumberDecoratorConfig;
-    metadataDropdownNumber!: DropdownNumberDecoratorConfig;
+    metadataDefaultNumber!: DefaultNumberDecoratorConfigInternal;
+    metadataDropdownNumber!: DropdownNumberDecoratorConfigInternal;
 
-    metadataDefaultObject!: DefaultObjectDecoratorConfig;
+    metadataDefaultObject!: DefaultObjectDecoratorConfigInternal<EntityType>;
     objectProperty!: Entity;
 
     readonly DecoratorTypes = DecoratorTypes;
 
     getWidth = EntityUtilities.getWidth;
 
-    /**
-     * Helper method needed to recursively generate property input components (used eg. with the object)
-     */
     trackByFn(index: unknown): unknown {
         return index;
     }
@@ -86,17 +83,17 @@ export class NgxMatEntityInternalInputComponent<EntityType extends Entity> imple
         this.type = EntityUtilities.getPropertyType(this.entity, this.propertyKey);
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.propertyKey, this.type);
 
-        this.metadataDefaultString = this.metadata as DefaultStringDecoratorConfig;
-        this.metadataTextboxString = this.metadata as TextboxStringDecoratorConfig;
-        this.metadataAutocompleteString = this.metadata as AutocompleteStringDecoratorConfig;
-        this.metadataDropdownString = this.metadata as DropdownStringDecoratorConfig;
+        this.metadataDefaultString = this.metadata as DefaultStringDecoratorConfigInternal;
+        this.metadataTextboxString = this.metadata as TextboxStringDecoratorConfigInternal;
+        this.metadataAutocompleteString = this.metadata as AutocompleteStringDecoratorConfigInternal;
+        this.metadataDropdownString = this.metadata as DropdownStringDecoratorConfigInternal;
 
-        this.metadataDropdownBoolean = this.metadata as DropdownBooleanDecoratorConfig;
+        this.metadataDropdownBoolean = this.metadata as DropdownBooleanDecoratorConfigInternal;
 
-        this.metadataDefaultNumber = this.metadata as DefaultNumberDecoratorConfig;
-        this.metadataDropdownNumber = this.metadata as DropdownNumberDecoratorConfig;
+        this.metadataDefaultNumber = this.metadata as DefaultNumberDecoratorConfigInternal;
+        this.metadataDropdownNumber = this.metadata as DropdownNumberDecoratorConfigInternal;
 
-        this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfig;
+        this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfigInternal<EntityType>;
         this.objectProperty = this.entity[this.propertyKey] as unknown as Entity;
     }
 
