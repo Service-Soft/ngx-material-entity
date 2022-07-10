@@ -1,5 +1,5 @@
 import { DecoratorTypes } from './decorator-types.enum';
-import { PropertyDecoratorConfig } from './property-decorator-config.interface';
+import { PropertyDecoratorConfigInternal } from './property-decorator-internal.data';
 
 /**
  * The base decorator for setting metadata on properties.
@@ -8,7 +8,7 @@ import { PropertyDecoratorConfig } from './property-decorator-config.interface';
  * @param type - The type of metadata.
  * @returns The method that sets the metadata.
  */
-export function baseProperty(metadata: PropertyDecoratorConfig, type: DecoratorTypes) {
+export function baseProperty(metadata: PropertyDecoratorConfigInternal, type: DecoratorTypes) {
     return function (target: object, propertyKey: string) {
         Reflect.defineMetadata('metadata', metadata, target, propertyKey);
         Reflect.defineMetadata('type', type, target, propertyKey);

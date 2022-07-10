@@ -1,9 +1,9 @@
-import { Entity } from '../classes/entity-model.class';
-import { EntityUtilities } from '../classes/entity-utilities.class';
 import { array } from './array.decorator';
-import { DecoratorTypes } from './base/decorator-types.enum';
-import { string } from './string.decorator';
 import { expect } from '@jest/globals';
+import { Entity } from '../../classes/entity-model.class';
+import { string } from '../string/string.decorator';
+import { EntityUtilities } from '../../classes/entity-utilities.class';
+import { DecoratorTypes } from '../base/decorator-types.enum';
 
 class Address extends Entity {
     @string({

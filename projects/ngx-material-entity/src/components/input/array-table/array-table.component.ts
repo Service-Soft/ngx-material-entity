@@ -1,6 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, Input, OnInit } from '@angular/core';
-import { EntityArrayDecoratorConfig } from '../../../decorators/array.decorator';
 import { Entity } from '../../../classes/entity-model.class';
 import { EntityUtilities } from '../../../classes/entity-utilities.class';
 import { NgModel } from '@angular/forms';
@@ -11,6 +10,7 @@ import { firstValueFrom } from 'rxjs';
 import { NgxMatEntityAddArrayItemDialogComponent } from './add-array-item-dialog/add-array-item-dialog.component';
 import { AddArrayItemDialogDataBuilder, AddArrayItemDialogDataInternal } from './add-array-item-dialog/add-array-item-dialog-data.builder';
 import { AddArrayItemDialogData } from './add-array-item-dialog/add-array-item-dialog-data';
+import { EntityArrayDecoratorConfigInternal } from '../../../decorators/array/array-decorator-internal.data';
 
 @Component({
     selector: 'ngx-mat-entity-array-table',
@@ -22,7 +22,7 @@ export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implemen
     arrayItems!: EntityType[];
 
     @Input()
-    metadata!: EntityArrayDecoratorConfig<EntityType>;
+    metadata!: EntityArrayDecoratorConfigInternal<EntityType>;
 
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;

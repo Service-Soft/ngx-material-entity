@@ -3,16 +3,16 @@ import { NgModel } from '@angular/forms';
 import { EntityUtilities } from '../../classes/entity-utilities.class';
 import { Entity } from '../../classes/entity-model.class';
 import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
-import { PropertyDecoratorConfig } from '../../decorators/base/property-decorator-config.interface';
 import { getValidationErrorMessage } from '../get-validation-error-message.function';
-import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, DropdownStringDecoratorConfig, TextboxStringDecoratorConfig } from '../../decorators/string.decorator';
-import { DropdownBooleanDecoratorConfig } from '../../decorators/boolean.decorator';
-import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig } from '../../decorators/number.decorator';
-import { DefaultObjectDecoratorConfig } from '../../decorators/object.decorator';
-import { AutocompleteStringChipsArrayDecoratorConfig, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from '../../decorators/array.decorator';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { cloneDeep } from 'lodash';
+import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal } from '../../decorators/array/array-decorator-internal.data';
+import { DropdownBooleanDecoratorConfigInternal } from '../../decorators/boolean/boolean-decorator-internal.data';
+import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal } from '../../decorators/number/number-decorator-internal.data';
+import { DefaultObjectDecoratorConfigInternal } from '../../decorators/object/object-decorator-internal.data';
+import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../../decorators/string/string-decorator-internal.data';
+import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
 
 @Component({
     selector: 'ngx-mat-entity-input',
@@ -55,30 +55,30 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
 
     type!: DecoratorTypes;
 
-    metadata!: PropertyDecoratorConfig;
+    metadata!: PropertyDecoratorConfigInternal;
 
-    metadataDefaultString!: DefaultStringDecoratorConfig;
-    metadataTextboxString!: TextboxStringDecoratorConfig;
-    metadataAutocompleteString!: AutocompleteStringDecoratorConfig;
+    metadataDefaultString!: DefaultStringDecoratorConfigInternal;
+    metadataTextboxString!: TextboxStringDecoratorConfigInternal;
+    metadataAutocompleteString!: AutocompleteStringDecoratorConfigInternal;
     autocompleteStrings!: string[];
     filteredAutocompleteStrings!: string[];
-    metadataDropdownString!: DropdownStringDecoratorConfig;
+    metadataDropdownString!: DropdownStringDecoratorConfigInternal;
 
-    metadataDropdownBoolean!: DropdownBooleanDecoratorConfig;
+    metadataDropdownBoolean!: DropdownBooleanDecoratorConfigInternal;
 
-    metadataDefaultNumber!: DefaultNumberDecoratorConfig;
-    metadataDropdownNumber!: DropdownNumberDecoratorConfig;
+    metadataDefaultNumber!: DefaultNumberDecoratorConfigInternal;
+    metadataDropdownNumber!: DropdownNumberDecoratorConfigInternal;
 
-    metadataDefaultObject!: DefaultObjectDecoratorConfig<EntityType>;
+    metadataDefaultObject!: DefaultObjectDecoratorConfigInternal<EntityType>;
     objectProperty!: Entity;
 
-    metadataEntityArray!: EntityArrayDecoratorConfig<Entity>;
+    metadataEntityArray!: EntityArrayDecoratorConfigInternal<Entity>;
     entityArrayValues!: Entity[];
-    metadataStringChipsArray!: StringChipsArrayDecoratorConfig;
+    metadataStringChipsArray!: StringChipsArrayDecoratorConfigInternal;
     stringChipsArrayValues!: string[];
     chipsInput: string = '';
 
-    metadataAutocompleteStringChipsArray!: AutocompleteStringChipsArrayDecoratorConfig;
+    metadataAutocompleteStringChipsArray!: AutocompleteStringChipsArrayDecoratorConfigInternal;
 
     readonly DecoratorTypes = DecoratorTypes;
 
@@ -100,24 +100,24 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
         this.type = EntityUtilities.getPropertyType(this.entity, this.propertyKey);
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.propertyKey, this.type);
 
-        this.metadataDefaultString = this.metadata as DefaultStringDecoratorConfig;
-        this.metadataTextboxString = this.metadata as TextboxStringDecoratorConfig;
+        this.metadataDefaultString = this.metadata as DefaultStringDecoratorConfigInternal;
+        this.metadataTextboxString = this.metadata as TextboxStringDecoratorConfigInternal;
 
-        this.metadataAutocompleteString = this.metadata as AutocompleteStringDecoratorConfig;
+        this.metadataAutocompleteString = this.metadata as AutocompleteStringDecoratorConfigInternal;
         this.autocompleteStrings = this.metadataAutocompleteString.autocompleteValues;
         this.filteredAutocompleteStrings = cloneDeep(this.autocompleteStrings);
 
-        this.metadataDropdownString = this.metadata as DropdownStringDecoratorConfig;
+        this.metadataDropdownString = this.metadata as DropdownStringDecoratorConfigInternal;
 
-        this.metadataDropdownBoolean = this.metadata as DropdownBooleanDecoratorConfig;
+        this.metadataDropdownBoolean = this.metadata as DropdownBooleanDecoratorConfigInternal;
 
-        this.metadataDefaultNumber = this.metadata as DefaultNumberDecoratorConfig;
-        this.metadataDropdownNumber = this.metadata as DropdownNumberDecoratorConfig;
+        this.metadataDefaultNumber = this.metadata as DefaultNumberDecoratorConfigInternal;
+        this.metadataDropdownNumber = this.metadata as DropdownNumberDecoratorConfigInternal;
 
-        this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfig<EntityType>;
+        this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfigInternal<EntityType>;
         this.objectProperty = this.entity[this.propertyKey] as unknown as EntityType;
 
-        this.metadataEntityArray = this.metadata as EntityArrayDecoratorConfig<Entity>;
+        this.metadataEntityArray = this.metadata as EntityArrayDecoratorConfigInternal<Entity>;
         if (this.metadataEntityArray.EntityClass) {
             if (!this.entity[this.propertyKey]) {
                 (this.entity[this.propertyKey] as unknown as Entity[]) = [];
@@ -133,7 +133,7 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
             }
         }
 
-        this.metadataStringChipsArray = this.metadata as StringChipsArrayDecoratorConfig;
+        this.metadataStringChipsArray = this.metadata as StringChipsArrayDecoratorConfigInternal;
         if (
             this.metadataStringChipsArray.itemType
             && (this.entity[this.propertyKey] as unknown as string[])?.length
@@ -141,7 +141,7 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
             this.stringChipsArrayValues = (this.entity[this.propertyKey] as unknown as string[]);
         }
 
-        this.metadataAutocompleteStringChipsArray = this.metadata as AutocompleteStringChipsArrayDecoratorConfig;
+        this.metadataAutocompleteStringChipsArray = this.metadata as AutocompleteStringChipsArrayDecoratorConfigInternal;
 
         if (!this.getValidationErrorMessage) {
             this.getValidationErrorMessage = getValidationErrorMessage;

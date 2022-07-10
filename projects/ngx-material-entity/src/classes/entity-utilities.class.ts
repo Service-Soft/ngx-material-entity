@@ -1,10 +1,11 @@
 import { isEqual } from 'lodash';
 import { DecoratorType, DecoratorTypes } from '../decorators/base/decorator-types.enum';
-import { cols, PropertyDecoratorConfig } from '../decorators/base/property-decorator-config.interface';
-import { DefaultNumberDecoratorConfig } from '../decorators/number.decorator';
-import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, TextboxStringDecoratorConfig } from '../decorators/string.decorator';
-import { EntityArrayDecoratorConfig } from '../decorators/array.decorator';
+import { cols } from '../decorators/base/property-decorator.data';
 import { Entity } from './entity-model.class';
+import { PropertyDecoratorConfigInternal } from '../decorators/base/property-decorator-internal.data';
+import { EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
+import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../decorators/string/string-decorator-internal.data';
+import { DefaultNumberDecoratorConfigInternal } from '../decorators/number/number-decorator-internal.data';
 
 /**
  * Contains HelperMethods around handling Entities and their property-metadata.
@@ -20,7 +21,7 @@ export abstract class EntityUtilities {
     static getOmitForUpdate<EntityType extends Entity>(entity: EntityType): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
         for (const key of Reflect.ownKeys(entity)) {
-            const metadata = Reflect.getMetadata('metadata', entity, key) as PropertyDecoratorConfig;
+            const metadata = Reflect.getMetadata('metadata', entity, key) as PropertyDecoratorConfigInternal;
             if (metadata.omitForUpdate) {
                 res.push(key as keyof EntityType);
             }
@@ -37,7 +38,7 @@ export abstract class EntityUtilities {
     static getOmitForCreate<EntityType extends Entity>(entity: EntityType): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
         for (const key of Reflect.ownKeys(entity)) {
-            const metadata = Reflect.getMetadata('metadata', entity, key) as PropertyDecoratorConfig;
+            const metadata = Reflect.getMetadata('metadata', entity, key) as PropertyDecoratorConfigInternal;
             if (metadata.omitForCreate) {
                 res.push(key as keyof EntityType);
             }
@@ -177,13 +178,13 @@ export abstract class EntityUtilities {
         omit: 'create' | 'update'
     ): boolean {
         const type = this.getPropertyType(entity, key);
-        const metadata: PropertyDecoratorConfig = this.getPropertyMetadata(entity, key, type);
-        const metadataDefaultString = metadata as DefaultStringDecoratorConfig;
-        const metadataTextboxString = metadata as TextboxStringDecoratorConfig;
-        const metadataAutocompleteString = metadata as AutocompleteStringDecoratorConfig;
-        const metadataDefaultNumber = metadata as DefaultNumberDecoratorConfig;
+        const metadata: PropertyDecoratorConfigInternal = this.getPropertyMetadata(entity, key, type);
+        const metadataDefaultString = metadata as DefaultStringDecoratorConfigInternal;
+        const metadataTextboxString = metadata as TextboxStringDecoratorConfigInternal;
+        const metadataAutocompleteString = metadata as AutocompleteStringDecoratorConfigInternal;
+        const metadataDefaultNumber = metadata as DefaultNumberDecoratorConfigInternal;
         const objectProperty = entity[key] as unknown as EntityType;
-        const metadataEntityArray = metadata as EntityArrayDecoratorConfig<Entity>;
+        const metadataEntityArray = metadata as EntityArrayDecoratorConfigInternal<Entity>;
         const arrayItems = entity[key] as unknown as [];
 
         if (metadata.omitForCreate && omit === 'create') {
@@ -343,7 +344,7 @@ export abstract class EntityUtilities {
             return -1;
         }
 
-        return ((metadataA.order as number) - (metadataB.order as number));
+        return ((metadataA.order ) - (metadataB.order ));
     }
 
     /**

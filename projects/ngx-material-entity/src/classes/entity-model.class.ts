@@ -1,4 +1,4 @@
-import { string } from '../decorators/string.decorator';
+import { string } from '../decorators/string/string.decorator';
 
 /**
  * The base Entity class.
