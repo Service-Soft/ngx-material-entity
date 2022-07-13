@@ -1,8 +1,13 @@
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, DropdownStringDecoratorConfig, TextboxStringDecoratorConfig } from './string-decorator.data';
 
+/**
+ * The internal DropdownStringDecoratorConfig. Sets default values.
+ */
 export class DropdownStringDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DropdownStringDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown';
+    // eslint-disable-next-line jsdoc/require-jsdoc
     dropdownValues: { displayName: string, value: string }[];
 
     constructor(data: DropdownStringDecoratorConfig) {
@@ -12,10 +17,17 @@ export class DropdownStringDecoratorConfigInternal extends PropertyDecoratorConf
     }
 }
 
+/**
+ * The internal DefaultStringDecoratorConfig. Sets default values.
+ */
 export class DefaultStringDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DefaultStringDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'line';
+    // eslint-disable-next-line jsdoc/require-jsdoc
     minLength?: number;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     maxLength?: number;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     regex?: RegExp;
 
     constructor(data: DefaultStringDecoratorConfig) {
@@ -27,9 +39,15 @@ export class DefaultStringDecoratorConfigInternal extends PropertyDecoratorConfi
     }
 }
 
+/**
+ * The internal TextboxStringDecoratorConfig. Sets default values.
+ */
 export class TextboxStringDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements TextboxStringDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'textbox';
+    // eslint-disable-next-line jsdoc/require-jsdoc
     minLength?: number;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     maxLength?: number;
 
     constructor(data: TextboxStringDecoratorConfig) {
@@ -40,13 +58,21 @@ export class TextboxStringDecoratorConfigInternal extends PropertyDecoratorConfi
     }
 }
 
+/**
+ * The internal AutocompleteStringDecoratorConfig. Sets default values.
+ */
 export class AutocompleteStringDecoratorConfigInternal
     extends PropertyDecoratorConfigInternal implements AutocompleteStringDecoratorConfig {
 
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'autocomplete';
+    // eslint-disable-next-line jsdoc/require-jsdoc
     autocompleteValues: string[];
+    // eslint-disable-next-line jsdoc/require-jsdoc
     minLength?: number;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     maxLength?: number;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     regex?: RegExp;
 
     constructor(data: AutocompleteStringDecoratorConfig) {

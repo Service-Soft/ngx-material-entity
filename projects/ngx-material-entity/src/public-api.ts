@@ -32,7 +32,6 @@ export * from './components/get-validation-error-message.function';
 
 // decorators
 export * from './decorators/base/decorator-types.enum';
-export { cols } from './decorators/base/property-decorator.data';
 
 export * from './decorators/array/array.decorator';
 export * from './decorators/array/array-decorator.data';

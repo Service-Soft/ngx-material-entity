@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Entity } from '../../../../classes/entity-model.class';
-import { EntityUtilities } from '../../../../classes/entity-utilities.class';
+import { EntityRow, EntityUtilities } from '../../../../classes/entity-utilities.class';
 import { AddArrayItemDialogData } from './add-array-item-dialog-data';
 import { AddArrayItemDialogDataBuilder, AddArrayItemDialogDataInternal } from './add-array-item-dialog-data.builder';
 
@@ -13,7 +13,7 @@ import { AddArrayItemDialogDataBuilder, AddArrayItemDialogDataInternal } from '.
 export class NgxMatEntityAddArrayItemDialogComponent<EntityType extends Entity> implements OnInit {
     EntityUtilities = EntityUtilities;
 
-    entityKeys!: (keyof EntityType)[];
+    entityRows!: EntityRow<EntityType>[];
 
     getWidth = EntityUtilities.getWidth;
 
@@ -26,22 +26,21 @@ export class NgxMatEntityAddArrayItemDialogComponent<EntityType extends Entity> 
     ) {}
 
     ngOnInit(): void {
-        this.data = new AddArrayItemDialogDataBuilder(this.inputData).addArrayItemDialogData;
+        this.data = new AddArrayItemDialogDataBuilder(this.inputData).getResult();
         this.dialogRef.disableClose = true;
-        this.setEntityKeys();
+        this.entityRows = EntityUtilities.getEntityRows(this.data.entity, true);
     }
 
-    private setEntityKeys(): void {
-        this.entityKeys = Reflect.ownKeys(this.data.entity) as (keyof EntityType)[];
-        const omitCreateKeys = EntityUtilities.getOmitForCreate(this.data.entity);
-        this.entityKeys = this.entityKeys.filter((k) => !omitCreateKeys.includes(k))
-            .sort((a, b) => EntityUtilities.compareOrder(a, b, this.data.entity));
-    }
-
+    /**
+     * Closes the dialog with the value 1 to display that the item should be added.
+     */
     create(): void {
         this.dialogRef.close(1);
     }
 
+    /**
+     * Closes the dialog.
+     */
     cancel(): void {
         this.dialogRef.close();
     }

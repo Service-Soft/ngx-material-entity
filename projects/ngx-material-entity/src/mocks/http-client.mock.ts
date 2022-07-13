@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-jsdoc */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -6,6 +7,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Observable, of } from 'rxjs';
 
+/**
+ * A Mock for the angular http-client. Is needed for testing crud inside a ngx-mat-entity-table.
+ */
 export class HttpClientMock {
     exampleData: any[];
     constructor(exampleData: any[]) {

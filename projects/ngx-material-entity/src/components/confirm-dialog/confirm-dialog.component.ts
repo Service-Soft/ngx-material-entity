@@ -21,14 +21,20 @@ export class NgxMatEntityConfirmDialogComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.data = new ConfirmDialogDataBuilder(this.inputData).confirmDialogData;
+        this.data = new ConfirmDialogDataBuilder(this.inputData).getResult();
         this.dialogRef.disableClose = true;
     }
 
+    /**
+     * Closes the dialog with value 1 to signal that the action should be run.
+     */
     confirmAction(): void {
         this.dialogRef.close(1);
     }
 
+    /**
+     * Closes the dialog.
+     */
     cancel(): void {
         this.dialogRef.close();
     }

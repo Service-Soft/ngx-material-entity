@@ -2,7 +2,7 @@ import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EntityService } from '../../../classes/entity-service.class';
 import { Entity } from '../../../classes/entity-model.class';
-import { EntityUtilities } from '../../../classes/entity-utilities.class';
+import { EntityRow, EntityUtilities } from '../../../classes/entity-utilities.class';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from './create-entity-dialog-data.builder';
@@ -16,7 +16,7 @@ import { CreateEntityDialogData } from './create-entity-dialog-data';
 export class NgxMatEntityCreateDialogComponent<EntityType extends Entity> implements OnInit {
     EntityUtilities = EntityUtilities;
 
-    entityKeys!: (keyof EntityType)[];
+    entityRows!: EntityRow<EntityType>[];
 
     entityService!: EntityService<EntityType>;
 
@@ -33,28 +33,25 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends Entity> implem
     ) {}
 
     ngOnInit(): void {
-        this.data = new CreateEntityDialogDataBuilder(this.inputData).createDialogData;
+        this.data = new CreateEntityDialogDataBuilder(this.inputData).getResult();
         this.dialogRef.disableClose = true;
-        this.setEntityKeys();
+        this.entityRows = EntityUtilities.getEntityRows(this.data.entity, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
     }
 
-    private setEntityKeys(): void {
-        this.entityKeys = Reflect.ownKeys(this.data.entity) as (keyof EntityType)[];
-        const omitCreateKeys = EntityUtilities.getOmitForCreate(this.data.entity);
-        this.entityKeys = this.entityKeys.filter((k) => !omitCreateKeys.includes(k))
-            .sort((a, b) => EntityUtilities.compareOrder(a, b, this.data.entity));
-    }
-
+    /**
+     * Tries add the new entity and close the dialog afterwards.
+     * Also handles the confirmation if required.
+     */
     create(): void {
         if (!this.data.createDialogData?.createRequiresConfirmDialog) {
             return this.confirmCreate();
         }
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.createDialogData?.confirmCreateDialogData)
-            .withDefaultText(['Do you really want to create this entity?'])
-            .withDefaultConfirmButtonLabel('Create')
-            .withDefaultTitle('Create')
-            .confirmDialogData;
+            .withDefault('text', ['Do you really want to create this entity?'])
+            .withDefault('confirmButtonLabel', 'Create')
+            .withDefault('title', 'Create')
+            .getResult();
         const dialogref = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
@@ -70,6 +67,9 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends Entity> implem
         this.entityService.create(this.data.entity).then(() => this.dialogRef.close());
     }
 
+    /**
+     * Closes the dialog.
+     */
     cancel(): void {
         this.dialogRef.close();
     }

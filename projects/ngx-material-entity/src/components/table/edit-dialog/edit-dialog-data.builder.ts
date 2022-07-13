@@ -1,16 +1,28 @@
+import { BaseBuilder } from '../../../classes/base-builder.class';
 import { Entity } from '../../../classes/entity-model.class';
 import { ConfirmDialogData } from '../../confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { EditDialogData } from '../table-data';
 
+/**
+ * The internal EditDialogData. Requires all default values the user can leave out.
+ */
 export class EditDialogDataInternal<EntityType extends Entity> implements EditDialogData<EntityType> {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     title: (entity: EntityType) => string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     confirmButtonLabel: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     deleteButtonLabel: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     cancelButtonLabel: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     deleteRequiresConfirmDialog: boolean;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     editRequiresConfirmDialog: boolean;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     confirmDeleteDialogData: ConfirmDialogData;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     confirmEditDialogData: ConfirmDialogData;
 
     constructor(
@@ -34,25 +46,32 @@ export class EditDialogDataInternal<EntityType extends Entity> implements EditDi
     }
 }
 
-export class EditDialogDataBuilder<EntityType extends Entity> {
-    editDialogData: EditDialogDataInternal<EntityType>;
-    private readonly dataInput?: EditDialogData<EntityType>;
+/**
+ * The Builder for the EditDialogData. Sets default values.
+ */
+export class EditDialogDataBuilder<EntityType extends Entity>
+    extends BaseBuilder<EditDialogDataInternal<EntityType>, EditDialogData<EntityType>> {
 
     constructor(data?: EditDialogData<EntityType>) {
-        // this.validateInput(data);
-        this.dataInput = data;
+        super(data);
+    }
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    protected generateBaseData(data?: EditDialogData<EntityType>): EditDialogDataInternal<EntityType> {
         const confirmEditDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(data?.confirmEditDialogData)
-            .withDefaultConfirmButtonLabel('Save')
-            .withDefaultText(['Do you really want to save all changes?'])
-            .withDefaultTitle('Edit')
-            .confirmDialogData;
+            .withDefault('confirmButtonLabel', 'Save')
+            .withDefault('text', ['Do you really want to save all changes?'])
+            .withDefault('title', 'Edit')
+            .getResult();
+
         const confirmDeleteDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(data?.confirmDeleteDialogData)
-            .withDefaultConfirmButtonLabel('Delete')
-            .withDefaultType('delete')
-            .withDefaultText(['Do you really want to delete this entity?'])
-            .withDefaultTitle('Delete')
-            .confirmDialogData;
-        this.editDialogData = new EditDialogDataInternal(
+            .withDefault('confirmButtonLabel', 'Delete')
+            .withDefault('type', 'delete')
+            .withDefault('text', ['Do you really want to delete this entity?'])
+            .withDefault('title', 'Delete')
+            .getResult();
+
+        return new EditDialogDataInternal(
             data?.title ? data.title : () => 'Edit',
             data?.confirmButtonLabel ? data.confirmButtonLabel : 'Save',
             data?.deleteButtonLabel ? data.deleteButtonLabel : 'Delete',
@@ -62,62 +81,5 @@ export class EditDialogDataBuilder<EntityType extends Entity> {
             confirmDeleteDialogData,
             confirmEditDialogData
         );
-        return this;
-    }
-
-    withDefaultTitle(title: (entity: EntityType) => string): EditDialogDataBuilder<EntityType> {
-        if (!this.dataInput?.title) {
-            this.editDialogData.title = title;
-        }
-        return this;
-    }
-
-    withDefaultConfirmButtonLabel(label: string): EditDialogDataBuilder<EntityType> {
-        if (!this.dataInput?.confirmButtonLabel) {
-            this.editDialogData.confirmButtonLabel = label;
-        }
-        return this;
-    }
-
-    withDefaultDeleteButtonLabel(label: string): EditDialogDataBuilder<EntityType> {
-        if (!this.dataInput?.deleteButtonLabel) {
-            this.editDialogData.deleteButtonLabel = label;
-        }
-        return this;
-    }
-
-    withDefaultCancelButtonLabel(label: string): EditDialogDataBuilder<EntityType> {
-        if (!this.dataInput?.cancelButtonLabel) {
-            this.editDialogData.cancelButtonLabel = label;
-        }
-        return this;
-    }
-
-    withDefaultDeleteRequiresConfirmDialog(deleteRequiresConfirmDialog: boolean): EditDialogDataBuilder<EntityType> {
-        if (!this.dataInput?.deleteRequiresConfirmDialog) {
-            this.editDialogData.deleteRequiresConfirmDialog = deleteRequiresConfirmDialog;
-        }
-        return this;
-    }
-
-    withDefaultEditRequiresConfirmDialog(editRequiresConfirmDialog: boolean): EditDialogDataBuilder<EntityType> {
-        if (!this.dataInput?.editRequiresConfirmDialog) {
-            this.editDialogData.editRequiresConfirmDialog = editRequiresConfirmDialog;
-        }
-        return this;
-    }
-
-    withDefaultConfirmDeleteDialogData(confirmDeleteDialogData: ConfirmDialogData): EditDialogDataBuilder<EntityType> {
-        if (!this.dataInput?.confirmDeleteDialogData) {
-            this.editDialogData.confirmDeleteDialogData = confirmDeleteDialogData;
-        }
-        return this;
-    }
-
-    withDefaultConfirmEditDialogData(confirmEditDialogData: ConfirmDialogData): EditDialogDataBuilder<EntityType> {
-        if (!this.dataInput?.confirmEditDialogData) {
-            this.editDialogData.confirmEditDialogData = confirmEditDialogData;
-        }
-        return this;
     }
 }

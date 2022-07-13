@@ -3,17 +3,20 @@
     <div style="padding-bottom: 10px">
         <b>{{metadata.displayName}}</b>
     </div>
-    <div class="row" *ngIf="metadata.createInline">
-        <ngx-mat-entity-internal-input
-            *ngFor="let key of getObjectProperties(); let i = index; trackBy: trackByFn"
-            [entity]="arrayItem"
-            [propertyKey]="key"
-            [hideOmitForCreate]="true"
-            [getValidationErrorMessage]="getValidationErrorMessage"
-            class="col-lg-{{getWidth(arrayItem, key, 'lg')}} col-md-{{getWidth(arrayItem, key, 'md')}} col-sm-{{getWidth(arrayItem, key, 'sm')}}"
-        >
-        </ngx-mat-entity-internal-input>
+    <div *ngIf="metadata.createInline">
+        <div class="row" *ngFor="let row of rows">
+            <ngx-mat-entity-internal-input
+                *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
+                [entity]="arrayItem"
+                [propertyKey]="key"
+                [hideOmitForCreate]="true"
+                [getValidationErrorMessage]="getValidationErrorMessage"
+                class="col-lg-{{getWidth(arrayItem, key, 'lg')}} col-md-{{getWidth(arrayItem, key, 'md')}} col-sm-{{getWidth(arrayItem, key, 'sm')}}"
+            >
+            </ngx-mat-entity-internal-input>
+        </div>
     </div>
+    
     <div class="buttons">
         <button mat-raised-button
             [disabled]="metadata.createInline && !EntityUtilities.isEntityValid(arrayItem, 'create')"

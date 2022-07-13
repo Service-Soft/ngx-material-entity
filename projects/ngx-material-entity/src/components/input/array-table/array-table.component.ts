@@ -1,7 +1,7 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, Input, OnInit } from '@angular/core';
 import { Entity } from '../../../classes/entity-model.class';
-import { EntityUtilities } from '../../../classes/entity-utilities.class';
+import { EntityRow, EntityUtilities } from '../../../classes/entity-utilities.class';
 import { NgModel } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -18,15 +18,27 @@ import { EntityArrayDecoratorConfigInternal } from '../../../decorators/array/ar
     styleUrls: ['./array-table.component.scss']
 })
 export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implements OnInit {
+    /**
+     * The items of the array to display inside the table.
+     */
     @Input()
     arrayItems!: EntityType[];
 
+    /**
+     * The metadata of the EntityArray.
+     */
     @Input()
     metadata!: EntityArrayDecoratorConfigInternal<EntityType>;
 
+    /**
+     * The function used for generating error messages.
+     */
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
 
+    /**
+     * Whether to omit values that should be omitted for creation or values that should be omitted for updating.
+     */
     @Input()
     omit!: 'create' | 'update';
 
@@ -40,12 +52,20 @@ export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implemen
 
     private arrayItemPriorChanges!: EntityType;
 
+    rows!: EntityRow<EntityType>[];
+
     getWidth = EntityUtilities.getWidth;
 
     EntityUtilities = EntityUtilities;
 
     constructor(private readonly dialog: MatDialog) {}
 
+    /**
+     * This is needed for the inputs to work inside an ngfor.
+     *
+     * @param index - The index of the element in the ngfor.
+     * @returns The index.
+     */
     trackByFn(index: unknown): unknown {
         return index;
     }
@@ -57,6 +77,11 @@ export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implemen
         this.dataSource = new MatTableDataSource();
         this.dataSource.data = this.arrayItems;
         this.arrayItem = new this.metadata.EntityClass();
+        this.rows = EntityUtilities.getEntityRows(
+            this.arrayItem,
+            this.omit === 'create' ? true : false,
+            this.omit === 'update' ? true : false
+        );
         this.arrayItemPriorChanges = cloneDeep(this.arrayItem);
     }
     private validateInput(givenDisplayColumns: string[]): void {
@@ -66,14 +91,13 @@ export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implemen
                 Please choose a different name.`
             );
         }
-        if (!this.metadata.createInline && !this.metadata.createDialogData) {
-            throw new Error(
-                `Missing required Input data "createDialogData".
-                You can only omit this value when the creation is inline.`
-            );
-        }
     }
 
+    /**
+     * Tries to add an item to the array.
+     * Does this either inline if the "createInline"-metadata is set to true
+     * or in a seperate dialog if it is set to false.
+     */
     add(): void {
         if (this.metadata.createInline) {
             this.arrayItems.push(cloneDeep(this.arrayItem));
@@ -86,8 +110,7 @@ export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implemen
                 createDialogData: this.metadata.createDialogData,
                 getValidationErrorMessage: this.getValidationErrorMessage
             }
-            const dialogData: AddArrayItemDialogDataInternal<EntityType> = new AddArrayItemDialogDataBuilder(dialogInputData)
-                .addArrayItemDialogData;
+            const dialogData: AddArrayItemDialogDataInternal<EntityType> = new AddArrayItemDialogDataBuilder(dialogInputData).getResult();
             firstValueFrom(
                 this.dialog.open(
                     NgxMatEntityAddArrayItemDialogComponent,
@@ -106,6 +129,10 @@ export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implemen
             });
         }
     }
+
+    /**
+     * Removes all selected entries from the array.
+     */
     remove(): void {
         this.selection.selected.forEach(s => {
             this.arrayItems.splice(this.arrayItems.indexOf(s), 1);
@@ -114,21 +141,9 @@ export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implemen
         this.selection.clear();
     }
 
-    getObjectProperties(): (keyof EntityType)[] {
-        const res: (keyof EntityType)[] = [];
-        for (const property in this.arrayItem) {
-            const metadata = EntityUtilities.getPropertyMetadata(
-                this.arrayItem,
-                property as keyof Entity,
-                EntityUtilities.getPropertyType(this.arrayItem, property as keyof Entity)
-            );
-            if (!(metadata.omitForCreate)) {
-                res.push(property as keyof Entity);
-            }
-        }
-        return res.sort((a, b) => EntityUtilities.compareOrder(a, b, this.arrayItem));
-    }
-
+    /**
+     * Toggles all array-items in the table.
+     */
     masterToggle(): void {
         if (this.isAllSelected()) {
             this.selection.clear();
@@ -138,6 +153,12 @@ export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implemen
         }
     }
 
+    /**
+     * Checks if all array-items in the table have been selected.
+     * This is needed to display the "masterToggle"-checkbox correctly.
+     *
+     * @returns Whether or not all array-items in the table have been selected.
+     */
     isAllSelected(): boolean {
         const numSelected = this.selection.selected.length;
         const numRows = this.dataSource.data.length;

@@ -1,3 +1,7 @@
+/**
+ * The different types of a confirm dialog.
+ * Is used for displaying different buttons accordingly.
+ */
 export type ConfirmDialogTypes = 'default' | 'delete' | 'info-only';
 
 /**

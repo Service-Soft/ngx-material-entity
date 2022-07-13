@@ -15,6 +15,7 @@ describe('baseProperty', () => {
         expect(metdata.omitForUpdate).toBe(true);
         expect(metdata.required).toBe(true);
     });
+
     test('should throw error for incorrect order metadata', () => {
         expect(
             () => {
@@ -22,7 +23,9 @@ describe('baseProperty', () => {
                     @string({
                         displayStyle: 'line',
                         displayName: 'Wrong Order Value',
-                        order: -1
+                        position: {
+                            order: -1
+                        }
                     })
                     wrongOrderValue!: string;
 
@@ -36,6 +39,55 @@ describe('baseProperty', () => {
                     wrongOrderValue: '42'
                 });
             }
-        ).toThrow('order must be at least 0');
+        ).toThrow('order must be at least 1');
+        expect(
+            () => {
+                class BasePropertyTestEntity extends Entity {
+                    @string({
+                        displayStyle: 'line',
+                        displayName: 'Wrong Order Value',
+                        position: {
+                            order: 13
+                        }
+                    })
+                    wrongOrderValue!: string;
+
+                    constructor(entity?: BasePropertyTestEntity) {
+                        super();
+                        EntityUtilities.new(this, entity);
+                    }
+                }
+                new BasePropertyTestEntity({
+                    id: '1',
+                    wrongOrderValue: '42'
+                });
+            }
+        ).toThrow('order cannot be bigger than 12 (the minimum value for a bootstrap column)');
+    });
+
+    test('should throw error for incorrect row metadata', () => {
+        expect(
+            () => {
+                class BasePropertyTestEntity extends Entity {
+                    @string({
+                        displayStyle: 'line',
+                        displayName: 'Wrong Row Value',
+                        position: {
+                            row: -1
+                        }
+                    })
+                    wrongRowValue!: string;
+
+                    constructor(entity?: BasePropertyTestEntity) {
+                        super();
+                        EntityUtilities.new(this, entity);
+                    }
+                }
+                new BasePropertyTestEntity({
+                    id: '1',
+                    wrongRowValue: '42'
+                });
+            }
+        ).toThrow('row must be at least 1');
     });
 });

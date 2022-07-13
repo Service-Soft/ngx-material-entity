@@ -2,7 +2,7 @@ import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EntityService } from '../../../classes/entity-service.class';
 import { Entity } from '../../../classes/entity-model.class';
-import { EntityUtilities } from '../../../classes/entity-utilities.class';
+import { EntityRow, EntityUtilities } from '../../../classes/entity-utilities.class';
 import { cloneDeep } from 'lodash';
 import { EditEntityDialogData } from './edit-entity-dialog-data';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
@@ -17,7 +17,7 @@ import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from './edi
 export class  NgxMatEntityEditDialogComponent<EntityType extends Entity> implements OnInit {
     EntityUtilities = EntityUtilities;
 
-    entityKeys!: (keyof EntityType)[];
+    entityRows!: EntityRow<EntityType>[];
 
     entityService!: EntityService<EntityType>;
 
@@ -36,29 +36,26 @@ export class  NgxMatEntityEditDialogComponent<EntityType extends Entity> impleme
     ) {}
 
     ngOnInit(): void {
-        this.data = new EditEntityDialogDataBuilder(this.inputData).editDialogData;
+        this.data = new EditEntityDialogDataBuilder(this.inputData).getResult();
         this.dialogRef.disableClose = true;
-        this.setEntityKeys();
+        this.entityRows = EntityUtilities.getEntityRows(this.data.entity, false, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
         this.entityPriorChanges = cloneDeep(this.data.entity);
     }
 
-    private setEntityKeys(): void {
-        this.entityKeys = Reflect.ownKeys(this.data.entity) as (keyof EntityType)[];
-        const omitUpdateKeys = EntityUtilities.getOmitForUpdate(this.data.entity);
-        this.entityKeys = this.entityKeys.filter((k) => !omitUpdateKeys.includes(k))
-            .sort((a, b) => EntityUtilities.compareOrder(a, b, this.data.entity));
-    }
-
+    /**
+     * Tries to save the changes and close the dialog afterwards.
+     * Also handles the confirmation if required.
+     */
     edit(): void {
         if (!this.data.editDialogData.editRequiresConfirmDialog) {
             return this.confirmEdit();
         }
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.editDialogData.confirmEditDialogData)
-            .withDefaultText(['Do you really want to save all changes?'])
-            .withDefaultConfirmButtonLabel('Save')
-            .withDefaultTitle('Edit')
-            .confirmDialogData;
+            .withDefault('text', ['Do you really want to save all changes?'])
+            .withDefault('confirmButtonLabel', 'Save')
+            .withDefault('title', 'Edit')
+            .getResult();
         const dialogref = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
@@ -70,20 +67,25 @@ export class  NgxMatEntityEditDialogComponent<EntityType extends Entity> impleme
             }
         });
     }
+
     private confirmEdit(): void {
         this.entityService.update(this.data.entity, this.entityPriorChanges).then(() => this.dialogRef.close(1));
     }
 
+    /**
+     * Tries to delete the entity and close the dialog afterwards.
+     * Also handles the confirmation if required.
+     */
     delete(): void {
         if (!this.data.editDialogData.deleteRequiresConfirmDialog) {
             return this.confirmDelete();
         }
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.editDialogData.confirmDeleteDialogData)
-            .withDefaultText(['Do you really want to delete this entity?'])
-            .withDefaultType('delete')
-            .withDefaultConfirmButtonLabel('Delete')
-            .withDefaultTitle('Delete')
-            .confirmDialogData;
+            .withDefault('text', ['Do you really want to delete this entity?'])
+            .withDefault('type', 'delete')
+            .withDefault('confirmButtonLabel', 'Delete')
+            .withDefault('title', 'Delete')
+            .getResult();
         const dialogref = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
@@ -95,10 +97,14 @@ export class  NgxMatEntityEditDialogComponent<EntityType extends Entity> impleme
             }
         });
     }
+
     private confirmDelete(): void {
         this.entityService.delete(this.entityPriorChanges.id).then(() => this.dialogRef.close(2));
     }
 
+    /**
+     * Reverts all changes made and closes the dialog.
+     */
     cancel(): void {
         EntityUtilities.resetChangesOnEntity(this.data.entity, this.entityPriorChanges);
         this.dialogRef.close(0);
