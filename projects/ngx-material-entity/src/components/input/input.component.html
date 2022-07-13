@@ -145,7 +145,8 @@
     <div *ngSwitchCase="DecoratorTypes.OBJECT">
         <b>{{metadataDefaultObject.displayName}}</b>
         <!-- iterates over the object properties -->
-        <div class="row">
+
+        <div class="row" *ngFor="let row of objectPropertyRows">
             <!--
                 displays another ngx-material-entity with the:
                 object as the entity,
@@ -153,7 +154,7 @@
                 and the getValidationErrorMessage of the current component
             -->
             <ngx-mat-entity-input
-                *ngFor="let key of getObjectProperties(); let i = index; trackBy: trackByFn"
+                *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
                 [entity]="objectProperty"
                 [propertyKey]="key"
                 [getValidationErrorMessage]="getValidationErrorMessage"

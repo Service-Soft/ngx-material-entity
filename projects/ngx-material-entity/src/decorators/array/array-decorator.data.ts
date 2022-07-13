@@ -3,6 +3,9 @@ import { CreateDialogData } from '../../components/table/table-data';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 
+/**
+ * The configuration options for an array property displayed as a table.
+ */
 export interface ArrayTableDisplayColumn<EntityType extends Entity> {
     /**
      * The name inside the header.
@@ -33,7 +36,9 @@ abstract class ArrayDecoratorConfig extends PropertyDecoratorConfig {
  * Definition for an array of Entities.
  */
 export interface EntityArrayDecoratorConfig<EntityType extends Entity> extends ArrayDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.OBJECT,
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'table',
 
     /**
@@ -71,7 +76,9 @@ export interface EntityArrayDecoratorConfig<EntityType extends Entity> extends A
  * Definition for an array of strings displayed as a chips list.
  */
 export interface StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.STRING,
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'chips',
 
     /**
@@ -101,7 +108,9 @@ export interface StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
  * Definition for an array of autocomplete strings displayed as a chips list.
  */
 export interface AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'chips',
 
     /**

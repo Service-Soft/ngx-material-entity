@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { EntityUtilities } from '../../classes/entity-utilities.class';
+import { EntityRow, EntityUtilities } from '../../classes/entity-utilities.class';
 import { Entity } from '../../classes/entity-model.class';
 import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
 import { getValidationErrorMessage } from '../get-validation-error-message.function';
@@ -71,6 +71,7 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
 
     metadataDefaultObject!: DefaultObjectDecoratorConfigInternal<EntityType>;
     objectProperty!: Entity;
+    objectPropertyRows!: EntityRow<Entity>[];
 
     metadataEntityArray!: EntityArrayDecoratorConfigInternal<Entity>;
     entityArrayValues!: Entity[];
@@ -86,6 +87,12 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
 
     constructor() {}
 
+    /**
+     * This is needed for the inputs to work inside an ngfor.
+     *
+     * @param index - The index of the element in the ngfor.
+     * @returns The index.
+     */
     trackByFn(index: unknown): unknown {
         return index;
     }
@@ -116,6 +123,9 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
 
         this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfigInternal<EntityType>;
         this.objectProperty = this.entity[this.propertyKey] as unknown as EntityType;
+        if (this.metadataDefaultObject.type) {
+            this.objectPropertyRows = EntityUtilities.getEntityRows(this.objectProperty, this.hideOmitForCreate, this.hideOmitForEdit);
+        }
 
         this.metadataEntityArray = this.metadata as EntityArrayDecoratorConfigInternal<Entity>;
         if (this.metadataEntityArray.EntityClass) {
@@ -148,24 +158,17 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
         }
     }
 
-    getObjectProperties(): (keyof Entity)[] {
-        const res: (keyof Entity)[] = [];
-        for (const property in this.objectProperty) {
-            const metadata = EntityUtilities.getPropertyMetadata(
-                this.objectProperty,
-                property as keyof Entity,
-                EntityUtilities.getPropertyType(this.objectProperty, property as keyof Entity)
-            );
-            if (
-                !(this.hideOmitForCreate && metadata.omitForCreate)
-                && !(this.hideOmitForEdit && metadata.omitForUpdate)
-            ) {
-                res.push(property as keyof Entity);
-            }
-        }
-        return res.sort((a, b) => EntityUtilities.compareOrder(a, b, this.objectProperty));
-    }
-
+    /**
+     * Handles adding strings to the chipsArray.
+     * Checks validation and also creates a new array if it is undefined.
+     * This is needed because two things are validated: The array itself
+     * and the contents of the array. And we need a way to display an
+     * mat-error. As the only validation for the array is whether or not
+     * it contains values, we can set it to undefined when the last element is removed
+     * (removeStringChipArrayValue). That way we can use the "required" validator.
+     *
+     * @param event - The event that fires when a new chip is completed.
+     */
     addStringChipArrayValue(event: MatChipInputEvent): void {
         const value = (event.value || '').trim();
         if (value) {
@@ -189,6 +192,16 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
         event.chipInput!.clear();
     }
 
+    /**
+     * Removes the given value from the array.
+     * Sets the array to undefined if it is now empty.
+     * This is needed because two things are validated: The array itself
+     * and the contents of the array. And we need a way to display an
+     * mat-error. As the only validation for the array is whether or not
+     * it is empty, setting it to undefined here enables us to use the "required" validator.
+     *
+     * @param value - The string to remove from the array.
+     */
     removeStringChipArrayValue(value: string): void {
         this.stringChipsArrayValues.splice(this.stringChipsArrayValues.indexOf(value), 1);
         if (!this.stringChipsArrayValues.length) {
@@ -197,6 +210,12 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
         }
     }
 
+    /**
+     * Handles adding a string to the array when an autocomplete value has been selected.
+     *
+     * @param event - The autocomplete selected event.
+     * @param chipsInput - The element where the user typed the value.
+     */
     selected(event: MatAutocompleteSelectedEvent, chipsInput: HTMLInputElement): void {
         const value = (event.option.viewValue || '').trim();
         if (this.metadataStringChipsArray.minLength && value.length < this.metadataStringChipsArray.minLength) {
@@ -218,6 +237,11 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
         chipsInput.value = '';
     }
 
+    /**
+     * Dynamically filters the autoselect options when the user inputs something.
+     *
+     * @param input - The input of the user.
+     */
     filterAutocompleteStrings(input: unknown): void {
         const filterValue = (input as string).toLowerCase();
         this.filteredAutocompleteStrings = this.autocompleteStrings.filter(s => s.toLowerCase().includes(filterValue));

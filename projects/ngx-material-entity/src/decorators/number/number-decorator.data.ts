@@ -10,7 +10,11 @@ abstract class NumberDecoratorConfig extends PropertyDecoratorConfig {
     displayStyle!: 'line' | 'dropdown';
 }
 
+/**
+ * The configuration options for a number property displayed in a default number input.
+ */
 export interface DefaultNumberDecoratorConfig extends NumberDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'line',
     /**
      * The minimum value of the number.
@@ -22,10 +26,15 @@ export interface DefaultNumberDecoratorConfig extends NumberDecoratorConfig {
     max?: number
 }
 
+/**
+ * The configuration options for a number property displayed in a dropdown.
+ */
 export interface DropdownNumberDecoratorConfig extends NumberDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown',
     /**
      * The values of the dropdown, consisting of a name to display and the actual value.
      */
+    // eslint-disable-next-line jsdoc/require-jsdoc
     dropdownValues: { displayName: string, value: number }[]
 }

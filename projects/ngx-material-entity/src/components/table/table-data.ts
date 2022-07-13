@@ -47,6 +47,9 @@ export interface MultiSelectAction<EntityType extends Entity> {
     confirmDialogData?: ConfirmDialogData
 }
 
+/**
+ * The base data of the ngx-mat-entity-table.
+ */
 export interface BaseData<EntityType extends Entity> {
     /**
      * The title of the table.
@@ -117,6 +120,9 @@ export interface BaseData<EntityType extends Entity> {
     multiSelectLabel?: string
 }
 
+/**
+ * The data of the default create-dialog.
+ */
 export interface CreateDialogData {
     /**
      * The title of the default create-dialog.
@@ -140,6 +146,9 @@ export interface CreateDialogData {
     confirmCreateDialogData?: ConfirmDialogData
 }
 
+/**
+ * The data of the default edit-dialog.
+ */
 export interface EditDialogData<EntityType extends Entity> {
     /**
      * The title of the default edit-dialog.
@@ -177,6 +186,9 @@ export interface EditDialogData<EntityType extends Entity> {
     confirmEditDialogData?: ConfirmDialogData
 }
 
+/**
+ * All the configuration data required to display a ngx-mat-entity-table.
+ */
 export interface TableData<EntityType extends Entity> {
     /**
      * The base data for the table-component.

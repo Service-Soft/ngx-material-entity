@@ -228,7 +228,7 @@ describe('dirty', () => {
 describe('compareOrder', () => {
     test('should sort entity properties by their order value', () => {
         const tE: TestEntity = cloneDeep(testEntity);
-        let keys: (keyof TestEntity)[] = (Reflect.ownKeys(tE) as (keyof TestEntity)[]);
+        let keys: (keyof TestEntity)[] = EntityUtilities.keysOf(tE);
         expect(keys[0]).not.toBe('orderValue1');
         keys = keys.sort((a, b) => EntityUtilities.compareOrder(a, b, tE));
         expect(keys[0]).toBe('orderValue1');
@@ -253,5 +253,31 @@ describe('resetChangesOnEntity', () => {
         expect(EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
         EntityUtilities.resetChangesOnEntity(tE, tEPriorChanges);
         expect(EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
+    });
+});
+
+describe('getEntityRows', () => {
+    test('should get only one row when nothing is defined', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        expect(EntityUtilities.getEntityRows(tE)).toHaveLength(2);
+    });
+});
+
+describe('keysOf', () => {
+    test('should get all keys of the entity', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        expect(EntityUtilities.keysOf(tE)).toHaveLength(25);
+    });
+    test('should get keys without omitForCreate', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        const keysWithoutCreate = EntityUtilities.keysOf(tE, true);
+        expect(keysWithoutCreate.includes('omitForCreateValue')).toBe(false);
+        expect(keysWithoutCreate.includes('omitForUpdateValue')).toBe(true);
+    });
+    test('should get keys without omitForUpdate', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        const keysWithoutUpdate = EntityUtilities.keysOf(tE, false, true);
+        expect(keysWithoutUpdate.includes('omitForUpdateValue')).toBe(false);
+        expect(keysWithoutUpdate.includes('omitForCreateValue')).toBe(true);
     });
 });

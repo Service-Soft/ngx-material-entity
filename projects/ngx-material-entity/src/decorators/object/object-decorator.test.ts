@@ -55,10 +55,10 @@ class TestEntity extends Entity {
 
 const addressData: Address = {
     id: '1',
-    street: 'Schultenstraße',
-    number: '5',
-    postcode: '45739',
-    city: 'Oer-Erkenschwick'
+    street: 'Main Street',
+    number: '42',
+    postcode: '12345',
+    city: 'Example City'
 };
 const address = new Address(addressData);
 

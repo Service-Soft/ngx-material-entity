@@ -10,16 +10,25 @@ abstract class StringDecoratorConfig extends PropertyDecoratorConfig {
     displayStyle!: 'line' | 'textbox' | 'autocomplete' | 'dropdown';
 }
 
+/**
+ * The configuration options for a string property displayed as a dropdown.
+ */
 export interface DropdownStringDecoratorConfig extends StringDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown',
     /**
      * The values of the dropdown, consisting of a name to display and the actual value
      * Can also receive a function to determine the values.
      */
+    // eslint-disable-next-line jsdoc/require-jsdoc
     dropdownValues: { displayName: string, value: string }[]
 }
 
+/**
+ * The configuration options for a string property displayed in a default text input.
+ */
 export interface DefaultStringDecoratorConfig extends StringDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'line',
     /**
      * The minimum required length of the string.
@@ -35,7 +44,11 @@ export interface DefaultStringDecoratorConfig extends StringDecoratorConfig {
     regex?: RegExp
 }
 
+/**
+ * The configuration options for a string property displayed in a textbox input.
+ */
 export interface TextboxStringDecoratorConfig extends StringDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'textbox',
     /**
      * The minimum required length of the string.
@@ -47,7 +60,11 @@ export interface TextboxStringDecoratorConfig extends StringDecoratorConfig {
     maxLength?: number
 }
 
+/**
+ * The configuration options for a string property displayed in a mat-autocomplete input.
+ */
 export interface AutocompleteStringDecoratorConfig extends StringDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'autocomplete',
     /**
      * The autocomplete values.

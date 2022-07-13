@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DecoratorTypes } from '../../../decorators/base/decorator-types.enum';
 import { Entity } from '../../../classes/entity-model.class';
-import { EntityUtilities } from '../../../classes/entity-utilities.class';
+import { EntityRow, EntityUtilities } from '../../../classes/entity-utilities.class';
 import { NgModel } from '@angular/forms';
 import { DropdownBooleanDecoratorConfigInternal } from '../../../decorators/boolean/boolean-decorator-internal.data';
 import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal } from '../../../decorators/number/number-decorator-internal.data';
@@ -64,11 +64,18 @@ export class NgxMatEntityInternalInputComponent<EntityType extends Entity> imple
 
     metadataDefaultObject!: DefaultObjectDecoratorConfigInternal<EntityType>;
     objectProperty!: Entity;
+    objectPropertyRows!: EntityRow<Entity>[];
 
     readonly DecoratorTypes = DecoratorTypes;
 
     getWidth = EntityUtilities.getWidth;
 
+    /**
+     * This is needed for the inputs to work inside an ngfor.
+     *
+     * @param index - The index of the element in the ngfor.
+     * @returns The index.
+     */
     trackByFn(index: unknown): unknown {
         return index;
     }
@@ -95,23 +102,8 @@ export class NgxMatEntityInternalInputComponent<EntityType extends Entity> imple
 
         this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfigInternal<EntityType>;
         this.objectProperty = this.entity[this.propertyKey] as unknown as Entity;
-    }
-
-    getObjectProperties(): (keyof Entity)[] {
-        const res: (keyof Entity)[] = [];
-        for (const property in this.objectProperty) {
-            const metadata = EntityUtilities.getPropertyMetadata(
-                this.objectProperty,
-                 property as keyof Entity,
-                 EntityUtilities.getPropertyType(this.objectProperty, property as keyof Entity)
-            );
-            if (
-                !(this.hideOmitForCreate && metadata.omitForCreate)
-                 && !(this.hideOmitForEdit && metadata.omitForUpdate)
-            ) {
-                res.push(property as keyof Entity);
-            }
+        if (this.metadataDefaultObject.type) {
+            this.objectPropertyRows = EntityUtilities.getEntityRows(this.objectProperty, this.hideOmitForCreate, this.hideOmitForEdit);
         }
-        return res.sort((a, b) => EntityUtilities.compareOrder(a, b, this.objectProperty));
     }
 }

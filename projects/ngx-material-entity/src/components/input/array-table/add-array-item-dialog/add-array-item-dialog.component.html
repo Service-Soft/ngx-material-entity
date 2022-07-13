@@ -2,15 +2,17 @@
 
 <mat-dialog-content>
     <form #form="ngForm" class="row">
-        <ngx-mat-entity-internal-input
-            *ngFor="let key of entityKeys"
-            [entity]="data.entity"
-            [propertyKey]="key"
-            [hideOmitForCreate]="true"
-            [getValidationErrorMessage]="data.getValidationErrorMessage"
-            class="col-lg-{{getWidth(data.entity, key, 'lg')}} col-md-{{getWidth(data.entity, key, 'md')}} col-sm-{{getWidth(data.entity, key, 'sm')}}"
-        >
-        </ngx-mat-entity-internal-input>
+        <div class="row" *ngFor="let row of entityRows">
+            <ngx-mat-entity-internal-input
+                *ngFor="let key of row.keys"
+                [entity]="data.entity"
+                [propertyKey]="key"
+                [hideOmitForCreate]="true"
+                [getValidationErrorMessage]="data.getValidationErrorMessage"
+                class="col-lg-{{getWidth(data.entity, key, 'lg')}} col-md-{{getWidth(data.entity, key, 'md')}} col-sm-{{getWidth(data.entity, key, 'sm')}}"
+            >
+            </ngx-mat-entity-internal-input>
+        </div>
     </form>
 </mat-dialog-content>
 
