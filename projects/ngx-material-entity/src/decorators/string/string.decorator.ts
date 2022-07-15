@@ -4,7 +4,7 @@ import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfig
 import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, DropdownStringDecoratorConfig, TextboxStringDecoratorConfig } from './string-decorator.data';
 
 /**
- * Decorator for setting and getting string propery metadata.
+ * Decorator for setting and getting string Property metadata.
  *
  * @param metadata - The metadata of the string property.
  * @returns The method that defines the metadata.

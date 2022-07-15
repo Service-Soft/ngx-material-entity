@@ -47,7 +47,7 @@ export class StringChipsArrayDecoratorConfigInternal extends PropertyDecoratorCo
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'chips';
     // eslint-disable-next-line jsdoc/require-jsdoc
-    deleteHtml?: string;
+    deleteIcon: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
     minLength?: number;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -57,7 +57,7 @@ export class StringChipsArrayDecoratorConfigInternal extends PropertyDecoratorCo
 
     constructor(data: StringChipsArrayDecoratorConfig) {
         super(data);
-        this.deleteHtml = data.deleteHtml;
+        this.deleteIcon = data.deleteIcon ? data.deleteIcon : 'fas fa-circle-minus';
         this.displayStyle = data.displayStyle;
         this.itemType = data.itemType;
         this.maxLength = data.maxLength;
@@ -80,7 +80,7 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'chips';
     // eslint-disable-next-line jsdoc/require-jsdoc
-    deleteHtml?: string;
+    deleteIcon: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
     minLength?: number;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -91,7 +91,7 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
     constructor(data: AutocompleteStringChipsArrayDecoratorConfig) {
         super(data);
         this.autocompleteValues = data.autocompleteValues;
-        this.deleteHtml = data.deleteHtml;
+        this.deleteIcon = data.deleteIcon ? data.deleteIcon : 'fas fa-circle-minus'
         this.displayStyle = data.displayStyle;
         this.itemType = data.itemType;
         this.maxLength = data.maxLength;

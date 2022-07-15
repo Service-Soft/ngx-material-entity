@@ -82,14 +82,11 @@ export interface StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
     displayStyle: 'chips',
 
     /**
-     * The html inside the delete-button.
-     * Please note that custom tags such as <mat-icon></mat-icon>
-     * need to be defined as known elements, otherwise the sanitizer will remove them.
-     * You can however work around this by using `<span class="material-icons"></span>`.
+     * The class for the <i> tag used to remove an entry from the array.
      *
-     * @default <mat-icon>cancel</mat-icon>
+     * @default 'fas fa-circle-minus'
      */
-    deleteHtml?: string,
+    deleteIcon?: string,
     /**
      * The minimum required length of the string.
      */
@@ -114,14 +111,11 @@ export interface AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecora
     displayStyle: 'chips',
 
     /**
-     * The html inside the delete-button.
-     * Please note that custom tags such as <mat-icon></mat-icon>
-     * need to be defined as known elements, otherwise the sanitizer will remove them.
-     * You can however work around this by using `<span class="material-icons"></span>`.
+     * The class for the <i> tag used to remove an entry from the array.
      *
-     * @default <mat-icon>cancel</mat-icon>
+     * @default 'fas fa-circle-minus'
      */
-    deleteHtml?: string,
+    deleteIcon?: string,
     /**
      * The autocomplete values.
      */

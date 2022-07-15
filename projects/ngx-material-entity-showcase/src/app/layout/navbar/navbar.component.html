@@ -1,0 +1,29 @@
+<mat-toolbar class="mat-elevation-z8">
+    <div *ngIf="navbarRows.length>1" class="container">
+        <mat-toolbar-row class="toolbar-row" *ngFor="let row of navbarRows">
+            <span *ngFor="let element of row.elements">
+                <span [ngSwitch]="element.type">
+                    <h1 *ngSwitchCase="'title'">
+                        {{NavUtilities.asTitle(element).title}}
+                    </h1>
+                    <a mat-button *ngSwitchCase="'internalLink'" [routerLink]="NavUtilities.asInternalLink(element).angularRoute.path">
+                        <i *ngIf="NavUtilities.asInternalLink(element).icon" class="{{NavUtilities.asInternalLink(element).icon}}"></i>
+                        {{NavUtilities.asInternalLink(element).name}}
+                    </a>
+                </span>
+            </span>
+        </mat-toolbar-row>
+    </div>
+    <div *ngIf="!(navbarRows.length>1)" class="container">
+        <span class="toolbar-row">
+            <span *ngFor="let element of navbarRows[0]?.elements">
+                <span [ngSwitch]="element.type">
+                    <h1 *ngSwitchCase="'title'">{{NavUtilities.asTitle(element).title}}</h1>
+                    <a mat-button *ngSwitchCase="'internalLink'" [routerLink]="NavUtilities.asInternalLink(element).angularRoute.path">
+                        <i *ngIf="NavUtilities.asInternalLink(element).icon" class="{{NavUtilities.asInternalLink(element).icon}}"></i> {{NavUtilities.asInternalLink(element).name}}
+                    </a>
+                </span>
+            </span>
+        </span>
+    </div>
+</mat-toolbar>

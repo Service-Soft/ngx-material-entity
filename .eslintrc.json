@@ -39,6 +39,34 @@
                 "project": [
                     "tsconfig.json"
                 ],
+                "jsdoc/require-jsdoc": [
+                    "warn",
+                    {
+                        "contexts": [
+                            "ClassDeclaration[decorators.0.expression.callee.name!='NgModule']",
+                            "TSPropertySignature",
+                            "PropertyDefinition[accessibility!='private'][decorators.0.expression.callee.name!='string'][decorators.0.expression.callee.name!='number'][decorators.0.expression.callee.name!='array'][decorators.0.expression.callee.name!='object']",
+                            "MethodDefinition[accessibility!='private'][key.name!='constructor'][key.name!='ngOnInit'][key.name!='ngAfterViewInit'][key.name!='ngOnDestroy']",
+                            "FunctionDeclaration",
+                            "TSInterfaceDeclaration",
+                            "TSEnumDeclaration",
+                            "TSTypeAliasDeclaration",
+                            "TSDeclareFunction"
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "files": [
+                "*.module.ts",
+                "*.component.ts",
+                "*.service.ts"
+            ],
+            "parserOptions": {
+                "project": [
+                    "tsconfig.json"
+                ],
                 "createDefaultProgram": true
             },
             "rules": {
@@ -54,9 +82,10 @@
                     "warn",
                     {
                         "contexts": [
-                            "ClassProperty",
-                            "PropertyDefinition[decorators.0.expression.callee.name='Input']",
-                            "MethodDefinition[accessibility!='private'][key.name!='constructor'][key.name!='ngOnInit'][key.name!='ngOnDestroy']",
+                            "ClassDeclaration[decorators.0.expression.callee.name!='NgModule']",
+                            "TSPropertySignature",
+                            "PropertyDefinition[accessibility!='private'][decorators.0.expression.callee.name!='string'][decorators.0.expression.callee.name!='number'][decorators.0.expression.callee.name!='array'][decorators.0.expression.callee.name!='object'][decorators.0.expression.callee.name='Input']",
+                            "MethodDefinition[accessibility!='private'][key.name!='constructor'][key.name!='ngOnInit'][key.name!='ngAfterViewInit'][key.name!='ngOnDestroy']",
                             "FunctionDeclaration",
                             "TSInterfaceDeclaration",
                             "TSEnumDeclaration",

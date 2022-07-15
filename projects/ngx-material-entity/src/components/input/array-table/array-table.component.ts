@@ -17,6 +17,7 @@ import { EntityArrayDecoratorConfigInternal } from '../../../decorators/array/ar
     templateUrl: './array-table.component.html',
     styleUrls: ['./array-table.component.scss']
 })
+// eslint-disable-next-line jsdoc/require-jsdoc
 export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implements OnInit {
     /**
      * The items of the array to display inside the table.
@@ -61,9 +62,9 @@ export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implemen
     constructor(private readonly dialog: MatDialog) {}
 
     /**
-     * This is needed for the inputs to work inside an ngfor.
+     * This is needed for the inputs to work inside an ngFor.
      *
-     * @param index - The index of the element in the ngfor.
+     * @param index - The index of the element in the ngFor.
      * @returns The index.
      */
     trackByFn(index: unknown): unknown {
@@ -96,7 +97,7 @@ export class NgxMatEntityArrayTableComponent<EntityType extends Entity> implemen
     /**
      * Tries to add an item to the array.
      * Does this either inline if the "createInline"-metadata is set to true
-     * or in a seperate dialog if it is set to false.
+     * or in a separate dialog if it is set to false.
      */
     add(): void {
         if (this.metadata.createInline) {

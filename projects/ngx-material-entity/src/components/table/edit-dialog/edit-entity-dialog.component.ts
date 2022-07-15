@@ -9,12 +9,18 @@ import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from './edit-entity-dialog.builder';
 
+/**
+ * The default dialog used to edit an existing entity based on the configuration passed in the MAT_DIALOG_DATA "inputData".
+ * Used by the ngx-mat-entity-table.
+ *
+ * It offers a lot of customization options which can be found in "EditEntityDialogData".
+ */
 @Component({
     selector: 'ngx-mat-entity-edit-dialog',
     templateUrl: './edit-entity-dialog.component.html',
     styleUrls: ['./edit-entity-dialog.component.scss']
 })
-export class  NgxMatEntityEditDialogComponent<EntityType extends Entity> implements OnInit {
+export class NgxMatEntityEditDialogComponent<EntityType extends Entity> implements OnInit {
     EntityUtilities = EntityUtilities;
 
     entityRows!: EntityRow<EntityType>[];
@@ -56,12 +62,12 @@ export class  NgxMatEntityEditDialogComponent<EntityType extends Entity> impleme
             .withDefault('confirmButtonLabel', 'Save')
             .withDefault('title', 'Edit')
             .getResult();
-        const dialogref = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+        const dialogRef = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false
         });
-        dialogref.afterClosed().subscribe((res: number) => {
+        dialogRef.afterClosed().subscribe((res: number) => {
             if (res === 1) {
                 this.confirmEdit();
             }
@@ -86,12 +92,12 @@ export class  NgxMatEntityEditDialogComponent<EntityType extends Entity> impleme
             .withDefault('confirmButtonLabel', 'Delete')
             .withDefault('title', 'Delete')
             .getResult();
-        const dialogref = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+        const dialogRef = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false
         });
-        dialogref.afterClosed().subscribe((res: number) => {
+        dialogRef.afterClosed().subscribe((res: number) => {
             if (res === 1) {
                 this.confirmDelete();
             }

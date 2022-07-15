@@ -7,13 +7,13 @@ import { expect } from '@jest/globals';
 
 describe('baseProperty', () => {
     test('id should have base Metadata', () => {
-        const metdata = EntityUtilities.getPropertyMetadata(new TestEntityMockBuilder().testEntity, 'id', DecoratorTypes.STRING);
-        expect(metdata).toBeDefined();
-        expect(metdata.display).toBe(false);
-        expect(metdata.displayName).toBe('ID');
-        expect(metdata.omitForCreate).toBe(true);
-        expect(metdata.omitForUpdate).toBe(true);
-        expect(metdata.required).toBe(true);
+        const metadata = EntityUtilities.getPropertyMetadata(new TestEntityMockBuilder().testEntity, 'id', DecoratorTypes.STRING);
+        expect(metadata).toBeDefined();
+        expect(metadata.display).toBe(false);
+        expect(metadata.displayName).toBe('ID');
+        expect(metadata.omitForCreate).toBe(true);
+        expect(metadata.omitForUpdate).toBe(true);
+        expect(metadata.required).toBe(true);
     });
 
     test('should throw error for incorrect order metadata', () => {

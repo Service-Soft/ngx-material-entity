@@ -188,10 +188,8 @@
             >
                 <mat-chip *ngFor="let value of stringChipsArrayValues" (removed)="removeStringChipArrayValue(value)">
                     {{value}}
-                    <button matChipRemove *ngIf="metadataStringChipsArray.deleteHtml" [innerHtml]="metadataStringChipsArray.deleteHtml">
-                    </button>
-                    <button matChipRemove *ngIf="!metadataStringChipsArray.deleteHtml">
-                        <mat-icon>cancel</mat-icon>
+                    <button matChipRemove>
+                        <i class="{{metadataStringChipsArray.deleteIcon}}"></i>
                     </button>
                 </mat-chip>
                 <input matInput
@@ -218,10 +216,8 @@
             >
                 <mat-chip *ngFor="let value of stringChipsArrayValues" (removed)="removeStringChipArrayValue(value)">
                     {{value}}
-                    <button matChipRemove *ngIf="metadataStringChipsArray.deleteHtml" [innerHtml]="metadataStringChipsArray.deleteHtml">
-                    </button>
-                    <button matChipRemove *ngIf="!metadataStringChipsArray.deleteHtml">
-                        <mat-icon>cancel</mat-icon>
+                    <button matChipRemove>
+                        <i class="{{metadataStringChipsArray.deleteIcon}}"></i>
                     </button>
                 </mat-chip>
                 <input matInput

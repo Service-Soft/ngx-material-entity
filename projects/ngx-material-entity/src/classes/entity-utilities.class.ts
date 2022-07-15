@@ -151,7 +151,7 @@ export abstract class EntityUtilities {
      * Also checks all the validators given by the metadata ("required", "maxLength" etc.).
      *
      * @param entity - The entity to validate.
-     * @param omit - Whether to check for creatiung or editing validity.
+     * @param omit - Whether to check for creating or editing validity.
      * @returns Whether or not the entity is valid.
      */
     static isEntityValid<EntityType extends Entity>(entity: EntityType, omit: 'create' | 'update'): boolean {
@@ -351,7 +351,7 @@ export abstract class EntityUtilities {
      *
      * @param entity - Entity to get the bootstrap column values of the key.
      * @param key - Key of the property to get bootstrap column values from.
-     * @param type - Defines for which screensize the column values should be returned.
+     * @param type - Defines for which screen size the column values should be returned.
      * @returns Bootstrap column value.
      */
     static getWidth<EntityType extends Entity>(entity: EntityType, key: keyof EntityType, type: 'lg' | 'md' | 'sm'): number {

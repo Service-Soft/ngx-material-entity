@@ -9,6 +9,10 @@ import { DefaultObjectDecoratorConfigInternal } from '../../../decorators/object
 import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../../../decorators/string/string-decorator-internal.data';
 import { PropertyDecoratorConfigInternal } from '../../../decorators/base/property-decorator-internal.data';
 
+/**
+ * Only used internally. Just a copy of the default InputComponent.
+ * It is needed for arrays of objects, as npm only allows angular to compile with partial ivy, which causes an endless loop.
+ */
 @Component({
     selector: 'ngx-mat-entity-internal-input',
     templateUrl: './internal-input.component.html',
@@ -16,14 +20,14 @@ import { PropertyDecoratorConfigInternal } from '../../../decorators/base/proper
 })
 export class NgxMatEntityInternalInputComponent<EntityType extends Entity> implements OnInit {
     /**
-     * The entity on which the property exists. Used in conjuction with the "propertyKey"
+     * The entity on which the property exists. Used in conjunction with the "propertyKey"
      * to determine the property for which the input should be generated.
      */
     @Input()
     entity!: EntityType;
 
     /**
-     * The name of the property to generate the input for. Used in conjuction with the "entity".
+     * The name of the property to generate the input for. Used in conjunction with the "entity".
      */
     @Input()
     propertyKey!: keyof EntityType;
@@ -71,9 +75,9 @@ export class NgxMatEntityInternalInputComponent<EntityType extends Entity> imple
     getWidth = EntityUtilities.getWidth;
 
     /**
-     * This is needed for the inputs to work inside an ngfor.
+     * This is needed for the inputs to work inside an ngFor.
      *
-     * @param index - The index of the element in the ngfor.
+     * @param index - The index of the element in the ngFor.
      * @returns The index.
      */
     trackByFn(index: unknown): unknown {

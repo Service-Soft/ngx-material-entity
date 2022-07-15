@@ -8,6 +8,12 @@ import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confi
 import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from './create-entity-dialog-data.builder';
 import { CreateEntityDialogData } from './create-entity-dialog-data';
 
+/**
+ * The default dialog used to create new entities based on the configuration passed in the MAT_DIALOG_DATA "inputData".
+ * Used by the ngx-mat-entity-table.
+ *
+ * It offers a lot of customization options which can be found in "CreateEntityDialogData".
+ */
 @Component({
     selector: 'ngx-mat-entity-create-dialog',
     templateUrl: './create-entity-dialog.component.html',
@@ -52,12 +58,12 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends Entity> implem
             .withDefault('confirmButtonLabel', 'Create')
             .withDefault('title', 'Create')
             .getResult();
-        const dialogref = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+        const dialogRef = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false
         });
-        dialogref.afterClosed().subscribe((res: number) => {
+        dialogRef.afterClosed().subscribe((res: number) => {
             if (res === 1) {
                 this.confirmCreate();
             }

@@ -10,6 +10,7 @@ import { AddArrayItemDialogDataBuilder, AddArrayItemDialogDataInternal } from '.
     templateUrl: './add-array-item-dialog.component.html',
     styleUrls: ['./add-array-item-dialog.component.scss']
 })
+// eslint-disable-next-line jsdoc/require-jsdoc
 export class NgxMatEntityAddArrayItemDialogComponent<EntityType extends Entity> implements OnInit {
     EntityUtilities = EntityUtilities;
 

@@ -3,6 +3,11 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ConfirmDialogData } from './confirm-dialog-data';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from './confirm-dialog-data.builder';
 
+/**
+ * The Dialog used whenever confirmation by the user is required (e.g. When the user tries to delete an entity).
+ *
+ * Can be customized with the MAT_DIALOG_DATA "inputData". Customization options are defined in "ConfirmDialogData".
+ */
 @Component({
     selector: 'ngx-mat-entity-confirm-dialog',
     templateUrl: './confirm-dialog.component.html',

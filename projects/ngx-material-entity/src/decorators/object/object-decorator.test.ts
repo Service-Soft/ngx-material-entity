@@ -8,19 +8,19 @@ import { expect } from '@jest/globals';
 class Address extends Entity {
     @string({
         displayStyle: 'line',
-        displayName: 'Straße'
+        displayName: 'Street'
     })
     street!: string;
 
     @string({
         displayStyle: 'line',
-        displayName: 'Hausnummer'
+        displayName: 'Number'
     })
     number!: string;
 
     @string({
         displayStyle: 'line',
-        displayName: 'PLZ',
+        displayName: 'City',
         minLength: 5,
         maxLength: 5,
         regex: /^[0-9]*$/
@@ -29,7 +29,7 @@ class Address extends Entity {
 
     @string({
         displayStyle: 'line',
-        displayName: 'Ort'
+        displayName: 'Postcode'
     })
     city!: string;
 
@@ -42,7 +42,7 @@ class Address extends Entity {
 class TestEntity extends Entity {
     @object({
         type: Address,
-        displayName: 'Adresse',
+        displayName: 'Address',
         displayStyle: 'inline'
     })
     address!: Address;
@@ -69,9 +69,9 @@ const testEntityData: TestEntity = {
 const testEntity = new TestEntity(testEntityData);
 
 test('should have object Metadata', () => {
-    const metdata = EntityUtilities.getPropertyMetadata(testEntity, 'address', DecoratorTypes.OBJECT);
-    expect(metdata).toBeDefined();
-    expect(metdata.type).toBe(Address);
+    const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'address', DecoratorTypes.OBJECT);
+    expect(metadata).toBeDefined();
+    expect(metadata.type).toBe(Address);
 });
 test('should have metadata on the object', () => {
     const streetMetadata = EntityUtilities.getPropertyMetadata(testEntity.address, 'street', DecoratorTypes.STRING);

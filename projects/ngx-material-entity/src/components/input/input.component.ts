@@ -14,6 +14,14 @@ import { DefaultObjectDecoratorConfigInternal } from '../../decorators/object/ob
 import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../../decorators/string/string-decorator-internal.data';
 import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
 
+/**
+ * The default input component. It gets the metadata of the property from the given @Input "entity" and @Input "propertyKey"
+ * and displays the input field accordingly.
+ *
+ * You can also define a method that generates error-messages and if the input should be hidden when its metadata says
+ * that it should be omitted for creating or updating.
+ * The last part being mostly relevant if you want to use this component inisde an ngFor.
+ */
 @Component({
     selector: 'ngx-mat-entity-input',
     templateUrl: './input.component.html',
@@ -21,14 +29,14 @@ import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-
 })
 export class NgxMatEntityInputComponent<EntityType extends Entity> implements OnInit {
     /**
-     * The entity on which the property exists. Used in conjuction with the "propertyKey"
+     * The entity on which the property exists. Used in conjunction with the "propertyKey"
      * to determine the property for which the input should be generated.
      */
     @Input()
     entity!: EntityType;
 
     /**
-     * The name of the property to generate the input for. Used in conjuction with the "entity".
+     * The name of the property to generate the input for. Used in conjunction with the "entity".
      */
     @Input()
     propertyKey!: keyof EntityType;
@@ -88,9 +96,9 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
     constructor() {}
 
     /**
-     * This is needed for the inputs to work inside an ngfor.
+     * This is needed for the inputs to work inside an ngFor.
      *
-     * @param index - The index of the element in the ngfor.
+     * @param index - The index of the element in the ngFor.
      * @returns The index.
      */
     trackByFn(index: unknown): unknown {
@@ -238,7 +246,7 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
     }
 
     /**
-     * Dynamically filters the autoselect options when the user inputs something.
+     * Dynamically filters the Autocomplete options when the user inputs something.
      *
      * @param input - The input of the user.
      */
