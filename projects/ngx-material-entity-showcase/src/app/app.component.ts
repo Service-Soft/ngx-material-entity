@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { navbarRows } from './routes';
 
 @Component({
     selector: 'app-root',
@@ -7,4 +8,5 @@ import { Component } from '@angular/core';
 })
 // eslint-disable-next-line jsdoc/require-jsdoc
 export class AppComponent {
+    navbarRows = navbarRows;
 }

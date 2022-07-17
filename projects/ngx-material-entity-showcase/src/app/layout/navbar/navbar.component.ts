@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { navbarRows } from '../../routes';
+/* eslint-disable jsdoc/require-jsdoc */
+import { Component, Input } from '@angular/core';
+import { NavbarRows } from '../../nav.model';
 import { NavUtilities } from '../../utilities/nav.utilities';
 
 @Component({
@@ -7,12 +8,12 @@ import { NavUtilities } from '../../utilities/nav.utilities';
     templateUrl: './navbar.component.html',
     styleUrls: ['./navbar.component.scss']
 })
-// eslint-disable-next-line jsdoc/require-jsdoc
 export class NavbarComponent {
 
     NavUtilities = NavUtilities;
 
-    navbarRows = navbarRows;
+    @Input()
+    navbarRows!: NavbarRows[];
 
     constructor() { }
 }

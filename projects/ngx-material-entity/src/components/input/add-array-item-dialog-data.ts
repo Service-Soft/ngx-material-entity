@@ -1,6 +1,6 @@
 import { NgModel } from '@angular/forms';
-import { Entity } from '../../../../classes/entity-model.class';
-import { CreateDialogData } from '../../../table/table-data';
+import { Entity } from '../../classes/entity-model.class';
+import { CreateDialogData } from '../table/table-data';
 
 /**
  * The configuration options for the dialog that adds items to an array.

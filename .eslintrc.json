@@ -26,18 +26,6 @@
                         "type": "element",
                         "prefix": "ngx-mat-entity"
                     }
-                ]
-            }
-        },
-        {
-            "files": [
-                "*.module.ts",
-                "*.component.ts",
-                "*.service.ts"
-            ],
-            "parserOptions": {
-                "project": [
-                    "tsconfig.json"
                 ],
                 "jsdoc/require-jsdoc": [
                     "warn",

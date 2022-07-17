@@ -10,6 +10,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
+import { NgxMatEntityCreateDialogModule } from './create-dialog/create-entity-dialog.module';
+import { NgxMatEntityEditDialogModule } from './edit-dialog/edit-entity-dialog.module';
 
 @NgModule({
     declarations: [NgxMatEntityTableComponent],
@@ -23,7 +25,9 @@ import { MatDialogModule } from '@angular/material/dialog';
         MatPaginatorModule,
         MatButtonModule,
         MatMenuModule,
-        MatDialogModule
+        MatDialogModule,
+        NgxMatEntityCreateDialogModule,
+        NgxMatEntityEditDialogModule,
     ],
     exports: [NgxMatEntityTableComponent]
 })

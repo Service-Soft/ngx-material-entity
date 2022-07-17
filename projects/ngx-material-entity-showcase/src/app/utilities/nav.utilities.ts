@@ -1,50 +1,74 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Routes } from '@angular/router';
-import { NavElement, NavInternalLink, NavMenu, NavTitle } from '../nav.model';
-import { navbarRows } from '../routes';
+import { Route, Routes } from '@angular/router';
+import { NavbarRows, NavButton, NavElement, NavExternalLink, NavInternalLink, NavMenu, NavTitle } from '../nav.model';
 
 export abstract class NavUtilities {
 
+    static asAngularRoute(route: Route | string): Route {
+        return route as Route;
+    }
+
+    static asStringRoute(route: Route | string): string {
+        return route as string;
+    }
+
     static asTitle(element: NavElement): NavTitle {
         return element as NavTitle;
+    }
+
+    static asButton(element: NavElement): NavButton {
+        return element as NavButton;
     }
 
     static asInternalLink(element: NavElement): NavInternalLink {
         return element as NavInternalLink;
     }
 
-    static getAngularRoutes(): Routes {
-        let res: Routes = [];
-        res = res.concat(this.getRoutesFromNavbar());
-        return res;
+    static asExternalLink(element: NavElement): NavExternalLink {
+        return element as NavExternalLink;
     }
 
-    static getRoutesFromNavbar(): Routes {
-        let res: Routes = [];
-        for (const row of navbarRows) {
-            res = res.concat(NavUtilities.getRoutesFromElements(row.elements, res));
-            const menus: NavMenu[] = row.elements.filter(e => this.isMenu(e)) as NavMenu[];
-            for (const menu of menus) {
-                res = res.concat(NavUtilities.getRoutesFromElements(menu.elements, res));
-            }
-        };
-        return res;
+    static asMenu(element: NavElement): NavMenu {
+        return element as NavMenu;
     }
 
-    private static getRoutesFromElements(elements: NavElement[], foundRoutes: Routes): Routes {
+    static getAngularRoutes(navbarRows: NavbarRows[] = [], additionalRoutes: Routes = []): Routes {
+        let allRoutes: Routes = [];
+        allRoutes = allRoutes.concat(this.getRoutesFromNavbar(navbarRows));
+        allRoutes = allRoutes.concat(additionalRoutes);
+        // Filters to only contain unique paths
+        const uniquePaths: string[] = [];
         const res: Routes = [];
-        const internalLinks: NavInternalLink[] = elements.filter(e => this.isInternalLink(e)) as NavInternalLink[];
-        const routes = internalLinks.map(l => l.angularRoute);
-        for (const route of routes) {
-            if (!res.map(r => r.path).includes(route.path) && ! foundRoutes.map(r => r.path).includes(route.path)) {
+        for (const route of allRoutes) {
+            if (!uniquePaths.find(r => r === route.path)) {
                 res.push(route);
             }
         }
         return res;
     }
 
+    static getRoutesFromNavbar(navbarRows: NavbarRows[]): Routes {
+        let res: Routes = [];
+        for (const row of navbarRows) {
+            res = res.concat(NavUtilities.getRoutesFromElements(row.elements));
+        };
+        return res;
+    }
+
+    private static getRoutesFromElements(elements: NavElement[]): Routes {
+        let res: Routes = [];
+        const internalLinks: NavInternalLink[] = elements.filter(e => this.isInternalLink(e)) as NavInternalLink[];
+        const angularRoutes: Routes = internalLinks.filter(l => this.isAngularRoute(l.route)).map(l => l.route) as Routes;
+        res = res.concat(angularRoutes);
+        const menus: NavMenu[] = elements.filter(e => this.isMenu(e)) as NavMenu[];
+        for (const menu of menus) {
+            res = res.concat(this.getRoutesFromElements(menu.elements));
+        }
+        return res;
+    }
+
     static isInternalLink(element: NavElement): element is NavInternalLink {
-        if ((element as NavInternalLink).angularRoute) {
+        if ((element as NavInternalLink).route) {
             return true;
         }
         return false;
@@ -52,6 +76,13 @@ export abstract class NavUtilities {
 
     static isMenu(element: NavElement): element is NavMenu {
         if ((element as NavMenu).elements) {
+            return true;
+        }
+        return false;
+    }
+
+    static isAngularRoute(route: Route | string): route is Route {
+        if ((route as Route).path) {
             return true;
         }
         return false;

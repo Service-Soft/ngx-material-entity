@@ -8,7 +8,13 @@ import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
     declarations: [NgxMatEntityCreateDialogComponent],
-    imports: [CommonModule, NgxMatEntityInputModule, MatDialogModule, FormsModule, MatButtonModule],
+    imports: [
+        CommonModule,
+        NgxMatEntityInputModule,
+        MatDialogModule,
+        FormsModule,
+        MatButtonModule
+    ],
     exports: [NgxMatEntityCreateDialogComponent]
 })
 export class NgxMatEntityCreateDialogModule {}

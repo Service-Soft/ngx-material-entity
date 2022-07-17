@@ -1,14 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ShowcaseTableComponent } from './showcase-table.component';
-import { NgxMatEntityTableModule } from 'ngx-material-entity';
-import { ShowcaseRoutingModule } from './showcase-table-routing.module';
+import { NgxMatEntityInputModule, NgxMatEntityTableModule } from 'ngx-material-entity';
+import { ShowcaseTableRoutingModule } from './showcase-table-routing.module';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     imports: [
         CommonModule,
         NgxMatEntityTableModule,
-        ShowcaseRoutingModule
+        NgxMatEntityInputModule,
+        ShowcaseTableRoutingModule,
+        MatSlideToggleModule,
+        FormsModule
     ],
     declarations: [ShowcaseTableComponent]
 })

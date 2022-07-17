@@ -1,2 +1,16 @@
-<ngx-mat-entity-table [tableData]="tableData">
+<!-- <div class="row">
+    <ngx-mat-entity-input
+        *ngFor="let key of keys"
+        [entity]="tableConfig"
+        [propertyKey]="key"
+        [hideOmitForCreate]="true"
+        class="col-lg-{{EntityUtilities.getWidth(tableConfig, key, 'lg')}} col-md-{{EntityUtilities.getWidth(tableConfig, key, 'md')}} col-sm-{{EntityUtilities.getWidth(tableConfig, key, 'sm')}}"
+    >
+    </ngx-mat-entity-input>
+</div> -->
+
+<mat-slide-toggle [(ngModel)]="customTable">Use Custom Table Data?</mat-slide-toggle>
+<ngx-mat-entity-table *ngIf="!customTable" [tableData]="defaultTableData">
+</ngx-mat-entity-table>
+<ngx-mat-entity-table *ngIf="customTable" [tableData]="customTableData">
 </ngx-mat-entity-table>

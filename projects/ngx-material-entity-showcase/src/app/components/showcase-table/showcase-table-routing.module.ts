@@ -8,4 +8,4 @@ const routes: Routes = [{ path: '', component: ShowcaseTableComponent }];
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule]
 })
-export class ShowcaseRoutingModule { }
+export class ShowcaseTableRoutingModule { }

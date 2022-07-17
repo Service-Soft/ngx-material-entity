@@ -46,7 +46,7 @@ export class BaseDataBuilder<EntityType extends Entity> extends BaseBuilder<Base
             data.searchLabel ? data.searchLabel : 'Search',
             data.createButtonLabel ? data.createButtonLabel : 'Create',
             data.searchString ? data.searchString : defaultSearchFunction,
-            data.allowCreate ? data.allowCreate : true,
+            data.allowCreate === false ? data.allowCreate : true,
             data.allowEdit ? data.allowEdit : () => true,
             data.allowDelete ? data.allowDelete : () => true,
             data.multiSelectActions ? data.multiSelectActions : [],

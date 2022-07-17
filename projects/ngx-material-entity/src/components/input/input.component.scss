@@ -1,3 +1,36 @@
 mat-form-field {
     width: 100%;
 }
+
+.entityArray {
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        margin-top: 5px;
+    }
+
+    mat-table {
+        border: 1px solid #E0E0E0;
+        border-radius: 5px;
+        padding-top: 5px;
+        padding-bottom: 25px;
+    }
+
+    .mat-column-select {
+        flex: 0 0 75px;
+    }
+
+    .array-error {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: -25.8px;
+        border: 1px solid #E0E0E0;
+        background-color: #F8D3D7;
+        color: #721C24;
+        height: 25.8px;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+}

@@ -212,6 +212,7 @@ export class TestEntity extends Entity {
         displayStyle: 'chips',
         displayName: 'String Chips Array Value With Config',
         itemType: DecoratorTypes.STRING,
+        deleteIcon: 'fas fa-trash',
         defaultWidths: [12, 12, 12]
     })
     stringChipsArrayValueWithConfig!: string[];
@@ -229,6 +230,7 @@ export class TestEntity extends Entity {
         displayName: 'String Chips Autocomplete Array Value With Config',
         itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
         autocompleteValues: ['ABCDE', 'FGHIJ'],
+        deleteIcon: 'fas fa-trash',
         defaultWidths: [6, 6, 6]
     })
     stringChipsAutocompleteArrayValueWithConfig!: string[];

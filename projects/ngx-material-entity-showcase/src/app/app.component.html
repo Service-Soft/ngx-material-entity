@@ -1,4 +1,8 @@
-<app-navbar></app-navbar>
-<div class="container" style="padding-top: 40px;padding-bottom: 40px;">
-    <router-outlet></router-outlet>
+<div style="min-height: calc(100vh - 70px);">
+    <app-navbar [navbarRows]="navbarRows"></app-navbar>
+    <div class="container" style="padding-top: 40px;padding-bottom: 40px;">
+        <router-outlet></router-outlet>
+    </div>
 </div>
+
+<app-footer></app-footer>

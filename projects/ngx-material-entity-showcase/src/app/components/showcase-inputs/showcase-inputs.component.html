@@ -1,0 +1,10 @@
+<div class="row">
+    <ngx-mat-entity-input
+        *ngFor="let key of keys"
+        [entity]="testEntity"
+        [propertyKey]="key"
+        [hideOmitForCreate]="true"
+        class="col-lg-{{getWidth(testEntity, key, 'lg')}} col-md-{{getWidth(testEntity, key, 'md')}} col-sm-{{getWidth(testEntity, key, 'sm')}}"
+    >
+    </ngx-mat-entity-input>
+</div>
