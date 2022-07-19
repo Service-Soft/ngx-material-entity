@@ -32,9 +32,30 @@ export abstract class NavUtilities {
         return element as NavMenu;
     }
 
+    static isInternalLink(element: NavElement): element is NavInternalLink {
+        if ((element as NavInternalLink).route) {
+            return true;
+        }
+        return false;
+    }
+
+    static isMenu(element: NavElement): element is NavMenu {
+        if ((element as NavMenu).elements) {
+            return true;
+        }
+        return false;
+    }
+
+    static isAngularRoute(route: Route | string): route is Route {
+        if ((route as Route).path) {
+            return true;
+        }
+        return false;
+    }
+
     static getAngularRoutes(navbarRows: NavbarRows[] = [], additionalRoutes: Routes = []): Routes {
         let allRoutes: Routes = [];
-        allRoutes = allRoutes.concat(this.getRoutesFromNavbar(navbarRows));
+        allRoutes = allRoutes.concat(NavUtilities.getRoutesFromNavbar(navbarRows));
         allRoutes = allRoutes.concat(additionalRoutes);
         // Filters to only contain unique paths
         const uniquePaths: string[] = [];
@@ -57,34 +78,32 @@ export abstract class NavUtilities {
 
     private static getRoutesFromElements(elements: NavElement[]): Routes {
         let res: Routes = [];
-        const internalLinks: NavInternalLink[] = elements.filter(e => this.isInternalLink(e)) as NavInternalLink[];
-        const angularRoutes: Routes = internalLinks.filter(l => this.isAngularRoute(l.route)).map(l => l.route) as Routes;
+        const internalLinks: NavInternalLink[] = elements.filter(e => NavUtilities.isInternalLink(e)) as NavInternalLink[];
+        const angularRoutes: Routes = internalLinks.filter(l => NavUtilities.isAngularRoute(l.route)).map(l => l.route) as Routes;
         res = res.concat(angularRoutes);
-        const menus: NavMenu[] = elements.filter(e => this.isMenu(e)) as NavMenu[];
+        const menus: NavMenu[] = elements.filter(e => NavUtilities.isMenu(e)) as NavMenu[];
         for (const menu of menus) {
-            res = res.concat(this.getRoutesFromElements(menu.elements));
+            res = res.concat(NavUtilities.getRoutesFromElements(menu.elements));
         }
         return res;
     }
 
-    static isInternalLink(element: NavElement): element is NavInternalLink {
-        if ((element as NavInternalLink).route) {
-            return true;
+    static getLeftElements(elements?: NavElement[]): NavElement[] {
+        if (!elements) {
+            return [];
         }
-        return false;
+        return elements.filter(e => !e.position || e.position === 'left');
     }
-
-    static isMenu(element: NavElement): element is NavMenu {
-        if ((element as NavMenu).elements) {
-            return true;
+    static getCenterElements(elements?: NavElement[]): NavElement[] {
+        if (!elements) {
+            return [];
         }
-        return false;
+        return elements.filter(e => e.position && e.position === 'center');
     }
-
-    static isAngularRoute(route: Route | string): route is Route {
-        if ((route as Route).path) {
-            return true;
+    static getRightElements(elements?: NavElement[]): NavElement[] {
+        if (!elements) {
+            return [];
         }
-        return false;
+        return elements.filter(e => e.position && e.position === 'right');
     }
 }

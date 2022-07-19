@@ -28,7 +28,8 @@ export const navbarRows: NavbarRows[] = [
                 route: {
                     path: 'table',
                     loadChildren: () => import('./components/showcase-table/showcase-table.module').then(m => m.ShowcaseTableModule)
-                }
+                },
+                position: 'center'
             },
             {
                 type: 'menu',
@@ -60,19 +61,22 @@ export const navbarRows: NavbarRows[] = [
                         name: '@object',
                         route: 'inputs/object'
                     }
-                ]
+                ],
+                position: 'center'
             },
             {
                 type: 'menu',
                 name: 'Dialogs',
                 icon: 'fas fa-circle-exclamation',
-                elements: []
+                elements: [],
+                position: 'center'
             },
             {
                 type: 'button',
                 name: 'Reset Data',
                 icon: 'fas fa-rotate-right',
-                action: () => fetch('http://localhost:3000/reset/', { method: 'POST' }).then(() => location.reload())
+                action: () => fetch('http://localhost:3000/reset/', { method: 'POST' }).then(() => location.reload()),
+                position: 'right'
             }
         ]
     }

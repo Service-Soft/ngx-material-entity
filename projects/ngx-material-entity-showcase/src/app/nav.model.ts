@@ -4,6 +4,7 @@ import { Route } from '@angular/router';
 
 abstract class BaseNavElement {
     type!: 'title' | 'image' | 'internalLink' | 'button' | 'externalLink' | 'menu';
+    position?: 'left' | 'center' | 'right'
 }
 
 export interface NavTitle extends BaseNavElement {
