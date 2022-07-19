@@ -1,10 +1,18 @@
+/* eslint-disable max-len */
 /// <reference types="cypress" />
 import 'reflect-metadata';
 
 declare global {
     namespace Cypress {
+        // eslint-disable-next-line jsdoc/require-jsdoc
         interface Chainable {
+            /**
+             * Gets the mat-input by the provided label.
+             */
             getInputByLabel: (label: string, index?: number, parents?: number) => Chainable<JQuery<HTMLElement>>,
+            /**
+             * Inputs values for a default create test entity.
+             */
             inputCreateTestEntity: () => Chainable<JQuery<HTMLElement>>
         }
     }
@@ -20,6 +28,7 @@ Cypress.Commands.add(
         return res;
     }
 );
+
 Cypress.Commands.add(
     'inputCreateTestEntity',
     () => {
@@ -56,10 +65,22 @@ Cypress.Commands.add(
         cy.getInputByLabel('String Chips Autocomplete Array Value With Config').click().type('123{enter}456{enter}');
 
         cy.getInputByLabel('Array Object Value').click().type('arrayObjectValue');
-        cy.get('button').contains('Add').click();
+        cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(0).click();
 
-        cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(1).click();
+        cy.get('button').filter((i, elt) => elt.innerText === 'Custom Add').click();
         cy.getInputByLabel('Array Object Value', 1).click().type('arrayObjectValueWithConfig');
-        cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(2).click();
+        cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(1).click();
+
+        cy.getInputByLabel('Number Dropdown Value').click();
+        cy.get('mat-option').contains('42').click();
+
+        cy.getInputByLabel('String Dropdown Value').click();
+        cy.get('mat-option').contains('String Dropdown #1').click();
+
+        cy.getInputByLabel('Boolean Dropdown Value').click();
+        cy.get('mat-option').contains('Yes').click();
+
+        cy.get('mat-checkbox').contains('Boolean Checkbox Value').click();
+        cy.get('mat-slide-toggle').contains('Boolean Toggle Value').click();
     }
 );

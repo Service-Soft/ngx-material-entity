@@ -67,6 +67,20 @@ export interface EntityArrayDecoratorConfig<EntityType extends Entity> extends A
     createInline?: boolean,
 
     /**
+     * The label for the add button when createInline is true.
+     *
+     * @default 'Add'
+     */
+    addButtonLabel?: string,
+
+    /**
+     * The label for the remove button when createInline is true.
+     *
+     * @default 'Remove'
+     */
+    removeButtonLabel?: string,
+
+    /**
      * The error-message to display when the array is required but contains no values.
      */
     missingErrorMessage?: string

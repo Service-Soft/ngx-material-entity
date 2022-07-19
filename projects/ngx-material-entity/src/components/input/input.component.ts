@@ -25,7 +25,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
  *
  * You can also define a method that generates error-messages and if the input should be hidden when its metadata says
  * that it should be omitted for creating or updating.
- * The last part being mostly relevant if you want to use this component inisde an ngFor.
+ * The last part being mostly relevant if you want to use this component inside an ngFor.
  */
 @Component({
     selector: 'ngx-mat-entity-input',
@@ -98,16 +98,16 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
 
     metadataAutocompleteStringChipsArray!: AutocompleteStringChipsArrayDecoratorConfigInternal;
 
-    rows!: EntityRow<EntityType>[];
     arrayItem!: EntityType;
     private arrayItemPriorChanges!: EntityType;
+    arrayItemInlineRows!: EntityRow<EntityType>[];
     dataSource!: MatTableDataSource<EntityType>;
     selection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
     displayedColumns!: string[];
 
     dialogInputData!: AddArrayItemDialogData<EntityType>;
     dialogData!: AddArrayItemDialogDataInternal<EntityType>;
-    entityRows!: EntityRow<EntityType>[];
+    arrayItemDialogRows!: EntityRow<EntityType>[];
 
     readonly DecoratorTypes = DecoratorTypes;
 
@@ -184,9 +184,9 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
             this.dataSource = new MatTableDataSource();
             this.dataSource.data = this.entityArrayValues;
             this.arrayItem = new this.metadataEntityArray.EntityClass() as EntityType;
-            this.rows = EntityUtilities.getEntityRows(
+            this.arrayItemInlineRows = EntityUtilities.getEntityRows(
                 this.arrayItem,
-                this.hideOmitForCreate !== true ? false : true,
+                this.hideOmitForCreate === false ? false : true,
                 this.hideOmitForEdit ? true : false
             );
             this.arrayItemPriorChanges = cloneDeep(this.arrayItem);
@@ -197,7 +197,7 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
                 getValidationErrorMessage: this.getValidationErrorMessage
             }
             this.dialogData = new AddArrayItemDialogDataBuilder(this.dialogInputData).getResult();
-            this.entityRows = EntityUtilities.getEntityRows(this.dialogData.entity, true);
+            this.arrayItemDialogRows = EntityUtilities.getEntityRows(this.dialogData.entity, true);
         }
 
         this.metadataStringChipsArray = this.metadata as StringChipsArrayDecoratorConfigInternal;

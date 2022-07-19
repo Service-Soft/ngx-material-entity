@@ -24,6 +24,10 @@ export class EntityArrayDecoratorConfigInternal<EntityType extends Entity>
     createInline: boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
     missingErrorMessage: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    addButtonLabel: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    removeButtonLabel: string;
 
     constructor(data: EntityArrayDecoratorConfig<EntityType>) {
         super(data);
@@ -35,6 +39,8 @@ export class EntityArrayDecoratorConfigInternal<EntityType extends Entity>
         this.createInline = data.createInline != undefined ? data.createInline : true;
         this.missingErrorMessage = data.missingErrorMessage ? data.missingErrorMessage : 'Needs to contain at least one value';
         this.defaultWidths = data.defaultWidths ? data.defaultWidths : [12, 12, 12];
+        this.addButtonLabel = data.addButtonLabel ? data.addButtonLabel: 'Add'
+        this.removeButtonLabel = data.removeButtonLabel ? data.removeButtonLabel: 'Remove'
     }
 }
 

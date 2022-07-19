@@ -176,7 +176,7 @@
                 <b>{{metadataEntityArray.displayName}}</b>
             </div>
             <div *ngIf="metadataEntityArray.createInline">
-                <div class="row" *ngFor="let row of rows">
+                <div class="row" *ngFor="let row of arrayItemInlineRows">
                     <ngx-mat-entity-input
                         *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
                         [entity]="arrayItem"
@@ -193,12 +193,12 @@
                 <button mat-raised-button
                     [disabled]="metadataEntityArray.createInline && !EntityUtilities.isEntityValid(arrayItem, 'create')"
                     (click)="add()">
-                    Add
+                    {{metadataEntityArray.addButtonLabel}}
                 </button>
                 <button mat-raised-button
                     [disabled]="!selection.selected.length"
                     (click)="remove()">
-                    Remove
+                    {{metadataEntityArray.removeButtonLabel}}
                 </button>
             </div>
         
@@ -307,7 +307,7 @@
 
     <mat-dialog-content>
         <form #form="ngForm" class="row">
-            <div class="row" *ngFor="let row of entityRows">
+            <div class="row" *ngFor="let row of arrayItemDialogRows">
                 <ngx-mat-entity-input
                     *ngFor="let key of row.keys"
                     [entity]="dialogData.entity"

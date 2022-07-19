@@ -3,7 +3,7 @@ import { DecoratorType, DecoratorTypes } from '../decorators/base/decorator-type
 import { Entity } from './entity-model.class';
 import { PropertyDecoratorConfigInternal } from '../decorators/base/property-decorator-internal.data';
 import { EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
-import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../decorators/string/string-decorator-internal.data';
+import { DefaultStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../decorators/string/string-decorator-internal.data';
 import { DefaultNumberDecoratorConfigInternal } from '../decorators/number/number-decorator-internal.data';
 
 /**
@@ -180,7 +180,6 @@ export abstract class EntityUtilities {
         const metadata: PropertyDecoratorConfigInternal = this.getPropertyMetadata(entity, key, type);
         const metadataDefaultString = metadata as DefaultStringDecoratorConfigInternal;
         const metadataTextboxString = metadata as TextboxStringDecoratorConfigInternal;
-        const metadataAutocompleteString = metadata as AutocompleteStringDecoratorConfigInternal;
         const metadataDefaultNumber = metadata as DefaultNumberDecoratorConfigInternal;
         const objectProperty = entity[key] as unknown as EntityType;
         const metadataEntityArray = metadata as EntityArrayDecoratorConfigInternal<Entity>;
@@ -196,7 +195,14 @@ export abstract class EntityUtilities {
             return false;
         }
         switch (type) {
+            case DecoratorTypes.BOOLEAN_DROPDOWN:
+            case DecoratorTypes.BOOLEAN_CHECKBOX:
+            case DecoratorTypes.BOOLEAN_TOGGLE:
+                return true;
+            case DecoratorTypes.STRING_DROPDOWN:
+                return true;
             case DecoratorTypes.STRING:
+            case DecoratorTypes.STRING_AUTOCOMPLETE:
                 if (
                     metadataDefaultString.maxLength
                     && (entity[key] as unknown as string).length > metadataDefaultString.maxLength
@@ -216,26 +222,6 @@ export abstract class EntityUtilities {
                     return false;
                 }
                 break;
-            case DecoratorTypes.STRING_AUTOCOMPLETE:
-                if (
-                    metadataAutocompleteString.maxLength
-                    && (entity[key] as unknown as string).length > metadataAutocompleteString.maxLength
-                ) {
-                    return false;
-                }
-                if (
-                    metadataAutocompleteString.minLength
-                    && (entity[key] as unknown as string).length < metadataAutocompleteString.minLength
-                ) {
-                    return false;
-                }
-                if (
-                    metadataAutocompleteString.regex
-                    && !(entity[key] as unknown as string).match(metadataAutocompleteString.regex)
-                ) {
-                    return false;
-                }
-                break;
             case DecoratorTypes.STRING_TEXTBOX:
                 if (
                     metadataTextboxString.maxLength
@@ -250,6 +236,8 @@ export abstract class EntityUtilities {
                     return false;
                 }
                 break;
+            case DecoratorTypes.NUMBER_DROPDOWN:
+                return true;
             case DecoratorTypes.NUMBER:
                 if (metadataDefaultNumber.max && (entity[key] as unknown as number) > metadataDefaultNumber.max) {
                     return false;

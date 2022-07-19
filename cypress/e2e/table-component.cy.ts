@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 describe('default table', () => {
     before('Reset Api', () => {
         cy.request('POST', 'http://localhost:3000/reset/');
@@ -8,21 +9,21 @@ describe('default table', () => {
     });
     it('should show the table', () => {
         cy.get('app-showcase-table').find('.title').should('have.length', 1).should('contain', 'Default Test Entities');
-        cy.get('app-showcase-table').find('mat-label').should('have.length', 1).should('contain', 'Search');
+        cy.get('app-showcase-table').find('mat-label').contains('Search').should('have.length', 1);
         cy.getInputByLabel('Search').should('have.class', 'col-lg-8');
 
-        cy.get('app-showcase-table').find('button').should('have.length', 3);
+        cy.get('app-showcase-table').find('ngx-mat-entity-table').find('button').should('have.length', 3);
         cy.get('button').contains('Actions').should('not.exist');
         cy.get('button').contains('Create').should('have.length', 1);
         cy.get('button').contains('Create').parent().parent().should('have.class', 'col-lg-4');
 
-        cy.get('mat-checkbox').should('have.length', 0);
-        cy.get('mat-header-cell').should('have.length', 2);
+        cy.get('app-showcase-table').find('ngx-mat-entity-table').find('mat-checkbox').should('have.length', 0);
+        cy.get('app-showcase-table').find('ngx-mat-entity-table').find('mat-header-cell').should('have.length', 2);
         cy.get('.mat-header-row > .cdk-column-Max-and-Min-Strings').should('contain', 'Max and Min Strings');
         cy.get('.mat-header-row > .cdk-column-Object').should('contain', 'Object');
 
-        cy.get('.mat-row').should('have.length', 1);
-        cy.get('.mat-row > .cdk-column-Max-and-Min-Strings').should('contain', '1234 12345678');
+        cy.get('app-showcase-table').find('ngx-mat-entity-table').find('.mat-row').should('have.length', 1);
+        cy.get('app-showcase-table').find('ngx-mat-entity-table').find('.mat-row > .cdk-column-Max-and-Min-Strings').should('contain', '1234 12345678');
         cy.get('.mat-row > .cdk-column-Object').should('contain', '#1 1234');
     });
     // this test is just for checking if the entity gets correctly added to the table
@@ -38,16 +39,16 @@ describe('default table', () => {
         cy.get('button').filter((i, elt) => elt.innerText === 'Create').eq(1).click();
         cy.wait('@createTestEntity');
 
-        cy.get('.mat-row').should('have.length', 2);
-        cy.get('.mat-row > .cdk-column-Max-and-Min-Strings').eq(1).should('contain', 'maxL minLengthValue');
-        cy.get('.mat-row > .cdk-column-Object').eq(1).should('contain', '#undefined maxL');
+        cy.get('app-showcase-table').find('ngx-mat-entity-table').find('.mat-row').should('have.length', 2);
+        cy.get('app-showcase-table').find('ngx-mat-entity-table').find('.mat-row > .cdk-column-Max-and-Min-Strings').eq(1).should('contain', 'maxL minLengthValue');
+        cy.get('app-showcase-table').find('ngx-mat-entity-table').find('.mat-row > .cdk-column-Object').eq(1).should('contain', '#undefined maxL');
     });
     // Testing of the correct content of the dialog / display of error messages etc. is done seperately
     it('should delete an entity', () => {
         cy.get('.mat-row > .cdk-column-Max-and-Min-Strings').eq(1).click();
         cy.get('button').contains('Delete').click();
         cy.get('button').filter((i, elt) => elt.innerText === 'Delete').eq(1).click();
-        cy.get('.mat-row').should('have.length', 1);
+        cy.get('app-showcase-table').find('ngx-mat-entity-table').find('.mat-row').should('have.length', 1);
     });
     // Testing of the correct content of the dialog / display of error messages etc. is done seperately
     it('should edit an entity and save the changes', () => {
@@ -65,9 +66,9 @@ describe('default table', () => {
     });
     it('should filter with the default method', () => {
         cy.getInputByLabel('Search').click().type('X');
-        cy.get('.mat-row').should('have.length', 0);
+        cy.get('app-showcase-table').find('ngx-mat-entity-table').find('.mat-row').should('have.length', 0);
         cy.getInputByLabel('Search').click().clear().type('123');
-        cy.get('.mat-row').should('have.length', 1);
+        cy.get('app-showcase-table').find('ngx-mat-entity-table').find('.mat-row').should('have.length', 1);
     });
 });
 
@@ -78,12 +79,13 @@ describe('custom table', () => {
 
     it('should toggle to display the custom table', () => {
         cy.visit('http://localhost:4200/table');
-        cy.get('.mat-slide-toggle-bar').should('have.length', 1).click();
+        cy.getInputByLabel('Table Configuration').click();
+        cy.get('mat-option').contains('Custom').click();
     });
 
     it('should show the table', () => {
         cy.get('app-showcase-table').find('.title').should('have.length', 1).should('contain', 'Test Entities');
-        cy.get('app-showcase-table').find('mat-label').should('have.length', 1).should('contain', 'Custom Search Label');
+        cy.get('app-showcase-table').find('ngx-mat-entity-table').find('mat-label').should('have.length', 1).should('contain', 'Custom Search Label');
         cy.getInputByLabel('Custom Search Label').should('have.class', 'col-lg-8');
 
         cy.get('app-showcase-table').find('button').should('have.length', 4);
@@ -104,7 +106,7 @@ describe('custom table', () => {
         cy.get('.mat-row > .cdk-column-select').should('exist');
     });
 
-    let spy;
+    let spy: Cypress.Agent<sinon.SinonSpy<unknown[], unknown>>;
     Cypress.on('window:before:load', (win) => {
         spy = cy.spy(win.console, 'log')
     })
@@ -116,6 +118,7 @@ describe('custom table', () => {
         cy.get('button').contains('Custom Multi Select Label').click();
         cy.get('button').contains('Multi Action').should('not.be.disabled');
         cy.get('button').contains('Multi Action').click();
+        // eslint-disable-next-line no-unused-expressions
         expect(spy).to.be.calledOnce;
     });
 

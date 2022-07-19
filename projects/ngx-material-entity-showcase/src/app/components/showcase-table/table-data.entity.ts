@@ -75,31 +75,31 @@ class ConfirmDialogDataEntity extends Entity {
     }
 }
 
-class CreateDialogDataEntity extends Entity {
+export class CreateDialogDataEntity extends Entity {
     @string({
         required: false,
-        displayName: 'Title',
+        displayName: 'Create Dialog Title',
         displayStyle: 'line'
     })
     title?: string;
 
     @string({
         required: false,
-        displayName: 'Create Button Label',
+        displayName: 'Create Dialog Create Button Label',
         displayStyle: 'line'
     })
     createButtonLabel?: string;
 
     @string({
         required: false,
-        displayName: 'Cancel Button Label',
+        displayName: 'Create Dialog Cancel Button Label',
         displayStyle: 'line'
     })
     cancelButtonLabel?: string;
 
     @boolean({
         required: false,
-        displayName: 'Create requires confirm?',
+        displayName: 'Create Dialog Create requires confirm?',
         displayStyle: 'dropdown',
         dropdownTrue: 'Yes',
         dropdownFalse: 'No'
@@ -108,7 +108,7 @@ class CreateDialogDataEntity extends Entity {
 
     @object({
         required: false,
-        displayName: 'Confirm Create Dialog Data',
+        displayName: 'Create Dialog Confirm Create Dialog Data',
         displayStyle: 'inline',
         type: ConfirmDialogDataEntity as (new (entity?: ConfirmDialogDataEntity) => ConfirmDialogDataEntity)
     })
@@ -120,39 +120,39 @@ class CreateDialogDataEntity extends Entity {
     }
 }
 
-class EditDialogDataEntity<EntityType extends Entity> extends Entity {
+export class EditDialogDataEntity<EntityType extends Entity> extends Entity {
 
     @string({
         required: false,
-        displayName: 'Title Method',
+        displayName: 'Edit Dialog Title Method',
         displayStyle: 'line'
     })
     title?: (entity: EntityType) => string;
 
     @string({
         required: false,
-        displayName: 'Confirm Button Label',
+        displayName: 'Edit Dialog Confirm Button Label',
         displayStyle: 'line'
     })
     confirmButtonLabel?: string;
 
     @string({
         required: false,
-        displayName: 'Delete Button Label',
+        displayName: 'Edit Dialog Delete Button Label',
         displayStyle: 'line'
     })
     deleteButtonLabel?: string;
 
     @string({
         required: false,
-        displayName: 'Cancel Button Label',
+        displayName: 'Edit Dialog Cancel Button Label',
         displayStyle: 'line'
     })
     cancelButtonLabel?: string;
 
     @boolean({
         required: false,
-        displayName: 'Delete requires confirm?',
+        displayName: 'Edit Dialog Delete requires confirm?',
         displayStyle: 'dropdown',
         dropdownTrue: 'Yes',
         dropdownFalse: 'No'
@@ -161,7 +161,7 @@ class EditDialogDataEntity<EntityType extends Entity> extends Entity {
 
     @boolean({
         required: false,
-        displayName: 'Edit requires confirm?',
+        displayName: 'Edit Dialog Edit requires confirm?',
         displayStyle: 'dropdown',
         dropdownTrue: 'Yes',
         dropdownFalse: 'No'
@@ -170,7 +170,7 @@ class EditDialogDataEntity<EntityType extends Entity> extends Entity {
 
     @object({
         required: false,
-        displayName: 'Confirm Delete Dialog Data',
+        displayName: 'Edit Dialog Confirm Delete Dialog Data',
         displayStyle: 'inline',
         type: ConfirmDialogDataEntity as (new (entity?: ConfirmDialogDataEntity) => ConfirmDialogDataEntity)
     })
@@ -178,7 +178,7 @@ class EditDialogDataEntity<EntityType extends Entity> extends Entity {
 
     @object({
         required: false,
-        displayName: 'Confirm Edit Dialog Data',
+        displayName: 'Edit Dialog Confirm Edit Dialog Data',
         displayStyle: 'inline',
         type: ConfirmDialogDataEntity as (new (entity?: ConfirmDialogDataEntity) => ConfirmDialogDataEntity)
     })
@@ -190,15 +190,15 @@ class EditDialogDataEntity<EntityType extends Entity> extends Entity {
     }
 }
 
-class DisplayColumnEntity<EntityType extends Entity> extends Entity {
+export class DisplayColumnEntity<EntityType extends Entity> extends Entity {
     @string({
-        displayName: 'Display Name',
+        displayName: 'Display Column Display Name',
         displayStyle: 'line'
     })
     displayName!: string;
 
     @string({
-        displayName: 'Value method',
+        displayName: 'Display Column Value method',
         displayStyle: 'line'
     })
     value!: (entity: EntityType) => string;
@@ -209,38 +209,39 @@ class DisplayColumnEntity<EntityType extends Entity> extends Entity {
     }
 }
 
-class MultiSelectActionEntity<EntityType extends Entity> extends Entity {
+export class MultiSelectActionEntity<EntityType extends Entity> extends Entity {
     @string({
-        displayName: 'Display Name',
+        displayName: 'Multi Select Display Name',
         displayStyle: 'line'
     })
     displayName!: string;
 
     @string({
-        displayName: 'Action Method',
+        displayName: 'Multi Select Action Method',
         displayStyle: 'line'
     })
     action!: (selectedEntities: EntityType[]) => unknown;
 
     @string({
         required: false,
-        displayName: 'Enabled? Method',
+        displayName: 'Multi Select Enabled? Method',
         displayStyle: 'line'
     })
     enabled?: (selectedEntities: EntityType[]) => boolean;
 
     @string({
         required: false,
-        displayName: 'Require ConfirmDialog? Method',
+        displayName: 'Multi Select Require ConfirmDialog? Method',
         displayStyle: 'line'
     })
     requireConfirmDialog?: (selectedEntities: EntityType[]) => boolean;
 
     @object({
         required: false,
-        displayName: 'Confirm Dialog Data',
+        displayName: 'Multi Select Confirm Dialog Data',
         displayStyle: 'inline',
-        type: ConfirmDialogDataEntity as (new (entity?: ConfirmDialogDataEntity) => ConfirmDialogDataEntity)
+        type: ConfirmDialogDataEntity as (new (entity?: ConfirmDialogDataEntity) => ConfirmDialogDataEntity),
+        defaultWidths: [12, 12, 12]
     })
     confirmDialogData?: ConfirmDialogDataEntity;
 
@@ -250,15 +251,15 @@ class MultiSelectActionEntity<EntityType extends Entity> extends Entity {
     }
 }
 
-class BaseDataEntity<EntityType extends Entity> extends Entity {
+export class BaseDataEntity<EntityType extends Entity> extends Entity {
     @string({
-        displayName: 'Title',
+        displayName: 'Base Data Title',
         displayStyle: 'line'
     })
     title!: string;
 
     @array({
-        displayName: 'Display Columns',
+        displayName: 'Base Data Display Columns',
         displayStyle: 'table',
         itemType: DecoratorTypes.OBJECT,
         EntityClass: DisplayColumnEntity as unknown as (new (entity?: EntityType) => EntityType),
@@ -267,61 +268,63 @@ class BaseDataEntity<EntityType extends Entity> extends Entity {
                 displayName: 'Name',
                 value: ((e: DisplayColumnEntity<EntityType>) =>  e.displayName) as unknown as ((entity: EntityType) => string)
             }
-        ]
+        ],
+        addButtonLabel: 'Add Display Column',
+        removeButtonLabel: 'Remove Display Column'
     })
     displayColumns!: DisplayColumnEntity<EntityType>[];
 
     @string({
-        displayName: 'Entity Service Class',
+        displayName: 'Base Data Entity Service Class',
         displayStyle: 'line'
     })
     EntityServiceClass!: new (httpClient: HttpClient) => EntityService<EntityType>;
 
     @string({
         required: false,
-        displayName: 'Entity Class',
+        displayName: 'Base Data Entity Class',
         displayStyle: 'line'
     })
     EntityClass?: new (entity?: EntityType) => EntityType;
 
     @string({
         required: false,
-        displayName: 'Search Label',
+        displayName: 'Base Data Search Label',
         displayStyle: 'line'
     })
     searchLabel?: string;
 
     @string({
         required: false,
-        displayName: 'Create Button Label',
+        displayName: 'Base Data Create Button Label',
         displayStyle: 'line'
     })
     createButtonLabel?: string;
 
     @string({
         required: false,
-        displayName: 'Custom edit method',
+        displayName: 'Base Data Custom edit method',
         displayStyle: 'line'
     })
     edit?: (entity: EntityType) => unknown;
 
     @string({
         required: false,
-        displayName: 'Custom create method',
+        displayName: 'Base Data Custom create method',
         displayStyle: 'line'
     })
     create?: (entity: EntityType) => unknown;
 
     @string({
         required: false,
-        displayName: 'Custom search string method',
+        displayName: 'Base Data Custom search string method',
         displayStyle: 'line'
     })
     searchString?: (entity: EntityType) => string;
 
     @boolean({
         required: false,
-        displayName: 'Allow create?',
+        displayName: 'Base Data Allow create?',
         displayStyle: 'dropdown',
         dropdownTrue: 'Yes',
         dropdownFalse: 'No'
@@ -330,21 +333,21 @@ class BaseDataEntity<EntityType extends Entity> extends Entity {
 
     @string({
         required: false,
-        displayName: 'Custom allow edit method',
+        displayName: 'Base Data Custom allow edit method',
         displayStyle: 'line'
     })
     allowEdit?: (entity: EntityType) => boolean;
 
     @string({
         required: false,
-        displayName: 'Custom allow delete method',
+        displayName: 'Base Data Custom allow delete method',
         displayStyle: 'line'
     })
     allowDelete?: (entity: EntityType) => boolean;
 
     @array({
         required: false,
-        displayName: 'Multi Select Actions',
+        displayName: 'Base Data Multi Select Actions',
         displayStyle: 'table',
         itemType: DecoratorTypes.OBJECT,
         EntityClass: MultiSelectActionEntity as unknown as (new (entity?: EntityType) => EntityType),
@@ -353,13 +356,15 @@ class BaseDataEntity<EntityType extends Entity> extends Entity {
                 displayName: 'Name',
                 value: ((e: MultiSelectActionEntity<EntityType>) => e.displayName) as unknown as ((entity: EntityType) => string)
             }
-        ]
+        ],
+        addButtonLabel: 'Add MSA',
+        removeButtonLabel: 'Remove MSA'
     })
     multiSelectActions?: MultiSelectActionEntity<EntityType>[];
 
     @string({
         required: false,
-        displayName: 'Multi Select Label',
+        displayName: 'Base Data Multi Select Label',
         displayStyle: 'line'
     })
     multiSelectLabel?: string;
@@ -384,7 +389,7 @@ export class TableDataEntity<EntityType extends Entity> extends Entity {
         displayName: 'Create Dialog Data',
         displayStyle: 'inline',
         type: CreateDialogDataEntity as (new (entity?: CreateDialogDataEntity) => CreateDialogDataEntity),
-        defaultWidths: [12, 12, 12]
+        defaultWidths: [12, 12, 12],
     })
     createDialogData?: CreateDialogDataEntity;
 
