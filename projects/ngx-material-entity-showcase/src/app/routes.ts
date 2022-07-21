@@ -1,25 +1,38 @@
 /* eslint-disable max-len */
 /* eslint-disable jsdoc/require-jsdoc */
 import { Routes } from '@angular/router';
-import { NavbarRows } from './nav.model';
+import { NavbarRow } from './nav.model';
 import { NavUtilities } from './utilities/nav.utilities';
 
-export const navbarRows: NavbarRows[] = [
+export const navbarRows: NavbarRow[] = [
     {
         elements: [
             {
-                type: 'title',
+                type: 'imageWithInternalLink',
+                url: 'https://pbs.twimg.com/profile_images/1498641868397191170/6qW2XkuI_400x400.png',
+                link: {
+                    route: 'home',
+                },
+                collapse: 'never'
+            },
+            {
+                type: 'titleWithInternalLink',
                 title: 'Showcase Project',
-                icon: 'fa-brands fa-angular'
+                icon: 'fa-brands fa-angular',
+                link: {
+                    route: 'home'
+                },
+                collapse: 'sm'
             },
             {
                 type: 'internalLink',
                 name: 'Home',
                 icon: 'fas fa-home',
                 route: {
-                    path: '',
+                    path: 'home',
                     loadChildren: () => import('./components/home/home.module').then(m => m.HomeModule)
-                }
+                },
+                collapse: 'md'
             },
             {
                 type: 'internalLink',
@@ -29,7 +42,8 @@ export const navbarRows: NavbarRows[] = [
                     path: 'table',
                     loadChildren: () => import('./components/showcase-table/showcase-table.module').then(m => m.ShowcaseTableModule)
                 },
-                position: 'center'
+                position: 'center',
+                collapse: 'md'
             },
             {
                 type: 'menu',
@@ -62,21 +76,24 @@ export const navbarRows: NavbarRows[] = [
                         route: 'inputs/object'
                     }
                 ],
-                position: 'center'
+                position: 'center',
+                collapse: 'md'
             },
             {
                 type: 'menu',
                 name: 'Dialogs',
                 icon: 'fas fa-circle-exclamation',
                 elements: [],
-                position: 'center'
+                position: 'center',
+                collapse: 'md'
             },
             {
                 type: 'button',
                 name: 'Reset Data',
                 icon: 'fas fa-rotate-right',
                 action: () => fetch('http://localhost:3000/reset/', { method: 'POST' }).then(() => location.reload()),
-                position: 'right'
+                position: 'right',
+                collapse: 'sm'
             }
         ]
     }

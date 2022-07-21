@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Route, Routes } from '@angular/router';
-import { NavbarRows, NavButton, NavElement, NavExternalLink, NavInternalLink, NavMenu, NavTitle } from '../nav.model';
+import { NavbarRow, NavButton, NavElement, NavExternalLink, NavImage, NavImageWithExternalLink, NavImageWithInternalLink, NavInternalLink, NavMenu, NavMenuElement, NavTitle, NavTitleWithExternalLink, NavTitleWithInternalLink } from '../nav.model';
 
 export abstract class NavUtilities {
 
@@ -16,19 +16,39 @@ export abstract class NavUtilities {
         return element as NavTitle;
     }
 
-    static asButton(element: NavElement): NavButton {
+    static asTitleWithExternalLink(element: NavElement): NavTitleWithExternalLink {
+        return element as NavTitleWithExternalLink;
+    }
+
+    static asTitleWithInternalLink(element: NavElement): NavTitleWithInternalLink {
+        return element as NavTitleWithInternalLink;
+    }
+
+    static asImage(element: NavElement): NavImage {
+        return element as NavImage;
+    }
+
+    static asImageWithExternalLink(element: NavElement): NavImageWithExternalLink {
+        return element as NavImageWithExternalLink;
+    }
+
+    static asImageWithInternalLink(element: NavElement): NavImageWithInternalLink {
+        return element as NavImageWithInternalLink;
+    }
+
+    static asButton(element: NavElement | NavMenuElement): NavButton {
         return element as NavButton;
     }
 
-    static asInternalLink(element: NavElement): NavInternalLink {
+    static asInternalLink(element: NavElement | NavMenuElement): NavInternalLink {
         return element as NavInternalLink;
     }
 
-    static asExternalLink(element: NavElement): NavExternalLink {
+    static asExternalLink(element: NavElement | NavMenuElement): NavExternalLink {
         return element as NavExternalLink;
     }
 
-    static asMenu(element: NavElement): NavMenu {
+    static asMenu(element: NavElement | NavMenuElement): NavMenu {
         return element as NavMenu;
     }
 
@@ -53,7 +73,14 @@ export abstract class NavUtilities {
         return false;
     }
 
-    static getAngularRoutes(navbarRows: NavbarRows[] = [], additionalRoutes: Routes = []): Routes {
+    static isNavElement(value: NavElement | NavbarRow): value is NavElement {
+        if ((value as NavElement).type) {
+            return true;
+        }
+        return false;
+    }
+
+    static getAngularRoutes(navbarRows: NavbarRow[] = [], additionalRoutes: Routes = []): Routes {
         let allRoutes: Routes = [];
         allRoutes = allRoutes.concat(NavUtilities.getRoutesFromNavbar(navbarRows));
         allRoutes = allRoutes.concat(additionalRoutes);
@@ -68,7 +95,7 @@ export abstract class NavUtilities {
         return res;
     }
 
-    static getRoutesFromNavbar(navbarRows: NavbarRows[]): Routes {
+    static getRoutesFromNavbar(navbarRows: NavbarRow[]): Routes {
         let res: Routes = [];
         for (const row of navbarRows) {
             res = res.concat(NavUtilities.getRoutesFromElements(row.elements));
@@ -83,27 +110,60 @@ export abstract class NavUtilities {
         res = res.concat(angularRoutes);
         const menus: NavMenu[] = elements.filter(e => NavUtilities.isMenu(e)) as NavMenu[];
         for (const menu of menus) {
-            res = res.concat(NavUtilities.getRoutesFromElements(menu.elements));
+            res = res.concat(NavUtilities.getRoutesFromElements(menu.elements as NavElement[]));
         }
         return res;
     }
 
-    static getLeftElements(elements?: NavElement[]): NavElement[] {
-        if (!elements) {
+    static getNavbarElements(
+        position: 'left' | 'center' | 'right',
+        screenWidth: 'lg' | 'md' | 'sm',
+        elements?: NavElement[] | NavbarRow[]
+    ): NavElement[] {
+        if (!elements || !elements.length) {
             return [];
         }
-        return elements.filter(e => !e.position || e.position === 'left');
+        let res: NavElement[] = [];
+        if (NavUtilities.isNavElement(elements[0])) {
+            res = res.concat(elements as NavElement[]);
+        }
+        else {
+            for (const row of elements as NavbarRow[]) {
+                res = res.concat(row.elements);
+            }
+        }
+
+        if (position === 'left') {
+            res = res.filter(e => !e.position || e.position === position);
+        }
+        else {
+            res = res.filter(e => e.position === position);
+        }
+        switch (screenWidth) {
+            case 'lg':
+                return res.filter(e => e.collapse !== 'always' && e.collapse !== 'lg');
+            case 'md':
+                return res.filter(e => e.collapse !== 'always' && e.collapse !== 'lg' && e.collapse !== 'md');
+            case 'sm':
+                return res.filter(e => e.collapse !== 'always' && e.collapse !== 'lg' && e.collapse !== 'md' && e.collapse !== 'sm');
+        }
     }
-    static getCenterElements(elements?: NavElement[]): NavElement[] {
-        if (!elements) {
+
+    static getSidenavElements(screenWidth: 'lg' | 'md' | 'sm', rows?: NavbarRow[]): NavElement[] {
+        if (!rows || !rows.length) {
             return [];
         }
-        return elements.filter(e => e.position && e.position === 'center');
-    }
-    static getRightElements(elements?: NavElement[]): NavElement[] {
-        if (!elements) {
-            return [];
+        let res: NavElement[] = [];
+        for (const row of rows) {
+            res = res.concat(row.elements);
         }
-        return elements.filter(e => e.position && e.position === 'right');
+        switch (screenWidth) {
+            case 'lg':
+                return res.filter(e => e.collapse === 'always' || e.collapse === 'lg');
+            case 'md':
+                return res.filter(e => e.collapse === 'always' || e.collapse === 'lg' || e.collapse === 'md');
+            case 'sm':
+                return res.filter(e => e.collapse === 'always' || e.collapse === 'lg' || e.collapse === 'md' || e.collapse === 'sm');
+        }
     }
 }

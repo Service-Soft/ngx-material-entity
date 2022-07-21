@@ -76,23 +76,31 @@
     <!-----------------Booleans------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_CHECKBOX">
-        <mat-form-field>
-            <mat-checkbox [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required">
-                {{metadata.displayName}}
-            </mat-checkbox>
+        <mat-form-field class="hideUnderline">
+            <mat-label>{{metadata.displayName}}</mat-label>
+            <mat-checkbox (click)="model.control.markAsTouched()" [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()"></mat-checkbox>
             <!-- hidden input is needed so that the checkbox can be used inside a mat-form-field -->
-            <textarea matInput hidden></textarea>
+            <input matInput hidden
+                [(ngModel)]="entity[propertyKey]"
+                [name]="propertyKey.toString() + 'Helper'"
+                #model="ngModel"
+                [pattern]="metadata.required ? 'true' : '[\\s\\S]*'"
+                [required]="metadata.required">
             <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
         </mat-form-field>
     </div>
 
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_TOGGLE">
-        <mat-form-field>
-            <mat-slide-toggle [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required">
-                {{metadata.displayName}}
-            </mat-slide-toggle>
+        <mat-form-field class="hideUnderline">
+            <mat-label>{{metadata.displayName}}</mat-label>
+            <mat-slide-toggle (click)="model.control.markAsTouched()" [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()"></mat-slide-toggle>
             <!-- hidden input is needed so that the toggle can be used inside a mat-form-field -->
-            <textarea matInput hidden></textarea>
+            <input matInput hidden
+                [(ngModel)]="entity[propertyKey]"
+                [name]="propertyKey.toString() + 'Helper'"
+                #model="ngModel"
+                [pattern]="metadata.required ? 'true' : '[\\s\\S]*'"
+                [required]="metadata.required">
             <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
         </mat-form-field>
     </div>

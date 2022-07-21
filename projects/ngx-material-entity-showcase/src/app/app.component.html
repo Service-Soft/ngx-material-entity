@@ -1,8 +1,5 @@
-<div style="min-height: calc(100vh - 70px);">
-    <app-navbar [navbarRows]="navbarRows"></app-navbar>
-    <div class="container" style="padding-top: 40px;padding-bottom: 40px;">
-        <router-outlet></router-outlet>
-    </div>
-</div>
+<app-navbar [minHeight]="70" [minSidenavWidth]="'30%'" [minHeightOtherElements]="70" [navbarRows]="navbarRows">
+    <router-outlet></router-outlet>
+</app-navbar>
 
-<app-footer></app-footer>
+<app-footer [minHeight]="70"></app-footer>

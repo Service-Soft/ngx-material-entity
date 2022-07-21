@@ -52,7 +52,7 @@
         "@angular-eslint/template-parser": "13.5.0",
         "@angular/cli": "~13.3.5",
         "@angular/compiler-cli": "~13.3.0",
-        "@cspell/eslint-plugin": "^6.2.3",
+        "@cspell/eslint-plugin": "^6.4",
         "@types/cross-spawn": "^6.0.2",
         "@types/jest": "^28.1.4",
         "@types/json-server": "^0.14.4",

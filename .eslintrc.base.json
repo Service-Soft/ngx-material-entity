@@ -13,9 +13,16 @@
             "extends": [
                 "plugin:@angular-eslint/recommended",
                 "plugin:@angular-eslint/template/process-inline-templates",
-                "plugin:jsdoc/recommended"
+                "plugin:jsdoc/recommended",
+                "plugin:@cspell/recommended"
             ],
             "rules": {
+                "@cspell/spellchecker": [
+                    "warn",
+                    {
+                        "customWordListFile": "./cspell.words.txt"
+                    }
+                ],
                 "function-call-argument-newline": [
                     "warn",
                     "consistent"

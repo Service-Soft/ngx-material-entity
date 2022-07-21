@@ -148,18 +148,24 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
         this.metadataDropdownString = this.metadata as DropdownStringDecoratorConfigInternal;
 
         this.metadataDropdownBoolean = this.metadata as DropdownBooleanDecoratorConfigInternal;
+        if (
+            (this.type === DecoratorTypes.BOOLEAN_CHECKBOX || this.type === DecoratorTypes.BOOLEAN_TOGGLE)
+            && this.entity[this.propertyKey] === undefined
+        ) {
+            (this.entity[this.propertyKey] as unknown as boolean) = false;
+        }
 
         this.metadataDefaultNumber = this.metadata as DefaultNumberDecoratorConfigInternal;
         this.metadataDropdownNumber = this.metadata as DropdownNumberDecoratorConfigInternal;
 
         this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfigInternal<EntityType>;
         this.objectProperty = this.entity[this.propertyKey] as unknown as EntityType;
-        if (this.metadataDefaultObject.type) {
+        if (this.type === DecoratorTypes.OBJECT) {
             this.objectPropertyRows = EntityUtilities.getEntityRows(this.objectProperty, this.hideOmitForCreate, this.hideOmitForEdit);
         }
 
         this.metadataEntityArray = this.metadata as EntityArrayDecoratorConfigInternal<Entity>;
-        if (this.metadataEntityArray.EntityClass) {
+        if (this.type === DecoratorTypes.ARRAY) {
             if (!this.entity[this.propertyKey]) {
                 (this.entity[this.propertyKey] as unknown as EntityType[]) = [];
             }
@@ -202,7 +208,7 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
 
         this.metadataStringChipsArray = this.metadata as StringChipsArrayDecoratorConfigInternal;
         if (
-            this.metadataStringChipsArray.itemType
+            (this.type === DecoratorTypes.ARRAY_STRING_CHIPS || this.type === DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS)
             && (this.entity[this.propertyKey] as unknown as string[])?.length
         ) {
             this.stringChipsArrayValues = (this.entity[this.propertyKey] as unknown as string[]);

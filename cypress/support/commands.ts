@@ -80,7 +80,7 @@ Cypress.Commands.add(
         cy.getInputByLabel('Boolean Dropdown Value').click();
         cy.get('mat-option').contains('Yes').click();
 
-        cy.get('mat-checkbox').contains('Boolean Checkbox Value').click();
-        cy.get('mat-slide-toggle').contains('Boolean Toggle Value').click();
+        cy.getInputByLabel('Boolean Checkbox Value').find('mat-checkbox').click();
+        cy.getInputByLabel('Boolean Toggle Value').find('mat-slide-toggle').click();
     }
 );

@@ -2,6 +2,10 @@ mat-form-field {
     width: 100%;
 }
 
+::ng-deep .hideUnderline .mat-form-field-underline {
+    opacity: 0%;
+}
+
 .entityArray {
     .buttons {
         display: flex;

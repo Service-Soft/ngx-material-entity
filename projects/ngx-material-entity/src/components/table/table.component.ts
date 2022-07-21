@@ -18,7 +18,7 @@ import { TableDataBuilder, TableDataInternal } from './table-data.builder';
 import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from '../table/edit-dialog/edit-entity-dialog.builder';
 
 /**
- * Generates a fully fuctional table for displaying, creating, updating and deleting entities
+ * Generates a fully functional table for displaying, creating, updating and deleting entities
  * based on the configuration passed in the @Input "tableData".
  *
  * It offers a lot of customization options which can be found in "TableData".

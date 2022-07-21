@@ -1,188 +1,60 @@
-<mat-toolbar class="mat-elevation-z8">
+<mat-toolbar class="mat-elevation-z8" [style.min-height.px]="minHeight">
     <div *ngIf="navbarRows.length>1" class="container">
         <mat-toolbar-row class="toolbar-row" *ngFor="let row of navbarRows">
-            <span *ngFor="let element of row.elements">
-                <span [ngSwitch]="element.type">
-                    <!-- Title -->
-                    <h1 *ngSwitchCase="'title'">
-                        <i *ngIf="NavUtilities.asTitle(element).icon" [class]="NavUtilities.asTitle(element).icon"></i>
-                        {{NavUtilities.asTitle(element).title}}
-                    </h1>
-                    <!-- Button -->
-                    <button *ngSwitchCase="'button'" mat-raised-button (click)="NavUtilities.asButton(element).action()">
-                        <i *ngIf="NavUtilities.asButton(element).icon" [class]="NavUtilities.asButton(element).icon"></i>
-                        {{NavUtilities.asButton(element).name}}
-                    </button>
-                    <!-- Internal Link -->
-                    <a mat-button *ngSwitchCase="'internalLink'"
-                        [routerLink]="
-                            NavUtilities.asAngularRoute(NavUtilities.asInternalLink(element).route).path
-                            ? NavUtilities.asAngularRoute(NavUtilities.asInternalLink(element).route).path
-                            : NavUtilities.asStringRoute(NavUtilities.asInternalLink(element).route)"
-                        [target]="NavUtilities.asInternalLink(element).openInNewTab ? '_blank' : '_self'"
-                        [rel]="NavUtilities.asInternalLink(element).openInNewTab ? 'noreferrer noopener' : undefined"
-                    >
-                        <i *ngIf="NavUtilities.asInternalLink(element).icon" [class]="NavUtilities.asInternalLink(element).icon"></i> 
-                        {{NavUtilities.asInternalLink(element).name}}
-                    </a>
-                    <!-- External Link -->
-                    <span *ngSwitchCase="'externalLink'">
-                        <a mat-button
-                            [href]="NavUtilities.asExternalLink(element).url"
-                            [target]="NavUtilities.asExternalLink(element).openInNewTab ? '_blank' : '_self'"
-                            [rel]="NavUtilities.asExternalLink(element).openInNewTab ? 'noreferrer noopener' : undefined"
-                        >
-                            <i *ngIf="NavUtilities.asExternalLink(element).icon" [class]="NavUtilities.asExternalLink(element).icon"></i>
-                            {{NavUtilities.asExternalLink(element).name}}
-                        </a>
+            <span class="toolbar-row">
+                <span class="left">
+                    <span *ngFor="let element of NavUtilities.getNavbarElements('left', screenWidthName, navbarRows)">
+                        <app-nav-element [element]="element"></app-nav-element>
                     </span>
-                    <!-- Menu -->
-                    <button *ngSwitchCase="'menu'" mat-button [matMenuTriggerFor]="menu.menu">
-                        <i *ngIf="NavUtilities.asMenu(element).icon" [class]="NavUtilities.asMenu(element).icon"></i>
-                        {{NavUtilities.asMenu(element).name}}
-                    </button>
-                    <app-nav-menu #menu [navMenu]="NavUtilities.asMenu(element)"></app-nav-menu>
+                </span>
+                <span class="center">
+                    <span *ngFor="let element of NavUtilities.getNavbarElements('center', screenWidthName, navbarRows)">
+                        <app-nav-element [element]="element"></app-nav-element>
+                    </span>
+                </span>
+                <span class="right">
+                    <span *ngFor="let element of NavUtilities.getNavbarElements('right', screenWidthName, navbarRows)">
+                        <app-nav-element [element]="element"></app-nav-element>
+                    </span>
+                    <span *ngIf="sidenavElements.length && (navbarRows.indexOf(row) === 0)" style="margin-left: 10px;">
+                        <app-nav-element [element]="burgerMenu"></app-nav-element>
+                    </span>
                 </span>
             </span>
         </mat-toolbar-row>
     </div>
     <div *ngIf="!(navbarRows.length>1)" class="container">
         <span class="toolbar-row">
-            <span *ngFor="let element of NavUtilities.getLeftElements(navbarRows[0]?.elements)">
-                <span [ngSwitch]="element.type">
-                    <!-- Title -->
-                    <h1 *ngSwitchCase="'title'">
-                        <i *ngIf="NavUtilities.asTitle(element).icon" [class]="NavUtilities.asTitle(element).icon"></i>
-                        {{NavUtilities.asTitle(element).title}}
-                    </h1>
-                    <!-- Button -->
-                    <button *ngSwitchCase="'button'" mat-raised-button (click)="NavUtilities.asButton(element).action()">
-                        <i *ngIf="NavUtilities.asButton(element).icon" [class]="NavUtilities.asButton(element).icon"></i>
-                        {{NavUtilities.asButton(element).name}}
-                    </button>
-                    <!-- Internal Link -->
-                    <a mat-button *ngSwitchCase="'internalLink'"
-                        [routerLink]="
-                            NavUtilities.asAngularRoute(NavUtilities.asInternalLink(element).route).path !== undefined
-                            ? NavUtilities.asAngularRoute(NavUtilities.asInternalLink(element).route).path
-                            : NavUtilities.asStringRoute(NavUtilities.asInternalLink(element).route)"
-                        [target]="NavUtilities.asInternalLink(element).openInNewTab ? '_blank' : '_self'"
-                        [rel]="NavUtilities.asInternalLink(element).openInNewTab ? 'noreferrer noopener' : undefined"
-                    >
-                        <i *ngIf="NavUtilities.asInternalLink(element).icon" [class]="NavUtilities.asInternalLink(element).icon"></i> 
-                        {{NavUtilities.asInternalLink(element).name}}
-                    </a>
-                    <!-- External Link -->
-                    <span *ngSwitchCase="'externalLink'">
-                        <a mat-button
-                            [href]="NavUtilities.asExternalLink(element).url"
-                            [target]="NavUtilities.asExternalLink(element).openInNewTab ? '_blank' : '_self'"
-                            [rel]="NavUtilities.asExternalLink(element).openInNewTab ? 'noreferrer noopener' : undefined"
-                        >
-                            <i *ngIf="NavUtilities.asExternalLink(element).icon" [class]="NavUtilities.asExternalLink(element).icon"></i>
-                            {{NavUtilities.asExternalLink(element).name}}
-                        </a>
-                    </span>
-                    <!-- Menu -->
-                    <button *ngSwitchCase="'menu'" mat-button [matMenuTriggerFor]="menu.menu">
-                        <i *ngIf="NavUtilities.asMenu(element).icon" [class]="NavUtilities.asMenu(element).icon"></i>
-                        {{NavUtilities.asMenu(element).name}}
-                    </button>
-                    <app-nav-menu #menu [navMenu]="NavUtilities.asMenu(element)"></app-nav-menu>
-                </span>
+            <span *ngFor="let element of NavUtilities.getNavbarElements('left', screenWidthName, navbarRows[0]?.elements)">
+                <app-nav-element [element]="element"></app-nav-element>
             </span>
-
             <span class="center">
-                <span *ngFor="let element of NavUtilities.getCenterElements(navbarRows[0]?.elements)">
-                    <span [ngSwitch]="element.type">
-                        <!-- Title -->
-                        <h1 *ngSwitchCase="'title'">
-                            <i *ngIf="NavUtilities.asTitle(element).icon" [class]="NavUtilities.asTitle(element).icon"></i>
-                            {{NavUtilities.asTitle(element).title}}
-                        </h1>
-                        <!-- Button -->
-                        <button *ngSwitchCase="'button'" mat-raised-button (click)="NavUtilities.asButton(element).action()">
-                            <i *ngIf="NavUtilities.asButton(element).icon" [class]="NavUtilities.asButton(element).icon"></i>
-                            {{NavUtilities.asButton(element).name}}
-                        </button>
-                        <!-- Internal Link -->
-                        <a mat-button *ngSwitchCase="'internalLink'"
-                            [routerLink]="
-                                NavUtilities.asAngularRoute(NavUtilities.asInternalLink(element).route).path !== undefined
-                                ? NavUtilities.asAngularRoute(NavUtilities.asInternalLink(element).route).path
-                                : NavUtilities.asStringRoute(NavUtilities.asInternalLink(element).route)"
-                            [target]="NavUtilities.asInternalLink(element).openInNewTab ? '_blank' : '_self'"
-                            [rel]="NavUtilities.asInternalLink(element).openInNewTab ? 'noreferrer noopener' : undefined"
-                        >
-                            <i *ngIf="NavUtilities.asInternalLink(element).icon" [class]="NavUtilities.asInternalLink(element).icon"></i> 
-                            {{NavUtilities.asInternalLink(element).name}}
-                        </a>
-                        <!-- External Link -->
-                        <span *ngSwitchCase="'externalLink'">
-                            <a mat-button
-                                [href]="NavUtilities.asExternalLink(element).url"
-                                [target]="NavUtilities.asExternalLink(element).openInNewTab ? '_blank' : '_self'"
-                                [rel]="NavUtilities.asExternalLink(element).openInNewTab ? 'noreferrer noopener' : undefined"
-                            >
-                                <i *ngIf="NavUtilities.asExternalLink(element).icon" [class]="NavUtilities.asExternalLink(element).icon"></i>
-                                {{NavUtilities.asExternalLink(element).name}}
-                            </a>
-                        </span>
-                        <!-- Menu -->
-                        <button *ngSwitchCase="'menu'" mat-button [matMenuTriggerFor]="menu.menu">
-                            <i *ngIf="NavUtilities.asMenu(element).icon" [class]="NavUtilities.asMenu(element).icon"></i>
-                            {{NavUtilities.asMenu(element).name}}
-                        </button>
-                        <app-nav-menu #menu [navMenu]="NavUtilities.asMenu(element)"></app-nav-menu>
-                    </span>
+                <span *ngFor="let element of NavUtilities.getNavbarElements('center', screenWidthName, navbarRows[0]?.elements)">
+                    <app-nav-element [element]="element"></app-nav-element>
                 </span>
             </span>
-
             <span class="right">
-                <span *ngFor="let element of NavUtilities.getRightElements(navbarRows[0]?.elements)">
-                    <span [ngSwitch]="element.type">
-                        <!-- Title -->
-                        <h1 *ngSwitchCase="'title'">
-                            <i *ngIf="NavUtilities.asTitle(element).icon" [class]="NavUtilities.asTitle(element).icon"></i>
-                            {{NavUtilities.asTitle(element).title}}
-                        </h1>
-                        <!-- Button -->
-                        <button *ngSwitchCase="'button'" mat-raised-button (click)="NavUtilities.asButton(element).action()">
-                            <i *ngIf="NavUtilities.asButton(element).icon" [class]="NavUtilities.asButton(element).icon"></i>
-                            {{NavUtilities.asButton(element).name}}
-                        </button>
-                        <!-- Internal Link -->
-                        <a mat-button *ngSwitchCase="'internalLink'"
-                            [routerLink]="
-                                NavUtilities.asAngularRoute(NavUtilities.asInternalLink(element).route).path !== undefined
-                                ? NavUtilities.asAngularRoute(NavUtilities.asInternalLink(element).route).path
-                                : NavUtilities.asStringRoute(NavUtilities.asInternalLink(element).route)"
-                            [target]="NavUtilities.asInternalLink(element).openInNewTab ? '_blank' : '_self'"
-                            [rel]="NavUtilities.asInternalLink(element).openInNewTab ? 'noreferrer noopener' : undefined"
-                        >
-                            <i *ngIf="NavUtilities.asInternalLink(element).icon" [class]="NavUtilities.asInternalLink(element).icon"></i> 
-                            {{NavUtilities.asInternalLink(element).name}}
-                        </a>
-                        <!-- External Link -->
-                        <span *ngSwitchCase="'externalLink'">
-                            <a mat-button
-                                [href]="NavUtilities.asExternalLink(element).url"
-                                [target]="NavUtilities.asExternalLink(element).openInNewTab ? '_blank' : '_self'"
-                                [rel]="NavUtilities.asExternalLink(element).openInNewTab ? 'noreferrer noopener' : undefined"
-                            >
-                                <i *ngIf="NavUtilities.asExternalLink(element).icon" [class]="NavUtilities.asExternalLink(element).icon"></i>
-                                {{NavUtilities.asExternalLink(element).name}}
-                            </a>
-                        </span>
-                        <!-- Menu -->
-                        <button *ngSwitchCase="'menu'" mat-button [matMenuTriggerFor]="menu.menu">
-                            <i *ngIf="NavUtilities.asMenu(element).icon" [class]="NavUtilities.asMenu(element).icon"></i>
-                            {{NavUtilities.asMenu(element).name}}
-                        </button>
-                        <app-nav-menu #menu [navMenu]="NavUtilities.asMenu(element)"></app-nav-menu>
-                    </span>
+                <span *ngFor="let element of NavUtilities.getNavbarElements('right', screenWidthName, navbarRows[0]?.elements)">
+                    <app-nav-element [element]="element"></app-nav-element>
+                </span>
+                <span *ngIf="sidenavElements.length" style="margin-left: 10px;">
+                    <app-nav-element [element]="burgerMenu"></app-nav-element>
                 </span>
             </span>
         </span>
     </div>
 </mat-toolbar>
+
+<mat-sidenav-container style="background-color: transparent; padding-top: 40px;"
+    [style.min-height]="sanitizedMinHeight">
+    <mat-sidenav #sidenav position="end" style="padding: 20px;" [style.min-width]="minSidenavWidth">
+        <p *ngFor="let element of sidenavElements">
+            <app-nav-element (click)="clickSidenavElement(element)" style="display: inline-block; width: 100%;" [sidenav]="sidenav" [sidenavElement]="true" [element]="element"></app-nav-element>
+        </p>
+    </mat-sidenav>
+    <mat-sidenav-content style="padding-bottom: 40px;">
+        <div class="container">
+            <ng-content></ng-content>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

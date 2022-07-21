@@ -39,7 +39,7 @@ export class ShowcaseInputsComponent {
         DecoratorTypes.OBJECT
     ];
 
-    testEntity = new TestEntityMockBuilder().testEntity;
+    testEntity = new TestEntityMockBuilder().testEntityWithoutData;
     // TODO
     keys!: (keyof TestEntity)[];
 

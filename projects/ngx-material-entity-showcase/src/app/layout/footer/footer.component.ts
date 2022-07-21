@@ -1,12 +1,15 @@
-import { Component } from '@angular/core';
+/* eslint-disable jsdoc/require-jsdoc */
+import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'app-footer',
     templateUrl: './footer.component.html',
     styleUrls: ['./footer.component.scss']
 })
-// eslint-disable-next-line jsdoc/require-jsdoc
 export class FooterComponent {
+
+    @Input()
+    minHeight!: number;
 
     constructor() { }
 }

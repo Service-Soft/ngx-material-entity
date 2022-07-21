@@ -222,6 +222,7 @@ export class TestEntity extends Entity {
         displayStyle: 'chips',
         displayName: 'String Chips Autocomplete Array Value',
         itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
+        // eslint-disable-next-line @cspell/spellchecker
         autocompleteValues: ['ABCDE', 'FGHIJ']
     })
     stringChipsAutocompleteArrayValue!: string[];
@@ -230,6 +231,7 @@ export class TestEntity extends Entity {
         displayStyle: 'chips',
         displayName: 'String Chips Autocomplete Array Value With Config',
         itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
+        // eslint-disable-next-line @cspell/spellchecker
         autocompleteValues: ['ABCDE', 'FGHIJ'],
         deleteIcon: 'fas fa-trash',
         defaultWidths: [6, 6, 6]
@@ -319,13 +321,15 @@ export class TestEntity extends Entity {
 
     @boolean({
         displayName: 'Boolean Checkbox Value',
-        displayStyle: 'checkbox'
+        displayStyle: 'checkbox',
+        required: true
     })
     booleanCheckboxValue!: boolean;
 
     @boolean({
         displayName: 'Boolean Toggle Value',
-        displayStyle: 'toggle'
+        displayStyle: 'toggle',
+        required: true
     })
     booleanToggleValue!: boolean;
 
@@ -360,8 +364,10 @@ const testEntityData: TestEntity = {
         rowValue2: 'rowValue2'
     },
     stringChipsArrayValue: ['01234', '56789'],
+    // eslint-disable-next-line @cspell/spellchecker
     stringChipsAutocompleteArrayValue: ['ABCDE', 'FGHIJ'],
     stringChipsArrayValueWithConfig: ['01234', '56789'],
+    // eslint-disable-next-line @cspell/spellchecker
     stringChipsAutocompleteArrayValueWithConfig: ['ABCDE', 'FGHIJ'],
     orderValue1: '1',
     orderValue2: '2',
