@@ -38,7 +38,7 @@ export abstract class PropertyDecoratorConfig {
     /**
      * Defines the width of the input property when used inside the default create or edit dialog.
      * Has 3 bootstrap values for different breakpoints for simple responsive design.
-     * The first value sets the columns for the screensize lg, the second for md and the third for sm.
+     * The first value sets the columns for the screen size lg, the second for md and the third for sm.
      *
      * @default [6, 6, 12]
      */

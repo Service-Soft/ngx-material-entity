@@ -58,7 +58,7 @@ export abstract class EntityService<EntityType extends Entity> {
     }
 
     /**
-     * Gets all existing entities and pushes them to the entites array.
+     * Gets all existing entities and pushes them to the entities array.
      *
      * @returns A Promise of all received Entities.
      */

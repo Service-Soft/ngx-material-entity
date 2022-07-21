@@ -5,7 +5,7 @@ import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecorat
 import { AutocompleteStringChipsArrayDecoratorConfig, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from './array-decorator.data';
 
 /**
- * Decorator for setting and getting array propery metadata.
+ * Decorator for setting and getting array property metadata.
  *
  * @param metadata - The metadata of the array property.
  * @returns The method that defines the metadata.

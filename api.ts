@@ -23,5 +23,6 @@ const port = 3000;
 server.use(middlewares);
 server.use(router);
 server.listen(port, () => {
+    // eslint-disable-next-line no-console
     console.log(`JSON Server is running on port ${port}`);
 });

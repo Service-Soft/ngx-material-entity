@@ -8,14 +8,14 @@ import { TestEntity, TestEntityMockBuilder } from '../../mocks/test-entity.mock'
 const testEntity: TestEntity = new TestEntityMockBuilder().testEntity;
 
 test('should have array Metadata', () => {
-    const metdata = EntityUtilities.getPropertyMetadata(testEntity, 'entityArrayValue', DecoratorTypes.ARRAY);
-    expect(metdata).toBeDefined();
-    expect(metdata.EntityClass).toBeDefined();
-    expect(metdata.displayStyle).toEqual('table');
-    expect(metdata.itemType).toEqual(DecoratorTypes.OBJECT);
-    expect(metdata.displayColumns).toBeDefined();
-    expect(metdata.createInline).toEqual(true);
-    expect(metdata.missingErrorMessage).toEqual('Needs to contain at least one value');
+    const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'entityArrayValue', DecoratorTypes.ARRAY);
+    expect(metadata).toBeDefined();
+    expect(metadata.EntityClass).toBeDefined();
+    expect(metadata.displayStyle).toEqual('table');
+    expect(metadata.itemType).toEqual(DecoratorTypes.OBJECT);
+    expect(metadata.displayColumns).toBeDefined();
+    expect(metadata.createInline).toEqual(true);
+    expect(metadata.missingErrorMessage).toEqual('Needs to contain at least one value');
 
     const customMetadata = EntityUtilities.getPropertyMetadata(testEntity, 'entityArrayValueWithConfig', DecoratorTypes.ARRAY);
     expect(customMetadata).toBeDefined();

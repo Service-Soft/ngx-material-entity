@@ -17,6 +17,12 @@ import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from '.
 import { TableDataBuilder, TableDataInternal } from './table-data.builder';
 import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from '../table/edit-dialog/edit-entity-dialog.builder';
 
+/**
+ * Generates a fully functional table for displaying, creating, updating and deleting entities
+ * based on the configuration passed in the @Input "tableData".
+ *
+ * It offers a lot of customization options which can be found in "TableData".
+ */
 @Component({
     selector: 'ngx-mat-entity-table',
     templateUrl: './table.component.html',
@@ -165,7 +171,7 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
      * Runs the MultiAction for all selected entries.
      * Also handles confirmation with an additional dialog if configured.
      *
-     * @param action - The Multiaction to run.
+     * @param action - The MultiAction to run.
      */
     runMultiAction(action: MultiSelectAction<EntityType>): void {
         if (!action.requireConfirmDialog || !action.requireConfirmDialog(this.selection.selected)) {
@@ -175,12 +181,12 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
             .withDefault('text', [`Do you really want to run this action on ${this.selection.selected.length} entries?`])
             .withDefault('title', action.displayName)
             .getResult();
-        const dialogref = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+        const dialogRef = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false
         });
-        dialogref.afterClosed().subscribe((res: number) => {
+        dialogRef.afterClosed().subscribe((res: number) => {
             if (res === 1) {
                 this.confirmRunMultiAction(action);
             }

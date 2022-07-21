@@ -1,0 +1,38 @@
+<mat-menu #menu="matMenu" [overlapTrigger]="false">
+    <div *ngFor="let element of navMenu.elements" [style.min-width.px]="menuWidth">
+        <div [ngSwitch]="element.type">
+            <!-- Internal Link -->
+            <a mat-button *ngSwitchCase="'internalLink'"
+                (click)="clickSidenavElement(element)"
+                [routerLink]="
+                    NavUtilities.asAngularRoute(NavUtilities.asInternalLink(element).route).path
+                    ? NavUtilities.asAngularRoute(NavUtilities.asInternalLink(element).route).path
+                    : NavUtilities.asStringRoute(NavUtilities.asInternalLink(element).route)"
+                [target]="NavUtilities.asInternalLink(element).openInNewTab ? '_blank' : '_self'"
+                [rel]="NavUtilities.asInternalLink(element).openInNewTab ? 'noreferrer noopener' : undefined"
+            >
+                <i *ngIf="NavUtilities.asInternalLink(element).icon" [class]="NavUtilities.asInternalLink(element).icon"></i> 
+                {{NavUtilities.asInternalLink(element).name}}
+            </a>
+            <!-- External Link -->
+            <span *ngSwitchCase="'externalLink'">
+                <a mat-button
+                    (click)="clickSidenavElement(element)"
+                    [href]="NavUtilities.asExternalLink(element).url"
+                    [target]="NavUtilities.asExternalLink(element).openInNewTab ? '_blank' : '_self'"
+                    [rel]="NavUtilities.asExternalLink(element).openInNewTab ? 'noreferrer noopener' : undefined"
+                >
+                    <i *ngIf="NavUtilities.asExternalLink(element).icon" [class]="NavUtilities.asExternalLink(element).icon"></i>
+                    {{NavUtilities.asExternalLink(element).name}}
+                </a>
+            </span>
+            <!-- Nested Menu -->
+            <button #nestedMenuButton id="menu-button" *ngSwitchCase="'menu'" mat-menu-item [matMenuTriggerFor]="internalMenu.menu">
+                <i *ngIf="NavUtilities.asMenu(element).icon" [class]="NavUtilities.asMenu(element).icon"></i>
+                {{NavUtilities.asMenu(element).name}}
+            </button>
+            <app-nav-menu #internalMenu [navMenu]="NavUtilities.asMenu(element)" [sidenav]="sidenav" [menuWidth]="nestedMenuWidth">
+            </app-nav-menu>
+        </div>
+    </div>
+</mat-menu>

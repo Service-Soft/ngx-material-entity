@@ -5,6 +5,7 @@ import { number } from '../decorators/number/number.decorator';
 import { object } from '../decorators/object/object.decorator';
 import { array } from '../decorators/array/array.decorator';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
+import { boolean } from '../decorators/boolean/boolean.decorator';
 
 /**
  * An Entity used to Test the @object decorator on the TestEntity class.
@@ -212,6 +213,7 @@ export class TestEntity extends Entity {
         displayStyle: 'chips',
         displayName: 'String Chips Array Value With Config',
         itemType: DecoratorTypes.STRING,
+        deleteIcon: 'fas fa-trash',
         defaultWidths: [12, 12, 12]
     })
     stringChipsArrayValueWithConfig!: string[];
@@ -220,6 +222,7 @@ export class TestEntity extends Entity {
         displayStyle: 'chips',
         displayName: 'String Chips Autocomplete Array Value',
         itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
+        // eslint-disable-next-line @cspell/spellchecker
         autocompleteValues: ['ABCDE', 'FGHIJ']
     })
     stringChipsAutocompleteArrayValue!: string[];
@@ -228,7 +231,9 @@ export class TestEntity extends Entity {
         displayStyle: 'chips',
         displayName: 'String Chips Autocomplete Array Value With Config',
         itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
+        // eslint-disable-next-line @cspell/spellchecker
         autocompleteValues: ['ABCDE', 'FGHIJ'],
+        deleteIcon: 'fas fa-trash',
         defaultWidths: [6, 6, 6]
     })
     stringChipsAutocompleteArrayValueWithConfig!: string[];
@@ -268,9 +273,65 @@ export class TestEntity extends Entity {
         ],
         missingErrorMessage: 'custom missing error message',
         createInline: false,
+        addButtonLabel: 'Custom Add',
+        removeButtonLabel: 'Custom Remove',
         defaultWidths: [6, 6, 6]
     })
     entityArrayValueWithConfig!: TestObjectArrayEntity[];
+
+    @number({
+        displayName: 'Number Dropdown Value',
+        displayStyle: 'dropdown',
+        dropdownValues: [
+            {
+                displayName: '42',
+                value: 42
+            },
+            {
+                displayName: '1',
+                value: 1
+            }
+        ]
+    })
+    numberDropdownValue!: number;
+
+    @string({
+        displayName: 'String Dropdown Value',
+        displayStyle: 'dropdown',
+        dropdownValues: [
+            {
+                displayName: 'String Dropdown #1',
+                value: 'String Dropdown #1'
+            },
+            {
+                displayName: 'String Dropdown #2',
+                value: 'String Dropdown #2'
+            }
+        ]
+    })
+    stringDropdownValue!: string;
+
+    @boolean({
+        displayName: 'Boolean Dropdown Value',
+        displayStyle: 'dropdown',
+        dropdownTrue: 'Yes',
+        dropdownFalse: 'No'
+    })
+    booleanDropdownValue!: boolean;
+
+    @boolean({
+        displayName: 'Boolean Checkbox Value',
+        displayStyle: 'checkbox',
+        required: true
+    })
+    booleanCheckboxValue!: boolean;
+
+    @boolean({
+        displayName: 'Boolean Toggle Value',
+        displayStyle: 'toggle',
+        required: true
+    })
+    booleanToggleValue!: boolean;
 
     constructor(entity?: TestEntity) {
         super();
@@ -303,8 +364,10 @@ const testEntityData: TestEntity = {
         rowValue2: 'rowValue2'
     },
     stringChipsArrayValue: ['01234', '56789'],
+    // eslint-disable-next-line @cspell/spellchecker
     stringChipsAutocompleteArrayValue: ['ABCDE', 'FGHIJ'],
     stringChipsArrayValueWithConfig: ['01234', '56789'],
+    // eslint-disable-next-line @cspell/spellchecker
     stringChipsAutocompleteArrayValueWithConfig: ['ABCDE', 'FGHIJ'],
     orderValue1: '1',
     orderValue2: '2',
@@ -329,7 +392,12 @@ const testEntityData: TestEntity = {
             id: '2',
             stringValue: 'stringValue2'
         }
-    ]
+    ],
+    numberDropdownValue: 42,
+    stringDropdownValue: 'String Dropdown #1',
+    booleanDropdownValue: true,
+    booleanCheckboxValue: true,
+    booleanToggleValue: true
 }
 
 /**

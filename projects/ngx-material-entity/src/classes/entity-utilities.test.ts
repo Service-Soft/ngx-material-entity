@@ -266,7 +266,7 @@ describe('getEntityRows', () => {
 describe('keysOf', () => {
     test('should get all keys of the entity', () => {
         const tE: TestEntity = cloneDeep(testEntity);
-        expect(EntityUtilities.keysOf(tE)).toHaveLength(25);
+        expect(EntityUtilities.keysOf(tE)).toHaveLength(30);
     });
     test('should get keys without omitForCreate', () => {
         const tE: TestEntity = cloneDeep(testEntity);

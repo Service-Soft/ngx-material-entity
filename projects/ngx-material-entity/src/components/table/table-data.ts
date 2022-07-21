@@ -42,7 +42,7 @@ export interface MultiSelectAction<EntityType extends Entity> {
      */
     requireConfirmDialog?: (selectedEntities: EntityType[]) => boolean,
     /**
-     * The data used to generate a confirmation dialog for the multiselect action.
+     * The data used to generate a confirmation dialog for the multiSelect action.
      */
     confirmDialogData?: ConfirmDialogData
 }
@@ -92,7 +92,7 @@ export interface BaseData<EntityType extends Entity> {
     /**
      * Defines how the search string of entities is generated.
      */
-    searchString?: (enity: EntityType) => string,
+    searchString?: (entity: EntityType) => string,
     /**
      * Defines whether or not the user can add new entities.
      *

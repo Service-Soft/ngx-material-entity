@@ -46,7 +46,7 @@ export class BaseDataBuilder<EntityType extends Entity> extends BaseBuilder<Base
             data.searchLabel ? data.searchLabel : 'Search',
             data.createButtonLabel ? data.createButtonLabel : 'Create',
             data.searchString ? data.searchString : defaultSearchFunction,
-            data.allowCreate ? data.allowCreate : true,
+            data.allowCreate === false ? data.allowCreate : true,
             data.allowEdit ? data.allowEdit : () => true,
             data.allowDelete ? data.allowDelete : () => true,
             data.multiSelectActions ? data.multiSelectActions : [],
@@ -73,7 +73,7 @@ export class BaseDataInternal<EntityType extends Entity> implements BaseData<Ent
     // eslint-disable-next-line jsdoc/require-jsdoc
     createButtonLabel: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    searchString: (enity: EntityType) => string;
+    searchString: (entity: EntityType) => string;
     // eslint-disable-next-line jsdoc/require-jsdoc
     allowCreate: boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -98,7 +98,7 @@ export class BaseDataInternal<EntityType extends Entity> implements BaseData<Ent
         EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
         searchLabel: string,
         createButtonLabel: string,
-        searchString: (enity: EntityType) => string,
+        searchString: (entity: EntityType) => string,
         allowCreate: boolean,
         allowEdit: (entity: EntityType) => boolean,
         allowDelete: (entity: EntityType) => boolean,

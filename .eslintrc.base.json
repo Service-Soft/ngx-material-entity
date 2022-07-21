@@ -13,9 +13,16 @@
             "extends": [
                 "plugin:@angular-eslint/recommended",
                 "plugin:@angular-eslint/template/process-inline-templates",
-                "plugin:jsdoc/recommended"
+                "plugin:jsdoc/recommended",
+                "plugin:@cspell/recommended"
             ],
             "rules": {
+                "@cspell/spellchecker": [
+                    "warn",
+                    {
+                        "customWordListFile": "./cspell.words.txt"
+                    }
+                ],
                 "function-call-argument-newline": [
                     "warn",
                     "consistent"
@@ -207,10 +214,10 @@
                     "warn",
                     {
                         "contexts": [
-                            "ClassDeclaration",
+                            "ClassDeclaration[decorators.0.expression.callee.name!='NgModule']",
                             "TSPropertySignature",
-                            "PropertyDefinition[accessibility!='private'][decorators.0.expression.callee.name!='string'][decorators.0.expression.callee.name!='number'][decorators.0.expression.callee.name!='array'][decorators.0.expression.callee.name!='object']",
-                            "MethodDefinition[accessibility!='private'][key.name!='constructor'][key.name!='ngOnInit'][key.name!='ngOnDestroy']",
+                            "PropertyDefinition[accessibility!='private']",
+                            "MethodDefinition[accessibility!='private'][key.name!='constructor'][key.name!='ngOnInit'][key.name!='ngAfterViewInit'][key.name!='ngOnDestroy']",
                             "FunctionDeclaration",
                             "TSInterfaceDeclaration",
                             "TSEnumDeclaration",

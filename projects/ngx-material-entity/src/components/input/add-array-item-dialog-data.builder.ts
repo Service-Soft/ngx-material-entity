@@ -1,8 +1,8 @@
 import { NgModel } from '@angular/forms';
-import { BaseBuilder } from '../../../../classes/base-builder.class';
-import { Entity } from '../../../../classes/entity-model.class';
-import { getValidationErrorMessage } from '../../../get-validation-error-message.function';
-import { CreateDialogDataBuilder, CreateDialogDataInternal } from '../../../table/create-dialog/create-dialog-data.builder';
+import { BaseBuilder } from '../../classes/base-builder.class';
+import { Entity } from '../../classes/entity-model.class';
+import { getValidationErrorMessage } from '../get-validation-error-message.function';
+import { CreateDialogDataBuilder, CreateDialogDataInternal } from '../table/create-dialog/create-dialog-data.builder';
 import { AddArrayItemDialogData } from './add-array-item-dialog-data';
 
 /**

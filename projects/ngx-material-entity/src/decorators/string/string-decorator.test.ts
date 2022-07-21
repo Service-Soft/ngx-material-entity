@@ -44,28 +44,28 @@ const testEntityData: TestEntity = {
 const testEntity = new TestEntity(testEntityData);
 
 test('name should have string Metadata', () => {
-    const metdata = EntityUtilities.getPropertyMetadata(testEntity, 'name', DecoratorTypes.STRING);
-    expect(metdata).toBeDefined();
-    expect(metdata.displayStyle).toBe('line');
-    expect(metdata.minLength).toBe(5);
-    expect(metdata.maxLength).toBe(100);
+    const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'name', DecoratorTypes.STRING);
+    expect(metadata).toBeDefined();
+    expect(metadata.displayStyle).toBe('line');
+    expect(metadata.minLength).toBe(5);
+    expect(metadata.maxLength).toBe(100);
 });
 test('nameDropdown should have stringDropdown Metadata', () => {
-    const metdata = EntityUtilities.getPropertyMetadata(testEntity, 'nameDropdown', DecoratorTypes.STRING_DROPDOWN);
-    expect(metdata).toBeDefined();
-    expect(metdata.displayStyle).toBe('dropdown');
-    expect(metdata.dropdownValues).toEqual([
+    const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'nameDropdown', DecoratorTypes.STRING_DROPDOWN);
+    expect(metadata).toBeDefined();
+    expect(metadata.displayStyle).toBe('dropdown');
+    expect(metadata.dropdownValues).toEqual([
         { displayName: 'John Smith', value: 'johnSmith' },
         { displayName: 'Jane Smith', value: 'janeSmith' }
     ]);
 });
 test('should have stringAutocomplete Metadata', () => {
-    const metdata = EntityUtilities.getPropertyMetadata(
+    const metadata = EntityUtilities.getPropertyMetadata(
         testEntity,
         'nameAutocomplete',
         DecoratorTypes.STRING_AUTOCOMPLETE
     );
-    expect(metdata).toBeDefined();
-    expect(metdata.displayStyle).toBe('autocomplete');
-    expect(metdata.autocompleteValues).toEqual(['Mr.', 'Ms.']);
+    expect(metadata).toBeDefined();
+    expect(metadata.displayStyle).toBe('autocomplete');
+    expect(metadata.autocompleteValues).toEqual(['Mr.', 'Ms.']);
 });
