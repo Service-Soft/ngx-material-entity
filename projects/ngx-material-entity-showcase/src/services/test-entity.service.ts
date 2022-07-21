@@ -7,6 +7,7 @@ import { environment } from '../environments/environment';
 @Injectable({
     providedIn: 'root'
 })
+// eslint-disable-next-line jsdoc/require-jsdoc
 export class TestEntityService extends EntityService<TestEntity> {
     baseUrl: string = `${environment.apiUrl}/testEntities`;
 

@@ -28,6 +28,10 @@ export function getValidationErrorMessage(model: NgModel): string {
     else if (model.hasError('required')) {
         return 'required';
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    else if (model.hasError('pattern') && model.getError('pattern').requiredPattern === '^true$') {
+        return 'needs to be selected';
+    }
     else {
         return 'invalid input';
     }

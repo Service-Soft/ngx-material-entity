@@ -19,6 +19,10 @@ abstract class ObjectDecoratorConfig<EntityType extends Entity> extends Property
     displayStyle!: 'inline';
 }
 
+/**
+ * The configuration options for a object property.
+ */
 export interface DefaultObjectDecoratorConfig<EntityType extends Entity> extends ObjectDecoratorConfig<EntityType> {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'inline'
 }

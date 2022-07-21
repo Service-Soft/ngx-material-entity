@@ -8,12 +8,16 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { NgxMatEntityArrayTableModule } from './array-table/array-table.module';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
-    declarations: [NgxMatEntityInputComponent],
+    declarations: [
+        NgxMatEntityInputComponent,
+    ],
     imports: [
         CommonModule,
         MatInputModule,
@@ -23,9 +27,11 @@ import { MatIconModule } from '@angular/material/icon';
         MatAutocompleteModule,
         MatCheckboxModule,
         MatSlideToggleModule,
-        NgxMatEntityArrayTableModule,
         MatChipsModule,
-        MatIconModule
+        MatIconModule,
+        MatTableModule,
+        MatDialogModule,
+        MatButtonModule
     ],
     exports: [NgxMatEntityInputComponent]
 })

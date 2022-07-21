@@ -1,9 +1,15 @@
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig } from './number-decorator.data';
 
+/**
+ * The internal DefaultNumberDecoratorConfig. Sets default values.
+ */
 export class DefaultNumberDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DefaultNumberDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'line';
+    // eslint-disable-next-line jsdoc/require-jsdoc
     min?: number;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     max?: number;
 
     constructor(data: DefaultNumberDecoratorConfig) {
@@ -14,8 +20,13 @@ export class DefaultNumberDecoratorConfigInternal extends PropertyDecoratorConfi
     }
 }
 
+/**
+ * The internal DropdownNumberDecoratorConfig. Sets default values.
+ */
 export class DropdownNumberDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DropdownNumberDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown';
+    // eslint-disable-next-line jsdoc/require-jsdoc
     dropdownValues: { displayName: string, value: number }[];
 
     constructor(data: DropdownNumberDecoratorConfig) {

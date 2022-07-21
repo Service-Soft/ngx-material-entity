@@ -10,7 +10,7 @@ export class TestEntityService extends EntityService<TestEntity> {
 
 const apiTestData: TestEntity[] = [];
 
-// TODO: Entites need to be created with new constructor. Otherwise the decorator metadata is missing.
+// TODO: Entities need to be created with new constructor. Otherwise the decorator metadata is missing.
 // SOLUTIONS: Disable direct creation via JSON.
 
 test('should request TestEntities', async () => {

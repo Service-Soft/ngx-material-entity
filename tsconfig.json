@@ -1,5 +1,11 @@
 {
     "compileOnSave": false,
+    "ts-node": {
+        // these options are overrides used only by ts-node
+        "compilerOptions": {
+            "module": "commonjs"
+        }
+    },
     "compilerOptions": {
         "baseUrl": "./",
         "outDir": "./dist/out-tsc",
@@ -20,6 +26,7 @@
         "downlevelIteration": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "module": "es2022",
         "moduleResolution": "node",
         "importHelpers": true,
         "target": "es2022",

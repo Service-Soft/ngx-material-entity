@@ -1,10 +1,9 @@
 import { isEqual } from 'lodash';
 import { DecoratorType, DecoratorTypes } from '../decorators/base/decorator-types.enum';
-import { cols } from '../decorators/base/property-decorator.data';
 import { Entity } from './entity-model.class';
 import { PropertyDecoratorConfigInternal } from '../decorators/base/property-decorator-internal.data';
 import { EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
-import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../decorators/string/string-decorator-internal.data';
+import { DefaultStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../decorators/string/string-decorator-internal.data';
 import { DefaultNumberDecoratorConfigInternal } from '../decorators/number/number-decorator-internal.data';
 
 /**
@@ -20,10 +19,10 @@ export abstract class EntityUtilities {
      */
     static getOmitForUpdate<EntityType extends Entity>(entity: EntityType): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
-        for (const key of Reflect.ownKeys(entity)) {
-            const metadata = Reflect.getMetadata('metadata', entity, key) as PropertyDecoratorConfigInternal;
+        for (const key of EntityUtilities.keysOf(entity)) {
+            const metadata = EntityUtilities.getPropertyMetadata(entity, key);
             if (metadata.omitForUpdate) {
-                res.push(key as keyof EntityType);
+                res.push(key);
             }
         }
         return res;
@@ -37,10 +36,10 @@ export abstract class EntityUtilities {
      */
     static getOmitForCreate<EntityType extends Entity>(entity: EntityType): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
-        for (const key of Reflect.ownKeys(entity)) {
-            const metadata = Reflect.getMetadata('metadata', entity, key) as PropertyDecoratorConfigInternal;
+        for (const key of EntityUtilities.keysOf(entity)) {
+            const metadata = EntityUtilities.getPropertyMetadata(entity, key);
             if (metadata.omitForCreate) {
-                res.push(key as keyof EntityType);
+                res.push(key);
             }
         }
         return res;
@@ -59,7 +58,7 @@ export abstract class EntityUtilities {
         entity: EntityType,
         propertyKey: keyof EntityType,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        type: T
+        type?: T
     ): DecoratorType<T> {
         try {
             const metadata = Reflect.getMetadata('metadata', entity, propertyKey as string) as DecoratorType<T>;
@@ -142,9 +141,9 @@ export abstract class EntityUtilities {
             Reflect.set(target, key, value);
         }
     }
-    // eslint-disable-next-line @typescript-eslint/member-ordering
+    // eslint-disable-next-line @typescript-eslint/member-ordering, jsdoc/require-jsdoc
     static construct = this.new;
-    // eslint-disable-next-line @typescript-eslint/member-ordering
+    // eslint-disable-next-line @typescript-eslint/member-ordering, jsdoc/require-jsdoc
     static build = this.new;
 
     /**
@@ -152,7 +151,7 @@ export abstract class EntityUtilities {
      * Also checks all the validators given by the metadata ("required", "maxLength" etc.).
      *
      * @param entity - The entity to validate.
-     * @param omit - Whether to check for creatiung or editing validity.
+     * @param omit - Whether to check for creating or editing validity.
      * @returns Whether or not the entity is valid.
      */
     static isEntityValid<EntityType extends Entity>(entity: EntityType, omit: 'create' | 'update'): boolean {
@@ -181,7 +180,6 @@ export abstract class EntityUtilities {
         const metadata: PropertyDecoratorConfigInternal = this.getPropertyMetadata(entity, key, type);
         const metadataDefaultString = metadata as DefaultStringDecoratorConfigInternal;
         const metadataTextboxString = metadata as TextboxStringDecoratorConfigInternal;
-        const metadataAutocompleteString = metadata as AutocompleteStringDecoratorConfigInternal;
         const metadataDefaultNumber = metadata as DefaultNumberDecoratorConfigInternal;
         const objectProperty = entity[key] as unknown as EntityType;
         const metadataEntityArray = metadata as EntityArrayDecoratorConfigInternal<Entity>;
@@ -197,7 +195,14 @@ export abstract class EntityUtilities {
             return false;
         }
         switch (type) {
+            case DecoratorTypes.BOOLEAN_DROPDOWN:
+            case DecoratorTypes.BOOLEAN_CHECKBOX:
+            case DecoratorTypes.BOOLEAN_TOGGLE:
+                return true;
+            case DecoratorTypes.STRING_DROPDOWN:
+                return true;
             case DecoratorTypes.STRING:
+            case DecoratorTypes.STRING_AUTOCOMPLETE:
                 if (
                     metadataDefaultString.maxLength
                     && (entity[key] as unknown as string).length > metadataDefaultString.maxLength
@@ -217,26 +222,6 @@ export abstract class EntityUtilities {
                     return false;
                 }
                 break;
-            case DecoratorTypes.STRING_AUTOCOMPLETE:
-                if (
-                    metadataAutocompleteString.maxLength
-                    && (entity[key] as unknown as string).length > metadataAutocompleteString.maxLength
-                ) {
-                    return false;
-                }
-                if (
-                    metadataAutocompleteString.minLength
-                    && (entity[key] as unknown as string).length < metadataAutocompleteString.minLength
-                ) {
-                    return false;
-                }
-                if (
-                    metadataAutocompleteString.regex
-                    && !(entity[key] as unknown as string).match(metadataAutocompleteString.regex)
-                ) {
-                    return false;
-                }
-                break;
             case DecoratorTypes.STRING_TEXTBOX:
                 if (
                     metadataTextboxString.maxLength
@@ -251,6 +236,8 @@ export abstract class EntityUtilities {
                     return false;
                 }
                 break;
+            case DecoratorTypes.NUMBER_DROPDOWN:
+                return true;
             case DecoratorTypes.NUMBER:
                 if (metadataDefaultNumber.max && (entity[key] as unknown as number) > metadataDefaultNumber.max) {
                     return false;
@@ -331,20 +318,20 @@ export abstract class EntityUtilities {
      * @returns 0 if both values have the same order, a negative value if X, a positive value if Y.
      */
     static compareOrder<EntityType extends Entity>(a: keyof EntityType, b: keyof EntityType, entity: EntityType): number {
-        const metadataA = EntityUtilities.getPropertyMetadata(entity, a, EntityUtilities.getPropertyType(entity, a));
-        const metadataB = EntityUtilities.getPropertyMetadata(entity, b, EntityUtilities.getPropertyType(entity, b));
+        const metadataA = EntityUtilities.getPropertyMetadata(entity, a);
+        const metadataB = EntityUtilities.getPropertyMetadata(entity, b);
 
-        if (metadataA.order === -1) {
-            if (metadataB.order === -1) {
+        if (metadataA.position.order === -1) {
+            if (metadataB.position.order === -1) {
                 return 0;
             }
             return 1;
         }
-        else if (metadataB.order === -1) {
+        else if (metadataB.position.order === -1) {
             return -1;
         }
 
-        return ((metadataA.order ) - (metadataB.order ));
+        return ((metadataA.position.order ) - (metadataB.position.order ));
     }
 
     /**
@@ -352,13 +339,11 @@ export abstract class EntityUtilities {
      *
      * @param entity - Entity to get the bootstrap column values of the key.
      * @param key - Key of the property to get bootstrap column values from.
-     * @param type - Defines for which screensize the column values should be returned.
+     * @param type - Defines for which screen size the column values should be returned.
      * @returns Bootstrap column value.
      */
     static getWidth<EntityType extends Entity>(entity: EntityType, key: keyof EntityType, type: 'lg' | 'md' | 'sm'): number {
-        const propertyType = EntityUtilities.getPropertyType(entity, key);
-        const metadata = EntityUtilities.getPropertyMetadata(entity, key, propertyType);
-        metadata.defaultWidths = metadata.defaultWidths as [cols, cols, cols];
+        const metadata = EntityUtilities.getPropertyMetadata(entity, key);
         switch (type) {
             case 'lg':
                 return metadata.defaultWidths[0];
@@ -380,4 +365,91 @@ export abstract class EntityUtilities {
             Reflect.set(entity, key, Reflect.get(entityPriorChanges, key));
         }
     }
+
+    /**
+     * Gets the rows that are used to display the given entity.
+     *
+     * @param entity - The entity to get the rows from.
+     * @param hideOmitForCreate - Whether or not keys with the metadata omitForCreate should be filtered out.
+     * @param hideOmitForEdit - Whether or not keys with the metadata omitForUpdate should be filtered out.
+     * @returns The sorted Rows containing the row number and the keys to display in that row.
+     */
+    static getEntityRows<EntityType extends Entity>(
+        entity: EntityType,
+        hideOmitForCreate: boolean = false,
+        hideOmitForEdit: boolean = false
+    ): EntityRow<EntityType>[] {
+        const res: EntityRow<EntityType>[] = [];
+
+        const keys: (keyof EntityType)[] = EntityUtilities.keysOf(entity, hideOmitForCreate, hideOmitForEdit);
+        const numberOfRows: number = EntityUtilities.getNumberOfRows<EntityType>(keys, entity);
+        for (let i = 1; i <= numberOfRows; i++) {
+            const row: EntityRow<EntityType> = {
+                row: i,
+                keys: EntityUtilities.getKeysForRow<EntityType>(keys, entity, i)
+            };
+            res.push(row);
+        }
+        const lastRow: EntityRow<EntityType> = {
+            row: numberOfRows + 1,
+            keys: EntityUtilities.getKeysForRow<EntityType>(keys, entity, -1)
+        };
+        res.push(lastRow);
+        return res;
+    }
+
+    private static getKeysForRow<EntityType extends Entity>(
+        keys: (keyof EntityType)[],
+        entity: EntityType,
+        i: number
+    ): (keyof EntityType)[] {
+        return keys
+            .filter(k => EntityUtilities.getPropertyMetadata(entity, k).position.row === i)
+            .sort((a, b) => EntityUtilities.compareOrder(a, b, entity));
+    }
+
+    private static getNumberOfRows<EntityType extends Entity>(keys: (keyof EntityType)[], entity: EntityType): number {
+        return keys
+            .map(k => EntityUtilities.getPropertyMetadata(entity, k).position.row)
+            .sort((a, b) => (a > b ? -1 : 1))[0];
+    }
+
+    /**
+     * Gets the keys of the provided entity correctly typed.
+     *
+     * @param entity - The entity to get the keys of.
+     * @param hideOmitForCreate - Whether or not keys with the metadata omitForCreate should be filtered out.
+     * @param hideOmitForEdit - Whether or not keys with the metadata omitForUpdate should be filtered out.
+     * @returns An array of keys of the entity.
+     */
+    static keysOf<EntityType extends Entity>(
+        entity: EntityType,
+        hideOmitForCreate: boolean = false,
+        hideOmitForEdit: boolean = false
+    ): (keyof EntityType)[] {
+        let keys: (keyof EntityType)[] = Reflect.ownKeys(entity) as (keyof EntityType)[];
+        if (hideOmitForCreate) {
+            const omitForCreateKeys: (keyof EntityType)[] = EntityUtilities.getOmitForCreate(entity);
+            keys = keys.filter(k => !omitForCreateKeys.includes(k));
+        }
+        if (hideOmitForEdit) {
+            const omitForUpdateKeys: (keyof EntityType)[] = EntityUtilities.getOmitForUpdate(entity);
+            keys = keys.filter(k => !omitForUpdateKeys.includes(k));
+        }
+        return keys;
+    }
+}
+
+/**
+ * A row that contains all the information about how to display an entity.
+ */
+export interface EntityRow<EntityType extends Entity> {
+    /**
+     * The row in which this should be displayed.
+     */
+    row: number,
+    /**
+     * The keys of the values that should be displayed in that row.
+     */
+    keys: (keyof EntityType)[]
 }

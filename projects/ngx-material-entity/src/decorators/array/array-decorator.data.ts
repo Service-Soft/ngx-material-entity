@@ -3,6 +3,9 @@ import { CreateDialogData } from '../../components/table/table-data';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 
+/**
+ * The configuration options for an array property displayed as a table.
+ */
 export interface ArrayTableDisplayColumn<EntityType extends Entity> {
     /**
      * The name inside the header.
@@ -33,7 +36,9 @@ abstract class ArrayDecoratorConfig extends PropertyDecoratorConfig {
  * Definition for an array of Entities.
  */
 export interface EntityArrayDecoratorConfig<EntityType extends Entity> extends ArrayDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.OBJECT,
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'table',
 
     /**
@@ -62,6 +67,20 @@ export interface EntityArrayDecoratorConfig<EntityType extends Entity> extends A
     createInline?: boolean,
 
     /**
+     * The label for the add button when createInline is true.
+     *
+     * @default 'Add'
+     */
+    addButtonLabel?: string,
+
+    /**
+     * The label for the remove button when createInline is true.
+     *
+     * @default 'Remove'
+     */
+    removeButtonLabel?: string,
+
+    /**
      * The error-message to display when the array is required but contains no values.
      */
     missingErrorMessage?: string
@@ -71,18 +90,17 @@ export interface EntityArrayDecoratorConfig<EntityType extends Entity> extends A
  * Definition for an array of strings displayed as a chips list.
  */
 export interface StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.STRING,
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'chips',
 
     /**
-     * The html inside the delete-button.
-     * Please note that custom tags such as <mat-icon></mat-icon>
-     * need to be defined as known elements, otherwise the sanitizer will remove them.
-     * You can however work around this by using `<span class="material-icons"></span>`.
+     * The class for the <i> tag used to remove an entry from the array.
      *
-     * @default <mat-icon>cancel</mat-icon>
+     * @default 'fas fa-circle-minus'
      */
-    deleteHtml?: string,
+    deleteIcon?: string,
     /**
      * The minimum required length of the string.
      */
@@ -101,18 +119,17 @@ export interface StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
  * Definition for an array of autocomplete strings displayed as a chips list.
  */
 export interface AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'chips',
 
     /**
-     * The html inside the delete-button.
-     * Please note that custom tags such as <mat-icon></mat-icon>
-     * need to be defined as known elements, otherwise the sanitizer will remove them.
-     * You can however work around this by using `<span class="material-icons"></span>`.
+     * The class for the <i> tag used to remove an entry from the array.
      *
-     * @default <mat-icon>cancel</mat-icon>
+     * @default 'fas fa-circle-minus'
      */
-    deleteHtml?: string,
+    deleteIcon?: string,
     /**
      * The autocomplete values.
      */

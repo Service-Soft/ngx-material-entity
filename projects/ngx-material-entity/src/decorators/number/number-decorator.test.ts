@@ -37,15 +37,15 @@ const testEntityData: TestEntity = {
 const testEntity = new TestEntity(testEntityData);
 
 test('number should have number Metadata', () => {
-    const metdata = EntityUtilities.getPropertyMetadata(testEntity, 'number', DecoratorTypes.NUMBER);
-    expect(metdata).toBeDefined();
-    expect(metdata.displayStyle).toBe('line');
+    const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'number', DecoratorTypes.NUMBER);
+    expect(metadata).toBeDefined();
+    expect(metadata.displayStyle).toBe('line');
 });
 test('should have numberDropdown Metadata', () => {
-    const metdata = EntityUtilities.getPropertyMetadata(testEntity, 'numberDropdown', DecoratorTypes.NUMBER_DROPDOWN);
-    expect(metdata).toBeDefined();
-    expect(metdata.displayStyle).toBe('dropdown');
-    expect(metdata.dropdownValues).toEqual([
+    const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'numberDropdown', DecoratorTypes.NUMBER_DROPDOWN);
+    expect(metadata).toBeDefined();
+    expect(metadata.displayStyle).toBe('dropdown');
+    expect(metadata.dropdownValues).toEqual([
         { displayName: '1', value: 1 },
         { displayName: '5', value: 5 },
         { displayName: '10', value: 10 },

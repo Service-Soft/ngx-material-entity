@@ -10,7 +10,11 @@ abstract class BooleanDecoratorConfig extends PropertyDecoratorConfig {
     displayStyle!: 'checkbox' | 'dropdown' | 'toggle';
 }
 
+/**
+ * The configuration options for a boolean property displayed in a dropdown.
+ */
 export interface DropdownBooleanDecoratorConfig extends BooleanDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown',
     /**
      * The name of the true value if displayStyle dropdown is used.
@@ -22,9 +26,17 @@ export interface DropdownBooleanDecoratorConfig extends BooleanDecoratorConfig {
     dropdownFalse: string
 }
 
+/**
+ * The configuration options for a boolean property displayed as a checkbox.
+ */
 export interface CheckboxBooleanDecoratorConfig extends BooleanDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'checkbox'
 }
+/**
+ * The configuration options for a boolean property displayed as a mat-toggle.
+ */
 export interface ToggleBooleanDecoratorConfig extends BooleanDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'toggle'
 }

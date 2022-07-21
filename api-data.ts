@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-jsdoc */
 import 'reflect-metadata';
 import { TestEntity, TestEntityMockBuilder } from './projects/ngx-material-entity/src/mocks/test-entity.mock';
 

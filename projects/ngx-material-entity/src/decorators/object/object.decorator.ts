@@ -5,7 +5,7 @@ import { DefaultObjectDecoratorConfig } from './object-decorator.data';
 import { DefaultObjectDecoratorConfigInternal } from './object-decorator-internal.data';
 
 /**
- * Decorator for setting and getting object propery metadata.
+ * Decorator for setting and getting object property metadata.
  *
  * @param metadata - The metadata of the object property.
  * @returns The method that defines the metadata.

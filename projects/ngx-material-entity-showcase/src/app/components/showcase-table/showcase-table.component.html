@@ -1,0 +1,24 @@
+<!-- <div class="row">
+    <ngx-mat-entity-input
+        *ngFor="let key of keys"
+        [entity]="tableConfig"
+        [propertyKey]="key"
+        [hideOmitForCreate]="true"
+        class="col-lg-{{EntityUtilities.getWidth(tableConfig, key, 'lg')}} col-md-{{EntityUtilities.getWidth(tableConfig, key, 'md')}} col-sm-{{EntityUtilities.getWidth(tableConfig, key, 'sm')}}"
+    >
+    </ngx-mat-entity-input>
+</div> -->
+
+<mat-form-field>
+    <mat-label>Table Configuration</mat-label>
+    <mat-select [(ngModel)]="selectedTableDataPreset" name="config" #config="ngModel">
+        <mat-option *ngFor="let value of tableDataPresets" (click)="refreshTable()" [value]="value">
+            {{value}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+<ngx-mat-entity-table *ngIf="showTable" [tableData]="tableData">
+</ngx-mat-entity-table>
+<ngx-mat-entity-table *ngIf="!showTable" [tableData]="tableData">
+</ngx-mat-entity-table>

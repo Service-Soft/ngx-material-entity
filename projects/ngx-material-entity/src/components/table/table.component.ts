@@ -17,6 +17,12 @@ import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from '.
 import { TableDataBuilder, TableDataInternal } from './table-data.builder';
 import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from '../table/edit-dialog/edit-entity-dialog.builder';
 
+/**
+ * Generates a fully functional table for displaying, creating, updating and deleting entities
+ * based on the configuration passed in the @Input "tableData".
+ *
+ * It offers a lot of customization options which can be found in "TableData".
+ */
 @Component({
     selector: 'ngx-mat-entity-table',
     templateUrl: './table.component.html',
@@ -43,8 +49,11 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
 
     constructor(private readonly dialog: MatDialog, private readonly injector: Injector) {}
 
+    /**
+     * Sets up all the configuration for the table and the EntityService.
+     */
     ngOnInit(): void {
-        this.data = new TableDataBuilder(this.tableData).tableData;
+        this.data = new TableDataBuilder(this.tableData).getResult();
 
         this.entityService = this.injector.get(this.data.baseData.EntityServiceClass) as EntityService<EntityType>;
 
@@ -78,6 +87,12 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
         this.entityService.read();
     }
 
+    /**
+     * Edits an entity. This either calls the edit-Method provided by the user or uses a default edit-dialog.
+     *
+     * @param entity - The entity that should be updated.
+     * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
+     */
     editEntity(entity: EntityType): void {
         if (this.data.baseData.allowEdit(entity)) {
             if (!this.data.baseData.EntityClass) {
@@ -91,6 +106,7 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
             }
         }
     }
+
     private editDefault(entity: EntityType): void {
         const inputDialogData: EditEntityDialogData<EntityType> = {
             entity: entity,
@@ -98,7 +114,7 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
             allowDelete: this.data.baseData.allowDelete,
             editDialogData: this.data.editDialogData
         }
-        const dialogData: EditEntityDialogDataInternal<EntityType> = new EditEntityDialogDataBuilder(inputDialogData).editDialogData;
+        const dialogData: EditEntityDialogDataInternal<EntityType> = new EditEntityDialogDataBuilder(inputDialogData).getResult();
         firstValueFrom(
             this.dialog.open(NgxMatEntityEditDialogComponent, {
                 data: dialogData,
@@ -116,6 +132,11 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
         });
     }
 
+    /**
+     * Creates a new Entity. This either calls the create-Method provided by the user or uses a default create-dialog.
+     *
+     * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
+     */
     createEntity(): void {
         if (this.data.baseData.allowCreate) {
             if (!this.data.baseData.EntityClass) {
@@ -129,6 +150,7 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
             }
         }
     }
+
     private createDefault(entity: EntityType): void {
         const dialogData: CreateEntityDialogDataInternal<EntityType> = new CreateEntityDialogDataBuilder(
             {
@@ -136,7 +158,7 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
                 EntityServiceClass: this.data.baseData.EntityServiceClass,
                 createDialogData: this.data.createDialogData
             }
-        ).createDialogData;
+        ).getResult();
         this.dialog.open(NgxMatEntityCreateDialogComponent, {
             data: dialogData,
             minWidth: '60%',
@@ -145,28 +167,42 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
         });
     }
 
+    /**
+     * Runs the MultiAction for all selected entries.
+     * Also handles confirmation with an additional dialog if configured.
+     *
+     * @param action - The MultiAction to run.
+     */
     runMultiAction(action: MultiSelectAction<EntityType>): void {
         if (!action.requireConfirmDialog || !action.requireConfirmDialog(this.selection.selected)) {
             return this.confirmRunMultiAction(action);
         }
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(action.confirmDialogData)
-            .withDefaultText([`Do you really want to run this action on ${this.selection.selected.length} entries?`])
-            .withDefaultTitle(action.displayName).confirmDialogData;
-        const dialogref = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+            .withDefault('text', [`Do you really want to run this action on ${this.selection.selected.length} entries?`])
+            .withDefault('title', action.displayName)
+            .getResult();
+        const dialogRef = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false
         });
-        dialogref.afterClosed().subscribe((res: number) => {
+        dialogRef.afterClosed().subscribe((res: number) => {
             if (res === 1) {
                 this.confirmRunMultiAction(action);
             }
         });
     }
+
     private confirmRunMultiAction(action: MultiSelectAction<EntityType>): void {
         action.action(this.selection.selected);
     }
 
+    /**
+     * Checks if an MultiAction is disabled (e.g. Because no entries have been selected).
+     *
+     * @param action - The MultiAction to check.
+     * @returns Whether or not the Action can be used.
+     */
     multiActionDisabled(action: MultiSelectAction<EntityType>): boolean {
         if (!this.selection.selected.length) {
             return true;
@@ -177,6 +213,9 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
         return false;
     }
 
+    /**
+     * Toggles all entries in the table.
+     */
     masterToggle(): void {
         if (this.isAllSelected()) {
             this.selection.clear();
@@ -186,6 +225,12 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
         }
     }
 
+    /**
+     * Checks if all entries in the table have been selected.
+     * This is needed to display the "masterToggle"-checkbox correctly.
+     *
+     * @returns Whether or not all entries in the table have been selected.
+     */
     isAllSelected(): boolean {
         const numSelected = this.selection.selected.length;
         const numRows = this.dataSource.data.length;
@@ -197,6 +242,11 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
         this.onDestroy.complete();
     }
 
+    /**
+     * Applies the search input to filter the table entries.
+     *
+     * @param event - The keyup-event which contains the search-string of the user.
+     */
     applyFilter(event: Event): void {
         const filterValue = (event.target as HTMLInputElement).value;
         this.dataSource.filter = filterValue.trim().toLowerCase();

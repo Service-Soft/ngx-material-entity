@@ -1,15 +1,17 @@
 <h2 mat-dialog-title>{{data.createDialogData.title}}</h2>
 
 <mat-dialog-content>
-    <form #form="ngForm" class="row">
-        <ngx-mat-entity-input
-            *ngFor="let key of entityKeys"
-            [entity]="data.entity"
-            [propertyKey]="key"
-            [hideOmitForCreate]="true"
-            class="col-lg-{{getWidth(data.entity, key, 'lg')}} col-md-{{getWidth(data.entity, key, 'md')}} col-sm-{{getWidth(data.entity, key, 'sm')}}"
-        >
-        </ngx-mat-entity-input>
+    <form #form="ngForm">
+        <div class="row" *ngFor="let row of entityRows">
+            <ngx-mat-entity-input
+                *ngFor="let key of row.keys"
+                [entity]="data.entity"
+                [propertyKey]="key"
+                [hideOmitForCreate]="true"
+                class="col-lg-{{getWidth(data.entity, key, 'lg')}} col-md-{{getWidth(data.entity, key, 'md')}} col-sm-{{getWidth(data.entity, key, 'sm')}}"
+            >
+            </ngx-mat-entity-input>
+        </div>
     </form>
 </mat-dialog-content>
 

@@ -76,23 +76,31 @@
     <!-----------------Booleans------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_CHECKBOX">
-        <mat-form-field>
-            <mat-checkbox [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required">
-                {{metadata.displayName}}
-            </mat-checkbox>
+        <mat-form-field class="hideUnderline">
+            <mat-label>{{metadata.displayName}}</mat-label>
+            <mat-checkbox (click)="model.control.markAsTouched()" [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()"></mat-checkbox>
             <!-- hidden input is needed so that the checkbox can be used inside a mat-form-field -->
-            <textarea matInput hidden></textarea>
+            <input matInput hidden
+                [(ngModel)]="entity[propertyKey]"
+                [name]="propertyKey.toString() + 'Helper'"
+                #model="ngModel"
+                [pattern]="metadata.required ? 'true' : '[\\s\\S]*'"
+                [required]="metadata.required">
             <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
         </mat-form-field>
     </div>
 
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_TOGGLE">
-        <mat-form-field>
-            <mat-slide-toggle [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required">
-                {{metadata.displayName}}
-            </mat-slide-toggle>
+        <mat-form-field class="hideUnderline">
+            <mat-label>{{metadata.displayName}}</mat-label>
+            <mat-slide-toggle (click)="model.control.markAsTouched()" [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()"></mat-slide-toggle>
             <!-- hidden input is needed so that the toggle can be used inside a mat-form-field -->
-            <textarea matInput hidden></textarea>
+            <input matInput hidden
+                [(ngModel)]="entity[propertyKey]"
+                [name]="propertyKey.toString() + 'Helper'"
+                #model="ngModel"
+                [pattern]="metadata.required ? 'true' : '[\\s\\S]*'"
+                [required]="metadata.required">
             <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
         </mat-form-field>
     </div>
@@ -145,7 +153,8 @@
     <div *ngSwitchCase="DecoratorTypes.OBJECT">
         <b>{{metadataDefaultObject.displayName}}</b>
         <!-- iterates over the object properties -->
-        <div class="row">
+
+        <div class="row" *ngFor="let row of objectPropertyRows">
             <!--
                 displays another ngx-material-entity with the:
                 object as the entity,
@@ -153,7 +162,7 @@
                 and the getValidationErrorMessage of the current component
             -->
             <ngx-mat-entity-input
-                *ngFor="let key of getObjectProperties(); let i = index; trackBy: trackByFn"
+                *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
                 [entity]="objectProperty"
                 [propertyKey]="key"
                 [getValidationErrorMessage]="getValidationErrorMessage"
@@ -168,14 +177,67 @@
     <!-------------------------------------------->
     <!-------------------Array-------------------->
     <!-------------------------------------------->
-    <div *ngSwitchCase="DecoratorTypes.ARRAY">
-        <ngx-mat-entity-array-table
-            [arrayItems]="entityArrayValues"
-            [metadata]="metadataEntityArray"
-            [getValidationErrorMessage]="getValidationErrorMessage"
-            [omit]="hideOmitForCreate ? 'create' : 'update'"
-        >
-        </ngx-mat-entity-array-table>
+    <div class="entityArray" *ngSwitchCase="DecoratorTypes.ARRAY">
+        <div class="mat-elevation-z8" style="border-radius: 5px;padding: 15px;margin-bottom: 15px;margin-top: 15px;">
+
+            <div style="padding-bottom: 10px">
+                <b>{{metadataEntityArray.displayName}}</b>
+            </div>
+            <div *ngIf="metadataEntityArray.createInline">
+                <div class="row" *ngFor="let row of arrayItemInlineRows">
+                    <ngx-mat-entity-input
+                        *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
+                        [entity]="arrayItem"
+                        [propertyKey]="key"
+                        [hideOmitForCreate]="true"
+                        [getValidationErrorMessage]="getValidationErrorMessage"
+                        class="col-lg-{{getWidth(arrayItem, key, 'lg')}} col-md-{{getWidth(arrayItem, key, 'md')}} col-sm-{{getWidth(arrayItem, key, 'sm')}}"
+                    >
+                    </ngx-mat-entity-input>
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button mat-raised-button
+                    [disabled]="metadataEntityArray.createInline && !EntityUtilities.isEntityValid(arrayItem, 'create')"
+                    (click)="add()">
+                    {{metadataEntityArray.addButtonLabel}}
+                </button>
+                <button mat-raised-button
+                    [disabled]="!selection.selected.length"
+                    (click)="remove()">
+                    {{metadataEntityArray.removeButtonLabel}}
+                </button>
+            </div>
+        
+            <mat-table [dataSource]="dataSource">
+                <!-- select Column -->
+                <ng-container matColumnDef="select">
+                    <mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox [disabled]="!dataSource.data.length" (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()" [indeterminate]="selection.hasValue() && !isAllSelected()"></mat-checkbox>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let module" class="module">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(module) : null" [checked]="selection.isSelected(module)"></mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+            
+                <ng-container *ngFor="let dCol of metadataEntityArray.displayColumns" [matColumnDef]="dCol.displayName">
+                    <mat-header-cell *matHeaderCellDef>
+                        {{dCol.displayName}}
+                    </mat-header-cell>
+                    <mat-cell class="entity" *matCellDef="let entity">
+                        {{dCol.value(entity)}}
+                    </mat-cell>
+                </ng-container>
+            
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+        
+            <div class="array-error" *ngIf="metadataEntityArray.required && !dataSource.data.length">
+                {{metadataEntityArray.missingErrorMessage}}
+            </div>
+        </div>
     </div>
 
     <div *ngSwitchCase="DecoratorTypes.ARRAY_STRING_CHIPS">
@@ -187,10 +249,8 @@
             >
                 <mat-chip *ngFor="let value of stringChipsArrayValues" (removed)="removeStringChipArrayValue(value)">
                     {{value}}
-                    <button matChipRemove *ngIf="metadataStringChipsArray.deleteHtml" [innerHtml]="metadataStringChipsArray.deleteHtml">
-                    </button>
-                    <button matChipRemove *ngIf="!metadataStringChipsArray.deleteHtml">
-                        <mat-icon>cancel</mat-icon>
+                    <button matChipRemove>
+                        <i class="{{metadataStringChipsArray.deleteIcon}}"></i>
                     </button>
                 </mat-chip>
                 <input matInput
@@ -217,10 +277,8 @@
             >
                 <mat-chip *ngFor="let value of stringChipsArrayValues" (removed)="removeStringChipArrayValue(value)">
                     {{value}}
-                    <button matChipRemove *ngIf="metadataStringChipsArray.deleteHtml" [innerHtml]="metadataStringChipsArray.deleteHtml">
-                    </button>
-                    <button matChipRemove *ngIf="!metadataStringChipsArray.deleteHtml">
-                        <mat-icon>cancel</mat-icon>
+                    <button matChipRemove>
+                        <i class="{{metadataStringChipsArray.deleteIcon}}"></i>
                     </button>
                 </mat-chip>
                 <input matInput
@@ -246,5 +304,38 @@
         </mat-form-field>
     </div>
 
-    <div *ngSwitchDefault>ERROR: The type {{type}}is not known.</div>
+    <div *ngSwitchDefault>ERROR: The type {{type}} is not known.</div>
 </div>
+
+<!--------------------------------------------------------->
+<!--------------------Add Array Item Dialog---------------->
+<!--------------------------------------------------------->
+<ng-template #addArrayItemDialog>
+    <h2 mat-dialog-title>{{dialogData.createDialogData.title}}</h2>
+
+    <mat-dialog-content>
+        <form #form="ngForm" class="row">
+            <div class="row" *ngFor="let row of arrayItemDialogRows">
+                <ngx-mat-entity-input
+                    *ngFor="let key of row.keys"
+                    [entity]="dialogData.entity"
+                    [propertyKey]="key"
+                    [hideOmitForCreate]="true"
+                    [getValidationErrorMessage]="dialogData.getValidationErrorMessage"
+                    class="col-lg-{{getWidth(dialogData.entity, key, 'lg')}} col-md-{{getWidth(dialogData.entity, key, 'md')}} col-sm-{{getWidth(dialogData.entity, key, 'sm')}}"
+                >
+                </ngx-mat-entity-input>
+            </div>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+        <button mat-raised-button (click)="addArrayItem()" [disabled]="!EntityUtilities.isEntityValid(dialogData.entity, 'create')">
+            {{dialogData.createDialogData.createButtonLabel}}
+        </button>
+        <button mat-raised-button (click)="cancelAddArrayItem()" class="cancel-button">
+            {{dialogData.createDialogData.cancelButtonLabel}}
+        </button>
+    </mat-dialog-actions>
+
+</ng-template>

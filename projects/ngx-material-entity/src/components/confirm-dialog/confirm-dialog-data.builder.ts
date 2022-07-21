@@ -1,12 +1,23 @@
+import { BaseBuilder } from '../../classes/base-builder.class';
 import { ConfirmDialogData, ConfirmDialogTypes } from './confirm-dialog-data';
 
+/**
+ * The internal ConfirmDialogData. Requires all default values the user can leave out.
+ */
 export class ConfirmDialogDataInternal implements ConfirmDialogData {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     text: string[];
+    // eslint-disable-next-line jsdoc/require-jsdoc
     type: ConfirmDialogTypes;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     confirmButtonLabel: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     cancelButtonLabel: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     title: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     requireConfirmation: boolean;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     confirmationText?: string;
 
     constructor(
@@ -28,14 +39,18 @@ export class ConfirmDialogDataInternal implements ConfirmDialogData {
     }
 }
 
-export class ConfirmDialogDataBuilder {
-    confirmDialogData: ConfirmDialogDataInternal;
-    private readonly dataInput?: ConfirmDialogData;
+/**
+ * The Builder for the ConfirmDialogData. Sets default values.
+ */
+export class ConfirmDialogDataBuilder extends BaseBuilder<ConfirmDialogDataInternal, ConfirmDialogData> {
 
     constructor(data?: ConfirmDialogData) {
-        this.validateInput(data);
-        this.dataInput = data;
-        this.confirmDialogData = new ConfirmDialogDataInternal(
+        super(data);
+    }
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    protected override generateBaseData(data?: ConfirmDialogData): ConfirmDialogDataInternal {
+        return new ConfirmDialogDataInternal(
             data?.text ? data.text : ['Do you really want to do this?'],
             data?.type ? data.type : 'default',
             data?.confirmButtonLabel ? data.confirmButtonLabel : 'Confirm',
@@ -44,10 +59,10 @@ export class ConfirmDialogDataBuilder {
             data?.requireConfirmation ? data.requireConfirmation : false,
             data?.confirmationText
         );
-        return this;
     }
 
-    private validateInput(data?: ConfirmDialogData): void {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    protected override validateInput(data?: ConfirmDialogData): void {
         if (!data) {
             return;
         }
@@ -61,54 +76,5 @@ export class ConfirmDialogDataBuilder {
         if (data.type === 'info-only' && data.cancelButtonLabel) {
             throw new Error('The "cancelButtonLabel" will never be shown because "type" is set to "info-only"');
         }
-    }
-
-    withDefaultText(text: string[]): ConfirmDialogDataBuilder {
-        if (!this.dataInput?.text) {
-            this.confirmDialogData.text = text;
-        }
-        return this;
-    }
-
-    withDefaultType(type: ConfirmDialogTypes): ConfirmDialogDataBuilder {
-        if (!this.dataInput?.type) {
-            this.confirmDialogData.type = type;
-        }
-        return this;
-    }
-
-    withDefaultConfirmButtonLabel(label: string): ConfirmDialogDataBuilder {
-        if (!this.dataInput?.confirmButtonLabel) {
-            this.confirmDialogData.confirmButtonLabel = label;
-        }
-        return this;
-    }
-
-    withDefaultCancelButtonLabel(label: string): ConfirmDialogDataBuilder {
-        if (!this.dataInput?.cancelButtonLabel) {
-            this.confirmDialogData.cancelButtonLabel = label;
-        }
-        return this;
-    }
-
-    withDefaultTitle(title: string): ConfirmDialogDataBuilder {
-        if (!this.dataInput?.title) {
-            this.confirmDialogData.title = title;
-        }
-        return this;
-    }
-
-    withDefaultRequireConfirmation(requireConfirmation: boolean): ConfirmDialogDataBuilder {
-        if (this.dataInput?.requireConfirmation === undefined) {
-            this.confirmDialogData.requireConfirmation = requireConfirmation;
-        }
-        return this;
-    }
-
-    withDefaultConfirmationText(confirmationText: string): ConfirmDialogDataBuilder {
-        if (!this.dataInput?.confirmationText) {
-            this.confirmDialogData.confirmationText = confirmationText;
-        }
-        return this;
     }
 }

@@ -1,5 +1,5 @@
-<div style="padding: 50px;">
-    <ngx-mat-entity-table [tableData]="tableData">
-    </ngx-mat-entity-table>
-</div>
-<router-outlet></router-outlet>
+<app-navbar [minHeight]="70" [minSidenavWidth]="'30%'" [minHeightOtherElements]="70" [navbarRows]="navbarRows">
+    <router-outlet></router-outlet>
+</app-navbar>
+
+<app-footer [minHeight]="70"></app-footer>

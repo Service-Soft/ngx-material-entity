@@ -7,14 +7,15 @@ import { expect } from '@jest/globals';
 
 describe('baseProperty', () => {
     test('id should have base Metadata', () => {
-        const metdata = EntityUtilities.getPropertyMetadata(new TestEntityMockBuilder().testEntity, 'id', DecoratorTypes.STRING);
-        expect(metdata).toBeDefined();
-        expect(metdata.display).toBe(false);
-        expect(metdata.displayName).toBe('ID');
-        expect(metdata.omitForCreate).toBe(true);
-        expect(metdata.omitForUpdate).toBe(true);
-        expect(metdata.required).toBe(true);
+        const metadata = EntityUtilities.getPropertyMetadata(new TestEntityMockBuilder().testEntity, 'id', DecoratorTypes.STRING);
+        expect(metadata).toBeDefined();
+        expect(metadata.display).toBe(false);
+        expect(metadata.displayName).toBe('ID');
+        expect(metadata.omitForCreate).toBe(true);
+        expect(metadata.omitForUpdate).toBe(true);
+        expect(metadata.required).toBe(true);
     });
+
     test('should throw error for incorrect order metadata', () => {
         expect(
             () => {
@@ -22,7 +23,9 @@ describe('baseProperty', () => {
                     @string({
                         displayStyle: 'line',
                         displayName: 'Wrong Order Value',
-                        order: -1
+                        position: {
+                            order: -1
+                        }
                     })
                     wrongOrderValue!: string;
 
@@ -36,6 +39,55 @@ describe('baseProperty', () => {
                     wrongOrderValue: '42'
                 });
             }
-        ).toThrow('order must be at least 0');
+        ).toThrow('order must be at least 1');
+        expect(
+            () => {
+                class BasePropertyTestEntity extends Entity {
+                    @string({
+                        displayStyle: 'line',
+                        displayName: 'Wrong Order Value',
+                        position: {
+                            order: 13
+                        }
+                    })
+                    wrongOrderValue!: string;
+
+                    constructor(entity?: BasePropertyTestEntity) {
+                        super();
+                        EntityUtilities.new(this, entity);
+                    }
+                }
+                new BasePropertyTestEntity({
+                    id: '1',
+                    wrongOrderValue: '42'
+                });
+            }
+        ).toThrow('order cannot be bigger than 12 (the minimum value for a bootstrap column)');
+    });
+
+    test('should throw error for incorrect row metadata', () => {
+        expect(
+            () => {
+                class BasePropertyTestEntity extends Entity {
+                    @string({
+                        displayStyle: 'line',
+                        displayName: 'Wrong Row Value',
+                        position: {
+                            row: -1
+                        }
+                    })
+                    wrongRowValue!: string;
+
+                    constructor(entity?: BasePropertyTestEntity) {
+                        super();
+                        EntityUtilities.new(this, entity);
+                    }
+                }
+                new BasePropertyTestEntity({
+                    id: '1',
+                    wrongRowValue: '42'
+                });
+            }
+        ).toThrow('row must be at least 1');
     });
 });

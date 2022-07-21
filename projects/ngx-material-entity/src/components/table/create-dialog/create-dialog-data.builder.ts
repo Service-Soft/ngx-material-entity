@@ -1,11 +1,20 @@
+import { BaseBuilder } from '../../../classes/base-builder.class';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { CreateDialogData } from '../table-data';
 
+/**
+ * The internal CreateDialogData. Requires all default values the user can leave out.
+ */
 export class CreateDialogDataInternal implements CreateDialogData {
+    // eslint-disable-next-line jsdoc/require-jsdoc
     title: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     createButtonLabel: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     cancelButtonLabel: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     createRequiresConfirmDialog: boolean;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     confirmCreateDialogData: ConfirmDialogDataInternal;
 
     constructor(
@@ -23,60 +32,28 @@ export class CreateDialogDataInternal implements CreateDialogData {
     }
 }
 
-export class CreateDialogDataBuilder {
-    createDialogData: CreateDialogDataInternal;
-    private readonly dataInput?: CreateDialogData;
+/**
+ * The Builder for the CreateDialogData. Sets default values.
+ */
+export class CreateDialogDataBuilder extends BaseBuilder<CreateDialogDataInternal, CreateDialogData> {
 
     constructor(data?: CreateDialogData) {
-        // this.validateInput(data);
-        this.dataInput = data;
+        super(data);
+    }
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    protected generateBaseData(data?: CreateDialogData): CreateDialogDataInternal {
         const confirmCreateDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(data?.confirmCreateDialogData)
-            .withDefaultConfirmButtonLabel('Create')
-            .withDefaultText(['Do you really want to create this entity?'])
-            .withDefaultTitle('Create')
-            .confirmDialogData;
-        this.createDialogData = new CreateDialogDataInternal(
+            .withDefault('confirmButtonLabel', 'create')
+            .withDefault('text', ['Do you really want to create this entity?'])
+            .withDefault('title', 'Create')
+            .getResult();
+        return new CreateDialogDataInternal(
             data?.title ? data.title : 'Create',
             data?.createButtonLabel ? data.createButtonLabel : 'Create',
             data?.cancelButtonLabel ? data.cancelButtonLabel : 'Cancel',
             data?.createRequiresConfirmDialog ? data.createRequiresConfirmDialog : false,
             confirmCreateDialogData
         );
-        return this;
-    }
-
-    withDefaultTitle(title: string): CreateDialogDataBuilder {
-        if (!this.dataInput?.title) {
-            this.createDialogData.title = title;
-        }
-        return this;
-    }
-
-    withDefaultCreateButtonLabel(label: string): CreateDialogDataBuilder {
-        if (!this.dataInput?.createButtonLabel) {
-            this.createDialogData.createButtonLabel = label;
-        }
-        return this;
-    }
-
-    withDefaultCancelButtonLabel(label: string): CreateDialogDataBuilder {
-        if (!this.dataInput?.cancelButtonLabel) {
-            this.createDialogData.cancelButtonLabel = label;
-        }
-        return this;
-    }
-
-    withDefaultCreateRequiresConfirmDialog(createRequiresConfirmDialog: boolean): CreateDialogDataBuilder {
-        if (this.dataInput?.createRequiresConfirmDialog === undefined) {
-            this.createDialogData.createRequiresConfirmDialog = createRequiresConfirmDialog;
-        }
-        return this;
-    }
-
-    withDefaultConfirmCreateDialogData(confirmCreateDialogData: ConfirmDialogDataInternal): CreateDialogDataBuilder {
-        if (this.dataInput?.confirmCreateDialogData === undefined) {
-            this.createDialogData.confirmCreateDialogData = confirmCreateDialogData;
-        }
-        return this;
     }
 }
