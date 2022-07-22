@@ -1,6 +1,6 @@
 {
     "root": true,
-    "extends": "./.eslintrc.base.json",
+    "extends": "eslint-config-service-soft",
     "overrides": [
         {
             "files": [
@@ -25,6 +25,12 @@
                         "style": "kebab-case",
                         "type": "element",
                         "prefix": "ngx-mat-entity"
+                    }
+                ],
+                "@cspell/spellchecker": [
+                    "warn",
+                    {
+                        "customWordListFile": "./cspell.words.txt"
                     }
                 ],
                 "jsdoc/require-jsdoc": [
@@ -66,6 +72,12 @@
                         "prefix": "ngx-mat-entity"
                     }
                 ],
+                "@cspell/spellchecker": [
+                    "warn",
+                    {
+                        "customWordListFile": "./cspell.words.txt"
+                    }
+                ],
                 "jsdoc/require-jsdoc": [
                     "warn",
                     {
@@ -101,6 +113,12 @@
                         "style": "kebab-case",
                         "type": "element",
                         "prefix": "ngx-mat-entity"
+                    }
+                ],
+                "@cspell/spellchecker": [
+                    "warn",
+                    {
+                        "customWordListFile": "./cspell.words.txt"
                     }
                 ],
                 "jsdoc/require-jsdoc": "off"
