@@ -4,8 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { FooterModule } from './layout/footer/footer.module';
-import { NavbarModule } from './layout/navbar/navbar.module';
+import { NgxMatNavigationFooterModule, NgxMatNavigationNavbarModule } from 'ngx-material-navigation';
 
 @NgModule({
     declarations: [
@@ -15,8 +14,8 @@ import { NavbarModule } from './layout/navbar/navbar.module';
         BrowserModule,
         BrowserAnimationsModule,
         AppRoutingModule,
-        NavbarModule,
-        FooterModule,
+        NgxMatNavigationNavbarModule,
+        NgxMatNavigationFooterModule,
         HttpClientModule
     ],
     providers: [],

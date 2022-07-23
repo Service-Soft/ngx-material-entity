@@ -142,9 +142,9 @@ export abstract class EntityUtilities {
         }
     }
     // eslint-disable-next-line @typescript-eslint/member-ordering, jsdoc/require-jsdoc
-    static construct = this.new;
+    static construct = EntityUtilities.new;
     // eslint-disable-next-line @typescript-eslint/member-ordering, jsdoc/require-jsdoc
-    static build = this.new;
+    static build = EntityUtilities.new;
 
     /**
      * Checks if the values on an entity are valid.
@@ -156,7 +156,7 @@ export abstract class EntityUtilities {
      */
     static isEntityValid<EntityType extends Entity>(entity: EntityType, omit: 'create' | 'update'): boolean {
         for (const key in entity) {
-            if (!this.isPropertyValid(entity, key, omit)) {
+            if (!EntityUtilities.isPropertyValid(entity, key, omit)) {
                 return false;
             }
         }
@@ -176,8 +176,8 @@ export abstract class EntityUtilities {
         key: keyof EntityType,
         omit: 'create' | 'update'
     ): boolean {
-        const type = this.getPropertyType(entity, key);
-        const metadata: PropertyDecoratorConfigInternal = this.getPropertyMetadata(entity, key, type);
+        const type = EntityUtilities.getPropertyType(entity, key);
+        const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(entity, key, type);
         const metadataDefaultString = metadata as DefaultStringDecoratorConfigInternal;
         const metadataTextboxString = metadata as TextboxStringDecoratorConfigInternal;
         const metadataDefaultNumber = metadata as DefaultNumberDecoratorConfigInternal;
@@ -248,7 +248,7 @@ export abstract class EntityUtilities {
                 break;
             case DecoratorTypes.OBJECT:
                 for (const parameterKey in objectProperty) {
-                    if (!this.isPropertyValid(objectProperty, parameterKey, omit)) {
+                    if (!EntityUtilities.isPropertyValid(objectProperty, parameterKey, omit)) {
                         return false;
                     }
                 }
@@ -278,7 +278,7 @@ export abstract class EntityUtilities {
             return false;
         }
         else {
-            const diff = this.difference(entity, entityPriorChanges);
+            const diff = EntityUtilities.difference(entity, entityPriorChanges);
             if (JSON.stringify(diff) === '{}') {
                 return false;
             }
