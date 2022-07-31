@@ -1,4 +1,3 @@
-import { Entity } from './entity-model.class';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { isNil, omit, omitBy } from 'lodash';
@@ -10,7 +9,7 @@ import { EntityUtilities } from './entity-utilities.class';
  * You should create a service for every Entity you have.
  * If you extend from this you need to make sure that the extended Service can be injected.
  */
-export abstract class EntityService<EntityType extends Entity> {
+export abstract class EntityService<EntityType extends object> {
     /**
      * The base url used for api requests. If u want to have more control over this,
      * you can override the create, read, update and delete methods.
@@ -24,6 +23,7 @@ export abstract class EntityService<EntityType extends Entity> {
      * Delete Sends a DEL-Request to baseUrl/{id}.
      */
     abstract readonly baseUrl: string;
+    abstract readonly idKey: keyof EntityType;
 
     /**
      * A subject of all the entity values.
@@ -83,24 +83,24 @@ export abstract class EntityService<EntityType extends Entity> {
         );
         const updatedEntity = await firstValueFrom(
             this.http.patch<EntityType>(
-                `${this.baseUrl}/${entityPriorChanges.id}`,
+                `${this.baseUrl}/${entityPriorChanges[this.idKey]}`,
                 omitBy(reqBody, isNil)
             )
         );
-        this.entities[this.entities.findIndex((e) => e.id === entityPriorChanges.id)] = updatedEntity;
+        this.entities[this.entities.findIndex(e => e[this.idKey] === entityPriorChanges[this.idKey])] = updatedEntity;
         this.entitiesSubject.next(this.entities);
     }
 
     /**
      * Deletes a specific Entity.
      *
-     * @param id - The id of the element to delete.
+     * @param entity - The entity to delete.
      */
-    async delete(id: string): Promise<void> {
-        await firstValueFrom(this.http.delete<void>(`${this.baseUrl}/${id}`));
-        this.entities.splice(
-            this.entities.findIndex((e) => e.id === id), 1
-        );
+    async delete(entity: EntityType): Promise<void> {
+        await firstValueFrom(this.http.delete<void>(`${this.baseUrl}/${entity[this.idKey]}`));
+        // the == comparison instead of === is to catch ids that are numbers.
+        // eslint-disable-next-line max-len
+        this.entities.splice(this.entities.findIndex(e => e[this.idKey] === entity[this.idKey]), 1);
         this.entitiesSubject.next(this.entities);
     }
 }

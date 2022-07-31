@@ -1,12 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { EntityService } from '../../../classes/entity-service.class';
-import { Entity } from '../../../classes/entity-model.class';
 import { EditDialogData } from '../table-data';
 
 /**
  * The Definition of the Edit Entity Dialog Data.
  */
-export interface EditEntityDialogData<EntityType extends Entity> {
+export interface EditEntityDialogData<EntityType extends object> {
     /**
      * The entity to edit.
      */

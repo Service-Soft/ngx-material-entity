@@ -4,7 +4,6 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { EntityService } from '../../classes/entity-service.class';
 import { firstValueFrom, Subject, takeUntil } from 'rxjs';
-import { Entity } from '../../classes/entity-model.class';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxMatEntityCreateDialogComponent } from './create-dialog/create-entity-dialog.component';
@@ -28,7 +27,7 @@ import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from '../ta
     templateUrl: './table.component.html',
     styleUrls: ['./table.component.scss']
 })
-export class NgxMatEntityTableComponent<EntityType extends Entity> implements OnInit, OnDestroy {
+export class NgxMatEntityTableComponent<EntityType extends object> implements OnInit, OnDestroy {
 
     /**
      * The configuration for the component.
@@ -125,7 +124,7 @@ export class NgxMatEntityTableComponent<EntityType extends Entity> implements On
         ).then((res: number) => {
             if (res === 0) {
                 const data = this.dataSource.data;
-                data[this.dataSource.data.findIndex((e) => e.id === entity.id)] = entity;
+                data[this.dataSource.data.findIndex((e) => e[this.entityService.idKey] === entity[this.entityService.idKey])] = entity;
                 this.dataSource.data = data;
                 this.selection.clear();
             }

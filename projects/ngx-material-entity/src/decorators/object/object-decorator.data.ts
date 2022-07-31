@@ -1,14 +1,14 @@
-import { Entity } from '../../classes/entity-model.class';
+import { EntityClassNewable } from '../../classes/entity-model.class';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 
 /**
  * Definition for the @object metadata.
  */
-abstract class ObjectDecoratorConfig<EntityType extends Entity> extends PropertyDecoratorConfig {
+abstract class ObjectDecoratorConfig<EntityType extends object> extends PropertyDecoratorConfig {
     /**
-     * The entity type of the object.
+     * The class of the object. Is used to call the constructor so that all metadata is initialized.
      */
-    type!: new (entity?: EntityType) => EntityType;
+    EntityClass!: EntityClassNewable<EntityType>;
 
     /**
      * How to display the object.
@@ -22,7 +22,7 @@ abstract class ObjectDecoratorConfig<EntityType extends Entity> extends Property
 /**
  * The configuration options for a object property.
  */
-export interface DefaultObjectDecoratorConfig<EntityType extends Entity> extends ObjectDecoratorConfig<EntityType> {
+export interface DefaultObjectDecoratorConfig<EntityType extends object> extends ObjectDecoratorConfig<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'inline'
 }

@@ -1,4 +1,3 @@
-import { Entity } from '../../classes/entity-model.class';
 import { baseProperty } from '../base/base-property.decorator';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal } from './array-decorator-internal.data';
@@ -11,7 +10,7 @@ import { AutocompleteStringChipsArrayDecoratorConfig, EntityArrayDecoratorConfig
  * @returns The method that defines the metadata.
  * @throws When the given type of the array-items is unknown.
  */
-export function array<EntityType extends Entity>(
+export function array<EntityType extends object>(
     metadata: EntityArrayDecoratorConfig<EntityType> | StringChipsArrayDecoratorConfig | AutocompleteStringChipsArrayDecoratorConfig
 ): (target: object, propertyKey: string) => void {
     switch (metadata.itemType) {

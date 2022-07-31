@@ -6,6 +6,9 @@ import { object } from '../decorators/object/object.decorator';
 import { array } from '../decorators/array/array.decorator';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { boolean } from '../decorators/boolean/boolean.decorator';
+import { date } from '../decorators/date/date.decorator';
+import { DateRange } from '../decorators/date/date-decorator.data';
+import { Time } from '@angular/common';
 
 /**
  * An Entity used to Test the @object decorator on the TestEntity class.
@@ -198,7 +201,7 @@ export class TestEntity extends Entity {
     @object({
         displayStyle: 'inline',
         displayName: 'Object Value',
-        type: TestObjectEntity
+        EntityClass: TestObjectEntity
     })
     objectValue!: TestObjectEntity;
 
@@ -252,7 +255,7 @@ export class TestEntity extends Entity {
                 displayName: 'String Value',
                 value: (entity: TestObjectArrayEntity) => entity.stringValue
             }
-        ],
+        ]
     })
     entityArrayValue!: TestObjectArrayEntity[];
 
@@ -333,6 +336,41 @@ export class TestEntity extends Entity {
     })
     booleanToggleValue!: boolean;
 
+    @date({
+        displayName: 'Date Value',
+        displayStyle: 'date'
+    })
+    dateValue!: Date;
+
+    // TODO: find detect changes memory leak
+    @date({
+        displayName: 'Date Range Value',
+        displayStyle: 'daterange',
+        position: {
+            row: 2
+        }
+    })
+    dateRangeValue!: DateRange;
+
+    @date({
+        displayName: 'Date Time Value',
+        displayStyle: 'datetime',
+        maxTime: () => {
+            return {
+                hours: 16,
+                minutes: 30
+            }
+        },
+        minTime: () => {
+            return {
+                hours: 8,
+                minutes: 0
+            }
+        },
+        filterTime: (time: Time) => time.hours !== 12
+    })
+    dateTimeValue!: Date;
+
     constructor(entity?: TestEntity) {
         super();
         EntityUtilities.new(this, entity);
@@ -397,7 +435,13 @@ const testEntityData: TestEntity = {
     stringDropdownValue: 'String Dropdown #1',
     booleanDropdownValue: true,
     booleanCheckboxValue: true,
-    booleanToggleValue: true
+    booleanToggleValue: true,
+    dateValue: new Date(),
+    dateRangeValue: {
+        start: new Date(2022, 1, 1, 0, 0, 0, 0),
+        end: new Date(2022, 1, 20, 0, 0, 0, 0)
+    },
+    dateTimeValue: new Date(2022, 1, 1, 8, 30, 0, 0)
 }
 
 /**

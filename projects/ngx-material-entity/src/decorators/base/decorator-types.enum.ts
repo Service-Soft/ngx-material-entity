@@ -1,6 +1,6 @@
-import { Entity } from '../../classes/entity-model.class';
 import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal } from '../array/array-decorator-internal.data';
 import { CheckboxBooleanDecoratorConfigInternal, DropdownBooleanDecoratorConfigInternal, ToggleBooleanDecoratorConfigInternal } from '../boolean/boolean-decorator-internal.data';
+import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from '../date/date-decorator-internal.data';
 import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal } from '../number/number-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../object/object-decorator-internal.data';
 import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../string/string-decorator-internal.data';
@@ -21,7 +21,10 @@ export enum DecoratorTypes {
     OBJECT = 'object',
     ARRAY = 'array',
     ARRAY_STRING_CHIPS = 'arrayStringChips',
-    ARRAY_STRING_AUTOCOMPLETE_CHIPS = 'arrayStringAutocompleteChips'
+    ARRAY_STRING_AUTOCOMPLETE_CHIPS = 'arrayStringAutocompleteChips',
+    DATE = 'date',
+    DATE_RANGE = 'dateRange',
+    DATE_TIME = 'dateTime'
 }
 
 /**
@@ -37,8 +40,11 @@ export type DecoratorType<T> =
     : T extends DecoratorTypes.BOOLEAN_CHECKBOX ? CheckboxBooleanDecoratorConfigInternal
     : T extends DecoratorTypes.BOOLEAN_TOGGLE ? ToggleBooleanDecoratorConfigInternal
     : T extends DecoratorTypes.BOOLEAN_DROPDOWN ? DropdownBooleanDecoratorConfigInternal
-    : T extends DecoratorTypes.OBJECT ? DefaultObjectDecoratorConfigInternal<Entity>
-    : T extends DecoratorTypes.ARRAY ? EntityArrayDecoratorConfigInternal<Entity>
+    : T extends DecoratorTypes.OBJECT ? DefaultObjectDecoratorConfigInternal<object>
+    : T extends DecoratorTypes.ARRAY ? EntityArrayDecoratorConfigInternal<object>
     : T extends DecoratorTypes.ARRAY_STRING_CHIPS ? StringChipsArrayDecoratorConfigInternal
     : T extends DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS ? AutocompleteStringChipsArrayDecoratorConfigInternal
+    : T extends DecoratorTypes.DATE ? DefaultDateDecoratorConfigInternal
+    : T extends DecoratorTypes.DATE_RANGE ? DateRangeDateDecoratorConfigInternal
+    : T extends DecoratorTypes.DATE_TIME ? DateTimeDateDecoratorConfigInternal
     : never;

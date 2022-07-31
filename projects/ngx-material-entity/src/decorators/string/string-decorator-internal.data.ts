@@ -1,3 +1,4 @@
+import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, DropdownStringDecoratorConfig, TextboxStringDecoratorConfig } from './string-decorator.data';
 
@@ -8,7 +9,7 @@ export class DropdownStringDecoratorConfigInternal extends PropertyDecoratorConf
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown';
     // eslint-disable-next-line jsdoc/require-jsdoc
-    dropdownValues: { displayName: string, value: string }[];
+    dropdownValues: DropdownValue<string>[];
 
     constructor(data: DropdownStringDecoratorConfig) {
         super(data);

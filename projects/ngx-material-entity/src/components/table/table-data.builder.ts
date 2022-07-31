@@ -1,15 +1,15 @@
 import { EntityService } from '../../classes/entity-service.class';
-import { Entity } from '../../classes/entity-model.class';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from './create-dialog/create-dialog-data.builder';
 import { EditDialogDataBuilder, EditDialogDataInternal } from './edit-dialog/edit-dialog-data.builder';
 import { BaseData, DisplayColumn, MultiSelectAction, TableData } from './table-data';
 import { HttpClient } from '@angular/common/http';
 import { BaseBuilder } from '../../classes/base-builder.class';
+import { EntityClassNewable } from '../../classes/entity-model.class';
 
 /**
  * The internal TableData. Requires all default values the user can leave out.
  */
-export class TableDataInternal<EntityType extends Entity> implements TableData<EntityType> {
+export class TableDataInternal<EntityType extends object> implements TableData<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     baseData: BaseDataInternal<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -31,7 +31,7 @@ export class TableDataInternal<EntityType extends Entity> implements TableData<E
 /**
  * The Builder for the table BaseData. Sets default values.
  */
-export class BaseDataBuilder<EntityType extends Entity> extends BaseBuilder<BaseDataInternal<EntityType>, BaseData<EntityType>> {
+export class BaseDataBuilder<EntityType extends object> extends BaseBuilder<BaseDataInternal<EntityType>, BaseData<EntityType>> {
 
     constructor(data: BaseData<EntityType>) {
         super(data);
@@ -61,7 +61,7 @@ export class BaseDataBuilder<EntityType extends Entity> extends BaseBuilder<Base
 /**
  * The internal TableData. Requires all default values the user can leave out.
  */
-export class BaseDataInternal<EntityType extends Entity> implements BaseData<EntityType> {
+export class BaseDataInternal<EntityType extends object> implements BaseData<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     title: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -86,7 +86,7 @@ export class BaseDataInternal<EntityType extends Entity> implements BaseData<Ent
     multiSelectLabel: string
 
     // eslint-disable-next-line jsdoc/require-jsdoc
-    EntityClass?: new (entity?: EntityType) => EntityType;
+    EntityClass?: EntityClassNewable<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
     edit?: (entity: EntityType) => unknown;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -105,7 +105,7 @@ export class BaseDataInternal<EntityType extends Entity> implements BaseData<Ent
         multiSelectActions: MultiSelectAction<EntityType>[],
         multiSelectLabel: string,
 
-        EntityClass?: new (entity?: EntityType) => EntityType,
+        EntityClass?: EntityClassNewable<EntityType>,
         edit?: (entity: EntityType) => unknown,
         create?: (entity: EntityType) => unknown,
     ) {
@@ -129,7 +129,7 @@ export class BaseDataInternal<EntityType extends Entity> implements BaseData<Ent
 /**
  * The Builder for the complete TableData. Sets default values and validates user input.
  */
-export class TableDataBuilder<EntityType extends Entity> extends BaseBuilder<TableDataInternal<EntityType>, TableData<EntityType>> {
+export class TableDataBuilder<EntityType extends object> extends BaseBuilder<TableDataInternal<EntityType>, TableData<EntityType>> {
 
     constructor(data: TableData<EntityType>) {
         super(data);
@@ -199,7 +199,7 @@ export class TableDataBuilder<EntityType extends Entity> extends BaseBuilder<Tab
  * @param entity - An entity that is in the search.
  * @returns The generated string of the given entity used for comparison with the search input.
  */
-function defaultSearchFunction<EntityType extends Entity>(entity: EntityType): string {
+function defaultSearchFunction<EntityType extends object>(entity: EntityType): string {
     const searchString = Object.keys(entity as unknown as Record<string, unknown>)
         .reduce((currentTerm: string, key: string) => {
             return `${currentTerm}${(entity as unknown as Record<string, unknown>)[key]}◬`;

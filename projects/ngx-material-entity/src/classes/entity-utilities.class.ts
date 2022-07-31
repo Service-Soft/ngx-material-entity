@@ -1,10 +1,12 @@
 import { isEqual } from 'lodash';
 import { DecoratorType, DecoratorTypes } from '../decorators/base/decorator-types.enum';
-import { Entity } from './entity-model.class';
 import { PropertyDecoratorConfigInternal } from '../decorators/base/property-decorator-internal.data';
 import { EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
 import { DefaultStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../decorators/string/string-decorator-internal.data';
 import { DefaultNumberDecoratorConfigInternal } from '../decorators/number/number-decorator-internal.data';
+import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from '../decorators/date/date-decorator-internal.data';
+import { DateRange } from '../decorators/date/date-decorator.data';
+import { Time } from '@angular/common';
 
 /**
  * Contains HelperMethods around handling Entities and their property-metadata.
@@ -17,7 +19,7 @@ export abstract class EntityUtilities {
      * @param entity - The entity to get the properties which should be left out for updating from.
      * @returns The properties which should be left out for updating an Entity.
      */
-    static getOmitForUpdate<EntityType extends Entity>(entity: EntityType): (keyof EntityType)[] {
+    static getOmitForUpdate<EntityType extends object>(entity: EntityType): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
         for (const key of EntityUtilities.keysOf(entity)) {
             const metadata = EntityUtilities.getPropertyMetadata(entity, key);
@@ -34,7 +36,7 @@ export abstract class EntityUtilities {
      * @param entity - The entity to get the properties which should be left out for creating from.
      * @returns The properties which should be left out for creating a new Entity.
      */
-    static getOmitForCreate<EntityType extends Entity>(entity: EntityType): (keyof EntityType)[] {
+    static getOmitForCreate<EntityType extends object>(entity: EntityType): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
         for (const key of EntityUtilities.keysOf(entity)) {
             const metadata = EntityUtilities.getPropertyMetadata(entity, key);
@@ -54,7 +56,7 @@ export abstract class EntityUtilities {
      * @returns The metadata of the property.
      * @throws When no metadata can be found for the given property.
      */
-    static getPropertyMetadata<EntityType extends Entity, T extends DecoratorTypes>(
+    static getPropertyMetadata<EntityType extends object, T extends DecoratorTypes>(
         entity: EntityType,
         propertyKey: keyof EntityType,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -84,7 +86,7 @@ export abstract class EntityUtilities {
      * @returns The type of the metadata.
      * @throws Will throw an error if no metadata can be found for the given property.
      */
-    static getPropertyType<EntityType extends Entity>(
+    static getPropertyType<EntityType extends object>(
         entity: EntityType, propertyKey: keyof EntityType
     ): DecoratorTypes {
         try {
@@ -112,7 +114,7 @@ export abstract class EntityUtilities {
      * @alias build
      * @alias construct
      */
-    static new<EntityType extends Entity>(target: EntityType, entity?: EntityType): void {
+    static new<EntityType extends object>(target: EntityType, entity?: EntityType): void {
         for (const key in target) {
             const type = EntityUtilities.getPropertyType(target, key);
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -121,7 +123,7 @@ export abstract class EntityUtilities {
                 case DecoratorTypes.OBJECT:
                     const objectMetadata = EntityUtilities.getPropertyMetadata(target, key, DecoratorTypes.OBJECT);
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                    value = new objectMetadata.type(value) as EntityType;
+                    value = new objectMetadata.EntityClass(value);
                     break;
                 case DecoratorTypes.ARRAY:
                     const inputArray: EntityType[] = value as EntityType[];
@@ -129,7 +131,7 @@ export abstract class EntityUtilities {
                     if (inputArray) {
                         const arrayMetadata = EntityUtilities.getPropertyMetadata(target, key, DecoratorTypes.ARRAY);
                         for (const item of inputArray) {
-                            const itemWithMetadata = new arrayMetadata.EntityClass(item) as EntityType;
+                            const itemWithMetadata: EntityType = new arrayMetadata.EntityClass(item) as EntityType;
                             resArray.push(itemWithMetadata);
                         }
                     }
@@ -154,7 +156,7 @@ export abstract class EntityUtilities {
      * @param omit - Whether to check for creating or editing validity.
      * @returns Whether or not the entity is valid.
      */
-    static isEntityValid<EntityType extends Entity>(entity: EntityType, omit: 'create' | 'update'): boolean {
+    static isEntityValid<EntityType extends object>(entity: EntityType, omit: 'create' | 'update'): boolean {
         for (const key in entity) {
             if (!EntityUtilities.isPropertyValid(entity, key, omit)) {
                 return false;
@@ -171,7 +173,7 @@ export abstract class EntityUtilities {
      * @returns Whether or not the property value is valid.
      * @throws Throws when it extracts an unknown metadata type.
      */
-    private static isPropertyValid<EntityType extends Entity>(
+    private static isPropertyValid<EntityType extends object>(
         entity: EntityType,
         key: keyof EntityType,
         omit: 'create' | 'update'
@@ -181,9 +183,11 @@ export abstract class EntityUtilities {
         const metadataDefaultString = metadata as DefaultStringDecoratorConfigInternal;
         const metadataTextboxString = metadata as TextboxStringDecoratorConfigInternal;
         const metadataDefaultNumber = metadata as DefaultNumberDecoratorConfigInternal;
-        const objectProperty = entity[key] as unknown as EntityType;
-        const metadataEntityArray = metadata as EntityArrayDecoratorConfigInternal<Entity>;
+        const metadataEntityArray = metadata as EntityArrayDecoratorConfigInternal<EntityType>;
         const arrayItems = entity[key] as unknown as [];
+        const metadataDate = metadata as DefaultDateDecoratorConfigInternal;
+        const metadataDateRange = metadata as DateRangeDateDecoratorConfigInternal;
+        const metadataDateTime = metadata as DateTimeDateDecoratorConfigInternal;
 
         if (metadata.omitForCreate && omit === 'create') {
             return true;
@@ -203,35 +207,37 @@ export abstract class EntityUtilities {
                 return true;
             case DecoratorTypes.STRING:
             case DecoratorTypes.STRING_AUTOCOMPLETE:
+                const entityString = entity[key] as unknown as string;
                 if (
                     metadataDefaultString.maxLength
-                    && (entity[key] as unknown as string).length > metadataDefaultString.maxLength
+                    && entityString.length > metadataDefaultString.maxLength
                 ) {
                     return false;
                 }
                 if (
                     metadataDefaultString.minLength
-                    && (entity[key] as unknown as string).length < metadataDefaultString.minLength
+                    && entityString.length < metadataDefaultString.minLength
                 ) {
                     return false;
                 }
                 if (
                     metadataDefaultString.regex
-                    && !(entity[key] as unknown as string).match(metadataDefaultString.regex)
+                    && !entityString.match(metadataDefaultString.regex)
                 ) {
                     return false;
                 }
                 break;
             case DecoratorTypes.STRING_TEXTBOX:
+                const entityTextbox = entity[key] as unknown as string;
                 if (
                     metadataTextboxString.maxLength
-                    && (entity[key] as unknown as string).length > metadataTextboxString.maxLength
+                    && entityTextbox.length > metadataTextboxString.maxLength
                 ) {
                     return false;
                 }
                 if (
                     metadataTextboxString.minLength
-                    && (entity[key] as unknown as string).length < metadataTextboxString.minLength
+                    && entityTextbox.length < metadataTextboxString.minLength
                 ) {
                     return false;
                 }
@@ -239,16 +245,18 @@ export abstract class EntityUtilities {
             case DecoratorTypes.NUMBER_DROPDOWN:
                 return true;
             case DecoratorTypes.NUMBER:
-                if (metadataDefaultNumber.max && (entity[key] as unknown as number) > metadataDefaultNumber.max) {
+                const entityNumber = entity[key] as unknown as number;
+                if (metadataDefaultNumber.max && entityNumber > metadataDefaultNumber.max) {
                     return false;
                 }
-                if (metadataDefaultNumber.min && (entity[key] as unknown as number) < metadataDefaultNumber.min) {
+                if (metadataDefaultNumber.min && entityNumber < metadataDefaultNumber.min) {
                     return false;
                 }
                 break;
             case DecoratorTypes.OBJECT:
-                for (const parameterKey in objectProperty) {
-                    if (!EntityUtilities.isPropertyValid(objectProperty, parameterKey, omit)) {
+                const entityObject = entity[key] as unknown as EntityType;
+                for (const parameterKey in entityObject) {
+                    if (!EntityUtilities.isPropertyValid(entityObject, parameterKey, omit)) {
                         return false;
                     }
                 }
@@ -259,6 +267,106 @@ export abstract class EntityUtilities {
                 if (metadataEntityArray.required && !arrayItems.length) {
                     return false;
                 }
+                break;
+            case DecoratorTypes.DATE:
+                const entityDate: Date = new Date(entity[key] as unknown as Date);
+                if (metadataDate.min && entityDate.getTime() < metadataDate.min(entityDate).getTime()) {
+                    return false;
+                }
+                if (metadataDate.max && entityDate.getTime() > metadataDate.max(entityDate).getTime()) {
+                    return false;
+                }
+                if (metadataDate.filter && !metadataDate.filter(entityDate)) {
+                    return false;
+                }
+                break;
+            case DecoratorTypes.DATE_RANGE:
+                const entityDateRange: DateRange = entity[key] as unknown as DateRange;
+                if (metadataDateRange.required && (!entityDateRange.start || !entityDateRange.end)) {
+                    return false;
+                }
+                entityDateRange.start = new Date(entityDateRange.start);
+                entityDateRange.end = new Date(entityDateRange.end);
+                if (
+                    metadataDateRange.minStart
+                    && entityDateRange.start.getTime() < metadataDateRange.minStart(entityDateRange.start).getTime()
+                ) {
+                    return false;
+                }
+                if (
+                    metadataDateRange.maxStart
+                    && entityDateRange.start.getTime() > metadataDateRange.maxStart(entityDateRange.start).getTime()
+                ) {
+                    return false;
+                }
+                if (
+                    metadataDateRange.minEnd
+                    && entityDateRange.end.getTime() < metadataDateRange.minEnd(entityDateRange.end).getTime()
+                ) {
+                    return false;
+                }
+                if (
+                    metadataDateRange.maxEnd
+                    && entityDateRange.end.getTime() > metadataDateRange.maxEnd(entityDateRange.end).getTime()
+                ) {
+                    return false;
+                }
+                if (metadataDateRange.filter && entityDateRange.values) {
+                    for (const date of entityDateRange.values) {
+                        if (!metadataDateRange.filter(date)) {
+                            return false;
+                        }
+                    }
+                }
+                break;
+            case DecoratorTypes.DATE_TIME:
+                const entityDateTimeDate: Date = new Date(entity[key] as unknown as Date);
+                if (metadataDateTime.minDate && entityDateTimeDate.getTime() < metadataDateTime.minDate(entityDateTimeDate).getTime()) {
+                    return false;
+                }
+                if (metadataDateTime.maxDate && entityDateTimeDate.getTime() > metadataDateTime.maxDate(entityDateTimeDate).getTime()) {
+                    return false;
+                }
+                if (metadataDateTime.filterDate && !metadataDateTime.filterDate(entityDateTimeDate)) {
+                    return false;
+                }
+                const time: Time = {
+                    hours: entityDateTimeDate.getHours(),
+                    minutes: entityDateTimeDate.getMinutes()
+                }
+
+                if (metadataDateTime.minTime) {
+                    const minTime: Time = metadataDateTime.minTime(entityDateTimeDate);
+                    if (
+                        !(
+                            time.hours > minTime.hours
+                            || (
+                                time.hours === minTime.hours
+                                && time.minutes >= minTime.minutes
+                            )
+                        )
+                    ) {
+                        return false;
+                    }
+                }
+                if (metadataDateTime.maxTime) {
+                    const maxTime: Time = metadataDateTime.maxTime(entityDateTimeDate);
+                    if (
+                        !(
+                            time.hours < maxTime.hours
+                            || (
+                                time.hours === maxTime.hours
+                                && time.minutes <= maxTime.minutes
+                            )
+                        )
+                    ) {
+                        return false;
+                    }
+                }
+                if (metadataDateTime.filterTime) {
+                    return metadataDateTime.filterTime(time);
+                }
+
                 break;
             default:
                 throw new Error(`Could not validate the input because the DecoratorType ${type} is not known`);
@@ -273,7 +381,7 @@ export abstract class EntityUtilities {
      * @param entityPriorChanges - The entity before the changes.
      * @returns Whether or not the entity is dirty.
      */
-    static dirty(entity: Entity, entityPriorChanges: Entity): boolean {
+    static dirty<EntityType extends object>(entity: EntityType, entityPriorChanges: EntityType): boolean {
         if (!entityPriorChanges) {
             return false;
         }
@@ -295,7 +403,7 @@ export abstract class EntityUtilities {
      * @param entityPriorChanges - The second entity to compare.
      * @returns The difference between the two Entities in form of a Partial.
      */
-    static difference<EntityType extends Entity>(
+    static difference<EntityType extends object>(
         entity: EntityType,
         entityPriorChanges: EntityType
     ): Partial<EntityType> {
@@ -317,7 +425,7 @@ export abstract class EntityUtilities {
      * @param entity - Current entity (used to get metadata of entity keys).
      * @returns 0 if both values have the same order, a negative value if X, a positive value if Y.
      */
-    static compareOrder<EntityType extends Entity>(a: keyof EntityType, b: keyof EntityType, entity: EntityType): number {
+    static compareOrder<EntityType extends object>(a: keyof EntityType, b: keyof EntityType, entity: EntityType): number {
         const metadataA = EntityUtilities.getPropertyMetadata(entity, a);
         const metadataB = EntityUtilities.getPropertyMetadata(entity, b);
 
@@ -342,7 +450,7 @@ export abstract class EntityUtilities {
      * @param type - Defines for which screen size the column values should be returned.
      * @returns Bootstrap column value.
      */
-    static getWidth<EntityType extends Entity>(entity: EntityType, key: keyof EntityType, type: 'lg' | 'md' | 'sm'): number {
+    static getWidth<EntityType extends object>(entity: EntityType, key: keyof EntityType, type: 'lg' | 'md' | 'sm'): number {
         const metadata = EntityUtilities.getPropertyMetadata(entity, key);
         switch (type) {
             case 'lg':
@@ -360,7 +468,7 @@ export abstract class EntityUtilities {
      * @param entity - The entity to reset.
      * @param entityPriorChanges - The entity before any changes.
      */
-    static resetChangesOnEntity<EntityType extends Entity>(entity: EntityType, entityPriorChanges: EntityType): void {
+    static resetChangesOnEntity<EntityType extends object>(entity: EntityType, entityPriorChanges: EntityType): void {
         for (const key in entityPriorChanges) {
             Reflect.set(entity, key, Reflect.get(entityPriorChanges, key));
         }
@@ -374,7 +482,7 @@ export abstract class EntityUtilities {
      * @param hideOmitForEdit - Whether or not keys with the metadata omitForUpdate should be filtered out.
      * @returns The sorted Rows containing the row number and the keys to display in that row.
      */
-    static getEntityRows<EntityType extends Entity>(
+    static getEntityRows<EntityType extends object>(
         entity: EntityType,
         hideOmitForCreate: boolean = false,
         hideOmitForEdit: boolean = false
@@ -398,7 +506,7 @@ export abstract class EntityUtilities {
         return res;
     }
 
-    private static getKeysForRow<EntityType extends Entity>(
+    private static getKeysForRow<EntityType extends object>(
         keys: (keyof EntityType)[],
         entity: EntityType,
         i: number
@@ -408,7 +516,7 @@ export abstract class EntityUtilities {
             .sort((a, b) => EntityUtilities.compareOrder(a, b, entity));
     }
 
-    private static getNumberOfRows<EntityType extends Entity>(keys: (keyof EntityType)[], entity: EntityType): number {
+    private static getNumberOfRows<EntityType extends object>(keys: (keyof EntityType)[], entity: EntityType): number {
         return keys
             .map(k => EntityUtilities.getPropertyMetadata(entity, k).position.row)
             .sort((a, b) => (a > b ? -1 : 1))[0];
@@ -422,7 +530,7 @@ export abstract class EntityUtilities {
      * @param hideOmitForEdit - Whether or not keys with the metadata omitForUpdate should be filtered out.
      * @returns An array of keys of the entity.
      */
-    static keysOf<EntityType extends Entity>(
+    static keysOf<EntityType extends object>(
         entity: EntityType,
         hideOmitForCreate: boolean = false,
         hideOmitForEdit: boolean = false
@@ -443,7 +551,7 @@ export abstract class EntityUtilities {
 /**
  * A row that contains all the information about how to display an entity.
  */
-export interface EntityRow<EntityType extends Entity> {
+export interface EntityRow<EntityType extends object> {
     /**
      * The row in which this should be displayed.
      */

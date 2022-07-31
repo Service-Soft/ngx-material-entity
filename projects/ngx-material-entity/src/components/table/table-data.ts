@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http'
-import { Entity } from '../../classes/entity-model.class'
 import { EntityService } from '../../classes/entity-service.class'
+import { EntityClassNewable } from '../../classes/entity-model.class'
 import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data'
 
 /**
  * The Definition of a Column inside the table.
  */
-export interface DisplayColumn<EntityType extends Entity> {
+export interface DisplayColumn<EntityType extends object> {
     /**
      * The name inside the header.
      */
@@ -20,7 +20,7 @@ export interface DisplayColumn<EntityType extends Entity> {
 /**
  * The Definition of an Action that can be run on multiple selected entities.
  */
-export interface MultiSelectAction<EntityType extends Entity> {
+export interface MultiSelectAction<EntityType extends object> {
     /**
      * The name of the action.
      */
@@ -50,7 +50,7 @@ export interface MultiSelectAction<EntityType extends Entity> {
 /**
  * The base data of the ngx-mat-entity-table.
  */
-export interface BaseData<EntityType extends Entity> {
+export interface BaseData<EntityType extends object> {
     /**
      * The title of the table.
      */
@@ -68,7 +68,7 @@ export interface BaseData<EntityType extends Entity> {
     /**
      * The Class of the entities to manage.
      */
-    EntityClass?: new (entity?: EntityType) => EntityType,
+    EntityClass?: EntityClassNewable<EntityType>,
     /**
      * The label on the search bar. Defaults to "Search".
      */
@@ -149,7 +149,7 @@ export interface CreateDialogData {
 /**
  * The data of the default edit-dialog.
  */
-export interface EditDialogData<EntityType extends Entity> {
+export interface EditDialogData<EntityType extends object> {
     /**
      * The title of the default edit-dialog.
      */
@@ -189,7 +189,7 @@ export interface EditDialogData<EntityType extends Entity> {
 /**
  * All the configuration data required to display a ngx-mat-entity-table.
  */
-export interface TableData<EntityType extends Entity> {
+export interface TableData<EntityType extends object> {
     /**
      * The base data for the table-component.
      * Includes stuff like the title for the table, what to display inside the rows etc.

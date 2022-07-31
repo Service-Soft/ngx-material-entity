@@ -10,6 +10,7 @@ import { environment } from '../environments/environment';
 // eslint-disable-next-line jsdoc/require-jsdoc
 export class TestEntityService extends EntityService<TestEntity> {
     baseUrl: string = `${environment.apiUrl}/testEntities`;
+    idKey: keyof TestEntity = 'id';
 
     constructor(private readonly httpClient: HttpClient) {
         super(httpClient);

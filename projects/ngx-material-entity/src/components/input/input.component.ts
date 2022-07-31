@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { EntityRow, EntityUtilities } from '../../classes/entity-utilities.class';
-import { Entity } from '../../classes/entity-model.class';
 import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
 import { getValidationErrorMessage } from '../get-validation-error-message.function';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -18,6 +17,12 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { AddArrayItemDialogDataBuilder, AddArrayItemDialogDataInternal } from './add-array-item-dialog-data.builder';
 import { AddArrayItemDialogData } from './add-array-item-dialog-data';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from '../../decorators/date/date-decorator-internal.data';
+import { InputUtilities } from './input.utilities';
+import { DateFilterFn } from '@angular/material/datepicker';
+import { DateRange } from '../../decorators/date/date-decorator.data';
+import { Time } from '@angular/common';
+import { DropdownValue } from '../../decorators/base/dropdown-value.interface';
 
 /**
  * The default input component. It gets the metadata of the property from the given @Input "entity" and @Input "propertyKey"
@@ -32,7 +37,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
     templateUrl: './input.component.html',
     styleUrls: ['./input.component.scss']
 })
-export class NgxMatEntityInputComponent<EntityType extends Entity> implements OnInit {
+export class NgxMatEntityInputComponent<EntityType extends object> implements OnInit {
     /**
      * The entity on which the property exists. Used in conjunction with the "propertyKey"
      * to determine the property for which the input should be generated.
@@ -87,16 +92,27 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
     metadataDropdownNumber!: DropdownNumberDecoratorConfigInternal;
 
     metadataDefaultObject!: DefaultObjectDecoratorConfigInternal<EntityType>;
-    objectProperty!: Entity;
-    objectPropertyRows!: EntityRow<Entity>[];
+    objectProperty!: EntityType;
+    objectPropertyRows!: EntityRow<EntityType>[];
 
-    metadataEntityArray!: EntityArrayDecoratorConfigInternal<Entity>;
+    metadataEntityArray!: EntityArrayDecoratorConfigInternal<EntityType>;
     entityArrayValues!: EntityType[];
     metadataStringChipsArray!: StringChipsArrayDecoratorConfigInternal;
     stringChipsArrayValues!: string[];
     chipsInput: string = '';
 
     metadataAutocompleteStringChipsArray!: AutocompleteStringChipsArrayDecoratorConfigInternal;
+
+    metadataDefaultDate!: DefaultDateDecoratorConfigInternal;
+    metadataDateRangeDate!: DateRangeDateDecoratorConfigInternal;
+    metadataDateTimeDate!: DateTimeDateDecoratorConfigInternal;
+
+    dateRange!: DateRange;
+    dateRangeStart!: Date;
+    dateRangeEnd!: Date;
+
+    time!: Time;
+    timeDropdownValues!: DropdownValue<Time>[];
 
     arrayItem!: EntityType;
     private arrayItemPriorChanges!: EntityType;
@@ -112,11 +128,13 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
     readonly DecoratorTypes = DecoratorTypes;
 
     EntityUtilities = EntityUtilities;
-    getWidth = EntityUtilities.getWidth;
+    InputUtilities = InputUtilities;
 
     constructor(
         private readonly dialog: MatDialog
     ) {}
+
+    defaultDateFilter: DateFilterFn<Date | null | undefined> = (): boolean => true;
 
     /**
      * This is needed for the inputs to work inside an ngFor.
@@ -164,7 +182,7 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
             this.objectPropertyRows = EntityUtilities.getEntityRows(this.objectProperty, this.hideOmitForCreate, this.hideOmitForEdit);
         }
 
-        this.metadataEntityArray = this.metadata as EntityArrayDecoratorConfigInternal<Entity>;
+        this.metadataEntityArray = this.metadata as EntityArrayDecoratorConfigInternal<EntityType>;
         if (this.type === DecoratorTypes.ARRAY) {
             if (!this.entity[this.propertyKey]) {
                 (this.entity[this.propertyKey] as unknown as EntityType[]) = [];
@@ -180,7 +198,7 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
             }
             // TODO
             const givenDisplayColumns: string[] = this.metadataEntityArray.displayColumns.map((v) => v.displayName);
-            if (givenDisplayColumns.find((s) => s === 'select')) {
+            if (givenDisplayColumns.find(s => s === 'select')) {
                 throw new Error(
                     `The name "select" for a display column is reserved.
                     Please choose a different name.`
@@ -189,7 +207,7 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
             this.displayedColumns = ['select'].concat(givenDisplayColumns);
             this.dataSource = new MatTableDataSource();
             this.dataSource.data = this.entityArrayValues;
-            this.arrayItem = new this.metadataEntityArray.EntityClass() as EntityType;
+            this.arrayItem = new this.metadataEntityArray.EntityClass();
             this.arrayItemInlineRows = EntityUtilities.getEntityRows(
                 this.arrayItem,
                 this.hideOmitForCreate === false ? false : true,
@@ -218,6 +236,74 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
 
         if (!this.getValidationErrorMessage) {
             this.getValidationErrorMessage = getValidationErrorMessage;
+        }
+
+        this.metadataDefaultDate = this.metadata as DefaultDateDecoratorConfigInternal;
+        this.metadataDateRangeDate = this.metadata as DateRangeDateDecoratorConfigInternal;
+        this.metadataDateTimeDate = this.metadata as DateTimeDateDecoratorConfigInternal;
+
+        if (this.type === DecoratorTypes.DATE_RANGE) {
+            this.dateRange = cloneDeep(this.entity[this.propertyKey] as unknown as DateRange);
+            if (!this.dateRange) {
+                this.dateRange = {
+                    start: undefined as unknown as Date,
+                    end: undefined as unknown as Date,
+                    values: undefined
+                }
+            }
+            this.dateRangeStart = new Date(this.dateRange.start);
+            this.dateRangeEnd = new Date(this.dateRange.end);
+            this.setDateRangeValues();
+        }
+
+        if (this.type === DecoratorTypes.DATE_TIME) {
+            this.time = InputUtilities.getTimeFromDate(InputUtilities.asDate(this.entity[this.propertyKey]));
+            this.timeDropdownValues = this.metadataDateTimeDate.times;
+        }
+    }
+
+    /**
+     * Checks if two times are equal. Is needed for the dropdown.
+     *
+     * @param time1 - The first time to compare.
+     * @param time2 - The second time to compare.
+     * @returns Whether or not the time objects are the same.
+     */
+    compareTimes(time1: Time, time2: Time): boolean {
+        return time1 && time2 && time1.hours === time2.hours && time1.minutes === time2.minutes;
+    }
+
+    /**
+     * Updates the date range values based on the start and end date.
+     */
+    setDateRangeValues(): void {
+        if (this.dateRangeStart && this.dateRangeEnd) {
+            this.dateRange.start = new Date(this.dateRangeStart);
+            this.dateRange.end = new Date(this.dateRangeEnd);
+            const values: Date[] = this.getDatesBetween(new Date(this.dateRange.start), new Date(this.dateRange.end));
+            this.dateRange.values = values.length ? values : undefined;
+        }
+        else {
+            this.dateRange.values = undefined;
+        }
+        this.entity[this.propertyKey] = this.dateRange as unknown as EntityType[keyof EntityType]
+    }
+
+    private getDatesBetween(startDate: Date, endDate: Date): Date[] {
+        const res: Date[] = [];
+        while (
+            startDate.getFullYear() < endDate.getFullYear()
+            || startDate.getMonth() < endDate.getMonth()
+            || startDate.getDate() <= endDate.getDate()
+        ) {
+            res.push(new Date(startDate));
+            startDate.setTime(startDate.getTime() + (1000 * 60 * 60 * 24));
+        }
+        if (this.metadataDateRangeDate.filter) {
+            return res.filter(d => this.metadataDateRangeDate.filter?.(d));
+        }
+        else {
+            return res;
         }
     }
 
@@ -281,7 +367,7 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
             this.selection.clear();
         }
         else {
-            this.dataSource.data.forEach((row) => this.selection.select(row));
+            this.dataSource.data.forEach(row => this.selection.select(row));
         }
     }
 
@@ -382,7 +468,9 @@ export class NgxMatEntityInputComponent<EntityType extends Entity> implements On
      * @param input - The input of the user.
      */
     filterAutocompleteStrings(input: unknown): void {
-        const filterValue = (input as string).toLowerCase();
-        this.filteredAutocompleteStrings = this.autocompleteStrings.filter(s => s.toLowerCase().includes(filterValue));
+        if (input) {
+            const filterValue = (input as string).toLowerCase();
+            this.filteredAutocompleteStrings = this.autocompleteStrings.filter(s => s.toLowerCase().includes(filterValue));
+        }
     }
 }

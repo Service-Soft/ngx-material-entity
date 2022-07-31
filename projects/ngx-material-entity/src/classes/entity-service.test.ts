@@ -6,6 +6,7 @@ import { expect } from '@jest/globals';
 
 export class TestEntityService extends EntityService<TestEntity> {
     baseUrl: string = 'http://api/test';
+    idKey: keyof TestEntity = 'id';
 }
 
 const apiTestData: TestEntity[] = [];

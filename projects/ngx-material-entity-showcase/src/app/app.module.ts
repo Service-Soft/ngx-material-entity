@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgxMatNavigationFooterModule, NgxMatNavigationNavbarModule } from 'ngx-material-navigation';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
     declarations: [
@@ -16,7 +17,8 @@ import { NgxMatNavigationFooterModule, NgxMatNavigationNavbarModule } from 'ngx-
         AppRoutingModule,
         NgxMatNavigationNavbarModule,
         NgxMatNavigationFooterModule,
-        HttpClientModule
+        HttpClientModule,
+        MatNativeDateModule
     ],
     providers: [],
     bootstrap: [AppComponent]
