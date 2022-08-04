@@ -1,6 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { HttpClient } from '@angular/common/http';
 import { array, boolean, ConfirmDialogTypes, DecoratorTypes, Entity, EntityService, EntityUtilities, object, string } from 'ngx-material-entity';
+import { EntityClassNewable } from 'projects/ngx-material-entity/src/public-api';
 
 class ConfirmDialogDataEntity extends Entity {
     @array({
@@ -110,7 +111,7 @@ export class CreateDialogDataEntity extends Entity {
         required: false,
         displayName: 'Create Dialog Confirm Create Dialog Data',
         displayStyle: 'inline',
-        type: ConfirmDialogDataEntity as (new (entity?: ConfirmDialogDataEntity) => ConfirmDialogDataEntity)
+        EntityClass: ConfirmDialogDataEntity
     })
     confirmCreateDialogData?: ConfirmDialogDataEntity;
 
@@ -120,7 +121,7 @@ export class CreateDialogDataEntity extends Entity {
     }
 }
 
-export class EditDialogDataEntity<EntityType extends Entity> extends Entity {
+export class EditDialogDataEntity<EntityType extends object> extends Entity {
 
     @string({
         required: false,
@@ -172,7 +173,7 @@ export class EditDialogDataEntity<EntityType extends Entity> extends Entity {
         required: false,
         displayName: 'Edit Dialog Confirm Delete Dialog Data',
         displayStyle: 'inline',
-        type: ConfirmDialogDataEntity as (new (entity?: ConfirmDialogDataEntity) => ConfirmDialogDataEntity)
+        EntityClass: ConfirmDialogDataEntity
     })
     confirmDeleteDialogData?: ConfirmDialogDataEntity;
 
@@ -180,7 +181,7 @@ export class EditDialogDataEntity<EntityType extends Entity> extends Entity {
         required: false,
         displayName: 'Edit Dialog Confirm Edit Dialog Data',
         displayStyle: 'inline',
-        type: ConfirmDialogDataEntity as (new (entity?: ConfirmDialogDataEntity) => ConfirmDialogDataEntity)
+        EntityClass: ConfirmDialogDataEntity
     })
     confirmEditDialogData?: ConfirmDialogDataEntity;
 
@@ -190,7 +191,7 @@ export class EditDialogDataEntity<EntityType extends Entity> extends Entity {
     }
 }
 
-export class DisplayColumnEntity<EntityType extends Entity> extends Entity {
+export class DisplayColumnEntity<EntityType extends object> extends Entity {
     @string({
         displayName: 'Display Column Display Name',
         displayStyle: 'line'
@@ -209,7 +210,7 @@ export class DisplayColumnEntity<EntityType extends Entity> extends Entity {
     }
 }
 
-export class MultiSelectActionEntity<EntityType extends Entity> extends Entity {
+export class MultiSelectActionEntity<EntityType extends object> extends Entity {
     @string({
         displayName: 'Multi Select Display Name',
         displayStyle: 'line'
@@ -240,7 +241,7 @@ export class MultiSelectActionEntity<EntityType extends Entity> extends Entity {
         required: false,
         displayName: 'Multi Select Confirm Dialog Data',
         displayStyle: 'inline',
-        type: ConfirmDialogDataEntity as (new (entity?: ConfirmDialogDataEntity) => ConfirmDialogDataEntity),
+        EntityClass: ConfirmDialogDataEntity,
         defaultWidths: [12, 12, 12]
     })
     confirmDialogData?: ConfirmDialogDataEntity;
@@ -251,7 +252,7 @@ export class MultiSelectActionEntity<EntityType extends Entity> extends Entity {
     }
 }
 
-export class BaseDataEntity<EntityType extends Entity> extends Entity {
+export class BaseDataEntity<EntityType extends object> extends Entity {
     @string({
         displayName: 'Base Data Title',
         displayStyle: 'line'
@@ -262,11 +263,11 @@ export class BaseDataEntity<EntityType extends Entity> extends Entity {
         displayName: 'Base Data Display Columns',
         displayStyle: 'table',
         itemType: DecoratorTypes.OBJECT,
-        EntityClass: DisplayColumnEntity as unknown as (new (entity?: EntityType) => EntityType),
+        EntityClass: DisplayColumnEntity,
         displayColumns: [
             {
                 displayName: 'Name',
-                value: ((e: DisplayColumnEntity<EntityType>) =>  e.displayName) as unknown as ((entity: EntityType) => string)
+                value: (e: DisplayColumnEntity<EntityType>) => e.displayName
             }
         ],
         addButtonLabel: 'Add Display Column',
@@ -285,7 +286,7 @@ export class BaseDataEntity<EntityType extends Entity> extends Entity {
         displayName: 'Base Data Entity Class',
         displayStyle: 'line'
     })
-    EntityClass?: new (entity?: EntityType) => EntityType;
+    EntityClass?: EntityClassNewable<EntityType>;
 
     @string({
         required: false,
@@ -350,11 +351,11 @@ export class BaseDataEntity<EntityType extends Entity> extends Entity {
         displayName: 'Base Data Multi Select Actions',
         displayStyle: 'table',
         itemType: DecoratorTypes.OBJECT,
-        EntityClass: MultiSelectActionEntity as unknown as (new (entity?: EntityType) => EntityType),
+        EntityClass: MultiSelectActionEntity,
         displayColumns: [
             {
                 displayName: 'Name',
-                value: ((e: MultiSelectActionEntity<EntityType>) => e.displayName) as unknown as ((entity: EntityType) => string)
+                value: (e: MultiSelectActionEntity<EntityType>) => e.displayName
             }
         ],
         addButtonLabel: 'Add MSA',
@@ -375,11 +376,11 @@ export class BaseDataEntity<EntityType extends Entity> extends Entity {
     }
 }
 
-export class TableDataEntity<EntityType extends Entity> extends Entity {
+export class TableDataEntity<EntityType extends object> extends Entity {
     @object({
         displayName: 'Base Data',
         displayStyle: 'inline',
-        type: BaseDataEntity as unknown as (new (entity?: EntityType) => EntityType),
+        EntityClass: BaseDataEntity,
         defaultWidths: [12, 12, 12]
     })
     baseData!: BaseDataEntity<EntityType>;
@@ -388,7 +389,7 @@ export class TableDataEntity<EntityType extends Entity> extends Entity {
         required: false,
         displayName: 'Create Dialog Data',
         displayStyle: 'inline',
-        type: CreateDialogDataEntity as (new (entity?: CreateDialogDataEntity) => CreateDialogDataEntity),
+        EntityClass: CreateDialogDataEntity,
         defaultWidths: [12, 12, 12],
     })
     createDialogData?: CreateDialogDataEntity;
@@ -397,7 +398,7 @@ export class TableDataEntity<EntityType extends Entity> extends Entity {
         required: false,
         displayName: 'Edit Dialog Data',
         displayStyle: 'inline',
-        type: EditDialogDataEntity as (new (entity?: EditDialogDataEntity<EntityType>) => EditDialogDataEntity<EntityType>),
+        EntityClass: EditDialogDataEntity,
         defaultWidths: [12, 12, 12]
     })
     editDialogData?: EditDialogDataEntity<EntityType>;

@@ -1,5 +1,5 @@
-import { Entity } from '../../classes/entity-model.class';
-import { EntityUtilities } from '../../classes/entity-utilities.class';
+import { Entity } from '../../classes/entity.model';
+import { EntityUtilities } from '../../classes/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { object } from './object.decorator';
 import { string } from '../string/string.decorator';
@@ -41,7 +41,7 @@ class Address extends Entity {
 
 class TestEntity extends Entity {
     @object({
-        type: Address,
+        EntityClass: Address,
         displayName: 'Address',
         displayStyle: 'inline'
     })
@@ -71,7 +71,7 @@ const testEntity = new TestEntity(testEntityData);
 test('should have object Metadata', () => {
     const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'address', DecoratorTypes.OBJECT);
     expect(metadata).toBeDefined();
-    expect(metadata.type).toBe(Address);
+    expect(metadata.EntityClass).toBe(Address);
 });
 test('should have metadata on the object', () => {
     const streetMetadata = EntityUtilities.getPropertyMetadata(testEntity.address, 'street', DecoratorTypes.STRING);

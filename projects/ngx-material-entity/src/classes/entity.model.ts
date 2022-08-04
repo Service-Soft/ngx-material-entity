@@ -1,7 +1,12 @@
 import { string } from '../decorators/string/string.decorator';
 
 /**
- * The base Entity class.
+ * The newable type used whenever an entity class is passed to create an entity and initialize its metadata.
+ */
+export type EntityClassNewable<EntityType extends object> = new(data?: EntityType) => EntityType;
+
+/**
+ * A base Entity class with a builtin id.
  */
 export abstract class Entity {
     /**

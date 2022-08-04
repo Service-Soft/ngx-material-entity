@@ -1,3 +1,4 @@
+import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 
 /**
@@ -21,7 +22,7 @@ export interface DropdownStringDecoratorConfig extends StringDecoratorConfig {
      * Can also receive a function to determine the values.
      */
     // eslint-disable-next-line jsdoc/require-jsdoc
-    dropdownValues: { displayName: string, value: string }[]
+    dropdownValues: DropdownValue<string>[]
 }
 
 /**

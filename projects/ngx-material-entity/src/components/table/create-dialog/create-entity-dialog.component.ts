@@ -1,8 +1,7 @@
 import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { EntityService } from '../../../classes/entity-service.class';
-import { Entity } from '../../../classes/entity-model.class';
-import { EntityRow, EntityUtilities } from '../../../classes/entity-utilities.class';
+import { EntityService } from '../../../classes/entity.service';
+import { EntityRow, EntityUtilities } from '../../../classes/entity.utilities';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from './create-entity-dialog-data.builder';
@@ -19,7 +18,7 @@ import { CreateEntityDialogData } from './create-entity-dialog-data';
     templateUrl: './create-entity-dialog.component.html',
     styleUrls: ['./create-entity-dialog.component.scss']
 })
-export class NgxMatEntityCreateDialogComponent<EntityType extends Entity> implements OnInit {
+export class NgxMatEntityCreateDialogComponent<EntityType extends object> implements OnInit {
     EntityUtilities = EntityUtilities;
 
     entityRows!: EntityRow<EntityType>[];

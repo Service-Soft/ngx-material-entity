@@ -40,7 +40,6 @@ export class ShowcaseInputsComponent {
     ];
 
     testEntity = new TestEntityMockBuilder().testEntityWithoutData;
-    // TODO
     keys!: (keyof TestEntity)[];
 
     getWidth = EntityUtilities.getWidth;
