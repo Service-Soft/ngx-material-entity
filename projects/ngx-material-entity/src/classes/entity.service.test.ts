@@ -1,18 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { EntityService } from './entity-service.class';
-import { TestEntity } from './entity-model.test';
+import { EntityService } from './entity.service';
+import { TestEntity } from './entity.model.test';
 import { HttpClientMock } from '../mocks/http-client.mock';
 import { expect } from '@jest/globals';
 
 export class TestEntityService extends EntityService<TestEntity> {
     baseUrl: string = 'http://api/test';
-    idKey: keyof TestEntity = 'id';
 }
 
 const apiTestData: TestEntity[] = [];
-
-// TODO: Entities need to be created with new constructor. Otherwise the decorator metadata is missing.
-// SOLUTIONS: Disable direct creation via JSON.
 
 test('should request TestEntities', async () => {
     const service = new TestEntityService(new HttpClientMock(apiTestData) as unknown as HttpClient);
@@ -28,7 +24,7 @@ test('should request TestEntities', async () => {
     expect(service.entities[0].id).toBe('1');
     expect(service.entities.length).toBe(1);
     // delete entity
-    await service.delete(testEntity.id);
+    await service.delete(testEntity);
     expect(service.entities).toEqual([]);
     // read entities
     await service.create(new TestEntity({ id: '1', name: 'John Smith' }));

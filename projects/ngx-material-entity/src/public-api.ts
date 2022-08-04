@@ -4,9 +4,10 @@
 import 'reflect-metadata';
 
 // classes
-export * from './classes/entity-model.class';
-export * from './classes/entity-service.class';
-export * from './classes/entity-utilities.class';
+export * from './classes/entity.model';
+export * from './classes/entity.service';
+export * from './classes/entity.utilities';
+export * from './classes/date.utilities';
 
 // components
 export * from './components/confirm-dialog/confirm-dialog-data';
@@ -31,10 +32,12 @@ export * from './components/table/edit-dialog/edit-entity-dialog.component';
 export * from './components/get-validation-error-message.function';
 
 // decorators
-export * from './decorators/base/decorator-types.enum';
-
 export * from './decorators/array/array.decorator';
 export * from './decorators/array/array-decorator.data';
+
+export * from './decorators/base/decorator-types.enum';
+export * from './decorators/base/dropdown-value.interface';
+export { Col, Position } from './decorators/base/property-decorator.data';
 
 export * from './decorators/boolean/boolean.decorator';
 export * from './decorators/boolean/boolean-decorator.data';

@@ -1,8 +1,8 @@
-import { TestEntityMockBuilder, TestEntity } from '../mocks/test-entity.mock';
+import { TestEntityMockBuilder, TestEntity, getDatesBetween } from '../mocks/test-entity.mock';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
-import { EntityUtilities } from './entity-utilities.class';
+import { EntityUtilities } from './entity.utilities';
 import { cloneDeep, isArray } from 'lodash';
-import { Entity } from './entity-model.class';
+import { Entity } from './entity.model';
 import { expect } from '@jest/globals';
 
 const builder = new TestEntityMockBuilder();
@@ -206,6 +206,140 @@ describe('isEntityValid', () => {
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
 
+    // DATE
+    test('DATE max', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        tE.customDateValue.setFullYear(2023);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateValue.setFullYear(2022);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('DATE min', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        tE.customDateValue.setFullYear(2021);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateValue.setFullYear(2022);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('DATE filter', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        tE.customDateValue.setDate(1);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateValue.setDate(2);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+
+    // DATE_RANGE
+    test('DATE_RANGE undefined', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        tE.customDateRangeValue.start = undefined as unknown as Date;
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateRangeValue.start = new Date(testEntity.customDateRangeValue.start);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+
+        tE.customDateRangeValue.end = undefined as unknown as Date;
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateRangeValue.end = new Date(testEntity.customDateRangeValue.end);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('DATE_RANGE maxStart', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        tE.customDateRangeValue.start.setFullYear(2023);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateRangeValue.start.setFullYear(2022);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('DATE_RANGE minStart', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        tE.customDateRangeValue.start.setFullYear(2021);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateRangeValue.start.setFullYear(2022);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('DATE_RANGE maxEnd', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        tE.customDateRangeValue.end.setFullYear(2023);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateRangeValue.end.setFullYear(2022);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('DATE_RANGE minEnd', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        tE.customDateRangeValue.end.setFullYear(2021);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateRangeValue.end.setFullYear(2022);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('DATE_RANGE filter', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        tE.customDateRangeValue.start.setDate(1);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateRangeValue.start.setDate(2);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+
+        tE.customDateRangeValue.end.setDate(1);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateRangeValue.end.setDate(2);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+
+        tE.customDateRangeValue.values = [new Date(2022, 0, 1)];
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateRangeValue.values = getDatesBetween(new Date(tE.customDateRangeValue.start), new Date(tE.customDateRangeValue.end));
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+
+    // DATE_TIME
+    test('DATE_TIME maxDate', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        tE.customDateTimeValue.setFullYear(2023);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateTimeValue.setFullYear(2022);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('DATE_TIME minDate', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        tE.customDateTimeValue.setFullYear(2021);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateTimeValue.setFullYear(2022);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('DATE_TIME filterDate', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        tE.customDateTimeValue.setDate(1);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateTimeValue.setDate(2);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('DATE_TIME maxHours', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        tE.customDateTimeValue.setHours(17);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateTimeValue.setHours(16);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('DATE_TIME minHours', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        tE.customDateTimeValue.setHours(7);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateTimeValue.setHours(16);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+
+        tE.customDateTimeValue.setHours(8);
+        tE.customDateTimeValue.setMinutes(0);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateTimeValue.setHours(16);
+        tE.customDateTimeValue.setMinutes(30);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('DATE_TIME filter', () => {
+        const tE: TestEntity = cloneDeep(testEntity);
+        tE.customDateTimeValue.setHours(12);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customDateTimeValue.setHours(16);
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+
+    // unknown metadata type
     test('should throw error for unknown metadata type', () => {
         const tE: TestEntity = cloneDeep(testEntity);
         Reflect.defineMetadata('type', 'invalid type', tE, 'maxLengthStringValue');
@@ -247,7 +381,7 @@ describe('getWidth', () => {
 
 describe('resetChangesOnEntity', () => {
     test('should reset entity', () => {
-        const tE: TestEntity = cloneDeep(testEntity);
+        const tE: TestEntity = new TestEntity(testEntity);
         const tEPriorChanges: TestEntity = cloneDeep(tE);
         tE.minLengthStringValue = 'changed value';
         expect(EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
@@ -266,7 +400,7 @@ describe('getEntityRows', () => {
 describe('keysOf', () => {
     test('should get all keys of the entity', () => {
         const tE: TestEntity = cloneDeep(testEntity);
-        expect(EntityUtilities.keysOf(tE)).toHaveLength(30);
+        expect(EntityUtilities.keysOf(tE)).toHaveLength(36);
     });
     test('should get keys without omitForCreate', () => {
         const tE: TestEntity = cloneDeep(testEntity);

@@ -1,5 +1,5 @@
 import { CreateDialogData } from '../../components/table/table-data';
-import { EntityClassNewable } from '../../classes/entity-model.class';
+import { EntityClassNewable } from '../../classes/entity.model';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { ArrayTableDisplayColumn, AutocompleteStringChipsArrayDecoratorConfig, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from './array-decorator.data';

@@ -1,10 +1,10 @@
-import { EntityService } from '../../classes/entity-service.class';
+import { EntityService } from '../../classes/entity.service';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from './create-dialog/create-dialog-data.builder';
 import { EditDialogDataBuilder, EditDialogDataInternal } from './edit-dialog/edit-dialog-data.builder';
 import { BaseData, DisplayColumn, MultiSelectAction, TableData } from './table-data';
 import { HttpClient } from '@angular/common/http';
-import { BaseBuilder } from '../../classes/base-builder.class';
-import { EntityClassNewable } from '../../classes/entity-model.class';
+import { BaseBuilder } from '../../classes/base.builder';
+import { EntityClassNewable } from '../../classes/entity.model';
 
 /**
  * The internal TableData. Requires all default values the user can leave out.

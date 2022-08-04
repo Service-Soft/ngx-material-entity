@@ -1,5 +1,5 @@
-import { Entity } from '../../classes/entity-model.class';
-import { EntityUtilities } from '../../classes/entity-utilities.class';
+import { Entity } from '../../classes/entity.model';
+import { EntityUtilities } from '../../classes/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { object } from './object.decorator';
 import { string } from '../string/string.decorator';

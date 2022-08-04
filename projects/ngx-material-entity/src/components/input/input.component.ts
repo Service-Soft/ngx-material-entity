@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { EntityRow, EntityUtilities } from '../../classes/entity-utilities.class';
+import { EntityRow, EntityUtilities } from '../../classes/entity.utilities';
 import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
 import { getValidationErrorMessage } from '../get-validation-error-message.function';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -18,7 +18,7 @@ import { AddArrayItemDialogDataBuilder, AddArrayItemDialogDataInternal } from '.
 import { AddArrayItemDialogData } from './add-array-item-dialog-data';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from '../../decorators/date/date-decorator-internal.data';
-import { InputUtilities } from './input.utilities';
+import { DateUtilities } from '../../classes/date.utilities';
 import { DateFilterFn } from '@angular/material/datepicker';
 import { DateRange } from '../../decorators/date/date-decorator.data';
 import { Time } from '@angular/common';
@@ -111,6 +111,7 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
     dateRangeStart!: Date;
     dateRangeEnd!: Date;
 
+    dateTime!: Date;
     time!: Time;
     timeDropdownValues!: DropdownValue<Time>[];
 
@@ -128,7 +129,7 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
     readonly DecoratorTypes = DecoratorTypes;
 
     EntityUtilities = EntityUtilities;
-    InputUtilities = InputUtilities;
+    DateUtilities = DateUtilities;
 
     constructor(
         private readonly dialog: MatDialog
@@ -196,7 +197,6 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
                     title: 'Add'
                 }
             }
-            // TODO
             const givenDisplayColumns: string[] = this.metadataEntityArray.displayColumns.map((v) => v.displayName);
             if (givenDisplayColumns.find(s => s === 'select')) {
                 throw new Error(
@@ -257,8 +257,11 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
         }
 
         if (this.type === DecoratorTypes.DATE_TIME) {
-            this.time = InputUtilities.getTimeFromDate(InputUtilities.asDate(this.entity[this.propertyKey]));
+            this.time = DateUtilities.getTimeFromDate(DateUtilities.asDate(this.entity[this.propertyKey]));
             this.timeDropdownValues = this.metadataDateTimeDate.times;
+            if (this.entity[this.propertyKey]) {
+                this.dateTime = new Date(this.entity[this.propertyKey] as unknown as Date);
+            }
         }
     }
 
@@ -280,7 +283,11 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
         if (this.dateRangeStart && this.dateRangeEnd) {
             this.dateRange.start = new Date(this.dateRangeStart);
             this.dateRange.end = new Date(this.dateRangeEnd);
-            const values: Date[] = this.getDatesBetween(new Date(this.dateRange.start), new Date(this.dateRange.end));
+            const values: Date[] = DateUtilities.getDatesBetween(
+                new Date(this.dateRange.start),
+                new Date(this.dateRange.end),
+                this.metadataDateRangeDate
+            );
             this.dateRange.values = values.length ? values : undefined;
         }
         else {
@@ -289,21 +296,20 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
         this.entity[this.propertyKey] = this.dateRange as unknown as EntityType[keyof EntityType]
     }
 
-    private getDatesBetween(startDate: Date, endDate: Date): Date[] {
-        const res: Date[] = [];
-        while (
-            startDate.getFullYear() < endDate.getFullYear()
-            || startDate.getMonth() < endDate.getMonth()
-            || startDate.getDate() <= endDate.getDate()
-        ) {
-            res.push(new Date(startDate));
-            startDate.setTime(startDate.getTime() + (1000 * 60 * 60 * 24));
+    /**
+     * Sets the time on a datetime property.
+     */
+    setTime(): void {
+        if (!this.dateTime) {
+            this.entity[this.propertyKey] = undefined as unknown as EntityType[keyof EntityType];
+            return;
         }
-        if (this.metadataDateRangeDate.filter) {
-            return res.filter(d => this.metadataDateRangeDate.filter?.(d));
+        this.entity[this.propertyKey] = new Date(this.dateTime) as unknown as EntityType[keyof EntityType];
+        if (this.time?.hours != null && this.time?.minutes != null) {
+            DateUtilities.asDate(this.entity[this.propertyKey]).setHours(this.time.hours, this.time.minutes, 0, 0);
         }
         else {
-            return res;
+            DateUtilities.asDate(this.entity[this.propertyKey]).setHours(0, 0, 0, 0);
         }
     }
 

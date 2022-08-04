@@ -1,4 +1,4 @@
-import { BaseBuilder } from '../../../classes/base-builder.class';
+import { BaseBuilder } from '../../../classes/base.builder';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { CreateDialogData } from '../table-data';
 

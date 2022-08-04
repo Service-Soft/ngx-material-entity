@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /// <reference types="cypress" />
 import 'reflect-metadata';
 
@@ -44,7 +43,7 @@ Cypress.Commands.add(
         cy.getInputByLabel('Min Length Value').click().type('minLengthValue');
         cy.getInputByLabel('Regex Value').click().type('123');
 
-        cy.getInputByLabel('Max Length Autocomplete Value').click().type('maxLenghtAutocompleteValue');
+        cy.getInputByLabel('Max Length Autocomplete Value').click().type('maxLengthAutocompleteValue');
         cy.getInputByLabel('Min Length Autocomplete Value').click().type('minLengthAutocompleteValue');
         cy.getInputByLabel('Regex Autocomplete Value').click().type('456');
 
@@ -58,9 +57,11 @@ Cypress.Commands.add(
         cy.getInputByLabel('Object Row Value 2').click().type('objectRowValue2');
         cy.getInputByLabel('Object Max Length Value').click().type('maxLengthObjectValue');
 
+        // eslint-disable-next-line @cspell/spellchecker
         cy.getInputByLabel('String Chips Array Value').click().type('abcd{enter}efgh{enter}');
         cy.getInputByLabel('String Chips Autocomplete Array Value').click().type('123{enter}456{enter}');
 
+        // eslint-disable-next-line @cspell/spellchecker
         cy.getInputByLabel('String Chips Array Value With Config').click().type('abcd{enter}efgh{enter}');
         cy.getInputByLabel('String Chips Autocomplete Array Value With Config').click().type('123{enter}456{enter}');
 
@@ -82,5 +83,18 @@ Cypress.Commands.add(
 
         cy.getInputByLabel('Boolean Checkbox Value').find('mat-checkbox').click();
         cy.getInputByLabel('Boolean Toggle Value').find('mat-slide-toggle').click();
+
+        cy.getInputByLabel('Date Value').click().type('1/1/2022');
+        cy.getInputByLabel('Custom Date Value').click().type('2/2/2022');
+        cy.get('.mat-start-date').eq(0).click().type('1/1/2022');
+        cy.get('.mat-end-date').eq(0).click().type('2/2/2022');
+        cy.get('.mat-start-date').eq(1).click().type('1/2/2022');
+        cy.get('.mat-end-date').eq(1).click().type('2/2/2022');
+        cy.getInputByLabel('Date Time Value').click().type('1/1/2022');
+        cy.getInputByLabel('Time').click();
+        cy.get('mat-option').contains('8:30').click();
+        cy.getInputByLabel('Custom Date Time Value').click().type('2/2/2022');
+        cy.getInputByLabel('Custom Time Display Name').click();
+        cy.get('mat-option').contains('8:30').click();
     }
 );

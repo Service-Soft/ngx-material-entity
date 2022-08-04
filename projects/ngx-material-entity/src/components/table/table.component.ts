@@ -2,7 +2,7 @@ import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angul
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { EntityService } from '../../classes/entity-service.class';
+import { EntityService } from '../../classes/entity.service';
 import { firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatDialog } from '@angular/material/dialog';

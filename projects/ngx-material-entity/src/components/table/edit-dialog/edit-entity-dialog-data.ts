@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { EntityService } from '../../../classes/entity-service.class';
+import { EntityService } from '../../../classes/entity.service';
 import { EditDialogData } from '../table-data';
 
 /**

@@ -1,5 +1,5 @@
-import { Entity } from './entity-model.class';
-import { EntityUtilities } from './entity-utilities.class';
+import { Entity } from './entity.model';
+import { EntityUtilities } from './entity.utilities';
 import { string } from '../decorators/string/string.decorator';
 import { expect } from '@jest/globals';
 

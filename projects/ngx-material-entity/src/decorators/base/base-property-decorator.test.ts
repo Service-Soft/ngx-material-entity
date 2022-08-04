@@ -1,6 +1,6 @@
-import { EntityUtilities } from '../../classes/entity-utilities.class';
+import { EntityUtilities } from '../../classes/entity.utilities';
 import { string } from '../string/string.decorator';
-import { Entity } from '../../classes/entity-model.class';
+import { Entity } from '../../classes/entity.model';
 import { TestEntityMockBuilder } from '../../mocks/test-entity.mock';
 import { DecoratorTypes } from './decorator-types.enum';
 import { expect } from '@jest/globals';

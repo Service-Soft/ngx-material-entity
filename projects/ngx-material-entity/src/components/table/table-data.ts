@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http'
-import { EntityService } from '../../classes/entity-service.class'
-import { EntityClassNewable } from '../../classes/entity-model.class'
+import { EntityService } from '../../classes/entity.service'
+import { EntityClassNewable } from '../../classes/entity.model'
 import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data'
 
 /**

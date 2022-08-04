@@ -1,7 +1,7 @@
 import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { EntityService } from '../../../classes/entity-service.class';
-import { EntityRow, EntityUtilities } from '../../../classes/entity-utilities.class';
+import { EntityService } from '../../../classes/entity.service';
+import { EntityRow, EntityUtilities } from '../../../classes/entity.utilities';
 import { cloneDeep } from 'lodash';
 import { EditEntityDialogData } from './edit-entity-dialog-data';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { isNil, omit, omitBy } from 'lodash';
-import { EntityUtilities } from './entity-utilities.class';
+import { EntityUtilities } from './entity.utilities';
 
 /**
  * A generic EntityService class.
@@ -23,7 +23,12 @@ export abstract class EntityService<EntityType extends object> {
      * Delete Sends a DEL-Request to baseUrl/{id}.
      */
     abstract readonly baseUrl: string;
-    abstract readonly idKey: keyof EntityType;
+    /**
+     * The key which holds the id value.
+     *
+     * @default 'id'
+     */
+    readonly idKey: keyof EntityType = 'id' as keyof EntityType;
 
     /**
      * A subject of all the entity values.
@@ -99,7 +104,6 @@ export abstract class EntityService<EntityType extends object> {
     async delete(entity: EntityType): Promise<void> {
         await firstValueFrom(this.http.delete<void>(`${this.baseUrl}/${entity[this.idKey]}`));
         // the == comparison instead of === is to catch ids that are numbers.
-        // eslint-disable-next-line max-len
         this.entities.splice(this.entities.findIndex(e => e[this.idKey] === entity[this.idKey]), 1);
         this.entitiesSubject.next(this.entities);
     }

@@ -1,8 +1,8 @@
-import { EntityService } from '../../../classes/entity-service.class';
+import { EntityService } from '../../../classes/entity.service';
 import { CreateEntityDialogData } from './create-entity-dialog-data'
 import { HttpClient } from '@angular/common/http';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from './create-dialog-data.builder';
-import { BaseBuilder } from '../../../classes/base-builder.class';
+import { BaseBuilder } from '../../../classes/base.builder';
 
 /**
  * The internal CreateEntityDialogData. Requires all default values the user can leave out.

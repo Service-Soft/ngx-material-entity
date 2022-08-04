@@ -1,4 +1,4 @@
-import { BaseBuilder } from '../../classes/base-builder.class';
+import { BaseBuilder } from '../../classes/base.builder';
 import { ConfirmDialogData, ConfirmDialogTypes } from './confirm-dialog-data';
 
 /**

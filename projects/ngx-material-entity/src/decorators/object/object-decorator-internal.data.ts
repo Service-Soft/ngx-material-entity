@@ -1,4 +1,4 @@
-import { EntityClassNewable } from '../../classes/entity-model.class';
+import { EntityClassNewable } from '../../classes/entity.model';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { DefaultObjectDecoratorConfig } from './object-decorator.data';
 

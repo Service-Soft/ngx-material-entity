@@ -16,7 +16,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button mat-raised-button (click)="create()" [disabled]="!EntityUtilities.isEntityValid(data.entity, 'create', true)">
+    <button mat-raised-button (click)="create()" [disabled]="!EntityUtilities.isEntityValid(data.entity, 'create')">
         {{data.createDialogData.createButtonLabel}}
     </button>
     <button mat-raised-button (click)="cancel()" class="cancel-button">
