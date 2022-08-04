@@ -1,5 +1,5 @@
-import { DecoratorTypes } from './decorator-types.enum';
-import { PropertyDecoratorConfigInternal } from './property-decorator-internal.data';
+import { ReflectUtilities } from '../../capsulation/reflect.utilities';
+import { DecoratorType, DecoratorTypes } from './decorator-types.enum';
 
 /**
  * The base decorator for setting metadata on properties.
@@ -8,9 +8,9 @@ import { PropertyDecoratorConfigInternal } from './property-decorator-internal.d
  * @param type - The type of metadata.
  * @returns The method that sets the metadata.
  */
-export function baseProperty(metadata: PropertyDecoratorConfigInternal, type: DecoratorTypes) {
+export function baseProperty<T extends DecoratorTypes>(metadata: DecoratorType<T>, type: T) {
     return function (target: object, propertyKey: string) {
-        Reflect.defineMetadata('metadata', metadata, target, propertyKey);
-        Reflect.defineMetadata('type', type, target, propertyKey);
+        ReflectUtilities.defineMetadata('metadata', metadata, target, propertyKey);
+        ReflectUtilities.defineMetadata('type', type, target, propertyKey);
     };
 }

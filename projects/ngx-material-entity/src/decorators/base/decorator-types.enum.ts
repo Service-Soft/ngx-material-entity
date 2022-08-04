@@ -40,8 +40,10 @@ export type DecoratorType<T> =
     : T extends DecoratorTypes.BOOLEAN_CHECKBOX ? CheckboxBooleanDecoratorConfigInternal
     : T extends DecoratorTypes.BOOLEAN_TOGGLE ? ToggleBooleanDecoratorConfigInternal
     : T extends DecoratorTypes.BOOLEAN_DROPDOWN ? DropdownBooleanDecoratorConfigInternal
-    : T extends DecoratorTypes.OBJECT ? DefaultObjectDecoratorConfigInternal<object>
-    : T extends DecoratorTypes.ARRAY ? EntityArrayDecoratorConfigInternal<object>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    : T extends DecoratorTypes.OBJECT ? DefaultObjectDecoratorConfigInternal<any>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    : T extends DecoratorTypes.ARRAY ? EntityArrayDecoratorConfigInternal<any>
     : T extends DecoratorTypes.ARRAY_STRING_CHIPS ? StringChipsArrayDecoratorConfigInternal
     : T extends DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS ? AutocompleteStringChipsArrayDecoratorConfigInternal
     : T extends DecoratorTypes.DATE ? DefaultDateDecoratorConfigInternal
