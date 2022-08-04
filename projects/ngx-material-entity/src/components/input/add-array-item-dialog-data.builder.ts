@@ -1,14 +1,13 @@
 import { NgModel } from '@angular/forms';
-import { BaseBuilder } from '../../classes/base-builder.class';
-import { Entity } from '../../classes/entity-model.class';
-import { getValidationErrorMessage } from '../get-validation-error-message.function';
+import { BaseBuilder } from '../../classes/base.builder';
+import { getValidationErrorMessage as defaultGetValidationErrorMessage } from '../get-validation-error-message.function';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from '../table/create-dialog/create-dialog-data.builder';
 import { AddArrayItemDialogData } from './add-array-item-dialog-data';
 
 /**
  * The internal AddArrayItemDialogData. Requires all default values the user can leave out.
  */
-export class AddArrayItemDialogDataInternal<EntityType extends Entity> implements AddArrayItemDialogData<EntityType> {
+export class AddArrayItemDialogDataInternal<EntityType extends object> implements AddArrayItemDialogData<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     entity: EntityType;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -30,7 +29,7 @@ export class AddArrayItemDialogDataInternal<EntityType extends Entity> implement
 /**
  * The Builder for the AddArrayItemDialogData. Sets default values.
  */
-export class AddArrayItemDialogDataBuilder<EntityType extends Entity>
+export class AddArrayItemDialogDataBuilder<EntityType extends object>
     extends BaseBuilder<AddArrayItemDialogDataInternal<EntityType>, AddArrayItemDialogData<EntityType>> {
 
     constructor(data: AddArrayItemDialogData<EntityType>) {
@@ -46,7 +45,7 @@ export class AddArrayItemDialogDataBuilder<EntityType extends Entity>
         return new AddArrayItemDialogDataInternal(
             data.entity,
             createDialogData,
-            data.getValidationErrorMessage ? data.getValidationErrorMessage : getValidationErrorMessage,
+            data.getValidationErrorMessage ? data.getValidationErrorMessage : defaultGetValidationErrorMessage,
         );
     }
 }

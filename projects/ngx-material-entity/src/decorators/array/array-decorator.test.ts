@@ -1,7 +1,7 @@
 import { array } from './array.decorator';
 import { expect } from '@jest/globals';
-import { Entity } from '../../classes/entity-model.class';
-import { EntityUtilities } from '../../classes/entity-utilities.class';
+import { Entity } from '../../classes/entity.model';
+import { EntityUtilities } from '../../classes/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { TestEntity, TestEntityMockBuilder } from '../../mocks/test-entity.mock';
 

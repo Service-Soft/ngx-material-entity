@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { BaseBuilder } from './base-builder.class';
+import { BaseBuilder } from './base.builder';
 
 interface Data {
     x: string,

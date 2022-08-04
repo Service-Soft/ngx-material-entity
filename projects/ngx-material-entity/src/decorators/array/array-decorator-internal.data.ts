@@ -1,5 +1,5 @@
-import { Entity } from '../../classes/entity-model.class';
 import { CreateDialogData } from '../../components/table/table-data';
+import { EntityClassNewable } from '../../classes/entity.model';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { ArrayTableDisplayColumn, AutocompleteStringChipsArrayDecoratorConfig, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from './array-decorator.data';
@@ -7,7 +7,7 @@ import { ArrayTableDisplayColumn, AutocompleteStringChipsArrayDecoratorConfig, E
 /**
  * The internal EntityArrayDecoratorConfig. Sets default values.
  */
-export class EntityArrayDecoratorConfigInternal<EntityType extends Entity>
+export class EntityArrayDecoratorConfigInternal<EntityType extends object>
     extends PropertyDecoratorConfigInternal implements EntityArrayDecoratorConfig<EntityType> {
 
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -15,7 +15,7 @@ export class EntityArrayDecoratorConfigInternal<EntityType extends Entity>
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'table';
     // eslint-disable-next-line jsdoc/require-jsdoc
-    EntityClass: new (entity?: EntityType) => EntityType;
+    EntityClass: EntityClassNewable<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayColumns: ArrayTableDisplayColumn<EntityType>[];
     // eslint-disable-next-line jsdoc/require-jsdoc

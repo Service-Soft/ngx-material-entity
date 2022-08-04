@@ -1,3 +1,4 @@
+import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig } from './number-decorator.data';
 
@@ -27,7 +28,7 @@ export class DropdownNumberDecoratorConfigInternal extends PropertyDecoratorConf
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown';
     // eslint-disable-next-line jsdoc/require-jsdoc
-    dropdownValues: { displayName: string, value: number }[];
+    dropdownValues: DropdownValue<number>[];
 
     constructor(data: DropdownNumberDecoratorConfig) {
         super(data);

@@ -1,12 +1,12 @@
-import { Entity } from '../../classes/entity-model.class';
 import { CreateDialogData } from '../../components/table/table-data';
+import { EntityClassNewable } from '../../classes/entity.model';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 
 /**
  * The configuration options for an array property displayed as a table.
  */
-export interface ArrayTableDisplayColumn<EntityType extends Entity> {
+export interface ArrayTableDisplayColumn<EntityType extends object> {
     /**
      * The name inside the header.
      */
@@ -35,7 +35,7 @@ abstract class ArrayDecoratorConfig extends PropertyDecoratorConfig {
 /**
  * Definition for an array of Entities.
  */
-export interface EntityArrayDecoratorConfig<EntityType extends Entity> extends ArrayDecoratorConfig {
+export interface EntityArrayDecoratorConfig<EntityType extends object> extends ArrayDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.OBJECT,
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -44,7 +44,7 @@ export interface EntityArrayDecoratorConfig<EntityType extends Entity> extends A
     /**
      * The EntityClass used for generating the create inputs.
      */
-    EntityClass: new (entity?: EntityType) => EntityType,
+    EntityClass: EntityClassNewable<EntityType>,
 
     /**
      * The definition of the columns to display. Consists of the displayName to show in the header of the row

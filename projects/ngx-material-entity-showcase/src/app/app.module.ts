@@ -4,8 +4,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { FooterModule } from './layout/footer/footer.module';
-import { NavbarModule } from './layout/navbar/navbar.module';
+import { NgxMatNavigationFooterModule, NgxMatNavigationNavbarModule } from 'ngx-material-navigation';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
     declarations: [
@@ -15,9 +15,10 @@ import { NavbarModule } from './layout/navbar/navbar.module';
         BrowserModule,
         BrowserAnimationsModule,
         AppRoutingModule,
-        NavbarModule,
-        FooterModule,
-        HttpClientModule
+        NgxMatNavigationNavbarModule,
+        NgxMatNavigationFooterModule,
+        HttpClientModule,
+        MatNativeDateModule
     ],
     providers: [],
     bootstrap: [AppComponent]

@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @NgModule({
     declarations: [
@@ -31,7 +32,8 @@ import { MatButtonModule } from '@angular/material/button';
         MatIconModule,
         MatTableModule,
         MatDialogModule,
-        MatButtonModule
+        MatButtonModule,
+        MatDatepickerModule
     ],
     exports: [NgxMatEntityInputComponent]
 })

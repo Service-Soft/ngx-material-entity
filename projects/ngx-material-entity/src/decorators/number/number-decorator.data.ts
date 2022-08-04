@@ -1,3 +1,4 @@
+import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 
 /**
@@ -36,5 +37,5 @@ export interface DropdownNumberDecoratorConfig extends NumberDecoratorConfig {
      * The values of the dropdown, consisting of a name to display and the actual value.
      */
     // eslint-disable-next-line jsdoc/require-jsdoc
-    dropdownValues: { displayName: string, value: number }[]
+    dropdownValues: DropdownValue<number>[]
 }

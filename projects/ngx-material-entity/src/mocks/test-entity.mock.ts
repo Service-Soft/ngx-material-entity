@@ -1,11 +1,15 @@
-import { Entity } from '../classes/entity-model.class';
-import { EntityUtilities } from '../classes/entity-utilities.class';
+import { Entity } from '../classes/entity.model';
+import { EntityUtilities } from '../classes/entity.utilities';
 import { string } from '../decorators/string/string.decorator';
 import { number } from '../decorators/number/number.decorator';
 import { object } from '../decorators/object/object.decorator';
 import { array } from '../decorators/array/array.decorator';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { boolean } from '../decorators/boolean/boolean.decorator';
+import { date } from '../decorators/date/date.decorator';
+import { DateRange } from '../decorators/date/date-decorator.data';
+import { Time } from '@angular/common';
+import { DateUtilities } from '../classes/date.utilities';
 
 /**
  * An Entity used to Test the @object decorator on the TestEntity class.
@@ -198,7 +202,7 @@ export class TestEntity extends Entity {
     @object({
         displayStyle: 'inline',
         displayName: 'Object Value',
-        type: TestObjectEntity
+        EntityClass: TestObjectEntity
     })
     objectValue!: TestObjectEntity;
 
@@ -252,7 +256,7 @@ export class TestEntity extends Entity {
                 displayName: 'String Value',
                 value: (entity: TestObjectArrayEntity) => entity.stringValue
             }
-        ],
+        ]
     })
     entityArrayValue!: TestObjectArrayEntity[];
 
@@ -333,6 +337,68 @@ export class TestEntity extends Entity {
     })
     booleanToggleValue!: boolean;
 
+    @date({
+        displayName: 'Date Value',
+        displayStyle: 'date'
+    })
+    dateValue!: Date;
+
+    @date({
+        displayName: 'Custom Date Value',
+        displayStyle: 'date',
+        max: () => new Date(2022, 11, 30, 0, 0, 0, 0),
+        min: () => new Date(2022, 0, 1, 0, 0, 0, 0),
+        filter: (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1
+    })
+    customDateValue!: Date;
+
+    @date({
+        displayName: 'Date Range Value',
+        displayStyle: 'daterange'
+    })
+    dateRangeValue!: DateRange;
+
+    @date({
+        displayName: 'Custom Date Range Value',
+        displayStyle: 'daterange',
+        maxStart: () => new Date(2022, 11, 30, 0, 0, 0, 0),
+        minStart: () => new Date(2022, 0, 1, 0, 0, 0, 0),
+        maxEnd: () => new Date(2022, 11, 30, 0, 0, 0, 0),
+        minEnd: () => new Date(2022, 0, 1, 0, 0, 0, 0),
+        filter: (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1,
+    })
+    customDateRangeValue!: DateRange;
+
+    @date({
+        displayName: 'Date Time Value',
+        displayStyle: 'datetime'
+    })
+    dateTimeValue!: Date;
+
+    @date({
+        displayName: 'Custom Date Time Value',
+        displayStyle: 'datetime',
+        maxDate: () => new Date(2022, 11, 30, 0, 0, 0, 0),
+        minDate: () => new Date(2022, 0, 1, 0, 0, 0, 0),
+        filterDate: (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1,
+        maxTime: () => {
+            return {
+                hours: 16,
+                minutes: 30
+            }
+        },
+        minTime: () => {
+            return {
+                hours: 8,
+                minutes: 30
+            }
+        },
+        filterTime: (time: Time) => time.hours !== 12,
+        timeDisplayName: 'Custom Time Display Name',
+        times: DateUtilities.getDefaultTimes(12, 15)
+    })
+    customDateTimeValue!: Date;
+
     constructor(entity?: TestEntity) {
         super();
         EntityUtilities.new(this, entity);
@@ -397,7 +463,20 @@ const testEntityData: TestEntity = {
     stringDropdownValue: 'String Dropdown #1',
     booleanDropdownValue: true,
     booleanCheckboxValue: true,
-    booleanToggleValue: true
+    booleanToggleValue: true,
+    dateValue: new Date(),
+    customDateValue: new Date(2022, 0, 2, 0, 0, 0, 0),
+    dateRangeValue: {
+        start: new Date(2022, 0, 1, 0, 0, 0, 0),
+        end: new Date(2022, 0, 20, 0, 0, 0, 0)
+    },
+    customDateRangeValue: {
+        start: new Date(2022, 0, 2, 0, 0, 0, 0),
+        end: new Date(2022, 0, 20, 0, 0, 0, 0),
+        values: getDatesBetween(new Date(2022, 0, 2, 0, 0, 0, 0), new Date(2022, 0, 20, 0, 0, 0, 0))
+    },
+    dateTimeValue: new Date(2022, 0, 1, 8, 30, 0, 0),
+    customDateTimeValue: new Date(2022, 0, 2, 16, 30, 0, 0)
 }
 
 /**
@@ -423,4 +502,18 @@ export class TestEntityMockBuilder {
         this.testEntity = new TestEntity(data);
         this.testEntityWithoutData = new TestEntity();
     }
+}
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export function getDatesBetween(startDate: Date, endDate: Date): Date[] {
+    const res: Date[] = [];
+    while (
+        startDate.getFullYear() < endDate.getFullYear()
+        || startDate.getMonth() < endDate.getMonth()
+        || startDate.getDate() <= endDate.getDate()
+    ) {
+        res.push(new Date(startDate));
+        startDate.setTime(startDate.getTime() + (1000 * 60 * 60 * 24));
+    }
+    return res.filter(d => d.getDate() !== 1);
 }

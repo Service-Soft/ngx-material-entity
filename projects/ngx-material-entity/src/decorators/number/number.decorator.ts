@@ -4,9 +4,9 @@ import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig } from './n
 import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal } from './number-decorator-internal.data';
 
 /**
- * Decorator for setting and getting string property metadata.
+ * Decorator for setting and getting number property metadata.
  *
- * @param metadata - The metadata of the string property.
+ * @param metadata - The metadata of the number property.
  * @returns The method that defines the metadata.
  */
 export function number(

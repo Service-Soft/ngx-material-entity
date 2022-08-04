@@ -27,7 +27,7 @@ describe('default table', () => {
         cy.get('.mat-row > .cdk-column-Object').should('contain', '#1 1234');
     });
     // this test is just for checking if the entity gets correctly added to the table
-    // Testing of the correct content of the dialog / display of error messages etc. is done seperately
+    // Testing of the correct content of the dialog / display of error messages etc. is done separately
     it('should create a new entity', () => {
         cy.intercept('POST', 'http://localhost:3000/testEntities').as('createTestEntity');
 
@@ -43,21 +43,21 @@ describe('default table', () => {
         cy.get('app-showcase-table').find('ngx-mat-entity-table').find('.mat-row > .cdk-column-Max-and-Min-Strings').eq(1).should('contain', 'maxL minLengthValue');
         cy.get('app-showcase-table').find('ngx-mat-entity-table').find('.mat-row > .cdk-column-Object').eq(1).should('contain', '#undefined maxL');
     });
-    // Testing of the correct content of the dialog / display of error messages etc. is done seperately
+    // Testing of the correct content of the dialog / display of error messages etc. is done separately
     it('should delete an entity', () => {
         cy.get('.mat-row > .cdk-column-Max-and-Min-Strings').eq(1).click();
         cy.get('button').contains('Delete').click();
         cy.get('button').filter((i, elt) => elt.innerText === 'Delete').eq(1).click();
         cy.get('app-showcase-table').find('ngx-mat-entity-table').find('.mat-row').should('have.length', 1);
     });
-    // Testing of the correct content of the dialog / display of error messages etc. is done seperately
+    // Testing of the correct content of the dialog / display of error messages etc. is done separately
     it('should edit an entity and save the changes', () => {
         cy.get('.mat-row > .cdk-column-Max-and-Min-Strings').click();
         cy.getInputByLabel('Max Length Value').click().clear().type('changedMaxLengthValue');
         cy.get('button').contains('Save').click();
         cy.get('.mat-row > .cdk-column-Max-and-Min-Strings').should('contain', 'chan 12345678');
     });
-    // Testing of the correct content of the dialog / display of error messages etc. is done seperately
+    // Testing of the correct content of the dialog / display of error messages etc. is done separately
     it('should edit an entity and revert the changes', () => {
         cy.get('.mat-row > .cdk-column-Max-and-Min-Strings').click();
         cy.getInputByLabel('Max Length Value').click().clear().type('1234');
