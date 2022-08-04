@@ -1,5 +1,5 @@
 import { Time } from '@angular/common';
-import { cloneDeep } from 'lodash';
+import { LodashUtilities } from '../capsulation/lodash.utilities';
 import { DropdownValue } from '../decorators/base/dropdown-value.interface';
 import { DateRangeDateDecoratorConfigInternal } from '../decorators/date/date-decorator-internal.data';
 
@@ -43,7 +43,7 @@ export abstract class DateUtilities {
     }
 
     private static getTimeDropdownValue(format: 12 | 24, hour: number, minute: number): DropdownValue<Time> {
-        const displayHour: number = this.getFormattedHour(format, cloneDeep(hour));
+        const displayHour: number = this.getFormattedHour(format, LodashUtilities.cloneDeep(hour));
         const displayMinute: string = this.getFormattedMinute(format, hour, minute);
         return {
             displayName: `${displayHour}:${displayMinute}`,
