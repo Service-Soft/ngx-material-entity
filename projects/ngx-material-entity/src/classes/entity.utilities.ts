@@ -8,6 +8,7 @@ import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigIntern
 import { DateRange } from '../decorators/date/date-decorator.data';
 import { Time } from '@angular/common';
 import { DateUtilities } from './date.utilities';
+import { ReflectUtilities } from '../capsulation/reflect.utilities';
 
 /**
  * Shows information about differences between two entities.
@@ -82,7 +83,7 @@ export abstract class EntityUtilities {
         type?: T
     ): DecoratorType<T> {
         try {
-            const metadata = Reflect.getMetadata('metadata', entity, propertyKey as string) as DecoratorType<T>;
+            const metadata = ReflectUtilities.getMetadata('metadata', entity, propertyKey) as DecoratorType<T>;
             if (!metadata) {
                 throw new Error(
                     `Could not find metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`
@@ -109,7 +110,7 @@ export abstract class EntityUtilities {
         entity: EntityType, propertyKey: keyof EntityType
     ): DecoratorTypes {
         try {
-            const propertyType = Reflect.getMetadata('type', entity, propertyKey as string) as DecoratorTypes;
+            const propertyType = ReflectUtilities.getMetadata('type', entity, propertyKey) as DecoratorTypes;
             if (!propertyType) {
                 throw new Error(
                     `Could not find type metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`
@@ -136,13 +137,11 @@ export abstract class EntityUtilities {
     static new<EntityType extends object>(target: EntityType, entity?: EntityType): void {
         for (const key in target) {
             const type = EntityUtilities.getPropertyType(target, key);
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            let value = entity ? Reflect.get(entity, key) : undefined;
+            let value = entity ? ReflectUtilities.get(entity, key) : undefined;
             switch (type) {
                 case DecoratorTypes.OBJECT:
                     const objectMetadata = EntityUtilities.getPropertyMetadata(target, key, DecoratorTypes.OBJECT);
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                    value = new objectMetadata.EntityClass(value);
+                    value = new objectMetadata.EntityClass(value as object | undefined);
                     break;
                 case DecoratorTypes.ARRAY:
                     const inputArray: EntityType[] = value as EntityType[];
@@ -159,7 +158,7 @@ export abstract class EntityUtilities {
                 default:
                     break;
             }
-            Reflect.set(target, key, value);
+            ReflectUtilities.set(target, key, value);
         }
     }
     // eslint-disable-next-line @typescript-eslint/member-ordering, jsdoc/require-jsdoc
@@ -567,7 +566,7 @@ export abstract class EntityUtilities {
      */
     static resetChangesOnEntity<EntityType extends object>(entity: EntityType, entityPriorChanges: EntityType): void {
         for (const key in entityPriorChanges) {
-            Reflect.set(entity, key, Reflect.get(entityPriorChanges, key));
+            ReflectUtilities.set(entity, key, ReflectUtilities.get(entityPriorChanges, key));
         }
     }
 
@@ -632,7 +631,7 @@ export abstract class EntityUtilities {
         hideOmitForCreate: boolean = false,
         hideOmitForEdit: boolean = false
     ): (keyof EntityType)[] {
-        let keys: (keyof EntityType)[] = Reflect.ownKeys(entity) as (keyof EntityType)[];
+        let keys: (keyof EntityType)[] = ReflectUtilities.ownKeys(entity);
         if (hideOmitForCreate) {
             const omitForCreateKeys: (keyof EntityType)[] = EntityUtilities.getOmitForCreate(entity);
             keys = keys.filter(k => !omitForCreateKeys.includes(k));
