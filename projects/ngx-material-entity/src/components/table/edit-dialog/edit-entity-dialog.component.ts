@@ -2,11 +2,11 @@ import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EntityService } from '../../../classes/entity.service';
 import { EntityRow, EntityUtilities } from '../../../classes/entity.utilities';
-import { cloneDeep } from 'lodash';
 import { EditEntityDialogData } from './edit-entity-dialog-data';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from './edit-entity-dialog.builder';
+import { LodashUtilities } from '../../../capsulation/lodash.utilities';
 
 /**
  * The default dialog used to edit an existing entity based on the configuration passed in the MAT_DIALOG_DATA "inputData".
@@ -45,7 +45,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends object> implemen
         this.dialogRef.disableClose = true;
         this.entityRows = EntityUtilities.getEntityRows(this.data.entity, false, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
-        this.entityPriorChanges = cloneDeep(this.data.entity);
+        this.entityPriorChanges = LodashUtilities.cloneDeep(this.data.entity);
     }
 
     /**

@@ -1,5 +1,4 @@
 import { expect } from '@jest/globals';
-import { cloneDeep } from 'lodash';
 import { TestEntity, TestEntityMockBuilder } from '../mocks/test-entity.mock';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { DateUtilities } from './date.utilities';
@@ -7,6 +6,7 @@ import { EntityUtilities } from './entity.utilities';
 import { DateTimeDateDecoratorConfigInternal } from '../decorators/date/date-decorator-internal.data';
 import { Time } from '@angular/common';
 import { DropdownValue } from '../decorators/base/dropdown-value.interface';
+import { LodashUtilities } from '../capsulation/lodash.utilities';
 
 const builder = new TestEntityMockBuilder();
 const testEntity: TestEntity = builder.testEntity;
@@ -22,7 +22,7 @@ describe('getTimeFromDate', () => {
 
 describe('getValidTimesForDropdown', () => {
     test('getValidTimesForDropdown', () => {
-        const tE: TestEntity = cloneDeep(testEntity);
+        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
         // eslint-disable-next-line max-len
         const metadata: DateTimeDateDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(tE, 'customDateTimeValue', DecoratorTypes.DATE_TIME);
         const result: DropdownValue<Time>[] = DateUtilities.getValidTimesForDropdown(

@@ -1,4 +1,3 @@
-import { cloneDeep, isEqual } from 'lodash';
 import { DecoratorType, DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../decorators/base/property-decorator-internal.data';
 import { EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
@@ -9,6 +8,7 @@ import { DateRange } from '../decorators/date/date-decorator.data';
 import { Time } from '@angular/common';
 import { DateUtilities } from './date.utilities';
 import { ReflectUtilities } from '../capsulation/reflect.utilities';
+import { LodashUtilities } from '../capsulation/lodash.utilities';
 
 /**
  * Shows information about differences between two entities.
@@ -264,7 +264,7 @@ export abstract class EntityUtilities {
                 }
                 break;
             case DecoratorTypes.DATE_RANGE:
-                const entityDateRange: DateRange = cloneDeep(entity[key] as unknown as DateRange);
+                const entityDateRange: DateRange = LodashUtilities.cloneDeep(entity[key] as unknown as DateRange);
                 const dateRangeMetadata = metadata as DateRangeDateDecoratorConfigInternal;
                 if (!this.isDateRangeValid(entityDateRange, dateRangeMetadata)) {
                     return false;
@@ -471,7 +471,7 @@ export abstract class EntityUtilities {
 
     private static isEqual(value: unknown, valuePriorChanges: unknown, metadata: PropertyDecoratorConfigInternal): boolean {
         if (this.isDateRange(value) && this.isDateRange(valuePriorChanges)) {
-            const dateRange = cloneDeep(value);
+            const dateRange = LodashUtilities.cloneDeep(value);
             dateRange.start = new Date(value.start);
             dateRange.end = new Date(value.end);
             dateRange.values = DateUtilities.getDatesBetween(
@@ -480,7 +480,7 @@ export abstract class EntityUtilities {
                 metadata as DateRangeDateDecoratorConfigInternal
             );
 
-            const dateRangePriorChanges = cloneDeep(valuePriorChanges);
+            const dateRangePriorChanges = LodashUtilities.cloneDeep(valuePriorChanges);
             dateRangePriorChanges.start = new Date(valuePriorChanges.start);
             dateRangePriorChanges.end = new Date(valuePriorChanges.end);
             dateRangePriorChanges.values = DateUtilities.getDatesBetween(
@@ -488,16 +488,16 @@ export abstract class EntityUtilities {
                 dateRangePriorChanges.end,
                 metadata as DateRangeDateDecoratorConfigInternal
             );
-            return isEqual(dateRange, dateRangePriorChanges);
+            return LodashUtilities.isEqual(dateRange, dateRangePriorChanges);
         }
         if ((metadata as DefaultDateDecoratorConfigInternal).displayStyle === 'date') {
             const date = new Date(DateUtilities.asDate(value));
             const datePriorChanges = new Date(DateUtilities.asDate(valuePriorChanges));
             date.setHours(0, 0, 0, 0);
             datePriorChanges.setHours(0, 0, 0, 0);
-            return isEqual(date, datePriorChanges);
+            return LodashUtilities.isEqual(date, datePriorChanges);
         }
-        return isEqual(value, valuePriorChanges);
+        return LodashUtilities.isEqual(value, valuePriorChanges);
     }
 
     private static isDateRange(value: unknown): value is DateRange {

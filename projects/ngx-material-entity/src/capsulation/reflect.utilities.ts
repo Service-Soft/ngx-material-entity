@@ -50,6 +50,17 @@ export abstract class ReflectUtilities {
     }
 
     /**
+     * Equivalent to `propertyKey in target`.
+     *
+     * @param target - Object that contains the property on itself or in its prototype chain.
+     * @param propertyKey - Name of the property.
+     * @returns Whether or not the given target has the key.
+     */
+    static has<T extends object>(target: T, propertyKey: keyof T): boolean {
+        return Reflect.has(target, propertyKey);
+    }
+
+    /**
      * Define a unique metadata entry on the target.
      *
      * @param metadataKey - A key used to store and retrieve metadata.

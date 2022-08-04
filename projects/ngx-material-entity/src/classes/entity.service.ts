@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
-import { isNil, omit, omitBy } from 'lodash';
 import { EntityUtilities } from './entity.utilities';
+import { LodashUtilities } from '../capsulation/lodash.utilities';
 
 /**
  * A generic EntityService class.
@@ -55,7 +55,7 @@ export abstract class EntityService<EntityType extends object> {
      * @returns A Promise of the created entity.
      */
     async create(entity: EntityType): Promise<EntityType> {
-        const body = omit(entity, EntityUtilities.getOmitForCreate(entity));
+        const body = LodashUtilities.omit(entity, EntityUtilities.getOmitForCreate(entity));
         const e = await firstValueFrom(this.http.post<EntityType>(this.baseUrl, body));
         this.entities.push(e);
         this.entitiesSubject.next(this.entities);
@@ -82,14 +82,14 @@ export abstract class EntityService<EntityType extends object> {
      * It Is used to get changed values and only update them instead of sending the whole entity data.
      */
     async update(entity: EntityType, entityPriorChanges: EntityType): Promise<void> {
-        const reqBody = omit(
+        const reqBody = LodashUtilities.omit(
             EntityUtilities.difference(entity, entityPriorChanges),
             EntityUtilities.getOmitForUpdate(entity)
         );
         const updatedEntity = await firstValueFrom(
             this.http.patch<EntityType>(
                 `${this.baseUrl}/${entityPriorChanges[this.idKey]}`,
-                omitBy(reqBody, isNil)
+                LodashUtilities.omitBy(reqBody, LodashUtilities.isNil)
             )
         );
         this.entities[this.entities.findIndex(e => e[this.idKey] === entityPriorChanges[this.idKey])] = updatedEntity;

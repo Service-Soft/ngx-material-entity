@@ -5,7 +5,6 @@ import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
 import { getValidationErrorMessage } from '../get-validation-error-message.function';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { cloneDeep } from 'lodash';
 import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal } from '../../decorators/array/array-decorator-internal.data';
 import { DropdownBooleanDecoratorConfigInternal } from '../../decorators/boolean/boolean-decorator-internal.data';
 import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal } from '../../decorators/number/number-decorator-internal.data';
@@ -23,6 +22,7 @@ import { DateFilterFn } from '@angular/material/datepicker';
 import { DateRange } from '../../decorators/date/date-decorator.data';
 import { Time } from '@angular/common';
 import { DropdownValue } from '../../decorators/base/dropdown-value.interface';
+import { LodashUtilities } from '../../capsulation/lodash.utilities';
 
 /**
  * The default input component. It gets the metadata of the property from the given @Input "entity" and @Input "propertyKey"
@@ -162,7 +162,7 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
 
         this.metadataAutocompleteString = this.metadata as AutocompleteStringDecoratorConfigInternal;
         this.autocompleteStrings = this.metadataAutocompleteString.autocompleteValues;
-        this.filteredAutocompleteStrings = cloneDeep(this.autocompleteStrings);
+        this.filteredAutocompleteStrings = LodashUtilities.cloneDeep(this.autocompleteStrings);
 
         this.metadataDropdownString = this.metadata as DropdownStringDecoratorConfigInternal;
 
@@ -213,7 +213,7 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
                 this.hideOmitForCreate === false ? false : true,
                 this.hideOmitForEdit ? true : false
             );
-            this.arrayItemPriorChanges = cloneDeep(this.arrayItem);
+            this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
 
             this.dialogInputData = {
                 entity: this.arrayItem,
@@ -243,7 +243,7 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
         this.metadataDateTimeDate = this.metadata as DateTimeDateDecoratorConfigInternal;
 
         if (this.type === DecoratorTypes.DATE_RANGE) {
-            this.dateRange = cloneDeep(this.entity[this.propertyKey] as unknown as DateRange);
+            this.dateRange = LodashUtilities.cloneDeep(this.entity[this.propertyKey] as unknown as DateRange);
             if (!this.dateRange) {
                 this.dateRange = {
                     start: undefined as unknown as Date,
@@ -320,7 +320,7 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
      */
     add(): void {
         if (this.metadataEntityArray.createInline) {
-            this.entityArrayValues.push(cloneDeep(this.arrayItem));
+            this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
             this.dataSource.data = this.entityArrayValues;
             EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
         }
@@ -341,7 +341,7 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
      */
     addArrayItem(): void {
         this.addArrayItemDialogRef.close();
-        this.entityArrayValues.push(cloneDeep(this.arrayItem));
+        this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
         this.dataSource.data = this.entityArrayValues;
         EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
     }
