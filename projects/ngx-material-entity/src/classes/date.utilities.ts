@@ -1,7 +1,7 @@
 import { Time } from '@angular/common';
+import { DateFilterFn } from '@angular/material/datepicker';
 import { LodashUtilities } from '../capsulation/lodash.utilities';
 import { DropdownValue } from '../decorators/base/dropdown-value.interface';
-import { DateRangeDateDecoratorConfigInternal } from '../decorators/date/date-decorator-internal.data';
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
 
@@ -85,10 +85,7 @@ export abstract class DateUtilities {
      */
     static getTimeFromDate(value: Date): Time {
         if (!value) {
-            return {
-                hours: undefined,
-                minutes: undefined
-            } as unknown as Time;
+            return undefined as unknown as Time;
         }
         else {
             return {
@@ -103,13 +100,13 @@ export abstract class DateUtilities {
      *
      * @param startDate - The start date.
      * @param endDate - The end date.
-     * @param metadataDateRangeDate - The metadata.
+     * @param filter - The custom filter from the metadata.
      * @returns All dates between the two provided dates. Includes start and end date.
      */
     static getDatesBetween(
         startDate: Date,
         endDate: Date,
-        metadataDateRangeDate: DateRangeDateDecoratorConfigInternal
+        filter?: DateFilterFn<Date>
     ): Date[] {
         const res: Date[] = [];
         while (
@@ -120,8 +117,8 @@ export abstract class DateUtilities {
             res.push(new Date(startDate));
             startDate.setTime(startDate.getTime() + DAY_IN_MS);
         }
-        if (metadataDateRangeDate.filter) {
-            return res.filter(d => metadataDateRangeDate.filter?.(d));
+        if (filter) {
+            return res.filter(d => filter(d));
         }
         else {
             return res;

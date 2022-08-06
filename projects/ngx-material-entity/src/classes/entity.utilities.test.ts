@@ -112,6 +112,20 @@ describe('isEntityValid', () => {
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
 
+    // BOOLEAN
+    test('BOOLEAN_CHECKBOX BOOLEAN_TOGGLE required', () => {
+        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        tE.booleanCheckboxValue = false;
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.booleanCheckboxValue = true;
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+
+        tE.booleanToggleValue = false;
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.booleanToggleValue = true;
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+
     // STRING
     test('STRING maxLength', () => {
         const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
@@ -401,7 +415,7 @@ describe('getEntityRows', () => {
 describe('keysOf', () => {
     test('should get all keys of the entity', () => {
         const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
-        expect(EntityUtilities.keysOf(tE)).toHaveLength(36);
+        expect(EntityUtilities.keysOf(tE)).toHaveLength(42);
     });
     test('should get keys without omitForCreate', () => {
         const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
