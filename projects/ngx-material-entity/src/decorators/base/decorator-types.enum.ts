@@ -1,4 +1,4 @@
-import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal } from '../array/array-decorator-internal.data';
+import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, DateArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal, DateTimeArrayDecoratorConfigInternal, DateRangeArrayDecoratorConfigInternal } from '../array/array-decorator-internal.data';
 import { CheckboxBooleanDecoratorConfigInternal, DropdownBooleanDecoratorConfigInternal, ToggleBooleanDecoratorConfigInternal } from '../boolean/boolean-decorator-internal.data';
 import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from '../date/date-decorator-internal.data';
 import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal } from '../number/number-decorator-internal.data';
@@ -20,6 +20,9 @@ export enum DecoratorTypes {
     BOOLEAN_DROPDOWN = 'booleanDropdown',
     OBJECT = 'object',
     ARRAY = 'array',
+    ARRAY_DATE = 'arrayDate',
+    ARRAY_DATE_TIME = 'arrayDateTime',
+    ARRAY_DATE_RANGE = 'arrayDateRange',
     ARRAY_STRING_CHIPS = 'arrayStringChips',
     ARRAY_STRING_AUTOCOMPLETE_CHIPS = 'arrayStringAutocompleteChips',
     DATE = 'date',
@@ -44,6 +47,9 @@ export type DecoratorType<T> =
     : T extends DecoratorTypes.OBJECT ? DefaultObjectDecoratorConfigInternal<any>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     : T extends DecoratorTypes.ARRAY ? EntityArrayDecoratorConfigInternal<any>
+    : T extends DecoratorTypes.ARRAY_DATE ? DateArrayDecoratorConfigInternal
+    : T extends DecoratorTypes.ARRAY_DATE_TIME ? DateTimeArrayDecoratorConfigInternal
+    : T extends DecoratorTypes.ARRAY_DATE_RANGE ? DateRangeArrayDecoratorConfigInternal
     : T extends DecoratorTypes.ARRAY_STRING_CHIPS ? StringChipsArrayDecoratorConfigInternal
     : T extends DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS ? AutocompleteStringChipsArrayDecoratorConfigInternal
     : T extends DecoratorTypes.DATE ? DefaultDateDecoratorConfigInternal

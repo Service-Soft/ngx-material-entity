@@ -16,7 +16,7 @@ describe('getTimeFromDate', () => {
         expect(DateUtilities.getTimeFromDate(new Date(2022, 0, 1, 0, 0))).toEqual({hours: 0, minutes: 0});
     });
     test('with no Date', () => {
-        expect(DateUtilities.getTimeFromDate(undefined as unknown as Date)).toEqual({hours: undefined, minutes: undefined});
+        expect(DateUtilities.getTimeFromDate(DateUtilities.asDate(undefined))).toEqual(undefined);
     });
 });
 

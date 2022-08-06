@@ -200,12 +200,12 @@
             <div class="buttons">
                 <button mat-raised-button
                     [disabled]="metadataEntityArray.createInline && !EntityUtilities.isEntityValid(arrayItem, 'create')"
-                    (click)="add()">
+                    (click)="addEntity()">
                     {{metadataEntityArray.addButtonLabel}}
                 </button>
                 <button mat-raised-button
                     [disabled]="!selection.selected.length"
-                    (click)="remove()">
+                    (click)="remove(selection, entityArrayValues, dataSource)">
                     {{metadataEntityArray.removeButtonLabel}}
                 </button>
             </div>
@@ -214,9 +214,9 @@
                 <!-- select Column -->
                 <ng-container matColumnDef="select">
                     <mat-header-cell *matHeaderCellDef>
-                        <mat-checkbox [disabled]="!dataSource.data.length" (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()" [indeterminate]="selection.hasValue() && !isAllSelected()"></mat-checkbox>
+                        <mat-checkbox [disabled]="!dataSource.data.length" (change)="$event ? masterToggle(selection, dataSource) : null" [checked]="selection.hasValue() && isAllSelected(selection, dataSource)" [indeterminate]="selection.hasValue() && !isAllSelected(selection, dataSource)"></mat-checkbox>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let module" class="module">
+                    <mat-cell *matCellDef="let module">
                         <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(module) : null" [checked]="selection.isSelected(module)"></mat-checkbox>
                     </mat-cell>
                 </ng-container>
@@ -236,6 +236,232 @@
         
             <div class="array-error" *ngIf="metadataEntityArray.required && !dataSource.data.length">
                 {{metadataEntityArray.missingErrorMessage}}
+            </div>
+        </div>
+    </div>
+
+    <div class="entityArray" *ngSwitchCase="DecoratorTypes.ARRAY_DATE">
+        <div class="mat-elevation-z8" style="border-radius: 5px;padding: 15px;margin-bottom: 15px;margin-top: 15px;">
+            <mat-form-field appearance="standard">
+                <mat-label>{{metadata.displayName}}</mat-label>
+                <input
+                    matInput
+                    [(ngModel)]="dateInput"
+                    [name]="propertyKey.toString()"
+                    #model="ngModel"
+                    [matDatepicker]="picker"
+                    [required]="metadata.required"
+                    [min]="metadataDateArray.min ? metadataDateArray.min(dateInput) : undefined"
+                    [max]="metadataDateArray.max ? metadataDateArray.max(dateInput) : undefined"
+                    [matDatepickerFilter]="metadataDateArray.filter ? metadataDateArray.filter : defaultDateFilter"
+                >
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
+            </mat-form-field>
+            
+            <div class="buttons">
+                <button mat-raised-button
+                    [disabled]="model.errors"
+                    (click)="add(dateInput, dateArrayValues, dateDataSource)">
+                    {{metadataDateArray.addButtonLabel}}
+                </button>
+                <button mat-raised-button
+                    [disabled]="!dateSelection.selected.length"
+                    (click)="remove(dateSelection, dateArrayValues, dateDataSource)">
+                    {{metadataDateArray.removeButtonLabel}}
+                </button>
+            </div>
+        
+            <mat-table [dataSource]="dateDataSource">
+                <!-- select Column -->
+                <ng-container matColumnDef="select">
+                    <mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox [disabled]="!dateDataSource.data.length" (change)="$event ? masterToggle(dateSelection, dateDataSource) : null" [checked]="dateSelection.hasValue() && isAllSelected(dateSelection, dateDataSource)" [indeterminate]="dateSelection.hasValue() && !isAllSelected(dateSelection, dateDataSource)"></mat-checkbox>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let module">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? dateSelection.toggle(module) : null" [checked]="dateSelection.isSelected(module)"></mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+            
+                <ng-container *ngFor="let dCol of metadataDateArray.displayColumns" [matColumnDef]="dCol.displayName">
+                    <mat-header-cell *matHeaderCellDef>
+                        {{dCol.displayName}}
+                    </mat-header-cell>
+                    <mat-cell class="entity" *matCellDef="let entity">
+                        {{dCol.value(entity)}}
+                    </mat-cell>
+                </ng-container>
+            
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+        
+            <div class="array-error" *ngIf="metadataDateArray.required && !dateDataSource.data.length">
+                {{metadataDateArray.missingErrorMessage}}
+            </div>
+        </div>
+    </div>
+
+    <div class="entityArray" *ngSwitchCase="DecoratorTypes.ARRAY_DATE_TIME">
+        <div class="mat-elevation-z8" style="border-radius: 5px;padding: 15px;margin-bottom: 15px;margin-top: 15px;">
+            
+            <div class="date-time">
+                <mat-form-field appearance="standard" class="datepicker">
+                    <mat-label>{{metadata.displayName}}</mat-label>
+                    <input
+                        matInput
+                        [(ngModel)]="dateInput"
+                        [name]="propertyKey.toString()"
+                        #model="ngModel"
+                        [matDatepicker]="picker"
+                        [required]="metadata.required"
+                        [min]="metadataDateTimeArray.minDate ? metadataDateTimeArray.minDate(dateInput) : undefined"
+                        [max]="metadataDateTimeArray.maxDate ? metadataDateTimeArray.maxDate(dateInput) : undefined"
+                        [matDatepickerFilter]="metadataDateTimeArray.filterDate ? metadataDateTimeArray.filterDate : defaultDateFilter"
+                    >
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
+                </mat-form-field>
+                <mat-form-field class="timepicker">
+                    <mat-label>{{metadataDateTimeArray.timeDisplayName}}</mat-label>
+                    <mat-select
+                        [(ngModel)]="time"
+                        [name]="propertyKey.toString() + 'time'"
+                        #timeModel="ngModel"
+                        [required]="metadata.required"
+                    >
+                        <mat-option *ngFor="let validTime of DateUtilities.getValidTimesForDropdown(
+                                DateUtilities.asDate(dateInput),
+                                metadataDateTimeArray.times,
+                                metadataDateTimeArray.minTime,
+                                metadataDateTimeArray.maxTime,
+                                metadataDateTimeArray.filterTime
+                            )"
+                            [value]="validTime.value"
+                        >
+                            {{validTime.displayName}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error>{{getValidationErrorMessage(timeModel)}}</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="buttons">
+                <button mat-raised-button
+                    [disabled]="model.errors || timeModel.errors || timeIsInvalid()"
+                    (click)="addDateTime()">
+                    {{metadataDateTimeArray.addButtonLabel}}
+                </button>
+                <button mat-raised-button
+                    [disabled]="!dateSelection.selected.length"
+                    (click)="remove(dateSelection, dateArrayValues, dateDataSource)">
+                    {{metadataDateTimeArray.removeButtonLabel}}
+                </button>
+            </div>
+        
+            <mat-table [dataSource]="dateDataSource">
+                <!-- select Column -->
+                <ng-container matColumnDef="select">
+                    <mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox [disabled]="!dateDataSource.data.length" (change)="$event ? masterToggle(dateSelection, dateDataSource) : null" [checked]="dateSelection.hasValue() && isAllSelected(dateSelection, dateDataSource)" [indeterminate]="dateSelection.hasValue() && !isAllSelected(dateSelection, dateDataSource)"></mat-checkbox>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let module">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? dateSelection.toggle(module) : null" [checked]="dateSelection.isSelected(module)"></mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+            
+                <ng-container *ngFor="let dCol of metadataDateTimeArray.displayColumns" [matColumnDef]="dCol.displayName">
+                    <mat-header-cell *matHeaderCellDef>
+                        {{dCol.displayName}}
+                    </mat-header-cell>
+                    <mat-cell class="entity" *matCellDef="let entity">
+                        {{dCol.value(entity)}}
+                    </mat-cell>
+                </ng-container>
+            
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+        
+            <div class="array-error" *ngIf="metadataDateTimeArray.required && !dateDataSource.data.length">
+                {{metadataDateTimeArray.missingErrorMessage}}
+            </div>
+        </div>
+    </div>
+
+    <div class="entityArray" *ngSwitchCase="DecoratorTypes.ARRAY_DATE_RANGE">
+        <div class="mat-elevation-z8" style="border-radius: 5px;padding: 15px;margin-bottom: 15px;margin-top: 15px;">
+
+            <mat-form-field appearance="standard">
+                <mat-label>{{metadata.displayName}}</mat-label>
+                
+                <mat-date-range-input [rangePicker]="picker" [required]="metadata.required" [dateFilter]="metadataDateRangeArray.filter ? metadataDateRangeArray.filter : defaultDateFilter">
+                    <input matStartDate
+                        [(ngModel)]="dateRangeStart"
+                        [name]="propertyKey.toString() + 'start'"
+                        #startModel="ngModel"
+                        [required]="metadata.required"
+                        [min]="metadataDateRangeArray.minStart ? metadataDateRangeArray.minStart(dateRange.start) : undefined"
+                        [max]="metadataDateRangeArray.maxStart ? metadataDateRangeArray.maxStart(dateRange.start) : undefined"
+                        [placeholder]="metadataDateRangeArray.placeholderStart"
+                    >
+                    <input matEndDate
+                        [(ngModel)]="dateRangeEnd"
+                        [name]="propertyKey.toString() + 'end'"
+                        #endModel="ngModel"
+                        [required]="metadata.required"
+                        [min]="metadataDateRangeArray.minEnd ? metadataDateRangeArray.minEnd(dateRange.end) : undefined"
+                        [max]="metadataDateRangeArray.maxEnd ? metadataDateRangeArray.maxEnd(dateRange.end) : undefined"
+                        [placeholder]="metadataDateRangeArray.placeholderEnd"
+                    >
+                </mat-date-range-input>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+    
+                <mat-error *ngIf="startModel.errors">{{getValidationErrorMessage(startModel)}}</mat-error>
+                <mat-error *ngIf="!startModel.errors && endModel.errors">{{getValidationErrorMessage(endModel)}}</mat-error>
+            </mat-form-field>
+            
+            <div class="buttons">
+                <button mat-raised-button
+                    [disabled]="startModel.errors || endModel.errors"
+                    (click)="addDateRange()">
+                    {{metadataDateRangeArray.addButtonLabel}}
+                </button>
+                <button mat-raised-button
+                    [disabled]="!dateRangeSelection.selected.length"
+                    (click)="remove(dateRangeSelection, dateRangeArrayValues, dateRangeDataSource)">
+                    {{metadataDateRangeArray.removeButtonLabel}}
+                </button>
+            </div>
+        
+            <mat-table [dataSource]="dateRangeDataSource">
+                <!-- select Column -->
+                <ng-container matColumnDef="select">
+                    <mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox [disabled]="!dateRangeDataSource.data.length" (change)="$event ? masterToggle(dateRangeSelection, dateRangeDataSource) : null" [checked]="dateRangeSelection.hasValue() && isAllSelected(dateRangeSelection, dateRangeDataSource)" [indeterminate]="dateRangeSelection.hasValue() && !isAllSelected(dateRangeSelection, dateRangeDataSource)"></mat-checkbox>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let module">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? dateRangeSelection.toggle(module) : null" [checked]="dateRangeSelection.isSelected(module)"></mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+            
+                <ng-container *ngFor="let dCol of metadataDateRangeArray.displayColumns" [matColumnDef]="dCol.displayName">
+                    <mat-header-cell *matHeaderCellDef>
+                        {{dCol.displayName}}
+                    </mat-header-cell>
+                    <mat-cell class="entity" *matCellDef="let entity">
+                        {{dCol.value(entity)}}
+                    </mat-cell>
+                </ng-container>
+            
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+        
+            <div class="array-error" *ngIf="metadataDateRangeArray.required && !dateRangeDataSource.data.length">
+                {{metadataDateRangeArray.missingErrorMessage}}
             </div>
         </div>
     </div>
@@ -339,7 +565,7 @@
                     [required]="metadata.required"
                     [min]="metadataDateRangeDate.minStart ? metadataDateRangeDate.minStart(dateRange.start) : undefined"
                     [max]="metadataDateRangeDate.maxStart ? metadataDateRangeDate.maxStart(dateRange.start) : undefined"
-                    [placeholder]="metadataDateRangeDate.placeholderStart ? metadataDateRangeDate.placeholderStart : 'Start'"
+                    [placeholder]="metadataDateRangeDate.placeholderStart"
                     (ngModelChange)="setDateRangeValues()"
                 >
                 <input matEndDate
@@ -349,7 +575,7 @@
                     [required]="metadata.required"
                     [min]="metadataDateRangeDate.minEnd ? metadataDateRangeDate.minEnd(dateRange.end) : undefined"
                     [max]="metadataDateRangeDate.maxEnd ? metadataDateRangeDate.maxEnd(dateRange.end) : undefined"
-                    [placeholder]="metadataDateRangeDate.placeholderEnd ? metadataDateRangeDate.placeholderEnd : 'End'"
+                    [placeholder]="metadataDateRangeDate.placeholderEnd"
                     (ngModelChange)="setDateRangeValues()"
                 >
             </mat-date-range-input>

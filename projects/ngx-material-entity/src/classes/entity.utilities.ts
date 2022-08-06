@@ -1,6 +1,6 @@
 import { DecoratorType, DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../decorators/base/property-decorator-internal.data';
-import { EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
+import { DateRangeArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
 import { DefaultStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../decorators/string/string-decorator-internal.data';
 import { DefaultNumberDecoratorConfigInternal } from '../decorators/number/number-decorator-internal.data';
 import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from '../decorators/date/date-decorator-internal.data';
@@ -9,6 +9,8 @@ import { Time } from '@angular/common';
 import { DateUtilities } from './date.utilities';
 import { ReflectUtilities } from '../capsulation/reflect.utilities';
 import { LodashUtilities } from '../capsulation/lodash.utilities';
+import { ToggleBooleanDecoratorConfigInternal } from '../decorators/boolean/boolean-decorator-internal.data';
+import { DateFilterFn } from '@angular/material/datepicker';
 
 /**
  * Shows information about differences between two entities.
@@ -205,16 +207,22 @@ export abstract class EntityUtilities {
         if (metadata.omitForUpdate && omit === 'update') {
             return true;
         }
-        if (metadata.required && !entity[key]) {
+        if (metadata.required && entity[key] == null) {
             return false;
         }
         switch (type) {
             case DecoratorTypes.BOOLEAN_DROPDOWN:
+                break;
             case DecoratorTypes.BOOLEAN_CHECKBOX:
             case DecoratorTypes.BOOLEAN_TOGGLE:
-                return true;
+                const entityBoolean = entity[key] as unknown as boolean;
+                const booleanMetadata = metadata as ToggleBooleanDecoratorConfigInternal;
+                if (!this.isBooleanValid(entityBoolean, booleanMetadata)) {
+                    return false;
+                }
+                break;
             case DecoratorTypes.STRING_DROPDOWN:
-                return true;
+                break;
             case DecoratorTypes.STRING:
             case DecoratorTypes.STRING_AUTOCOMPLETE:
                 const entityString = entity[key] as unknown as string;
@@ -249,6 +257,9 @@ export abstract class EntityUtilities {
                 break;
             case DecoratorTypes.ARRAY_STRING_CHIPS:
             case DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS:
+            case DecoratorTypes.ARRAY_DATE:
+            case DecoratorTypes.ARRAY_DATE_TIME:
+            case DecoratorTypes.ARRAY_DATE_RANGE:
             case DecoratorTypes.ARRAY:
                 const entityArray = entity[key] as unknown as [];
                 const arrayMetadata = metadata as EntityArrayDecoratorConfigInternal<EntityType>;
@@ -279,6 +290,13 @@ export abstract class EntityUtilities {
                 break;
             default:
                 throw new Error(`Could not validate the input because the DecoratorType ${type} is not known`);
+        }
+        return true;
+    }
+
+    private static isBooleanValid(value: boolean, metadata: ToggleBooleanDecoratorConfigInternal): boolean {
+        if (metadata.required && !value) {
+            return false;
         }
         return true;
     }
@@ -438,7 +456,9 @@ export abstract class EntityUtilities {
     ): Difference<EntityType>[] {
         const res: Difference<EntityType>[] = [];
         for (const key in entity) {
-            if (!this.isEqual(entity[key], entityPriorChanges[key], EntityUtilities.getPropertyMetadata(entity, key))) {
+            const metadata = EntityUtilities.getPropertyMetadata(entity, key);
+            const type = EntityUtilities.getPropertyType(entity, key);
+            if (!this.isEqual(entity[key], entityPriorChanges[key], metadata, type)) {
                 res.push({
                     key: key,
                     before: entityPriorChanges[key],
@@ -462,55 +482,109 @@ export abstract class EntityUtilities {
     ): Partial<EntityType> {
         const res: Partial<EntityType> = {};
         for (const key in entity) {
-            if (!this.isEqual(entity[key], entityPriorChanges[key], EntityUtilities.getPropertyMetadata(entity, key))) {
+            const metadata = EntityUtilities.getPropertyMetadata(entity, key);
+            const type = EntityUtilities.getPropertyType(entity, key);
+            if (!this.isEqual(entity[key], entityPriorChanges[key], metadata, type)) {
                 res[key] = entity[key];
             }
         }
         return res;
     }
 
-    private static isEqual(value: unknown, valuePriorChanges: unknown, metadata: PropertyDecoratorConfigInternal): boolean {
-        if (this.isDateRange(value) && this.isDateRange(valuePriorChanges)) {
-            const dateRange = LodashUtilities.cloneDeep(value);
-            dateRange.start = new Date(value.start);
-            dateRange.end = new Date(value.end);
-            dateRange.values = DateUtilities.getDatesBetween(
-                dateRange.start,
-                dateRange.end,
-                metadata as DateRangeDateDecoratorConfigInternal
-            );
-
-            const dateRangePriorChanges = LodashUtilities.cloneDeep(valuePriorChanges);
-            dateRangePriorChanges.start = new Date(valuePriorChanges.start);
-            dateRangePriorChanges.end = new Date(valuePriorChanges.end);
-            dateRangePriorChanges.values = DateUtilities.getDatesBetween(
-                dateRangePriorChanges.start,
-                dateRangePriorChanges.end,
-                metadata as DateRangeDateDecoratorConfigInternal
-            );
-            return LodashUtilities.isEqual(dateRange, dateRangePriorChanges);
+    /**
+     * Checks if two given values are equal.
+     * It uses the isEqual method from LodashUtilities and extends it with functionality regarding Dates.
+     *
+     * @param value - The updated value.
+     * @param valuePriorChanges - The value before any changes.
+     * @param metadata - The metadata of the property.
+     * @param type - The type of the property.
+     * @returns Whether or not the given values are equal.
+     */
+    static isEqual(value: unknown, valuePriorChanges: unknown, metadata: PropertyDecoratorConfigInternal, type: DecoratorTypes): boolean {
+        switch (type) {
+            case DecoratorTypes.DATE_RANGE:
+                return this.isEqualDateRange(value, valuePriorChanges, (metadata as DateRangeDateDecoratorConfigInternal).filter);
+            case DecoratorTypes.DATE:
+                return this.isEqualDate(value, valuePriorChanges);
+            case DecoratorTypes.DATE_TIME:
+                return this.isEqualDateTime(value, valuePriorChanges);
+            case DecoratorTypes.ARRAY_DATE:
+            case DecoratorTypes.ARRAY_DATE_TIME:
+                return this.isEqualArrayDate(value, valuePriorChanges);
+            case DecoratorTypes.ARRAY_DATE_RANGE:
+                return this.isEqualArrayDateRange(value, valuePriorChanges, (metadata as DateRangeArrayDecoratorConfigInternal).filter);
+            default:
+                return LodashUtilities.isEqual(value, valuePriorChanges);
         }
-        if ((metadata as DefaultDateDecoratorConfigInternal).displayStyle === 'date') {
-            const date = new Date(DateUtilities.asDate(value));
-            const datePriorChanges = new Date(DateUtilities.asDate(valuePriorChanges));
-            date.setHours(0, 0, 0, 0);
-            datePriorChanges.setHours(0, 0, 0, 0);
-            return LodashUtilities.isEqual(date, datePriorChanges);
-        }
-        return LodashUtilities.isEqual(value, valuePriorChanges);
     }
 
-    private static isDateRange(value: unknown): value is DateRange {
-        const dateRange = value as DateRange;
-        if (dateRange.start && dateRange.end) {
-            try {
-                new Date(dateRange.start);
-                new Date(dateRange.end)
-                return true;
-            }
-            catch (error) {};
-        }
-        return false;
+    private static isEqualArrayDate(value: unknown, valuePriorChanges: unknown): boolean {
+        const newValue = (value as Date[]).map(v => new Date(v)).sort();
+        const newValuePriorChanges = (valuePriorChanges as Date[]).map(v => new Date(v)).sort();
+        return LodashUtilities.isEqual(newValue, newValuePriorChanges);
+    }
+
+    private static isEqualArrayDateRange(value: unknown, valuePriorChanges: unknown, filter?: DateFilterFn<Date>): boolean {
+        const newValue = (value as DateRange[]).map(v => {
+            const dr: DateRange = {
+                start: new Date(v.start),
+                end: new Date(v.end),
+                values: DateUtilities.getDatesBetween(
+                    new Date(v.start),
+                    new Date(v.end),
+                    filter
+                )
+            };
+            return dr;
+        }).sort();
+        const newValuePriorChanges = (valuePriorChanges as DateRange[]).map(v => {
+            const dr: DateRange = {
+                start: new Date(v.start),
+                end: new Date(v.end),
+                values: DateUtilities.getDatesBetween(
+                    new Date(v.start),
+                    new Date(v.end),
+                    filter
+                )
+            };
+            return dr;
+        }).sort();
+        return LodashUtilities.isEqual(newValue, newValuePriorChanges);
+    }
+
+    private static isEqualDateTime(value: unknown, valuePriorChanges: unknown): boolean {
+        const date = new Date(value as Date);
+        const datePriorChanges = new Date(valuePriorChanges as Date);
+        return LodashUtilities.isEqual(date, datePriorChanges);
+    }
+
+    private static isEqualDate(value: unknown, valuePriorChanges: unknown): boolean {
+        const date = new Date(value as Date);
+        const datePriorChanges = new Date(valuePriorChanges as Date);
+        date.setHours(0, 0, 0, 0);
+        datePriorChanges.setHours(0, 0, 0, 0);
+        return LodashUtilities.isEqual(date, datePriorChanges);
+    }
+
+    private static isEqualDateRange(value: unknown, valuePriorChanges: unknown, filter?: DateFilterFn<Date>): boolean {
+        const dateRange = LodashUtilities.cloneDeep(value) as DateRange;
+        dateRange.start = new Date((value as DateRange).start);
+        dateRange.end = new Date((value as DateRange).end);
+        dateRange.values = DateUtilities.getDatesBetween(
+            dateRange.start,
+            dateRange.end,
+            filter
+        );
+        const dateRangePriorChanges = LodashUtilities.cloneDeep(valuePriorChanges) as DateRange;
+        dateRangePriorChanges.start = new Date((valuePriorChanges as DateRange).start);
+        dateRangePriorChanges.end = new Date((valuePriorChanges as DateRange).end);
+        dateRangePriorChanges.values = DateUtilities.getDatesBetween(
+            dateRangePriorChanges.start,
+            dateRangePriorChanges.end,
+            filter
+        );
+        return LodashUtilities.isEqual(dateRange, dateRangePriorChanges);
     }
 
     /**

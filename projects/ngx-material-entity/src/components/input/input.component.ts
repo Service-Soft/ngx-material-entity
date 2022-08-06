@@ -5,7 +5,7 @@ import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
 import { getValidationErrorMessage } from '../get-validation-error-message.function';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal } from '../../decorators/array/array-decorator-internal.data';
+import { AutocompleteStringChipsArrayDecoratorConfigInternal, DateArrayDecoratorConfigInternal, DateRangeArrayDecoratorConfigInternal, DateTimeArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal } from '../../decorators/array/array-decorator-internal.data';
 import { DropdownBooleanDecoratorConfigInternal } from '../../decorators/boolean/boolean-decorator-internal.data';
 import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal } from '../../decorators/number/number-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../../decorators/object/object-decorator-internal.data';
@@ -23,6 +23,7 @@ import { DateRange } from '../../decorators/date/date-decorator.data';
 import { Time } from '@angular/common';
 import { DropdownValue } from '../../decorators/base/dropdown-value.interface';
 import { LodashUtilities } from '../../capsulation/lodash.utilities';
+import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 /**
  * The default input component. It gets the metadata of the property from the given @Input "entity" and @Input "propertyKey"
@@ -97,6 +98,26 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
 
     metadataEntityArray!: EntityArrayDecoratorConfigInternal<EntityType>;
     entityArrayValues!: EntityType[];
+    arrayItem!: EntityType;
+    private arrayItemPriorChanges!: EntityType;
+    arrayItemInlineRows!: EntityRow<EntityType>[];
+    dataSource!: MatTableDataSource<EntityType>;
+    selection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
+    displayedColumns!: string[];
+
+    metadataDateArray!: DateArrayDecoratorConfigInternal;
+    dateArrayValues!: Date[];
+    dateInput?: Date = undefined;
+    dateDataSource!: MatTableDataSource<Date>;
+    dateSelection: SelectionModel<Date> = new SelectionModel<Date>(true, []);
+
+    metadataDateTimeArray!: DateTimeArrayDecoratorConfigInternal;
+
+    metadataDateRangeArray!: DateRangeArrayDecoratorConfigInternal;
+    dateRangeArrayValues!: DateRange[];
+    dateRangeDataSource!: MatTableDataSource<DateRange>;
+    dateRangeSelection: SelectionModel<DateRange> = new SelectionModel<DateRange>(true, []);
+
     metadataStringChipsArray!: StringChipsArrayDecoratorConfigInternal;
     stringChipsArrayValues!: string[];
     chipsInput: string = '';
@@ -114,13 +135,6 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
     dateTime!: Date;
     time!: Time;
     timeDropdownValues!: DropdownValue<Time>[];
-
-    arrayItem!: EntityType;
-    private arrayItemPriorChanges!: EntityType;
-    arrayItemInlineRows!: EntityRow<EntityType>[];
-    dataSource!: MatTableDataSource<EntityType>;
-    selection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
-    displayedColumns!: string[];
 
     dialogInputData!: AddArrayItemDialogData<EntityType>;
     dialogData!: AddArrayItemDialogDataInternal<EntityType>;
@@ -189,9 +203,6 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
                 (this.entity[this.propertyKey] as unknown as EntityType[]) = [];
             }
             this.entityArrayValues = this.entity[this.propertyKey] as unknown as EntityType[];
-            if (this.metadataEntityArray.createInline === undefined) {
-                this.metadataEntityArray.createInline = true;
-            }
             if (!this.metadataEntityArray.createInline && !this.metadataEntityArray.createDialogData) {
                 this.metadataEntityArray.createDialogData = {
                     title: 'Add'
@@ -232,6 +243,72 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
             this.stringChipsArrayValues = (this.entity[this.propertyKey] as unknown as string[]);
         }
 
+        this.metadataDateArray = this.metadata as DateArrayDecoratorConfigInternal;
+        if (this.type === DecoratorTypes.ARRAY_DATE) {
+            if (!this.entity[this.propertyKey]) {
+                (this.entity[this.propertyKey] as unknown as Date[]) = [];
+            }
+            this.dateArrayValues = this.entity[this.propertyKey] as unknown as Date[];
+            const givenDisplayColumns: string[] = this.metadataDateArray.displayColumns.map((v) => v.displayName);
+            if (givenDisplayColumns.find(s => s === 'select')) {
+                throw new Error(
+                    `The name "select" for a display column is reserved.
+                    Please choose a different name.`
+                );
+            }
+            this.displayedColumns = ['select'].concat(givenDisplayColumns);
+            this.dateDataSource = new MatTableDataSource();
+            this.dateDataSource.data = this.dateArrayValues;
+        }
+
+        this.metadataDateTimeArray = this.metadata as DateTimeArrayDecoratorConfigInternal;
+        if (this.type === DecoratorTypes.ARRAY_DATE_TIME) {
+            if (!this.entity[this.propertyKey]) {
+                (this.entity[this.propertyKey] as unknown as Date[]) = [];
+            }
+            this.dateArrayValues = this.entity[this.propertyKey] as unknown as Date[];
+            const givenDisplayColumns: string[] = this.metadataDateArray.displayColumns.map((v) => v.displayName);
+            if (givenDisplayColumns.find(s => s === 'select')) {
+                throw new Error(
+                    `The name "select" for a display column is reserved.
+                    Please choose a different name.`
+                );
+            }
+            this.displayedColumns = ['select'].concat(givenDisplayColumns);
+            this.dateDataSource = new MatTableDataSource();
+            this.dateDataSource.data = this.dateArrayValues;
+
+            this.time = DateUtilities.getTimeFromDate(this.entity[this.propertyKey] as unknown as Date);
+            this.timeDropdownValues = this.metadataDateTimeArray.times;
+            if (this.entity[this.propertyKey]) {
+                this.dateTime = new Date(this.entity[this.propertyKey] as unknown as Date);
+            }
+        }
+
+        this.metadataDateRangeArray = this.metadata as DateRangeArrayDecoratorConfigInternal;
+        if (this.type === DecoratorTypes.ARRAY_DATE_RANGE) {
+            if (!this.entity[this.propertyKey]) {
+                (this.entity[this.propertyKey] as unknown as DateRange[]) = [];
+            }
+            this.dateRangeArrayValues = this.entity[this.propertyKey] as unknown as DateRange[];
+            const givenDisplayColumns: string[] = this.metadataDateRangeArray.displayColumns.map((v) => v.displayName);
+            if (givenDisplayColumns.find(s => s === 'select')) {
+                throw new Error(
+                    `The name "select" for a display column is reserved.
+                    Please choose a different name.`
+                );
+            }
+            this.displayedColumns = ['select'].concat(givenDisplayColumns);
+            this.dateRangeDataSource = new MatTableDataSource();
+            this.dateRangeDataSource.data = this.dateRangeArrayValues;
+
+            this.dateRange = {
+                start: undefined as unknown as Date,
+                end: undefined as unknown as Date,
+                values: undefined
+            }
+        }
+
         this.metadataAutocompleteStringChipsArray = this.metadata as AutocompleteStringChipsArrayDecoratorConfigInternal;
 
         if (!this.getValidationErrorMessage) {
@@ -257,12 +334,33 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
         }
 
         if (this.type === DecoratorTypes.DATE_TIME) {
-            this.time = DateUtilities.getTimeFromDate(DateUtilities.asDate(this.entity[this.propertyKey]));
+            this.time = DateUtilities.getTimeFromDate(this.entity[this.propertyKey] as unknown as Date);
             this.timeDropdownValues = this.metadataDateTimeDate.times;
             if (this.entity[this.propertyKey]) {
                 this.dateTime = new Date(this.entity[this.propertyKey] as unknown as Date);
             }
         }
+    }
+
+    /**
+     * Checks if the time object has valid hours and minutes properties.
+     * Doesn't check custom validators from the metadata configuration.
+     *
+     * @returns Whether or not the time object is valid.
+     */
+    timeIsInvalid(): boolean {
+        if (
+            !this.time
+            || this.time.hours == null
+            || typeof this.time.hours !== 'number'
+            || Number.isNaN(this.time.hours)
+            || this.time.minutes == null
+            || typeof this.time.minutes !== 'number'
+            || Number.isNaN(this.time.minutes)
+        ) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -286,7 +384,7 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
             const values: Date[] = DateUtilities.getDatesBetween(
                 new Date(this.dateRange.start),
                 new Date(this.dateRange.end),
-                this.metadataDateRangeDate
+                this.metadataDateRangeDate.filter
             );
             this.dateRange.values = values.length ? values : undefined;
         }
@@ -306,23 +404,21 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
         }
         this.entity[this.propertyKey] = new Date(this.dateTime) as unknown as EntityType[keyof EntityType];
         if (this.time?.hours != null && this.time?.minutes != null) {
-            DateUtilities.asDate(this.entity[this.propertyKey]).setHours(this.time.hours, this.time.minutes, 0, 0);
+            (this.entity[this.propertyKey] as unknown as Date).setHours(this.time.hours, this.time.minutes, 0, 0);
         }
         else {
-            DateUtilities.asDate(this.entity[this.propertyKey]).setHours(0, 0, 0, 0);
+            (this.entity[this.propertyKey] as unknown as Date).setHours(0, 0, 0, 0);
         }
     }
 
     /**
-     * Tries to add an item to the array.
+     * Tries to add an item to the entity array.
      * Does this either inline if the "createInline"-metadata is set to true
      * or in a separate dialog if it is set to false.
      */
-    add(): void {
+    addEntity(): void {
         if (this.metadataEntityArray.createInline) {
-            this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
-            this.dataSource.data = this.entityArrayValues;
-            EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
+            this.add(this.arrayItem, this.entityArrayValues, this.dataSource);
         }
         else {
             this.addArrayItemDialogRef = this.dialog.open(
@@ -333,6 +429,63 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
                     restoreFocus: false
                 }
             )
+        }
+    }
+
+    /**
+     * Adds a date time to the array.
+     */
+    addDateTime(): void {
+        const input = new Date(this.dateInput as Date);
+        input.setHours(this.time.hours, this.time.minutes, 0, 0);
+        this.add(input, this.dateArrayValues, this.dateDataSource);
+    }
+
+    /**
+     * Adds a DateRange to the array.
+     */
+    addDateRange(): void {
+        this.dateRange.start = new Date(this.dateRangeStart);
+        this.dateRange.end = new Date(this.dateRangeEnd);
+        const values: Date[] = DateUtilities.getDatesBetween(
+            new Date(this.dateRange.start),
+            new Date(this.dateRange.end),
+            this.metadataDateRangeDate.filter
+        );
+        this.dateRange.values = values.length ? values : undefined;
+        this.add(this.dateRange, this.dateRangeArrayValues, this.dateRangeDataSource);
+    }
+
+    /**
+     * Tries to add an item to the array.
+     *
+     * @param inputValue - The value that should be added to the array.
+     * @param values - All values of the dataSource.
+     * @param dataSource - The dataSource itself.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    add(inputValue: any, values: any[], dataSource: MatTableDataSource<any>): void {
+        if (inputValue) {
+            if (
+                !this.metadataDateArray.allowDuplicates
+                && values.find(v => EntityUtilities.isEqual(inputValue, v, this.metadata, this.metadataDateArray.itemType))
+            ) {
+                this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+                    data: this.metadataDateArray.duplicatesErrorDialog,
+                    autoFocus: false,
+                    restoreFocus: false
+                });
+                return;
+            }
+            values.push(LodashUtilities.cloneDeep(inputValue));
+            dataSource.data = values;
+            if (this.type === DecoratorTypes.ARRAY) {
+                EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
+            }
+            else {
+                this.dateInput = undefined;
+                this.time = undefined as unknown as Time;
+            }
         }
     }
 
@@ -355,25 +508,34 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
     }
 
     /**
-     * Removes all selected entries from the array.
+     * Removes all selected entries from the entity array.
+     *
+     * @param selection - The selection containing the items to remove.
+     * @param values - The values of the dataSource.
+     * @param dataSource - The dataSource.
      */
-    remove(): void {
-        this.selection.selected.forEach(s => {
-            this.entityArrayValues.splice(this.entityArrayValues.indexOf(s), 1);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    remove(selection: SelectionModel<any>, values: any[], dataSource: MatTableDataSource<any>): void {
+        selection.selected.forEach(s => {
+            values.splice(values.indexOf(s), 1);
         });
-        this.dataSource.data = this.entityArrayValues;
-        this.selection.clear();
+        dataSource.data = values;
+        selection.clear();
     }
 
     /**
      * Toggles all array-items in the table.
+     *
+     * @param selection - The selection to toggle.
+     * @param dataSource - The dataSource of the selection.
      */
-    masterToggle(): void {
-        if (this.isAllSelected()) {
-            this.selection.clear();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    masterToggle(selection: SelectionModel<any>, dataSource: MatTableDataSource<any>): void {
+        if (this.isAllSelected(selection, dataSource)) {
+            selection.clear();
         }
         else {
-            this.dataSource.data.forEach(row => this.selection.select(row));
+            dataSource.data.forEach(row => selection.select(row));
         }
     }
 
@@ -381,11 +543,14 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
      * Checks if all array-items in the table have been selected.
      * This is needed to display the "masterToggle"-checkbox correctly.
      *
+     * @param selection - The selection to check.
+     * @param dataSource - The dataSource of the selection.
      * @returns Whether or not all array-items in the table have been selected.
      */
-    isAllSelected(): boolean {
-        const numSelected = this.selection.selected.length;
-        const numRows = this.dataSource.data.length;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    isAllSelected(selection: SelectionModel<any>, dataSource: MatTableDataSource<any>): boolean {
+        const numSelected = selection.selected.length;
+        const numRows = dataSource.data.length;
         return numSelected === numRows;
     }
 
