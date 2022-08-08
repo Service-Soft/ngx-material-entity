@@ -9,7 +9,7 @@
         [required]="metadata.required"
         [min]="metadata.minDate ? metadata.minDate(dateTime) : undefined"
         [max]="metadata.maxDate ? metadata.maxDate(dateTime) : undefined"
-        [matDatepickerFilter]="metadata.filterDate ? metadata.filterDate : defaultDateFilter"
+        [matDatepickerFilter]="metadata.filterDate ?? defaultDateFilter"
         (dateInput)="setTime()"
     >
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>

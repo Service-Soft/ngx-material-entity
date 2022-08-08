@@ -45,7 +45,7 @@ export class AddArrayItemDialogDataBuilder<EntityType extends object>
         return new AddArrayItemDialogDataInternal(
             data.entity,
             createDialogData,
-            data.getValidationErrorMessage ? data.getValidationErrorMessage : defaultGetValidationErrorMessage,
+            data.getValidationErrorMessage ?? defaultGetValidationErrorMessage,
         );
     }
 }

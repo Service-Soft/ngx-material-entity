@@ -7,8 +7,8 @@
         [name]="key.toString()"
         #model="ngModel"
         [required]="metadata.required"
-        [min]="metadata.min ? metadata.min : null"
-        [max]="metadata.max ? metadata.max : null"
+        [min]="metadata.min ?? null"
+        [max]="metadata.max ?? null"
     />
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>

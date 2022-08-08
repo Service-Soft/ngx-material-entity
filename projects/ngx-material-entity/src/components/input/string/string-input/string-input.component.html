@@ -6,9 +6,9 @@
         [name]="key.toString()"
         #model="ngModel"
         [required]="metadata.required"
-        [pattern]="metadata.regex ? metadata.regex : '[\\s\\S]*'"
-        [minlength]="metadata.minLength ? metadata.minLength : null"
-        [maxlength]="metadata.maxLength ? metadata.maxLength : null"
+        [pattern]="metadata.regex ?? '[\\s\\S]*'"
+        [minlength]="metadata.minLength ?? null"
+        [maxlength]="metadata.maxLength ?? null"
     />
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>

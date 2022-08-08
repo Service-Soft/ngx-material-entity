@@ -71,12 +71,12 @@ export class EditDialogDataBuilder<EntityType extends object>
             .getResult();
 
         return new EditDialogDataInternal(
-            data?.title ? data.title : () => 'Edit',
-            data?.confirmButtonLabel ? data.confirmButtonLabel : 'Save',
-            data?.deleteButtonLabel ? data.deleteButtonLabel : 'Delete',
-            data?.cancelButtonLabel ? data.cancelButtonLabel : 'Cancel',
-            data?.deleteRequiresConfirmDialog ? data.deleteRequiresConfirmDialog : true,
-            data?.editRequiresConfirmDialog ? data.editRequiresConfirmDialog : false,
+            data?.title ?? (() => 'Edit'),
+            data?.confirmButtonLabel ?? 'Save',
+            data?.deleteButtonLabel ?? 'Delete',
+            data?.cancelButtonLabel ?? 'Cancel',
+            data?.deleteRequiresConfirmDialog ?? true,
+            data?.editRequiresConfirmDialog ?? false,
             confirmDeleteDialogData,
             confirmEditDialogData
         );

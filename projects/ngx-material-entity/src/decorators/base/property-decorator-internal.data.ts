@@ -11,8 +11,8 @@ class PositionInternal implements Position {
 
     constructor(data?: Position) {
         this.validateInput(data);
-        this.row = data?.row ? data.row : -1;
-        this.order = data?.order ? data.order : -1;
+        this.row = data?.row ?? -1;
+        this.order = data?.order ?? -1;
     }
 
     private validateInput(data?: Position): void {
@@ -55,7 +55,7 @@ export abstract class PropertyDecoratorConfigInternal implements PropertyDecorat
         this.required = data.required != undefined ? data.required : true;
         this.omitForCreate = data.omitForCreate != undefined ? data.omitForCreate : false;
         this.omitForUpdate = data.omitForUpdate != undefined ? data.omitForUpdate : false;
-        this.defaultWidths = data.defaultWidths ? data.defaultWidths : [6, 6, 12];
+        this.defaultWidths = data.defaultWidths ?? [6, 6, 12];
         this.position = new PositionInternal(data.position);
     }
 }

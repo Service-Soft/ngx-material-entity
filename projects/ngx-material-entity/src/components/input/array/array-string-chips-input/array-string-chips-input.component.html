@@ -15,9 +15,9 @@
             [matChipInputAddOnBlur]="true"
             (matChipInputTokenEnd)="addStringChipArrayValue($event)"
             [(ngModel)]="chipsInput" [name]="key.toString()" #chipsModel="ngModel"
-            [minlength]='metadata.minLength ? metadata.minLength : null'
-            [maxlength]='metadata.maxLength ? metadata.maxLength : null'
-            [pattern]="metadata.regex ? metadata.regex : '[\\s\\S]*'"
+            [minlength]='metadata.minLength ?? null'
+            [maxlength]='metadata.maxLength ?? null'
+            [pattern]="metadata.regex ?? '[\\s\\S]*'"
         >
         <mat-error *ngIf="chipsModel.errors">{{getValidationErrorMessage(chipsModel)}}</mat-error>
     </mat-chip-list>

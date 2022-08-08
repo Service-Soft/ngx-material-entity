@@ -22,7 +22,7 @@ class MockBuilder extends BaseBuilder<DataInternal, Data> {
     }
 
     protected generateBaseData(data: Data): DataInternal {
-        return new DataInternal(data.x, data.y ? data.y : 'default y');
+        return new DataInternal(data.x, data.y ?? 'default y');
     }
 }
 

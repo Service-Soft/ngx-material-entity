@@ -47,7 +47,7 @@ export class EditEntityDialogDataBuilder<EntityType extends object>
             data.entity,
             data.EntityServiceClass,
             editDialogData,
-            data.allowDelete ? data.allowDelete : () => true
+            data.allowDelete ?? (() => true)
         );
     }
 }

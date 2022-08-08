@@ -8,8 +8,8 @@
         cdkTextareaAutosize
         cdkAutosizeMinRows="10"
         [required]="metadata.required"
-        [minlength]="metadata.minLength ? metadata.minLength : null"
-        [maxlength]="metadata.maxLength ? metadata.maxLength : null"
+        [minlength]="metadata.minLength ?? null"
+        [maxlength]="metadata.maxLength ?? null"
     >
     </textarea>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>

@@ -379,7 +379,7 @@ export class TestEntity extends Entity {
             },
             {
                 displayName: 'Days',
-                value: (entity) => `${entity.values ? entity.values.length : 0}`
+                value: (entity) => `${entity.values?.length ?? 0}`
             }
         ]
     })
@@ -399,7 +399,7 @@ export class TestEntity extends Entity {
             },
             {
                 displayName: 'Days',
-                value: (entity) => `${entity.values ? entity.values.length : 0}`
+                value: (entity) => `${entity.values?.length ?? 0}`
             }
         ],
         maxStart: () => new Date(2022, 11, 30, 0, 0, 0, 0),

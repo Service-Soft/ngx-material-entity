@@ -51,12 +51,12 @@ export class ConfirmDialogDataBuilder extends BaseBuilder<ConfirmDialogDataInter
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected override generateBaseData(data?: ConfirmDialogData): ConfirmDialogDataInternal {
         return new ConfirmDialogDataInternal(
-            data?.text ? data.text : ['Do you really want to do this?'],
-            data?.type ? data.type : 'default',
-            data?.confirmButtonLabel ? data.confirmButtonLabel : 'Confirm',
-            data?.cancelButtonLabel ? data.cancelButtonLabel : 'Cancel',
-            data?.title ? data.title : 'Confirmation',
-            data?.requireConfirmation ? data.requireConfirmation : false,
+            data?.text ?? ['Do you really want to do this?'],
+            data?.type ?? 'default',
+            data?.confirmButtonLabel ?? 'Confirm',
+            data?.cancelButtonLabel ?? 'Cancel',
+            data?.title ?? 'Confirmation',
+            data?.requireConfirmation ?? false,
             data?.confirmationText
         );
     }
