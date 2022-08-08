@@ -217,7 +217,7 @@ export abstract class EntityUtilities {
             case DecoratorTypes.BOOLEAN_TOGGLE:
                 const entityBoolean = entity[key] as unknown as boolean;
                 const booleanMetadata = metadata as ToggleBooleanDecoratorConfigInternal;
-                if (!this.isBooleanValid(entityBoolean, booleanMetadata)) {
+                if (!EntityUtilities.isBooleanValid(entityBoolean, booleanMetadata)) {
                     return false;
                 }
                 break;
@@ -227,14 +227,14 @@ export abstract class EntityUtilities {
             case DecoratorTypes.STRING_AUTOCOMPLETE:
                 const entityString = entity[key] as unknown as string;
                 const stringMetadata = metadata as DefaultStringDecoratorConfigInternal;
-                if (!this.isStringValid(entityString, stringMetadata)) {
+                if (!EntityUtilities.isStringValid(entityString, stringMetadata)) {
                     return false;
                 }
                 break;
             case DecoratorTypes.STRING_TEXTBOX:
                 const entityTextbox = entity[key] as unknown as string;
                 const textboxMetadata = metadata as TextboxStringDecoratorConfigInternal;
-                if (!this.isTextboxValid(entityTextbox, textboxMetadata)) {
+                if (!EntityUtilities.isTextboxValid(entityTextbox, textboxMetadata)) {
                     return false;
                 }
                 break;
@@ -243,7 +243,7 @@ export abstract class EntityUtilities {
             case DecoratorTypes.NUMBER:
                 const entityNumber = entity[key] as unknown as number;
                 const numberMetadata = metadata as DefaultNumberDecoratorConfigInternal;
-                if (!this.isNumberValid(entityNumber, numberMetadata)) {
+                if (!EntityUtilities.isNumberValid(entityNumber, numberMetadata)) {
                     return false;
                 }
                 break;
@@ -270,21 +270,21 @@ export abstract class EntityUtilities {
             case DecoratorTypes.DATE:
                 const entityDate: Date = new Date(entity[key] as unknown as Date);
                 const dateMetadata = metadata as DefaultDateDecoratorConfigInternal;
-                if (!this.isDateValid(entityDate, dateMetadata)) {
+                if (!EntityUtilities.isDateValid(entityDate, dateMetadata)) {
                     return false;
                 }
                 break;
             case DecoratorTypes.DATE_RANGE:
                 const entityDateRange: DateRange = LodashUtilities.cloneDeep(entity[key] as unknown as DateRange);
                 const dateRangeMetadata = metadata as DateRangeDateDecoratorConfigInternal;
-                if (!this.isDateRangeValid(entityDateRange, dateRangeMetadata)) {
+                if (!EntityUtilities.isDateRangeValid(entityDateRange, dateRangeMetadata)) {
                     return false;
                 }
                 break;
             case DecoratorTypes.DATE_TIME:
                 const entityDateTime: Date = new Date(entity[key] as unknown as Date);
                 const dateTimeMetadata = metadata as DateTimeDateDecoratorConfigInternal;
-                if (!this.isDateTimeValid(entityDateTime, dateTimeMetadata)) {
+                if (!EntityUtilities.isDateTimeValid(entityDateTime, dateTimeMetadata)) {
                     return false;
                 }
                 break;
@@ -396,7 +396,7 @@ export abstract class EntityUtilities {
         const time: Time = {
             hours: value.getHours(),
             minutes: value.getMinutes()
-        }
+        };
         if (metadata.minTime) {
             const minTime: Time = metadata.minTime(value);
             if (
@@ -445,7 +445,7 @@ export abstract class EntityUtilities {
             return false;
         }
         else {
-            const differences = this.differencesForDirty(entity, entityPriorChanges);
+            const differences = EntityUtilities.differencesForDirty(entity, entityPriorChanges);
             return differences.length ? true : false;
         }
     }
@@ -458,7 +458,7 @@ export abstract class EntityUtilities {
         for (const key in entity) {
             const metadata = EntityUtilities.getPropertyMetadata(entity, key);
             const type = EntityUtilities.getPropertyType(entity, key);
-            if (!this.isEqual(entity[key], entityPriorChanges[key], metadata, type)) {
+            if (!EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type)) {
                 res.push({
                     key: key,
                     before: entityPriorChanges[key],
@@ -484,7 +484,7 @@ export abstract class EntityUtilities {
         for (const key in entity) {
             const metadata = EntityUtilities.getPropertyMetadata(entity, key);
             const type = EntityUtilities.getPropertyType(entity, key);
-            if (!this.isEqual(entity[key], entityPriorChanges[key], metadata, type)) {
+            if (!EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type)) {
                 res[key] = entity[key];
             }
         }
@@ -504,16 +504,24 @@ export abstract class EntityUtilities {
     static isEqual(value: unknown, valuePriorChanges: unknown, metadata: PropertyDecoratorConfigInternal, type: DecoratorTypes): boolean {
         switch (type) {
             case DecoratorTypes.DATE_RANGE:
-                return this.isEqualDateRange(value, valuePriorChanges, (metadata as DateRangeDateDecoratorConfigInternal).filter);
+                return EntityUtilities.isEqualDateRange(
+                    value,
+                    valuePriorChanges,
+                    (metadata as DateRangeDateDecoratorConfigInternal).filter
+                );
             case DecoratorTypes.DATE:
-                return this.isEqualDate(value, valuePriorChanges);
+                return EntityUtilities.isEqualDate(value, valuePriorChanges);
             case DecoratorTypes.DATE_TIME:
-                return this.isEqualDateTime(value, valuePriorChanges);
+                return EntityUtilities.isEqualDateTime(value, valuePriorChanges);
             case DecoratorTypes.ARRAY_DATE:
             case DecoratorTypes.ARRAY_DATE_TIME:
-                return this.isEqualArrayDate(value, valuePriorChanges);
+                return EntityUtilities.isEqualArrayDate(value, valuePriorChanges);
             case DecoratorTypes.ARRAY_DATE_RANGE:
-                return this.isEqualArrayDateRange(value, valuePriorChanges, (metadata as DateRangeArrayDecoratorConfigInternal).filter);
+                return EntityUtilities.isEqualArrayDateRange(
+                    value,
+                    valuePriorChanges,
+                    (metadata as DateRangeArrayDecoratorConfigInternal).filter
+                );
             default:
                 return LodashUtilities.isEqual(value, valuePriorChanges);
         }
@@ -660,17 +668,17 @@ export abstract class EntityUtilities {
         const res: EntityRow<EntityType>[] = [];
 
         const keys: (keyof EntityType)[] = EntityUtilities.keysOf(entity, hideOmitForCreate, hideOmitForEdit);
-        const numberOfRows: number = this.getNumberOfRows<EntityType>(keys, entity);
+        const numberOfRows: number = EntityUtilities.getNumberOfRows<EntityType>(keys, entity);
         for (let i = 1; i <= numberOfRows; i++) {
             const row: EntityRow<EntityType> = {
                 row: i,
-                keys: this.getKeysForRow<EntityType>(keys, entity, i)
+                keys: EntityUtilities.getKeysForRow<EntityType>(keys, entity, i)
             };
             res.push(row);
         }
         const lastRow: EntityRow<EntityType> = {
             row: numberOfRows + 1,
-            keys: this.getKeysForRow<EntityType>(keys, entity, -1)
+            keys: EntityUtilities.getKeysForRow<EntityType>(keys, entity, -1)
         };
         res.push(lastRow);
         return res;

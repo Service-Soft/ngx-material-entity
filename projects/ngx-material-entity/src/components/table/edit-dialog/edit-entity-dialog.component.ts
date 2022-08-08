@@ -30,8 +30,6 @@ export class NgxMatEntityEditDialogComponent<EntityType extends object> implemen
 
     data!: EditEntityDialogDataInternal<EntityType>;
 
-    getWidth = EntityUtilities.getWidth;
-
     constructor(
         @Inject(MAT_DIALOG_DATA)
         private readonly inputData: EditEntityDialogData<EntityType>,

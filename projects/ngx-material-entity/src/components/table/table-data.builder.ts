@@ -43,14 +43,14 @@ export class BaseDataBuilder<EntityType extends object> extends BaseBuilder<Base
             data.title,
             data.displayColumns,
             data.EntityServiceClass,
-            data.searchLabel ? data.searchLabel : 'Search',
-            data.createButtonLabel ? data.createButtonLabel : 'Create',
-            data.searchString ? data.searchString : defaultSearchFunction,
+            data.searchLabel ?? 'Search',
+            data.createButtonLabel ?? 'Create',
+            data.searchString ?? defaultSearchFunction,
             data.allowCreate === false ? data.allowCreate : true,
-            data.allowEdit ? data.allowEdit : () => true,
-            data.allowDelete ? data.allowDelete : () => true,
-            data.multiSelectActions ? data.multiSelectActions : [],
-            data.multiSelectLabel ? data.multiSelectLabel : 'Actions',
+            data.allowEdit ?? (() => true),
+            data.allowDelete ?? (() => true),
+            data.multiSelectActions ?? [],
+            data.multiSelectLabel ?? 'Actions',
             data.EntityClass,
             data.edit,
             data.create
@@ -83,7 +83,7 @@ export class BaseDataInternal<EntityType extends object> implements BaseData<Ent
     // eslint-disable-next-line jsdoc/require-jsdoc
     multiSelectActions: MultiSelectAction<EntityType>[];
     // eslint-disable-next-line jsdoc/require-jsdoc
-    multiSelectLabel: string
+    multiSelectLabel: string;
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     EntityClass?: EntityClassNewable<EntityType>;

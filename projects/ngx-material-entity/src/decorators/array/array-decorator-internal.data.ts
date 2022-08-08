@@ -46,10 +46,10 @@ export class EntityArrayDecoratorConfigInternal<EntityType extends object>
         this.EntityClass = data.EntityClass;
         this.displayColumns = data.displayColumns;
         this.createInline = data.createInline != undefined ? data.createInline : true;
-        this.missingErrorMessage = data.missingErrorMessage ? data.missingErrorMessage : 'Needs to contain at least one value';
-        this.defaultWidths = data.defaultWidths ? data.defaultWidths : [12, 12, 12];
-        this.addButtonLabel = data.addButtonLabel ? data.addButtonLabel: 'Add';
-        this.removeButtonLabel = data.removeButtonLabel ? data.removeButtonLabel: 'Remove';
+        this.missingErrorMessage = data.missingErrorMessage ?? 'Needs to contain at least one value';
+        this.defaultWidths = data.defaultWidths ?? [12, 12, 12];
+        this.addButtonLabel = data.addButtonLabel ?? 'Add';
+        this.removeButtonLabel = data.removeButtonLabel ?? 'Remove';
     }
 }
 
@@ -84,10 +84,10 @@ export class DateArrayDecoratorConfigInternal extends PropertyDecoratorConfigInt
         this.allowDuplicates = data.allowDuplicates != null ? data.allowDuplicates : false;
         this.duplicatesErrorDialog = getDefaultDuplicateErrorDialogData(data);
         this.displayColumns = data.displayColumns;
-        this.defaultWidths = data.defaultWidths ? data.defaultWidths : [12, 12, 12];
-        this.addButtonLabel = data.addButtonLabel ? data.addButtonLabel: 'Add';
-        this.removeButtonLabel = data.removeButtonLabel ? data.removeButtonLabel: 'Remove';
-        this.missingErrorMessage = data.missingErrorMessage ? data.missingErrorMessage : 'Needs to contain at least one value';
+        this.defaultWidths = data.defaultWidths ?? [12, 12, 12];
+        this.addButtonLabel = data.addButtonLabel ?? 'Add';
+        this.removeButtonLabel = data.removeButtonLabel ?? 'Remove';
+        this.missingErrorMessage = data.missingErrorMessage ?? 'Needs to contain at least one value';
         this.min = data.min;
         this.max = data.max;
         this.filter = data.filter;
@@ -135,12 +135,12 @@ export class DateTimeArrayDecoratorConfigInternal extends PropertyDecoratorConfi
         this.allowDuplicates = data.allowDuplicates != null ? data.allowDuplicates : false;
         this.duplicatesErrorDialog = getDefaultDuplicateErrorDialogData(data);
         this.displayColumns = data.displayColumns;
-        this.defaultWidths = data.defaultWidths ? data.defaultWidths : [12, 12, 12];
-        this.addButtonLabel = data.addButtonLabel ? data.addButtonLabel: 'Add';
-        this.removeButtonLabel = data.removeButtonLabel ? data.removeButtonLabel: 'Remove';
-        this.missingErrorMessage = data.missingErrorMessage ? data.missingErrorMessage : 'Needs to contain at least one value';
-        this.times = data.times ? data.times : DateUtilities.getDefaultTimes();
-        this.timeDisplayName = data.timeDisplayName ? data.timeDisplayName : 'Time';
+        this.defaultWidths = data.defaultWidths ?? [12, 12, 12];
+        this.addButtonLabel = data.addButtonLabel ?? 'Add';
+        this.removeButtonLabel = data.removeButtonLabel ?? 'Remove';
+        this.missingErrorMessage = data.missingErrorMessage ?? 'Needs to contain at least one value';
+        this.times = data.times ?? DateUtilities.getDefaultTimes();
+        this.timeDisplayName = data.timeDisplayName ?? 'Time';
         this.minDate = data.minDate;
         this.maxDate = data.maxDate;
         this.filterDate = data.filterDate;
@@ -189,12 +189,12 @@ export class DateRangeArrayDecoratorConfigInternal extends PropertyDecoratorConf
         this.allowDuplicates = data.allowDuplicates != null ? data.allowDuplicates : false;
         this.duplicatesErrorDialog = getDefaultDuplicateErrorDialogData(data);
         this.displayColumns = data.displayColumns;
-        this.defaultWidths = data.defaultWidths ? data.defaultWidths : [12, 12, 12];
-        this.addButtonLabel = data.addButtonLabel ? data.addButtonLabel: 'Add';
-        this.removeButtonLabel = data.removeButtonLabel ? data.removeButtonLabel: 'Remove';
-        this.missingErrorMessage = data.missingErrorMessage ? data.missingErrorMessage : 'Needs to contain at least one value';
-        this.placeholderStart = data.placeholderStart ? data.placeholderStart : 'Start';
-        this.placeholderEnd = data.placeholderEnd ? data.placeholderEnd : 'End';
+        this.defaultWidths = data.defaultWidths ?? [12, 12, 12];
+        this.addButtonLabel = data.addButtonLabel ?? 'Add';
+        this.removeButtonLabel = data.removeButtonLabel ?? 'Remove';
+        this.missingErrorMessage = data.missingErrorMessage ?? 'Needs to contain at least one value';
+        this.placeholderStart = data.placeholderStart ?? 'Start';
+        this.placeholderEnd = data.placeholderEnd ?? 'End';
         this.minStart = data.minStart;
         this.maxStart = data.maxStart;
         this.minEnd = data.minEnd;
@@ -224,14 +224,14 @@ export class StringChipsArrayDecoratorConfigInternal extends PropertyDecoratorCo
 
     constructor(data: StringChipsArrayDecoratorConfig) {
         super(data);
-        this.deleteIcon = data.deleteIcon ? data.deleteIcon : 'fas fa-circle-minus';
+        this.deleteIcon = data.deleteIcon ?? 'fas fa-circle-minus';
         this.itemType = data.itemType;
         this.allowDuplicates = data.allowDuplicates != null ? data.allowDuplicates : false;
         this.duplicatesErrorDialog = getDefaultDuplicateErrorDialogData(data);
         this.maxLength = data.maxLength;
         this.minLength = data.minLength;
         this.regex = data.regex;
-        this.defaultWidths = data.defaultWidths ? data.defaultWidths : [6, 12, 12];
+        this.defaultWidths = data.defaultWidths ?? [6, 12, 12];
     }
 }
 
@@ -260,14 +260,14 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
     constructor(data: AutocompleteStringChipsArrayDecoratorConfig) {
         super(data);
         this.autocompleteValues = data.autocompleteValues;
-        this.deleteIcon = data.deleteIcon ? data.deleteIcon : 'fas fa-circle-minus'
+        this.deleteIcon = data.deleteIcon ?? 'fas fa-circle-minus';
         this.itemType = data.itemType;
         this.allowDuplicates = data.allowDuplicates != null ? data.allowDuplicates : false;
         this.duplicatesErrorDialog = getDefaultDuplicateErrorDialogData(data);
         this.maxLength = data.maxLength;
         this.minLength = data.minLength;
         this.regex = data.regex;
-        this.defaultWidths = data.defaultWidths ? data.defaultWidths : [6, 12, 12];
+        this.defaultWidths = data.defaultWidths ?? [6, 12, 12];
     }
 }
 
@@ -279,13 +279,13 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
  */
 function getDefaultDuplicateErrorDialogData(data: ArrayDecoratorConfig): ConfirmDialogData {
     return {
-        type: data.duplicatesErrorDialog?.type ? data.duplicatesErrorDialog.type : 'info-only',
+        type: data.duplicatesErrorDialog?.type ?? 'info-only',
         // eslint-disable-next-line max-len
-        text: data.duplicatesErrorDialog?.text ? data.duplicatesErrorDialog.text : ['Adding duplicate entries to the array is not allowed.'],
-        title: data.duplicatesErrorDialog?.title ? data.duplicatesErrorDialog.title : 'Error adding duplicate item',
+        text: data.duplicatesErrorDialog?.text ?? ['Adding duplicate entries to the array is not allowed.'],
+        title: data.duplicatesErrorDialog?.title ?? 'Error adding duplicate item',
         confirmButtonLabel: data.duplicatesErrorDialog?.confirmButtonLabel,
         cancelButtonLabel: data.duplicatesErrorDialog?.cancelButtonLabel,
         requireConfirmation: data.duplicatesErrorDialog?.requireConfirmation,
         confirmationText: data.duplicatesErrorDialog?.confirmationText
-    }
+    };
 }

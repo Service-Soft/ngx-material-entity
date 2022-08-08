@@ -11,6 +11,14 @@ import { LodashUtilities } from '../capsulation/lodash.utilities';
 const builder = new TestEntityMockBuilder();
 const testEntity: TestEntity = builder.testEntity;
 
+describe('defaultDateFilter', () => {
+    test('defaultDateFilter', () => {
+        expect(DateUtilities.defaultDateFilter(null)).toEqual(true);
+        expect(DateUtilities.defaultDateFilter(undefined)).toEqual(true);
+        expect(DateUtilities.defaultDateFilter(new Date())).toEqual(true);
+    });
+});
+
 describe('getTimeFromDate', () => {
     test('with correct Date (hours: 0, minutes: 0)', () => {
         expect(DateUtilities.getTimeFromDate(new Date(2022, 0, 1, 0, 0))).toEqual({hours: 0, minutes: 0});
@@ -242,5 +250,24 @@ describe('getValidTimesForDropdown', () => {
             }
         ];
         expect(result).toEqual(expectedResult);
+    });
+});
+
+describe('timeIsUnprocessable', () => {
+    test('with undefined', () => {
+        expect(DateUtilities.timeIsUnprocessable(undefined as unknown as Time)).toBe(true);
+    });
+    test('with invalid hour', () => {
+        expect(DateUtilities.timeIsUnprocessable({ hours: undefined, minutes: 0 } as unknown as Time)).toBe(true);
+        expect(DateUtilities.timeIsUnprocessable({ hours: 'string', minutes: 0 } as unknown as Time)).toBe(true);
+        expect(DateUtilities.timeIsUnprocessable({ hours: NaN, minutes: 0 } as unknown as Time)).toBe(true);
+    });
+    test('with invalid minute', () => {
+        expect(DateUtilities.timeIsUnprocessable({ hours: 0, minutes: undefined } as unknown as Time)).toBe(true);
+        expect(DateUtilities.timeIsUnprocessable({ hours: 0, minutes: 'string' } as unknown as Time)).toBe(true);
+        expect(DateUtilities.timeIsUnprocessable({ hours: 0, minutes: NaN } as unknown as Time)).toBe(true);
+    });
+    test('with valid time', () => {
+        expect(DateUtilities.timeIsUnprocessable({ hours: 0, minutes: 0 })).toBe(false);
     });
 });

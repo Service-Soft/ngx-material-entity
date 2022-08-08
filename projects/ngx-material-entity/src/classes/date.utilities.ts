@@ -16,6 +16,11 @@ type MinuteSteps = 1 | 2 | 3 | 4 | 5 | 6 | 10 | 12 | 15 | 20 | 30 | 60;
 export abstract class DateUtilities {
 
     /**
+     * The default filter function to user when none was provided by the user.
+     */
+    static defaultDateFilter: DateFilterFn<Date | null | undefined> = (): boolean => true;
+
+    /**
      * Gets the given value as a date value.
      *
      * @param value - The value to get as a date.
@@ -36,22 +41,22 @@ export abstract class DateUtilities {
         const res: DropdownValue<Time>[] = [{ displayName: '-', value: undefined as unknown as Time}];
         for (let hour = 0; hour < 24; hour++) {
             for (let minute = 0; minute < 60; minute += minuteSteps) {
-                res.push(this.getTimeDropdownValue(format, hour, minute));
+                res.push(DateUtilities.getTimeDropdownValue(format, hour, minute));
             }
         }
         return res;
     }
 
     private static getTimeDropdownValue(format: 12 | 24, hour: number, minute: number): DropdownValue<Time> {
-        const displayHour: number = this.getFormattedHour(format, LodashUtilities.cloneDeep(hour));
-        const displayMinute: string = this.getFormattedMinute(format, hour, minute);
+        const displayHour: number = DateUtilities.getFormattedHour(format, LodashUtilities.cloneDeep(hour));
+        const displayMinute: string = DateUtilities.getFormattedMinute(format, hour, minute);
         return {
             displayName: `${displayHour}:${displayMinute}`,
             value: {
                 hours: hour,
                 minutes: minute
             }
-        }
+        };
     }
 
     private static getFormattedHour(format: 12 | 24, hour: number): number {
@@ -165,9 +170,31 @@ export abstract class DateUtilities {
             );
         }
         if (filter) {
-            times = times.filter(t => !t.value || filter(t.value))
+            times = times.filter(t => !t.value || filter(t.value));
         }
 
         return times;
+    }
+
+    /**
+     * Checks if the time object has processable hours and minutes properties.
+     * Doesn't check custom validators like min/max from the metadata configuration.
+     *
+     * @param time - The time to check.
+     * @returns Whether or not the time object is unprocessable.
+     */
+    static timeIsUnprocessable(time: Time): boolean {
+        if (
+            !time
+            || time.hours == null
+            || typeof time.hours !== 'number'
+            || Number.isNaN(time.hours)
+            || time.minutes == null
+            || typeof time.minutes !== 'number'
+            || Number.isNaN(time.minutes)
+        ) {
+            return true;
+        }
+        return false;
     }
 }

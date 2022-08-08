@@ -19,6 +19,6 @@ const config: Config = {
             branches: 100
         }
     }
-}
+};
 
 export default config;

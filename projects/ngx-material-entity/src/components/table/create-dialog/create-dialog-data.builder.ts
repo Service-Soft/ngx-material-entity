@@ -49,10 +49,10 @@ export class CreateDialogDataBuilder extends BaseBuilder<CreateDialogDataInterna
             .withDefault('title', 'Create')
             .getResult();
         return new CreateDialogDataInternal(
-            data?.title ? data.title : 'Create',
-            data?.createButtonLabel ? data.createButtonLabel : 'Create',
-            data?.cancelButtonLabel ? data.cancelButtonLabel : 'Cancel',
-            data?.createRequiresConfirmDialog ? data.createRequiresConfirmDialog : false,
+            data?.title ?? 'Create',
+            data?.createButtonLabel ?? 'Create',
+            data?.cancelButtonLabel ?? 'Cancel',
+            data?.createRequiresConfirmDialog ?? false,
             confirmCreateDialogData
         );
     }

@@ -26,7 +26,10 @@ export class ShowcaseInputsComponent {
     private readonly ARRAY_DECORATOR_TYPES = [
         DecoratorTypes.ARRAY,
         DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS,
-        DecoratorTypes.ARRAY_STRING_CHIPS
+        DecoratorTypes.ARRAY_STRING_CHIPS,
+        DecoratorTypes.ARRAY_DATE,
+        DecoratorTypes.ARRAY_DATE_TIME,
+        DecoratorTypes.ARRAY_DATE_RANGE
     ];
 
     private readonly BOOLEAN_DECORATOR_TYPES = [
@@ -42,7 +45,7 @@ export class ShowcaseInputsComponent {
     testEntity = new TestEntityMockBuilder().testEntityWithoutData;
     keys!: (keyof TestEntity)[];
 
-    getWidth = EntityUtilities.getWidth;
+    EntityUtilities = EntityUtilities;
 
     constructor(
         private readonly route: ActivatedRoute,

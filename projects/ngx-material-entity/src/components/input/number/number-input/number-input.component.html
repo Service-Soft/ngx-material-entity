@@ -1,0 +1,14 @@
+<mat-form-field>
+    <mat-label>{{metadata.displayName}}</mat-label>
+    <input
+        matInput
+        type="number"
+        [(ngModel)]="entity[key]"
+        [name]="key.toString()"
+        #model="ngModel"
+        [required]="metadata.required"
+        [min]="metadata.min ?? null"
+        [max]="metadata.max ?? null"
+    />
+    <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
+</mat-form-field>

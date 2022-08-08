@@ -27,8 +27,6 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends object> implem
 
     data!: CreateEntityDialogDataInternal<EntityType>;
 
-    getWidth = EntityUtilities.getWidth;
-
     constructor(
         @Inject(MAT_DIALOG_DATA)
         private readonly inputData: CreateEntityDialogData<EntityType>,
