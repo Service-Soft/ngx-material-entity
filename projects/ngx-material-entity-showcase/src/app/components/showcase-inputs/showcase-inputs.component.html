@@ -4,7 +4,7 @@
         [entity]="testEntity"
         [propertyKey]="key"
         [hideOmitForCreate]="true"
-        class="col-lg-{{getWidth(testEntity, key, 'lg')}} col-md-{{getWidth(testEntity, key, 'md')}} col-sm-{{getWidth(testEntity, key, 'sm')}}"
+        class="col-lg-{{EntityUtilities.getWidth(testEntity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(testEntity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(testEntity, key, 'sm')}}"
     >
     </ngx-mat-entity-input>
     <hr style="margin-top: 10px;">

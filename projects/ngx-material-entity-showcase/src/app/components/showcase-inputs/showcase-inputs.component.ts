@@ -45,7 +45,7 @@ export class ShowcaseInputsComponent {
     testEntity = new TestEntityMockBuilder().testEntityWithoutData;
     keys!: (keyof TestEntity)[];
 
-    getWidth = EntityUtilities.getWidth;
+    EntityUtilities = EntityUtilities;
 
     constructor(
         private readonly route: ActivatedRoute,

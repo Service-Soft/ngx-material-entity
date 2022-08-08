@@ -60,8 +60,8 @@ export class DateRangeInputComponent<EntityType extends object> implements OnIni
             this.dateRange.start = new Date(this.dateRangeStart);
             this.dateRange.end = new Date(this.dateRangeEnd);
             const values: Date[] = DateUtilities.getDatesBetween(
-                this.dateRange.start,
-                this.dateRange.end,
+                new Date(this.dateRange.start),
+                new Date(this.dateRange.end),
                 this.metadata.filter
             );
             this.dateRange.values = values.length ? values : undefined;

@@ -122,15 +122,15 @@
         </div>
     </div>
 
-    <div class="entityArray" *ngSwitchCase="DecoratorTypes.ARRAY_DATE">
+    <div *ngSwitchCase="DecoratorTypes.ARRAY_DATE">
         <array-date-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-date-input>
     </div>
 
-    <div class="entityArray" *ngSwitchCase="DecoratorTypes.ARRAY_DATE_TIME">
+    <div *ngSwitchCase="DecoratorTypes.ARRAY_DATE_TIME">
         <array-date-time-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-date-time-input>
     </div>
 
-    <div class="entityArray" *ngSwitchCase="DecoratorTypes.ARRAY_DATE_RANGE">
+    <div *ngSwitchCase="DecoratorTypes.ARRAY_DATE_RANGE">
         <array-date-range-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-date-range-input>
     </div>
 

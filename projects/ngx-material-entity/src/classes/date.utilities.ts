@@ -41,15 +41,15 @@ export abstract class DateUtilities {
         const res: DropdownValue<Time>[] = [{ displayName: '-', value: undefined as unknown as Time}];
         for (let hour = 0; hour < 24; hour++) {
             for (let minute = 0; minute < 60; minute += minuteSteps) {
-                res.push(this.getTimeDropdownValue(format, hour, minute));
+                res.push(DateUtilities.getTimeDropdownValue(format, hour, minute));
             }
         }
         return res;
     }
 
     private static getTimeDropdownValue(format: 12 | 24, hour: number, minute: number): DropdownValue<Time> {
-        const displayHour: number = this.getFormattedHour(format, LodashUtilities.cloneDeep(hour));
-        const displayMinute: string = this.getFormattedMinute(format, hour, minute);
+        const displayHour: number = DateUtilities.getFormattedHour(format, LodashUtilities.cloneDeep(hour));
+        const displayMinute: string = DateUtilities.getFormattedMinute(format, hour, minute);
         return {
             displayName: `${displayHour}:${displayMinute}`,
             value: {
