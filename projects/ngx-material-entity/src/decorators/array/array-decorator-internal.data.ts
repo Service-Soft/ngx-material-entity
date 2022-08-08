@@ -260,7 +260,7 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
     constructor(data: AutocompleteStringChipsArrayDecoratorConfig) {
         super(data);
         this.autocompleteValues = data.autocompleteValues;
-        this.deleteIcon = data.deleteIcon ? data.deleteIcon : 'fas fa-circle-minus'
+        this.deleteIcon = data.deleteIcon ? data.deleteIcon : 'fas fa-circle-minus';
         this.itemType = data.itemType;
         this.allowDuplicates = data.allowDuplicates != null ? data.allowDuplicates : false;
         this.duplicatesErrorDialog = getDefaultDuplicateErrorDialogData(data);
@@ -287,5 +287,5 @@ function getDefaultDuplicateErrorDialogData(data: ArrayDecoratorConfig): Confirm
         cancelButtonLabel: data.duplicatesErrorDialog?.cancelButtonLabel,
         requireConfirmation: data.duplicatesErrorDialog?.requireConfirmation,
         confirmationText: data.duplicatesErrorDialog?.confirmationText
-    }
+    };
 }

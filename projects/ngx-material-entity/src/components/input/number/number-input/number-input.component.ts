@@ -1,0 +1,32 @@
+/* eslint-disable jsdoc/require-jsdoc */
+import { Component, Input, OnInit } from '@angular/core';
+import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
+import { EntityUtilities } from '../../../../classes/entity.utilities';
+import { DefaultNumberDecoratorConfigInternal } from '../../../../decorators/number/number-decorator-internal.data';
+import { NgModel } from '@angular/forms';
+
+@Component({
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'number-input',
+    templateUrl: './number-input.component.html',
+    styleUrls: ['./number-input.component.scss']
+})
+export class NumberInputComponent<EntityType extends object> implements OnInit {
+
+    @Input()
+    entity!: EntityType;
+
+    @Input()
+    key!: keyof EntityType;
+
+    @Input()
+    getValidationErrorMessage!: (model: NgModel) => string;
+
+    metadata!: DefaultNumberDecoratorConfigInternal;
+
+    constructor() { }
+
+    ngOnInit(): void {
+        this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.NUMBER);
+    }
+}

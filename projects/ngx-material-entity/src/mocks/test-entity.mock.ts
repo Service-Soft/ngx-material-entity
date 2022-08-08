@@ -346,13 +346,13 @@ export class TestEntity extends Entity {
             return {
                 hours: 16,
                 minutes: 30
-            }
+            };
         },
         minTime: () => {
             return {
                 hours: 8,
                 minutes: 30
-            }
+            };
         },
         filterTime: (time: Time) => time.hours !== 12,
         timeDisplayName: 'Custom Time Display Name',
@@ -521,13 +521,13 @@ export class TestEntity extends Entity {
             return {
                 hours: 16,
                 minutes: 30
-            }
+            };
         },
         minTime: () => {
             return {
                 hours: 8,
                 minutes: 30
-            }
+            };
         },
         filterTime: (time: Time) => time.hours !== 12,
         timeDisplayName: 'Custom Time Display Name',
@@ -654,7 +654,7 @@ const testEntityData: TestEntity = {
     },
     dateTimeValue: new Date(2022, 0, 1, 8, 30, 0, 0),
     customDateTimeValue: new Date(2022, 0, 2, 16, 30, 0, 0)
-}
+};
 
 /**
  * A builder used to generate TestEntity Mocks.

@@ -3,148 +3,39 @@
     <!-----------------Strings-------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.STRING">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <input
-                matInput
-                [(ngModel)]="entity[propertyKey]"
-                [name]="propertyKey.toString()"
-                #model="ngModel"
-                [required]="metadata.required"
-                [pattern]="metadataDefaultString.regex ? metadataDefaultString.regex : '[\\s\\S]*'"
-                [minlength]="metadataDefaultString.minLength ? metadataDefaultString.minLength : null"
-                [maxlength]="metadataDefaultString.maxLength ? metadataDefaultString.maxLength : null"
-            />
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <string-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></string-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.STRING_TEXTBOX">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <textarea
-                matInput
-                [(ngModel)]="entity[propertyKey]"
-                [name]="propertyKey.toString()"
-                #model="ngModel"
-                cdkTextareaAutosize
-                cdkAutosizeMinRows="10"
-                [required]="metadata.required"
-                [minlength]="metadataTextboxString.minLength ? metadataTextboxString.minLength : null"
-                [maxlength]="metadataTextboxString.maxLength ? metadataTextboxString.maxLength : null"
-            >
-            </textarea>
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <string-textbox-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></string-textbox-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.STRING_AUTOCOMPLETE">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <input
-                matInput
-                [(ngModel)]="entity[propertyKey]"
-                [name]="propertyKey.toString()"
-                #model="ngModel"
-                [matAutocomplete]="auto"
-                (keyup)="filterAutocompleteStrings(entity[propertyKey])"
-                [required]="metadata.required"
-                [minlength]="metadataAutocompleteString.minLength ? metadataAutocompleteString.minLength : null"
-                [maxlength]="metadataAutocompleteString.maxLength ? metadataAutocompleteString.maxLength : null"
-                [pattern]="metadataAutocompleteString.regex ? metadataAutocompleteString.regex : '[\\s\\S]*'"
-            />
-            <mat-autocomplete #auto="matAutocomplete">
-                <mat-option *ngFor="let value of filteredAutocompleteStrings" [value]="value">
-                    {{value}}
-                </mat-option>
-            </mat-autocomplete>
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <string-autocomplete-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></string-autocomplete-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.STRING_DROPDOWN">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required">
-                <mat-option *ngFor="let value of metadataDropdownString.dropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
-            </mat-select>
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <string-dropdown-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></string-dropdown-input>
     </div>
 
     <!-------------------------------------------->
     <!-----------------Booleans------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_CHECKBOX">
-        <mat-form-field class="hideUnderline">
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-checkbox (click)="model.control.markAsTouched()" [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()"></mat-checkbox>
-            <!-- hidden input is needed so that the checkbox can be used inside a mat-form-field -->
-            <input matInput hidden
-                [(ngModel)]="entity[propertyKey]"
-                [name]="propertyKey.toString() + 'Helper'"
-                #model="ngModel"
-                [pattern]="metadata.required ? 'true' : '[\\s\\S]*'"
-                [required]="metadata.required">
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <boolean-checkbox-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></boolean-checkbox-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_TOGGLE">
-        <mat-form-field class="hideUnderline">
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-slide-toggle (click)="model.control.markAsTouched()" [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()"></mat-slide-toggle>
-            <!-- hidden input is needed so that the toggle can be used inside a mat-form-field -->
-            <input matInput hidden
-                [(ngModel)]="entity[propertyKey]"
-                [name]="propertyKey.toString() + 'Helper'"
-                #model="ngModel"
-                [pattern]="metadata.required ? 'true' : '[\\s\\S]*'"
-                [required]="metadata.required">
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <boolean-toggle-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></boolean-toggle-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_DROPDOWN">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required">
-                <mat-option [value]="undefined">-</mat-option>
-                <mat-option [value]="true">{{metadataDropdownBoolean.dropdownTrue}}</mat-option>
-                <mat-option [value]="false">{{metadataDropdownBoolean.dropdownFalse}}</mat-option>
-            </mat-select>
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <boolean-dropdown-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></boolean-dropdown-input>
     </div>
 
     <!-------------------------------------------->
     <!------------------Numbers------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.NUMBER">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <input
-                matInput
-                type="number"
-                [(ngModel)]="entity[propertyKey]"
-                [name]="propertyKey.toString()"
-                #model="ngModel"
-                [required]="metadata.required"
-                [min]="metadataDefaultNumber.min ? metadataDefaultNumber.min : null"
-                [max]="metadataDefaultNumber.max ? metadataDefaultNumber.max : null"
-            />
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <number-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></number-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.NUMBER_DROPDOWN">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required">
-                <mat-option *ngFor="let value of metadataDropdownNumber.dropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
-            </mat-select>
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <number-dropdown-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></number-dropdown-input>
     </div>
 
     <!-------------------------------------------->
@@ -153,16 +44,8 @@
     <div *ngSwitchCase="DecoratorTypes.OBJECT">
         <b>{{metadataDefaultObject.displayName}}</b>
         <!-- iterates over the object properties -->
-
         <div class="row" *ngFor="let row of objectPropertyRows">
-            <!--
-                displays another ngx-material-entity with the:
-                object as the entity,
-                the current key in the loop received by the keyvalue direction as the propertyKey
-                and the getValidationErrorMessage of the current component
-            -->
-            <ngx-mat-entity-input
-                *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
+            <ngx-mat-entity-input *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
                 [entity]="objectProperty"
                 [propertyKey]="key"
                 [getValidationErrorMessage]="getValidationErrorMessage"
@@ -179,7 +62,6 @@
     <!-------------------------------------------->
     <div class="entityArray" *ngSwitchCase="DecoratorTypes.ARRAY">
         <div class="mat-elevation-z8" style="border-radius: 5px;padding: 15px;margin-bottom: 15px;margin-top: 15px;">
-
             <div style="padding-bottom: 10px">
                 <b>{{metadataEntityArray.displayName}}</b>
             </div>
@@ -241,395 +123,37 @@
     </div>
 
     <div class="entityArray" *ngSwitchCase="DecoratorTypes.ARRAY_DATE">
-        <div class="mat-elevation-z8" style="border-radius: 5px;padding: 15px;margin-bottom: 15px;margin-top: 15px;">
-            <mat-form-field appearance="standard">
-                <mat-label>{{metadata.displayName}}</mat-label>
-                <input
-                    matInput
-                    [(ngModel)]="dateInput"
-                    [name]="propertyKey.toString()"
-                    #model="ngModel"
-                    [matDatepicker]="picker"
-                    [required]="metadata.required"
-                    [min]="metadataDateArray.min ? metadataDateArray.min(dateInput) : undefined"
-                    [max]="metadataDateArray.max ? metadataDateArray.max(dateInput) : undefined"
-                    [matDatepickerFilter]="metadataDateArray.filter ? metadataDateArray.filter : defaultDateFilter"
-                >
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-                <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-            </mat-form-field>
-            
-            <div class="buttons">
-                <button mat-raised-button
-                    [disabled]="model.errors"
-                    (click)="add(dateInput, dateArrayValues, dateDataSource)">
-                    {{metadataDateArray.addButtonLabel}}
-                </button>
-                <button mat-raised-button
-                    [disabled]="!dateSelection.selected.length"
-                    (click)="remove(dateSelection, dateArrayValues, dateDataSource)">
-                    {{metadataDateArray.removeButtonLabel}}
-                </button>
-            </div>
-        
-            <mat-table [dataSource]="dateDataSource">
-                <!-- select Column -->
-                <ng-container matColumnDef="select">
-                    <mat-header-cell *matHeaderCellDef>
-                        <mat-checkbox [disabled]="!dateDataSource.data.length" (change)="$event ? masterToggle(dateSelection, dateDataSource) : null" [checked]="dateSelection.hasValue() && isAllSelected(dateSelection, dateDataSource)" [indeterminate]="dateSelection.hasValue() && !isAllSelected(dateSelection, dateDataSource)"></mat-checkbox>
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let module">
-                        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? dateSelection.toggle(module) : null" [checked]="dateSelection.isSelected(module)"></mat-checkbox>
-                    </mat-cell>
-                </ng-container>
-            
-                <ng-container *ngFor="let dCol of metadataDateArray.displayColumns" [matColumnDef]="dCol.displayName">
-                    <mat-header-cell *matHeaderCellDef>
-                        {{dCol.displayName}}
-                    </mat-header-cell>
-                    <mat-cell class="entity" *matCellDef="let entity">
-                        {{dCol.value(entity)}}
-                    </mat-cell>
-                </ng-container>
-            
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-            </mat-table>
-        
-            <div class="array-error" *ngIf="metadataDateArray.required && !dateDataSource.data.length">
-                {{metadataDateArray.missingErrorMessage}}
-            </div>
-        </div>
+        <array-date-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-date-input>
     </div>
 
     <div class="entityArray" *ngSwitchCase="DecoratorTypes.ARRAY_DATE_TIME">
-        <div class="mat-elevation-z8" style="border-radius: 5px;padding: 15px;margin-bottom: 15px;margin-top: 15px;">
-            
-            <div class="date-time">
-                <mat-form-field appearance="standard" class="datepicker">
-                    <mat-label>{{metadata.displayName}}</mat-label>
-                    <input
-                        matInput
-                        [(ngModel)]="dateInput"
-                        [name]="propertyKey.toString()"
-                        #model="ngModel"
-                        [matDatepicker]="picker"
-                        [required]="metadata.required"
-                        [min]="metadataDateTimeArray.minDate ? metadataDateTimeArray.minDate(dateInput) : undefined"
-                        [max]="metadataDateTimeArray.maxDate ? metadataDateTimeArray.maxDate(dateInput) : undefined"
-                        [matDatepickerFilter]="metadataDateTimeArray.filterDate ? metadataDateTimeArray.filterDate : defaultDateFilter"
-                    >
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                    <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-                </mat-form-field>
-                <mat-form-field class="timepicker">
-                    <mat-label>{{metadataDateTimeArray.timeDisplayName}}</mat-label>
-                    <mat-select
-                        [(ngModel)]="time"
-                        [name]="propertyKey.toString() + 'time'"
-                        #timeModel="ngModel"
-                        [required]="metadata.required"
-                    >
-                        <mat-option *ngFor="let validTime of DateUtilities.getValidTimesForDropdown(
-                                DateUtilities.asDate(dateInput),
-                                metadataDateTimeArray.times,
-                                metadataDateTimeArray.minTime,
-                                metadataDateTimeArray.maxTime,
-                                metadataDateTimeArray.filterTime
-                            )"
-                            [value]="validTime.value"
-                        >
-                            {{validTime.displayName}}
-                        </mat-option>
-                    </mat-select>
-                    <mat-error>{{getValidationErrorMessage(timeModel)}}</mat-error>
-                </mat-form-field>
-            </div>
-            <div class="buttons">
-                <button mat-raised-button
-                    [disabled]="model.errors || timeModel.errors || timeIsInvalid()"
-                    (click)="addDateTime()">
-                    {{metadataDateTimeArray.addButtonLabel}}
-                </button>
-                <button mat-raised-button
-                    [disabled]="!dateSelection.selected.length"
-                    (click)="remove(dateSelection, dateArrayValues, dateDataSource)">
-                    {{metadataDateTimeArray.removeButtonLabel}}
-                </button>
-            </div>
-        
-            <mat-table [dataSource]="dateDataSource">
-                <!-- select Column -->
-                <ng-container matColumnDef="select">
-                    <mat-header-cell *matHeaderCellDef>
-                        <mat-checkbox [disabled]="!dateDataSource.data.length" (change)="$event ? masterToggle(dateSelection, dateDataSource) : null" [checked]="dateSelection.hasValue() && isAllSelected(dateSelection, dateDataSource)" [indeterminate]="dateSelection.hasValue() && !isAllSelected(dateSelection, dateDataSource)"></mat-checkbox>
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let module">
-                        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? dateSelection.toggle(module) : null" [checked]="dateSelection.isSelected(module)"></mat-checkbox>
-                    </mat-cell>
-                </ng-container>
-            
-                <ng-container *ngFor="let dCol of metadataDateTimeArray.displayColumns" [matColumnDef]="dCol.displayName">
-                    <mat-header-cell *matHeaderCellDef>
-                        {{dCol.displayName}}
-                    </mat-header-cell>
-                    <mat-cell class="entity" *matCellDef="let entity">
-                        {{dCol.value(entity)}}
-                    </mat-cell>
-                </ng-container>
-            
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-            </mat-table>
-        
-            <div class="array-error" *ngIf="metadataDateTimeArray.required && !dateDataSource.data.length">
-                {{metadataDateTimeArray.missingErrorMessage}}
-            </div>
-        </div>
+        <array-date-time-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-date-time-input>
     </div>
 
     <div class="entityArray" *ngSwitchCase="DecoratorTypes.ARRAY_DATE_RANGE">
-        <div class="mat-elevation-z8" style="border-radius: 5px;padding: 15px;margin-bottom: 15px;margin-top: 15px;">
-
-            <mat-form-field appearance="standard">
-                <mat-label>{{metadata.displayName}}</mat-label>
-                
-                <mat-date-range-input [rangePicker]="picker" [required]="metadata.required" [dateFilter]="metadataDateRangeArray.filter ? metadataDateRangeArray.filter : defaultDateFilter">
-                    <input matStartDate
-                        [(ngModel)]="dateRangeStart"
-                        [name]="propertyKey.toString() + 'start'"
-                        #startModel="ngModel"
-                        [required]="metadata.required"
-                        [min]="metadataDateRangeArray.minStart ? metadataDateRangeArray.minStart(dateRange.start) : undefined"
-                        [max]="metadataDateRangeArray.maxStart ? metadataDateRangeArray.maxStart(dateRange.start) : undefined"
-                        [placeholder]="metadataDateRangeArray.placeholderStart"
-                    >
-                    <input matEndDate
-                        [(ngModel)]="dateRangeEnd"
-                        [name]="propertyKey.toString() + 'end'"
-                        #endModel="ngModel"
-                        [required]="metadata.required"
-                        [min]="metadataDateRangeArray.minEnd ? metadataDateRangeArray.minEnd(dateRange.end) : undefined"
-                        [max]="metadataDateRangeArray.maxEnd ? metadataDateRangeArray.maxEnd(dateRange.end) : undefined"
-                        [placeholder]="metadataDateRangeArray.placeholderEnd"
-                    >
-                </mat-date-range-input>
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-date-range-picker #picker></mat-date-range-picker>
-    
-                <mat-error *ngIf="startModel.errors">{{getValidationErrorMessage(startModel)}}</mat-error>
-                <mat-error *ngIf="!startModel.errors && endModel.errors">{{getValidationErrorMessage(endModel)}}</mat-error>
-            </mat-form-field>
-            
-            <div class="buttons">
-                <button mat-raised-button
-                    [disabled]="startModel.errors || endModel.errors"
-                    (click)="addDateRange()">
-                    {{metadataDateRangeArray.addButtonLabel}}
-                </button>
-                <button mat-raised-button
-                    [disabled]="!dateRangeSelection.selected.length"
-                    (click)="remove(dateRangeSelection, dateRangeArrayValues, dateRangeDataSource)">
-                    {{metadataDateRangeArray.removeButtonLabel}}
-                </button>
-            </div>
-        
-            <mat-table [dataSource]="dateRangeDataSource">
-                <!-- select Column -->
-                <ng-container matColumnDef="select">
-                    <mat-header-cell *matHeaderCellDef>
-                        <mat-checkbox [disabled]="!dateRangeDataSource.data.length" (change)="$event ? masterToggle(dateRangeSelection, dateRangeDataSource) : null" [checked]="dateRangeSelection.hasValue() && isAllSelected(dateRangeSelection, dateRangeDataSource)" [indeterminate]="dateRangeSelection.hasValue() && !isAllSelected(dateRangeSelection, dateRangeDataSource)"></mat-checkbox>
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let module">
-                        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? dateRangeSelection.toggle(module) : null" [checked]="dateRangeSelection.isSelected(module)"></mat-checkbox>
-                    </mat-cell>
-                </ng-container>
-            
-                <ng-container *ngFor="let dCol of metadataDateRangeArray.displayColumns" [matColumnDef]="dCol.displayName">
-                    <mat-header-cell *matHeaderCellDef>
-                        {{dCol.displayName}}
-                    </mat-header-cell>
-                    <mat-cell class="entity" *matCellDef="let entity">
-                        {{dCol.value(entity)}}
-                    </mat-cell>
-                </ng-container>
-            
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-            </mat-table>
-        
-            <div class="array-error" *ngIf="metadataDateRangeArray.required && !dateRangeDataSource.data.length">
-                {{metadataDateRangeArray.missingErrorMessage}}
-            </div>
-        </div>
+        <array-date-range-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-date-range-input>
     </div>
 
     <div *ngSwitchCase="DecoratorTypes.ARRAY_STRING_CHIPS">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-chip-list #chipList
-                [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel"
-                [required]="metadata.required"
-            >
-                <mat-chip *ngFor="let value of stringChipsArrayValues" (removed)="removeStringChipArrayValue(value)">
-                    {{value}}
-                    <button matChipRemove>
-                        <i class="{{metadataStringChipsArray.deleteIcon}}"></i>
-                    </button>
-                </mat-chip>
-                <input matInput
-                    [matChipInputFor]="chipList"
-                    [matChipInputAddOnBlur]="true"
-                    (matChipInputTokenEnd)="addStringChipArrayValue($event)"
-                    [(ngModel)]="chipsInput" [name]="propertyKey.toString()" #chipsModel="ngModel"
-                    [minlength]='metadataStringChipsArray.minLength ? metadataStringChipsArray.minLength : null'
-                    [maxlength]='metadataStringChipsArray.maxLength ? metadataStringChipsArray.maxLength : null'
-                    [pattern]="metadataStringChipsArray.regex ? metadataStringChipsArray.regex : '[\\s\\S]*'"
-                >
-                <mat-error *ngIf="chipsModel.errors">{{getValidationErrorMessage(chipsModel)}}</mat-error>
-            </mat-chip-list>
-            <mat-error *ngIf="!chipsModel.errors">{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <array-string-chips-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-string-chips-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-chip-list #chipList
-                [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel"
-                [required]="metadata.required"
-            >
-                <mat-chip *ngFor="let value of stringChipsArrayValues" (removed)="removeStringChipArrayValue(value)">
-                    {{value}}
-                    <button matChipRemove>
-                        <i class="{{metadataStringChipsArray.deleteIcon}}"></i>
-                    </button>
-                </mat-chip>
-                <input matInput
-                    [matChipInputFor]="chipList"
-                    [matAutocomplete]="auto"
-                    [matChipInputAddOnBlur]="true"
-                    (matChipInputTokenEnd)="addStringChipArrayValue($event)"
-                    (keyup)="filterAutocompleteStrings(chipsInput)"
-                    [(ngModel)]="chipsInput" [name]="propertyKey.toString()" #chipsModel="ngModel"
-                    #chipsElement
-                    [minlength]='metadataStringChipsArray.minLength ? metadataStringChipsArray.minLength : null'
-                    [maxlength]='metadataStringChipsArray.maxLength ? metadataStringChipsArray.maxLength : null'
-                    [pattern]="metadataStringChipsArray.regex ? metadataStringChipsArray.regex : '[\\s\\S]*'"
-                >
-                <mat-error *ngIf="chipsModel.errors">{{getValidationErrorMessage(chipsModel)}}</mat-error>
-            </mat-chip-list>
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event, chipsElement)">
-                <mat-option *ngFor="let value of filteredAutocompleteStrings" [value]="value">
-                  {{value}}
-                </mat-option>
-            </mat-autocomplete>
-            <mat-error *ngIf="!chipsModel.errors">{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <array-string-autocomplete-chips [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-string-autocomplete-chips>
     </div>
 
     <!-------------------------------------------->
     <!-------------------Dates-------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.DATE">
-        <mat-form-field appearance="standard">
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <input
-                matInput
-                [(ngModel)]="entity[propertyKey]"
-                [name]="propertyKey.toString()"
-                #model="ngModel"
-                [matDatepicker]="picker"
-                [required]="metadata.required"
-                [min]="metadataDefaultDate.min ? metadataDefaultDate.min(DateUtilities.asDate(entity[propertyKey])) : undefined"
-                [max]="metadataDefaultDate.max ? metadataDefaultDate.max(DateUtilities.asDate(entity[propertyKey])) : undefined"
-                [matDatepickerFilter]="metadataDefaultDate.filter ? metadataDefaultDate.filter : defaultDateFilter"
-            >
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <date-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></date-input>
     </div>
 
     <div *ngSwitchCase="DecoratorTypes.DATE_RANGE">
-        <mat-form-field appearance="standard">
-            <mat-label>{{metadata.displayName}}</mat-label>
-            
-            <mat-date-range-input [rangePicker]="picker" [required]="metadata.required" [dateFilter]="metadataDateRangeDate.filter ? metadataDateRangeDate.filter : defaultDateFilter">
-                <input matStartDate
-                    [(ngModel)]="dateRangeStart"
-                    [name]="propertyKey.toString() + 'start'"
-                    #startModel="ngModel"
-                    [required]="metadata.required"
-                    [min]="metadataDateRangeDate.minStart ? metadataDateRangeDate.minStart(dateRange.start) : undefined"
-                    [max]="metadataDateRangeDate.maxStart ? metadataDateRangeDate.maxStart(dateRange.start) : undefined"
-                    [placeholder]="metadataDateRangeDate.placeholderStart"
-                    (ngModelChange)="setDateRangeValues()"
-                >
-                <input matEndDate
-                    [(ngModel)]="dateRangeEnd"
-                    [name]="propertyKey.toString() + 'end'"
-                    #endModel="ngModel"
-                    [required]="metadata.required"
-                    [min]="metadataDateRangeDate.minEnd ? metadataDateRangeDate.minEnd(dateRange.end) : undefined"
-                    [max]="metadataDateRangeDate.maxEnd ? metadataDateRangeDate.maxEnd(dateRange.end) : undefined"
-                    [placeholder]="metadataDateRangeDate.placeholderEnd"
-                    (ngModelChange)="setDateRangeValues()"
-                >
-            </mat-date-range-input>
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-date-range-picker #picker></mat-date-range-picker>
-
-            <mat-error *ngIf="startModel.errors">{{getValidationErrorMessage(startModel)}}</mat-error>
-            <mat-error *ngIf="!startModel.errors && endModel.errors">{{getValidationErrorMessage(endModel)}}</mat-error>
-        </mat-form-field>
+        <date-range-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></date-range-input>
     </div>
 
     <div *ngSwitchCase="DecoratorTypes.DATE_TIME" class="date-time">
-        <mat-form-field appearance="standard" class="datepicker">
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <input
-                matInput
-                [(ngModel)]="dateTime"
-                [name]="propertyKey.toString()"
-                #model="ngModel"
-                [matDatepicker]="picker"
-                [required]="metadata.required"
-                [min]="metadataDateTimeDate.minDate ? metadataDateTimeDate.minDate(dateTime) : undefined"
-                [max]="metadataDateTimeDate.maxDate ? metadataDateTimeDate.maxDate(dateTime) : undefined"
-                [matDatepickerFilter]="metadataDateTimeDate.filterDate ? metadataDateTimeDate.filterDate : defaultDateFilter"
-                (dateInput)="setTime()"
-            >
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
-        <mat-form-field class="timepicker">
-            <mat-label>{{metadataDateTimeDate.timeDisplayName}}</mat-label>
-            <mat-select
-                [(ngModel)]="time"
-                [name]="propertyKey.toString() + 'time'"
-                #timeModel="ngModel"
-                [required]="metadata.required"
-                [compareWith]="compareTimes"
-                (ngModelChange)="setTime()"
-            >
-                <mat-option *ngFor="let validTime of DateUtilities.getValidTimesForDropdown(
-                        DateUtilities.asDate(entity[propertyKey]),
-                        metadataDateTimeDate.times,
-                        metadataDateTimeDate.minTime,
-                        metadataDateTimeDate.maxTime,
-                        metadataDateTimeDate.filterTime
-                    )"
-                    [value]="validTime.value"
-                >
-                    {{validTime.displayName}}
-                </mat-option>
-            </mat-select>
-            <mat-error>{{getValidationErrorMessage(timeModel)}}</mat-error>
-        </mat-form-field>
+        <date-time-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></date-time-input>
     </div>
 
     <div *ngSwitchDefault>ERROR: The type {{type}} is not known.</div>

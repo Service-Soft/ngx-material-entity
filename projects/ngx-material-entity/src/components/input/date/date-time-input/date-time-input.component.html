@@ -1,0 +1,42 @@
+<mat-form-field appearance="standard" class="datepicker">
+    <mat-label>{{metadata.displayName}}</mat-label>
+    <input
+        matInput
+        [(ngModel)]="dateTime"
+        [name]="key.toString()"
+        #model="ngModel"
+        [matDatepicker]="picker"
+        [required]="metadata.required"
+        [min]="metadata.minDate ? metadata.minDate(dateTime) : undefined"
+        [max]="metadata.maxDate ? metadata.maxDate(dateTime) : undefined"
+        [matDatepickerFilter]="metadata.filterDate ? metadata.filterDate : defaultDateFilter"
+        (dateInput)="setTime()"
+    >
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+    <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
+</mat-form-field>
+<mat-form-field class="timepicker">
+    <mat-label>{{metadata.timeDisplayName}}</mat-label>
+    <mat-select
+        [(ngModel)]="time"
+        [name]="key.toString() + 'time'"
+        #timeModel="ngModel"
+        [required]="metadata.required"
+        [compareWith]="compareTimes"
+        (ngModelChange)="setTime()"
+    >
+        <mat-option *ngFor="let validTime of DateUtilities.getValidTimesForDropdown(
+                DateUtilities.asDate(entity[key]),
+                metadata.times,
+                metadata.minTime,
+                metadata.maxTime,
+                metadata.filterTime
+            )"
+            [value]="validTime.value"
+        >
+            {{validTime.displayName}}
+        </mat-option>
+    </mat-select>
+    <mat-error>{{getValidationErrorMessage(timeModel)}}</mat-error>
+</mat-form-field>

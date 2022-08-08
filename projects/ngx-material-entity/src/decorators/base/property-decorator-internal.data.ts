@@ -47,7 +47,7 @@ export abstract class PropertyDecoratorConfigInternal implements PropertyDecorat
     // eslint-disable-next-line jsdoc/require-jsdoc
     defaultWidths: [Col, Col, Col];
     // eslint-disable-next-line jsdoc/require-jsdoc
-    position: PositionInternal
+    position: PositionInternal;
 
     constructor(data: PropertyDecoratorConfig) {
         this.display = data.display != undefined ? data.display : true;

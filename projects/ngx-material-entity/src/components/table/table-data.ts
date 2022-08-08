@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http'
-import { EntityService } from '../../classes/entity.service'
-import { EntityClassNewable } from '../../classes/entity.model'
-import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data'
+import { HttpClient } from '@angular/common/http';
+import { EntityService } from '../../classes/entity.service';
+import { EntityClassNewable } from '../../classes/entity.model';
+import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
 
 /**
  * The Definition of a Column inside the table.

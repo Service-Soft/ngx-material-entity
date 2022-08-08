@@ -83,7 +83,7 @@ export class BaseDataInternal<EntityType extends object> implements BaseData<Ent
     // eslint-disable-next-line jsdoc/require-jsdoc
     multiSelectActions: MultiSelectAction<EntityType>[];
     // eslint-disable-next-line jsdoc/require-jsdoc
-    multiSelectLabel: string
+    multiSelectLabel: string;
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     EntityClass?: EntityClassNewable<EntityType>;

@@ -1,0 +1,21 @@
+<mat-form-field>
+    <mat-label>{{metadata.displayName}}</mat-label>
+    <input
+        matInput
+        [(ngModel)]="entity[key]"
+        [name]="key.toString()"
+        #model="ngModel"
+        [matAutocomplete]="auto"
+        (keyup)="filterAutocompleteStrings(entity[key])"
+        [required]="metadata.required"
+        [minlength]="metadata.minLength ? metadata.minLength : null"
+        [maxlength]="metadata.maxLength ? metadata.maxLength : null"
+        [pattern]="metadata.regex ? metadata.regex : '[\\s\\S]*'"
+    />
+    <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let value of filteredAutocompleteStrings" [value]="value">
+            {{value}}
+        </mat-option>
+    </mat-autocomplete>
+    <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
+</mat-form-field>

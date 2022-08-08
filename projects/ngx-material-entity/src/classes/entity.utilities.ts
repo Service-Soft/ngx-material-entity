@@ -396,7 +396,7 @@ export abstract class EntityUtilities {
         const time: Time = {
             hours: value.getHours(),
             minutes: value.getMinutes()
-        }
+        };
         if (metadata.minTime) {
             const minTime: Time = metadata.minTime(value);
             if (

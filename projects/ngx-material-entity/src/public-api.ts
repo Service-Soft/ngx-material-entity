@@ -42,6 +42,9 @@ export { Col, Position } from './decorators/base/property-decorator.data';
 export * from './decorators/boolean/boolean.decorator';
 export * from './decorators/boolean/boolean-decorator.data';
 
+export * from './decorators/date/date.decorator';
+export * from './decorators/date/date-decorator.data';
+
 export * from './decorators/number/number.decorator';
 export * from './decorators/number/number-decorator.data';
 

@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 /* eslint-disable jsdoc/require-jsdoc */
 import { Routes } from '@angular/router';
+import { NavUtilities } from 'ngx-material-navigation';
 import { NavbarRow } from './nav.model';
-import { NavUtilities } from './utilities/nav.utilities';
 
 export const navbarRows: NavbarRow[] = [
     {
@@ -104,6 +104,6 @@ export const additionalRoutes: Routes = [
         path: 'inputs/:type',
         loadChildren: () => import('./components/showcase-inputs/showcase-inputs.module').then(m => m.ShowcaseInputsModule)
     }
-]
+];
 
 export const routes: Routes = NavUtilities.getAngularRoutes(navbarRows, additionalRoutes);

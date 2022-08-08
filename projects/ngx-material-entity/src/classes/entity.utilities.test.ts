@@ -4,7 +4,7 @@ import { EntityUtilities } from './entity.utilities';
 import { expect } from '@jest/globals';
 import { ReflectUtilities } from '../capsulation/reflect.utilities';
 import { LodashUtilities } from '../capsulation/lodash.utilities';
-import { Entity } from 'ngx-material-entity';
+import { Entity } from '../classes/entity.model';
 
 const builder = new TestEntityMockBuilder();
 const testEntity: TestEntity = builder.testEntity;

@@ -1,0 +1,60 @@
+<div class="mat-elevation-z8" style="border-radius: 5px;padding: 15px;margin-bottom: 15px;margin-top: 15px;">
+    <mat-form-field appearance="standard">
+        <mat-label>{{metadata.displayName}}</mat-label>
+        <input
+            matInput
+            [(ngModel)]="input"
+            [name]="key.toString()"
+            #model="ngModel"
+            [matDatepicker]="picker"
+            [required]="metadata.required"
+            [min]="metadata.min ? metadata.min(input) : undefined"
+            [max]="metadata.max ? metadata.max(input) : undefined"
+            [matDatepickerFilter]="metadata.filter ? metadata.filter : DateUtilities.defaultDateFilter"
+        >
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
+    </mat-form-field>
+    
+    <div class="buttons">
+        <button mat-raised-button
+            [disabled]="model.errors"
+            (click)="add()">
+            {{metadata.addButtonLabel}}
+        </button>
+        <button mat-raised-button
+            [disabled]="!selection.selected.length"
+            (click)="remove()">
+            {{metadata.removeButtonLabel}}
+        </button>
+    </div>
+
+    <mat-table [dataSource]="dataSource">
+        <!-- select Column -->
+        <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef>
+                <mat-checkbox [disabled]="!dataSource.data.length" (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()" [indeterminate]="selection.hasValue() && !isAllSelected()"></mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let module">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(module) : null" [checked]="selection.isSelected(module)"></mat-checkbox>
+            </mat-cell>
+        </ng-container>
+    
+        <ng-container *ngFor="let dCol of metadata.displayColumns" [matColumnDef]="dCol.displayName">
+            <mat-header-cell *matHeaderCellDef>
+                {{dCol.displayName}}
+            </mat-header-cell>
+            <mat-cell class="entity" *matCellDef="let entity">
+                {{dCol.value(entity)}}
+            </mat-cell>
+        </ng-container>
+    
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+
+    <div class="array-error" *ngIf="metadata.required && !dataSource.data.length">
+        {{metadata.missingErrorMessage}}
+    </div>
+</div>

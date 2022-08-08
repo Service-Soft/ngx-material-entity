@@ -1,0 +1,16 @@
+<mat-form-field>
+    <mat-label>{{metadata.displayName}}</mat-label>
+    <textarea
+        matInput
+        [(ngModel)]="entity[key]"
+        [name]="key.toString()"
+        #model="ngModel"
+        cdkTextareaAutosize
+        cdkAutosizeMinRows="10"
+        [required]="metadata.required"
+        [minlength]="metadata.minLength ? metadata.minLength : null"
+        [maxlength]="metadata.maxLength ? metadata.maxLength : null"
+    >
+    </textarea>
+    <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
+</mat-form-field>
