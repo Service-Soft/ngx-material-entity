@@ -1,0 +1,27 @@
+mat-form-field {
+    width: 100%;
+}
+
+input:hover,
+mat-form-field:hover {
+    cursor: pointer;
+}
+
+i {
+    color: #757575;
+}
+
+.dropdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    border: 2px dashed #757575;
+    border-radius: 15px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+    i {
+        font-size: 30px;
+    }
+}

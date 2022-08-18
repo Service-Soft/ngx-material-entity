@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { DateTimeDateDecoratorConfigInternal } from '../../../../decorators/date/date-decorator-internal.data';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
@@ -27,6 +27,9 @@ export class DateTimeInputComponent<EntityType extends object> implements OnInit
 
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
+
+    @Output()
+    inputChangeEvent = new EventEmitter<void>();
 
     metadata!: DateTimeDateDecoratorConfigInternal;
 
@@ -64,6 +67,7 @@ export class DateTimeInputComponent<EntityType extends object> implements OnInit
     setTime(): void {
         if (!this.dateTime) {
             this.entity[this.key] = undefined as unknown as EntityType[keyof EntityType];
+            this.emitChange();
             return;
         }
         this.entity[this.key] = new Date(this.dateTime) as unknown as EntityType[keyof EntityType];
@@ -73,5 +77,10 @@ export class DateTimeInputComponent<EntityType extends object> implements OnInit
         else {
             (this.entity[this.key] as unknown as Date).setHours(0, 0, 0, 0);
         }
+        this.emitChange();
+    }
+
+    emitChange(): void {
+        this.inputChangeEvent.emit();
     }
 }

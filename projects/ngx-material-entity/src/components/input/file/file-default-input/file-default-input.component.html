@@ -1,0 +1,7 @@
+<div *ngIf="metadata.dragAndDrop" class="file-input mat-elevation-z8">
+    <file-input (fileDataChangeEvent)="refreshFileData($event)" [entity]="entity" [key]="key" [getValidationErrorMessage]="getValidationErrorMessage"></file-input>
+</div>
+
+<div *ngIf="!metadata.dragAndDrop">
+    <file-input (fileDataChangeEvent)="refreshFileData($event)" [entity]="entity" [key]="key" [getValidationErrorMessage]="getValidationErrorMessage"></file-input>
+</div>

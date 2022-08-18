@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-jsdoc */
 import { Entity } from '../classes/entity.model';
 import { EntityUtilities } from '../classes/entity.utilities';
 import { string } from '../decorators/string/string.decorator';
@@ -10,7 +11,10 @@ import { date } from '../decorators/date/date.decorator';
 import { DateRange } from '../decorators/date/date-decorator.data';
 import { Time } from '@angular/common';
 import { DateUtilities } from '../classes/date.utilities';
+import { FileUtilities } from '../classes/file.utilities';
 import { DateFilterFn } from '@angular/material/datepicker';
+import { file } from '../decorators/file/file.decorator';
+import { FileData } from '../decorators/file/file-decorator.data';
 
 /**
  * An Entity used to Test the @object decorator on the TestEntity class.
@@ -287,7 +291,7 @@ export class TestEntity extends Entity {
         displayColumns: [
             {
                 displayName: 'Date',
-                value: (entity) => `${new Date(entity).getDate()}.${new Date(entity).getMonth()+1}.${new Date(entity).getFullYear()}`
+                value: (entity) => `${new Date(entity).getDate()}.${new Date(entity).getMonth() + 1}.${new Date(entity).getFullYear()}`
             }
         ],
         duplicatesErrorDialog: {
@@ -304,7 +308,7 @@ export class TestEntity extends Entity {
         displayColumns: [
             {
                 displayName: 'Date',
-                value: (entity) => `${new Date(entity).getDate()}.${new Date(entity).getMonth()+1}.${new Date(entity).getFullYear()}`
+                value: (entity) => `${new Date(entity).getDate()}.${new Date(entity).getMonth() + 1}.${new Date(entity).getFullYear()}`
             }
         ],
         max: () => new Date(2022, 11, 30, 0, 0, 0, 0),
@@ -535,6 +539,57 @@ export class TestEntity extends Entity {
     })
     customDateTimeValue!: Date;
 
+    @file({
+        type: 'other',
+        multiple: false,
+        displayName: 'File Value'
+    })
+    fileValue!: FileData;
+
+    @file({
+        type: 'other',
+        multiple: false,
+        displayName: 'Drag Drop File Value',
+        dragAndDrop: true
+    })
+    dragDropFileValue!: FileData;
+
+    @file({
+        type: 'other',
+        multiple: true,
+        displayName: 'Custom File Values',
+        allowedMimeTypes: ['image/*', 'application/pdf', 'application/x-javascript'],
+        deleteIcon: 'fas fa-trash',
+        maxSize: FileUtilities.transformToMegaBytes(3, 'KB'),
+        maxSizeTotal: FileUtilities.transformToMegaBytes(5, 'KB'),
+        omitForCreate: true,
+        omitForUpdate: true
+    })
+    customFileValues!: FileData[];
+
+    @file({
+        type: 'image',
+        multiple: false,
+        displayName: 'Image Value',
+        preview: false
+    })
+    imageValue!: FileData;
+
+    @file({
+        type: 'image',
+        multiple: false,
+        displayName: 'Image Drag Drop Value',
+        dragAndDrop: true
+    })
+    imageDragDropValue!: FileData;
+
+    @file({
+        type: 'image',
+        multiple: true,
+        displayName: 'Custom Image Values'
+    })
+    customImageValues!: FileData[];
+
     constructor(entity?: TestEntity) {
         super();
         EntityUtilities.new(this, entity);
@@ -653,7 +708,59 @@ const testEntityData: TestEntity = {
         values: getDatesBetween(new Date(2022, 0, 2, 0, 0, 0, 0), new Date(2022, 0, 20, 0, 0, 0, 0), (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1,)
     },
     dateTimeValue: new Date(2022, 0, 1, 8, 30, 0, 0),
-    customDateTimeValue: new Date(2022, 0, 2, 16, 30, 0, 0)
+    customDateTimeValue: new Date(2022, 0, 2, 16, 30, 0, 0),
+    fileValue: {
+        name: '6qW2XkuI_400x400.png',
+        url: 'http://localhost:3000/file/',
+        size: 4429,
+        type: 'image/jpg'
+    },
+    dragDropFileValue: {
+        name: '6qW2XkuI_400x400.png',
+        url: 'http://localhost:3000/file/',
+        size: 4429,
+        type: 'image/jpg'
+    },
+    customFileValues: [
+        {
+            url: 'http://localhost:3000/file/',
+            name: '6qW2XkuI_400x400.png',
+            size: 4429,
+            type: 'image/jpg'
+        },
+        {
+            url: 'http://localhost:3000/file/',
+            name: 'test-2.png',
+            size: 4429,
+            type: 'image/jpg'
+        }
+    ],
+    imageValue: {
+        url: 'http://localhost:3000/file/',
+        name: 'image-value.png',
+        size: 4429,
+        type: 'image/jpg'
+    },
+    imageDragDropValue: {
+        url: 'http://localhost:3000/file/',
+        name: 'image-value.png',
+        size: 4429,
+        type: 'image/jpg'
+    },
+    customImageValues: [
+        {
+            url: 'http://localhost:3000/file/',
+            name: '6qW2XkuI_400x400.png',
+            size: 4429,
+            type: 'image/jpg'
+        },
+        {
+            url: 'http://localhost:3000/file/',
+            name: 'test-2.png',
+            size: 4429,
+            type: 'image/jpg'
+        }
+    ],
 };
 
 /**

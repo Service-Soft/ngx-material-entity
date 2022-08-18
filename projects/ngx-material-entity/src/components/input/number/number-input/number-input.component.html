@@ -9,6 +9,7 @@
         [required]="metadata.required"
         [min]="metadata.min ?? null"
         [max]="metadata.max ?? null"
+        (ngModelChange)="emitChange()"
     />
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>

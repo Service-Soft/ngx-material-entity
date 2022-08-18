@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { EntityUtilities } from '../../../../classes/entity.utilities';
@@ -22,6 +22,9 @@ export class StringAutocompleteInputComponent<EntityType extends object> impleme
 
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
+
+    @Output()
+    inputChangeEvent = new EventEmitter<void>();
 
     metadata!: AutocompleteStringDecoratorConfigInternal;
 
@@ -46,5 +49,9 @@ export class StringAutocompleteInputComponent<EntityType extends object> impleme
             const filterValue = (input as string).toLowerCase();
             this.filteredAutocompleteStrings = this.autocompleteStrings.filter(s => s.toLowerCase().includes(filterValue));
         }
+    }
+
+    emitChange(): void {
+        this.inputChangeEvent.emit();
     }
 }

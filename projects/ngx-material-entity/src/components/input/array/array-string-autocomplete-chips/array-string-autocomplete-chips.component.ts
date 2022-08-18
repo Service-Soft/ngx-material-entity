@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -24,6 +24,9 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends object> im
 
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
+
+    @Output()
+    inputChangeEvent = new EventEmitter<void>();
 
     metadata!: AutocompleteStringChipsArrayDecoratorConfigInternal;
 
@@ -132,5 +135,9 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends object> im
             const filterValue = (input as string).toLowerCase();
             this.filteredAutocompleteStrings = this.metadata.autocompleteValues.filter(s => s.toLowerCase().includes(filterValue));
         }
+    }
+
+    emitChange(): void {
+        this.inputChangeEvent.emit();
     }
 }

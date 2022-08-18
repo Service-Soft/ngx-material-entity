@@ -3,39 +3,39 @@
     <!-----------------Strings-------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.STRING">
-        <string-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></string-input>
+        <string-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></string-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.STRING_TEXTBOX">
-        <string-textbox-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></string-textbox-input>
+        <string-textbox-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></string-textbox-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.STRING_AUTOCOMPLETE">
-        <string-autocomplete-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></string-autocomplete-input>
+        <string-autocomplete-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></string-autocomplete-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.STRING_DROPDOWN">
-        <string-dropdown-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></string-dropdown-input>
+        <string-dropdown-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></string-dropdown-input>
     </div>
 
     <!-------------------------------------------->
     <!-----------------Booleans------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_CHECKBOX">
-        <boolean-checkbox-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></boolean-checkbox-input>
+        <boolean-checkbox-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></boolean-checkbox-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_TOGGLE">
-        <boolean-toggle-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></boolean-toggle-input>
+        <boolean-toggle-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></boolean-toggle-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_DROPDOWN">
-        <boolean-dropdown-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></boolean-dropdown-input>
+        <boolean-dropdown-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></boolean-dropdown-input>
     </div>
 
     <!-------------------------------------------->
     <!------------------Numbers------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.NUMBER">
-        <number-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></number-input>
+        <number-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></number-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.NUMBER_DROPDOWN">
-        <number-dropdown-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></number-dropdown-input>
+        <number-dropdown-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></number-dropdown-input>
     </div>
 
     <!-------------------------------------------->
@@ -52,6 +52,7 @@
                 [hideOmitForCreate]="hideOmitForCreate"
                 [hideOmitForEdit]="hideOmitForEdit"
                 class="col-lg-{{EntityUtilities.getWidth(objectProperty, key, 'lg')}} col-md-{{EntityUtilities.getWidth(objectProperty, key, 'md')}} col-sm-{{EntityUtilities.getWidth(objectProperty, key, 'sm')}}"
+                (inputChangeEvent)="emitChange()"
             >
             </ngx-mat-entity-input>
         </div>
@@ -74,6 +75,7 @@
                         [hideOmitForCreate]="true"
                         [getValidationErrorMessage]="getValidationErrorMessage"
                         class="col-lg-{{EntityUtilities.getWidth(arrayItem, key, 'lg')}} col-md-{{EntityUtilities.getWidth(arrayItem, key, 'md')}} col-sm-{{EntityUtilities.getWidth(arrayItem, key, 'sm')}}"
+                        (inputChangeEvent)="checkIsArrayItemValid()"
                     >
                     </ngx-mat-entity-input>
                 </div>
@@ -81,7 +83,7 @@
             
             <div class="buttons">
                 <button mat-raised-button
-                    [disabled]="metadataEntityArray.createInline && !EntityUtilities.isEntityValid(arrayItem, 'create')"
+                    [disabled]="metadataEntityArray.createInline && !isArrayItemValid"
                     (click)="addEntity()">
                     {{metadataEntityArray.addButtonLabel}}
                 </button>
@@ -123,37 +125,42 @@
     </div>
 
     <div *ngSwitchCase="DecoratorTypes.ARRAY_DATE">
-        <array-date-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-date-input>
+        <array-date-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-date-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.ARRAY_DATE_TIME">
-        <array-date-time-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-date-time-input>
+        <array-date-time-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-date-time-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.ARRAY_DATE_RANGE">
-        <array-date-range-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-date-range-input>
+        <array-date-range-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-date-range-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.ARRAY_STRING_CHIPS">
-        <array-string-chips-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-string-chips-input>
+        <array-string-chips-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-string-chips-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS">
-        <array-string-autocomplete-chips [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-string-autocomplete-chips>
+        <array-string-autocomplete-chips (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-string-autocomplete-chips>
     </div>
 
     <!-------------------------------------------->
     <!-------------------Dates-------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.DATE">
-        <date-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></date-input>
+        <date-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></date-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.DATE_RANGE">
-        <date-range-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></date-range-input>
+        <date-range-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></date-range-input>
+    </div>
+    <div *ngSwitchCase="DecoratorTypes.DATE_TIME">
+        <date-time-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></date-time-input>
     </div>
 
-    <div *ngSwitchCase="DecoratorTypes.DATE_TIME" class="date-time">
-        <date-time-input [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></date-time-input>
+    <!-------------------------------------------->
+    <!-------------------Files-------------------->
+    <!-------------------------------------------->
+    <div *ngSwitchCase="DecoratorTypes.FILE_DEFAULT">
+        <file-default-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></file-default-input>
+    </div>
+    <div *ngSwitchCase="DecoratorTypes.FILE_IMAGE">
+        <file-image-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></file-image-input>
     </div>
 
     <div *ngSwitchDefault>ERROR: The type {{type}} is not known.</div>
@@ -175,6 +182,7 @@
                     [hideOmitForCreate]="true"
                     [getValidationErrorMessage]="dialogData.getValidationErrorMessage"
                     class="col-lg-{{EntityUtilities.getWidth(dialogData.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(dialogData.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(dialogData.entity, key, 'sm')}}"
+                    (inputChangeEvent)="checkIsDialogArrayItemValid()"
                 >
                 </ngx-mat-entity-input>
             </div>
@@ -182,7 +190,7 @@
     </mat-dialog-content>
 
     <mat-dialog-actions>
-        <button mat-raised-button (click)="addArrayItem()" [disabled]="!EntityUtilities.isEntityValid(dialogData.entity, 'create')">
+        <button mat-raised-button (click)="addArrayItem()" [disabled]="!isDialogArrayItemValid">
             {{dialogData.createDialogData.createButtonLabel}}
         </button>
         <button mat-raised-button (click)="cancelAddArrayItem()" class="cancel-button">

@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { DateRangeDateDecoratorConfigInternal } from '../../../../decorators/date/date-decorator-internal.data';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
@@ -25,6 +25,9 @@ export class DateRangeInputComponent<EntityType extends object> implements OnIni
 
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
+
+    @Output()
+    inputChangeEvent = new EventEmitter<void>();
 
     metadata!: DateRangeDateDecoratorConfigInternal;
 
@@ -69,6 +72,11 @@ export class DateRangeInputComponent<EntityType extends object> implements OnIni
         else {
             this.dateRange.values = undefined;
         }
-        this.entity[this.key] = this.dateRange as unknown as EntityType[keyof EntityType]
+        this.entity[this.key] = this.dateRange as unknown as EntityType[keyof EntityType];
+        this.emitChange();
+    }
+
+    emitChange(): void {
+        this.inputChangeEvent.emit();
     }
 }

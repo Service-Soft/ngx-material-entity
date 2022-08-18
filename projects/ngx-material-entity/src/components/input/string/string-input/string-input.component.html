@@ -9,6 +9,7 @@
         [pattern]="metadata.regex ?? '[\\s\\S]*'"
         [minlength]="metadata.minLength ?? null"
         [maxlength]="metadata.maxLength ?? null"
+        (ngModelChange)="emitChange()"
     />
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>

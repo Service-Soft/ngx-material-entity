@@ -1,6 +1,6 @@
 <mat-form-field class="hideUnderline">
     <mat-label>{{metadata.displayName}}</mat-label>
-    <mat-checkbox (click)="model.control.markAsTouched()" [(ngModel)]="entity[key]" [name]="key.toString()"></mat-checkbox>
+    <mat-checkbox (ngModelChange)="emitChange()" (click)="model.control.markAsTouched()" [(ngModel)]="entity[key]" [name]="key.toString()"></mat-checkbox>
     <!-- hidden input is needed so that the checkbox can be used inside a mat-form-field -->
     <input matInput hidden
         [(ngModel)]="entity[key]"

@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { DefaultDateDecoratorConfigInternal } from '../../../../decorators/date/date-decorator-internal.data';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
@@ -26,6 +26,9 @@ export class DateInputComponent<EntityType extends object> implements OnInit {
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
 
+    @Output()
+    inputChangeEvent = new EventEmitter<void>();
+
     metadata!: DefaultDateDecoratorConfigInternal;
 
     constructor() { }
@@ -34,5 +37,9 @@ export class DateInputComponent<EntityType extends object> implements OnInit {
 
     ngOnInit(): void {
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.DATE);
+    }
+
+    emitChange(): void {
+        this.inputChangeEvent.emit();
     }
 }

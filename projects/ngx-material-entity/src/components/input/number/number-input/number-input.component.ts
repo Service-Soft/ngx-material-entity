@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { DefaultNumberDecoratorConfigInternal } from '../../../../decorators/number/number-decorator-internal.data';
@@ -22,11 +22,18 @@ export class NumberInputComponent<EntityType extends object> implements OnInit {
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
 
+    @Output()
+    inputChangeEvent = new EventEmitter<void>();
+
     metadata!: DefaultNumberDecoratorConfigInternal;
 
     constructor() { }
 
     ngOnInit(): void {
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.NUMBER);
+    }
+
+    emitChange(): void {
+        this.inputChangeEvent.emit();
     }
 }

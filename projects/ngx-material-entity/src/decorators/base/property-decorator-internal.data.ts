@@ -16,7 +16,7 @@ class PositionInternal implements Position {
     }
 
     private validateInput(data?: Position): void {
-        if (data?.order) {
+        if (data?.order != null) {
             if (data.order < 1) {
                 throw new Error('order must be at least 1');
             }
@@ -24,7 +24,7 @@ class PositionInternal implements Position {
                 throw new Error('order cannot be bigger than 12 (the minimum value for a bootstrap column)');
             }
         }
-        if (data?.row && (data.row < 1)) {
+        if (data?.row != null && data.row < 1) {
             throw new Error('row must be at least 1');
         }
     }

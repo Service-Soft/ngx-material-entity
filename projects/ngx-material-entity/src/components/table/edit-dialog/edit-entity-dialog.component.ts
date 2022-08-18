@@ -30,6 +30,9 @@ export class NgxMatEntityEditDialogComponent<EntityType extends object> implemen
 
     data!: EditEntityDialogDataInternal<EntityType>;
 
+    isEntityValid: boolean = true;
+    isEntityDirty: Promise<boolean> = (async () => false).call(this);
+
     constructor(
         @Inject(MAT_DIALOG_DATA)
         private readonly inputData: EditEntityDialogData<EntityType>,
@@ -44,6 +47,12 @@ export class NgxMatEntityEditDialogComponent<EntityType extends object> implemen
         this.entityRows = EntityUtilities.getEntityRows(this.data.entity, false, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
         this.entityPriorChanges = LodashUtilities.cloneDeep(this.data.entity);
+    }
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    checkEntity(): void {
+        this.isEntityValid = EntityUtilities.isEntityValid(this.data.entity, 'update');
+        this.isEntityDirty = EntityUtilities.dirty(this.data.entity, this.entityPriorChanges);
     }
 
     /**

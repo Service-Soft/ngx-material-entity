@@ -1,6 +1,7 @@
 <mat-form-field>
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-chip-list #chipList
+        (ngModelChange)="emitChange()"
         [(ngModel)]="entity[key]" [name]="key.toString()" #model="ngModel"
         [required]="metadata.required"
     >

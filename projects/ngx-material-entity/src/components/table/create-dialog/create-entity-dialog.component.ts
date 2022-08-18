@@ -27,6 +27,8 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends object> implem
 
     data!: CreateEntityDialogDataInternal<EntityType>;
 
+    isEntityValid: boolean = false;
+
     constructor(
         @Inject(MAT_DIALOG_DATA)
         private readonly inputData: CreateEntityDialogData<EntityType>,
@@ -40,6 +42,13 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends object> implem
         this.dialogRef.disableClose = true;
         this.entityRows = EntityUtilities.getEntityRows(this.data.entity, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
+    }
+
+    /**
+     * Checks if the entity is valid.
+     */
+    checkIsEntityValid(): void {
+        this.isEntityValid = EntityUtilities.isEntityValid(this.data.entity, 'create');
     }
 
     /**

@@ -11,6 +11,9 @@ import { ReflectUtilities } from '../capsulation/reflect.utilities';
 import { LodashUtilities } from '../capsulation/lodash.utilities';
 import { ToggleBooleanDecoratorConfigInternal } from '../decorators/boolean/boolean-decorator-internal.data';
 import { DateFilterFn } from '@angular/material/datepicker';
+import { FileData } from '../decorators/file/file-decorator.data';
+import { DefaultFileDecoratorConfigInternal } from '../decorators/file/file-decorator-internal.data';
+import { FileUtilities } from './file.utilities';
 
 /**
  * Shows information about differences between two entities.
@@ -64,6 +67,27 @@ export abstract class EntityUtilities {
             const metadata = EntityUtilities.getPropertyMetadata(entity, key);
             if (metadata.omitForCreate) {
                 res.push(key);
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Gets all properties on the given entity which are files.
+     *
+     * @param entity - The entity to check for file properties.
+     * @param omit - Whether to leave out values that are omitted for create or delete.
+     * @returns The keys of all file properties on the given entity.
+     */
+    static getFileProperties<EntityType extends object>(entity: EntityType, omit?: 'create' | 'update'): (keyof EntityType)[] {
+        const res: (keyof EntityType)[] = [];
+        for (const key of EntityUtilities.keysOf(entity)) {
+            const type = EntityUtilities.getPropertyType(entity, key);
+            if (type === DecoratorTypes.FILE_DEFAULT || type === DecoratorTypes.FILE_IMAGE) {
+                const metadata = EntityUtilities.getPropertyMetadata(entity, key);
+                if (!(metadata.omitForCreate && omit === 'create') && !(metadata.omitForUpdate && omit === 'update')) {
+                    res.push(key);
+                }
             }
         }
         return res;
@@ -288,6 +312,14 @@ export abstract class EntityUtilities {
                     return false;
                 }
                 break;
+            case DecoratorTypes.FILE_DEFAULT:
+            case DecoratorTypes.FILE_IMAGE:
+                const entityFile: FileData | FileData[] = entity[key] as unknown as FileData | FileData[];
+                const entityFileMetadata = metadata as DefaultFileDecoratorConfigInternal;
+                if (!EntityUtilities.isFileDataValid(entityFile, entityFileMetadata)) {
+                    return false;
+                }
+                break;
             default:
                 throw new Error(`Could not validate the input because the DecoratorType ${type} is not known`);
         }
@@ -433,6 +465,30 @@ export abstract class EntityUtilities {
         return true;
     }
 
+    private static isFileDataValid(value: FileData | FileData[], metadata: DefaultFileDecoratorConfigInternal): boolean {
+        const files = metadata.multiple ? value as FileData[] : [value as FileData];
+        const maxSize = metadata.maxSize * 1000000;
+        const maxSizeTotal = metadata.maxSizeTotal * 1000000;
+        let fileSizeTotal: number = 0;
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
+        for (let i = 0; i < files.length; i++) {
+            if (!files[i].name || !files[i].file && !files[i].url) {
+                return false;
+            }
+            if (!FileUtilities.isMimeTypeValid(files[i].type, metadata.allowedMimeTypes)) {
+                return false;
+            }
+            if (files[i].size > maxSize) {
+                return false;
+            }
+            fileSizeTotal += files[i].size;
+            if (fileSizeTotal > maxSizeTotal) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Checks if an entity is "dirty" (if its values have changed).
      *
@@ -440,25 +496,25 @@ export abstract class EntityUtilities {
      * @param entityPriorChanges - The entity before the changes.
      * @returns Whether or not the entity is dirty.
      */
-    static dirty<EntityType extends object>(entity: EntityType, entityPriorChanges: EntityType): boolean {
+    static async dirty<EntityType extends object>(entity: EntityType, entityPriorChanges: EntityType): Promise<boolean> {
         if (!entityPriorChanges) {
             return false;
         }
         else {
-            const differences = EntityUtilities.differencesForDirty(entity, entityPriorChanges);
+            const differences = await EntityUtilities.differencesForDirty(entity, entityPriorChanges);
             return differences.length ? true : false;
         }
     }
 
-    private static differencesForDirty<EntityType extends object>(
+    private static async differencesForDirty<EntityType extends object>(
         entity: EntityType,
         entityPriorChanges: EntityType
-    ): Difference<EntityType>[] {
+    ): Promise<Difference<EntityType>[]> {
         const res: Difference<EntityType>[] = [];
         for (const key in entity) {
             const metadata = EntityUtilities.getPropertyMetadata(entity, key);
             const type = EntityUtilities.getPropertyType(entity, key);
-            if (!EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type)) {
+            if (!(await EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type))) {
                 res.push({
                     key: key,
                     before: entityPriorChanges[key],
@@ -476,15 +532,15 @@ export abstract class EntityUtilities {
      * @param entityPriorChanges - The second entity to compare.
      * @returns The difference between the two Entities in form of a Partial.
      */
-    static difference<EntityType extends object>(
+    static async difference<EntityType extends object>(
         entity: EntityType,
         entityPriorChanges: EntityType
-    ): Partial<EntityType> {
+    ): Promise<Partial<EntityType>> {
         const res: Partial<EntityType> = {};
         for (const key in entity) {
             const metadata = EntityUtilities.getPropertyMetadata(entity, key);
             const type = EntityUtilities.getPropertyType(entity, key);
-            if (!EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type)) {
+            if (!(await EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type))) {
                 res[key] = entity[key];
             }
         }
@@ -501,7 +557,8 @@ export abstract class EntityUtilities {
      * @param type - The type of the property.
      * @returns Whether or not the given values are equal.
      */
-    static isEqual(value: unknown, valuePriorChanges: unknown, metadata: PropertyDecoratorConfigInternal, type: DecoratorTypes): boolean {
+    // eslint-disable-next-line max-len
+    static async isEqual(value: unknown, valuePriorChanges: unknown, metadata: PropertyDecoratorConfigInternal, type: DecoratorTypes): Promise<boolean> {
         switch (type) {
             case DecoratorTypes.DATE_RANGE:
                 return EntityUtilities.isEqualDateRange(
@@ -522,6 +579,9 @@ export abstract class EntityUtilities {
                     valuePriorChanges,
                     (metadata as DateRangeArrayDecoratorConfigInternal).filter
                 );
+            case DecoratorTypes.FILE_IMAGE:
+            case DecoratorTypes.FILE_DEFAULT:
+                return EntityUtilities.isEqualFile(value, valuePriorChanges, (metadata as DefaultFileDecoratorConfigInternal).multiple);
             default:
                 return LodashUtilities.isEqual(value, valuePriorChanges);
         }
@@ -534,31 +594,17 @@ export abstract class EntityUtilities {
     }
 
     private static isEqualArrayDateRange(value: unknown, valuePriorChanges: unknown, filter?: DateFilterFn<Date>): boolean {
-        const newValue = (value as DateRange[]).map(v => {
-            const dr: DateRange = {
-                start: new Date(v.start),
-                end: new Date(v.end),
-                values: DateUtilities.getDatesBetween(
-                    new Date(v.start),
-                    new Date(v.end),
-                    filter
-                )
-            };
-            return dr;
-        }).sort();
-        const newValuePriorChanges = (valuePriorChanges as DateRange[]).map(v => {
-            const dr: DateRange = {
-                start: new Date(v.start),
-                end: new Date(v.end),
-                values: DateUtilities.getDatesBetween(
-                    new Date(v.start),
-                    new Date(v.end),
-                    filter
-                )
-            };
-            return dr;
-        }).sort();
-        return LodashUtilities.isEqual(newValue, newValuePriorChanges);
+        const dateRanges = (value as DateRange[]).sort();
+        const dateRangesPriorChanges = (valuePriorChanges as DateRange[]).sort();
+        if (dateRanges.length !== dateRangesPriorChanges.length) {
+            return false;
+        }
+        for (let i = 0; i < dateRanges.length; i++) {
+            if (!EntityUtilities.isEqualDateRange(dateRanges[i], dateRangesPriorChanges[i], filter)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static isEqualDateTime(value: unknown, valuePriorChanges: unknown): boolean {
@@ -595,6 +641,32 @@ export abstract class EntityUtilities {
         return LodashUtilities.isEqual(dateRange, dateRangePriorChanges);
     }
 
+    // TODO: Find a way to use blobs with jest
+    /* istanbul ignore next */
+    private static async isEqualFile(value: unknown, valuePriorChanges: unknown, multiple: boolean): Promise<boolean> {
+        const files = multiple ? (value as FileData[]).sort() : [value as FileData].sort();
+        const filesPriorChanges = multiple ? (valuePriorChanges as FileData[]).sort() : [valuePriorChanges as FileData].sort();
+        if (files.length !== filesPriorChanges.length) {
+            return false;
+        }
+        for (let i = 0; i < files.length; i++) {
+            // checks this before actually getting any files due to performance reasons.
+            if (
+                !LodashUtilities.isEqual(files[i]?.name, filesPriorChanges[i]?.name)
+                || !LodashUtilities.isEqual(files[i]?.url, filesPriorChanges[i]?.url)
+            ) {
+                return false;
+            }
+            files[i] = filesPriorChanges[i].file && !files[i].file ? await FileUtilities.getFileData(files[i]) : files[i];
+            // eslint-disable-next-line max-len
+            filesPriorChanges[i] = files[i].file && !filesPriorChanges[i].file ? await FileUtilities.getFileData(filesPriorChanges[i]) : filesPriorChanges[i];
+            if (!LodashUtilities.isEqual(await files[i].file?.text(), await filesPriorChanges[i].file?.text())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Compare function for sorting entity keys by their order value.
      *
@@ -616,8 +688,7 @@ export abstract class EntityUtilities {
         else if (metadataB.position.order === -1) {
             return -1;
         }
-
-        return ((metadataA.position.order ) - (metadataB.position.order ));
+        return metadataA.position.order - metadataB.position.order;
     }
 
     /**

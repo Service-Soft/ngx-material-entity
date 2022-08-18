@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
@@ -22,11 +22,18 @@ export class StringTextboxInputComponent<EntityType extends object> implements O
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
 
+    @Output()
+    inputChangeEvent = new EventEmitter<void>();
+
     metadata!: TextboxStringDecoratorConfigInternal;
 
     constructor() { }
 
     ngOnInit(): void {
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.STRING_TEXTBOX);
+    }
+
+    emitChange(): void {
+        this.inputChangeEvent.emit();
     }
 }

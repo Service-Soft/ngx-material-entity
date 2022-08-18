@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DateTimeArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
 import { NgModel } from '@angular/forms';
 import { DateUtilities } from '../../../../classes/date.utilities';
@@ -26,6 +26,9 @@ export class ArrayDateTimeInputComponent<EntityType extends object> extends Arra
 
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
+
+    @Output()
+    inputChangeEvent = new EventEmitter<void>();
 
     metadata!: DateTimeArrayDecoratorConfigInternal;
 
@@ -58,5 +61,9 @@ export class ArrayDateTimeInputComponent<EntityType extends object> extends Arra
         this.input = new Date(this.input as Date);
         this.input.setHours(this.time.hours, this.time.minutes, 0, 0);
         this.add();
+    }
+
+    protected emitChange(): void {
+        this.inputChangeEvent.emit();
     }
 }

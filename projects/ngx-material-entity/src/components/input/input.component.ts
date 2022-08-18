@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { EntityRow, EntityUtilities } from '../../classes/entity.utilities';
 import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
@@ -62,6 +62,9 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
     @Input()
     hideOmitForEdit?: boolean;
 
+    @Output()
+    inputChangeEvent = new EventEmitter<void>();
+
     @ViewChild('addArrayItemDialog')
     addArrayItemDialog!: TemplateRef<unknown>;
     addArrayItemDialogRef!: MatDialogRef<unknown>;
@@ -81,10 +84,12 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
     dataSource!: MatTableDataSource<EntityType>;
     selection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
     displayedColumns!: string[];
+    isArrayItemValid: boolean = false;
 
     dialogInputData!: AddArrayItemDialogData<EntityType>;
     dialogData!: AddArrayItemDialogDataInternal<EntityType>;
     arrayItemDialogRows!: EntityRow<EntityType>[];
+    isDialogArrayItemValid: boolean = false;
 
     readonly DecoratorTypes = DecoratorTypes;
 
@@ -165,6 +170,27 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
     }
 
     /**
+     * Checks if the arrayItem is valid.
+     */
+    checkIsArrayItemValid(): void {
+        this.isArrayItemValid = EntityUtilities.isEntityValid(this.arrayItem, 'create');
+    }
+
+    /**
+     * Checks if the arrayItem inside the dialog is valid.
+     */
+    checkIsDialogArrayItemValid(): void {
+        this.isDialogArrayItemValid = EntityUtilities.isEntityValid(this.dialogData.entity, 'create');
+    }
+
+    /**
+     * Emits that a the value has been changed.
+     */
+    emitChange(): void {
+        this.inputChangeEvent.emit();
+    }
+
+    /**
      * Tries to add an item to the entity array.
      * Does this either inline if the "createInline"-metadata is set to true
      * or in a separate dialog if it is set to false.
@@ -174,8 +200,8 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
             if (this.arrayItem) {
                 if (
                     !this.metadataEntityArray.allowDuplicates
-                    && this.entityArrayValues.find(v =>
-                        EntityUtilities.isEqual(this.arrayItem, v, this.metadata, this.metadataEntityArray.itemType)
+                    && this.entityArrayValues.find(async v =>
+                        await EntityUtilities.isEqual(this.arrayItem, v, this.metadata, this.metadataEntityArray.itemType)
                     )
                 ) {
                     this.dialog.open(NgxMatEntityConfirmDialogComponent, {
@@ -188,6 +214,7 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
                 this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
                 this.dataSource.data = this.entityArrayValues;
                 EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
+                this.emitChange();
             }
         }
         else {
@@ -210,6 +237,7 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
         this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
         this.dataSource.data = this.entityArrayValues;
         EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
+        this.emitChange();
     }
 
     /**
@@ -218,6 +246,7 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
     cancelAddArrayItem(): void {
         this.addArrayItemDialogRef.close();
         EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
+        this.emitChange();
     }
 
     /**
@@ -234,6 +263,7 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
         });
         dataSource.data = values;
         selection.clear();
+        this.emitChange();
     }
 
     /**

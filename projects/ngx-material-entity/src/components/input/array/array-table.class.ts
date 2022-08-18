@@ -22,6 +22,7 @@ export abstract class ArrayTable<T, EntityType extends object> {
     selection: SelectionModel<T> = new SelectionModel<T>(true, []);
     displayedColumns!: string[];
 
+
     abstract metadata: DateArrayDecoratorConfigInternal | DateTimeArrayDecoratorConfigInternal | DateRangeArrayDecoratorConfigInternal;
 
     constructor(private readonly matDialog: MatDialog) {}
@@ -75,7 +76,7 @@ export abstract class ArrayTable<T, EntityType extends object> {
         if (this.input) {
             if (
                 !this.metadata.allowDuplicates
-                && this.arrayValues.find(v => EntityUtilities.isEqual(this.input, v, this.metadata, this.metadata.itemType))
+                && this.arrayValues.find(async v => await EntityUtilities.isEqual(this.input, v, this.metadata, this.metadata.itemType))
             ) {
                 this.matDialog.open(NgxMatEntityConfirmDialogComponent, {
                     data: this.metadata.duplicatesErrorDialog,
@@ -87,6 +88,7 @@ export abstract class ArrayTable<T, EntityType extends object> {
             this.arrayValues.push(LodashUtilities.cloneDeep(this.input));
             this.dataSource.data = this.arrayValues;
             this.resetInput();
+            this.emitChange();
         }
     }
 
@@ -106,5 +108,8 @@ export abstract class ArrayTable<T, EntityType extends object> {
         });
         this.dataSource.data = this.arrayValues;
         this.selection.clear();
+        this.emitChange();
     }
+
+    protected abstract emitChange(): void;
 }

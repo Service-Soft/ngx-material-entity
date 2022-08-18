@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DateUtilities } from '../../../../classes/date.utilities';
@@ -28,6 +28,9 @@ export class ArrayDateRangeInputComponent<EntityType extends object> extends Arr
 
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
+
+    @Output()
+    inputChangeEvent = new EventEmitter<void>();
 
     dateRangeStart!: Date;
     dateRangeEnd!: Date;
@@ -60,5 +63,15 @@ export class ArrayDateRangeInputComponent<EntityType extends object> extends Arr
             this.input.values = values.length ? values : undefined;
             this.add();
         }
+    }
+
+    protected override resetInput(): void {
+        this.input = undefined;
+        this.dateRangeStart = undefined as unknown as Date;
+        this.dateRangeEnd = undefined as unknown as Date;
+    }
+
+    protected emitChange(): void {
+        this.inputChangeEvent.emit();
     }
 }

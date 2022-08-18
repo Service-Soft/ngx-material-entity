@@ -28,7 +28,7 @@ export class HttpClientMock {
         const id = this.getIdFromUrl(url);
         const res = this.exampleData[this.exampleData.findIndex((e) => e.id === id)];
         for (const key of ReflectUtilities.ownKeys(body)) {
-            if (res[key]) {
+            if (res[key] != null) {
                 res[key] = body[key];
             }
         }

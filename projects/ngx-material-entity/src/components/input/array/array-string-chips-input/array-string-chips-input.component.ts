@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { StringChipsArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
@@ -23,6 +23,9 @@ export class ArrayStringChipsInputComponent<EntityType extends object> implement
 
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
+
+    @Output()
+    inputChangeEvent = new EventEmitter<void>();
 
     metadata!: StringChipsArrayDecoratorConfigInternal;
 
@@ -116,5 +119,9 @@ export class ArrayStringChipsInputComponent<EntityType extends object> implement
         }
         this.stringChipsArrayValues.push(value);
         chipsInput.value = '';
+    }
+
+    emitChange(): void {
+        this.inputChangeEvent.emit();
     }
 }
