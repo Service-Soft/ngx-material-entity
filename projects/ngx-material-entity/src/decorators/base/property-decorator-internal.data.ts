@@ -16,7 +16,7 @@ class PositionInternal implements Position {
     }
 
     private validateInput(data?: Position): void {
-        if (data?.order) {
+        if (data?.order != null) {
             if (data.order < 1) {
                 throw new Error('order must be at least 1');
             }
@@ -24,7 +24,7 @@ class PositionInternal implements Position {
                 throw new Error('order cannot be bigger than 12 (the minimum value for a bootstrap column)');
             }
         }
-        if (data?.row && (data.row < 1)) {
+        if (data?.row != null && data.row < 1) {
             throw new Error('row must be at least 1');
         }
     }
@@ -50,11 +50,11 @@ export abstract class PropertyDecoratorConfigInternal implements PropertyDecorat
     position: PositionInternal;
 
     constructor(data: PropertyDecoratorConfig) {
-        this.display = data.display != undefined ? data.display : true;
+        this.display = data.display ?? true;
         this.displayName = data.displayName;
-        this.required = data.required != undefined ? data.required : true;
-        this.omitForCreate = data.omitForCreate != undefined ? data.omitForCreate : false;
-        this.omitForUpdate = data.omitForUpdate != undefined ? data.omitForUpdate : false;
+        this.required = data.required ?? true;
+        this.omitForCreate = data.omitForCreate ?? false;
+        this.omitForUpdate = data.omitForUpdate ?? false;
         this.defaultWidths = data.defaultWidths ?? [6, 6, 12];
         this.position = new PositionInternal(data.position);
     }

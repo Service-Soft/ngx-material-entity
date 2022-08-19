@@ -10,6 +10,7 @@
         [required]="metadata.required"
         [minlength]="metadata.minLength ?? null"
         [maxlength]="metadata.maxLength ?? null"
+        (ngModelChange)="emitChange()"
     >
     </textarea>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>

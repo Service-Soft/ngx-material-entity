@@ -1,10 +1,11 @@
 import { NgModel } from '@angular/forms';
+import { BaseEntityType } from '../../classes/entity.model';
 import { CreateDialogData } from '../table/table-data';
 
 /**
  * The configuration options for the dialog that adds items to an array.
  */
-export interface AddArrayItemDialogData<EntityType extends object> {
+export interface AddArrayItemDialogData<EntityType extends BaseEntityType<EntityType>> {
     /**
      * An empty entity that is used as the data model.
      */

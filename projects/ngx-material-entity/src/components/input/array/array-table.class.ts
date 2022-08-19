@@ -7,11 +7,12 @@ import { LodashUtilities } from '../../../capsulation/lodash.utilities';
 import { EntityUtilities } from '../../../classes/entity.utilities';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { NgModel } from '@angular/forms';
+import { BaseEntityType } from '../../../classes/entity.model';
 
 /**
  * The base data needed for all arrays that are displayed as a table.
  */
-export abstract class ArrayTable<T, EntityType extends object> {
+export abstract class ArrayTable<T, EntityType extends BaseEntityType<EntityType>> {
     abstract entity: EntityType;
     abstract key: keyof EntityType;
     abstract getValidationErrorMessage: (model: NgModel) => string;
@@ -22,16 +23,17 @@ export abstract class ArrayTable<T, EntityType extends object> {
     selection: SelectionModel<T> = new SelectionModel<T>(true, []);
     displayedColumns!: string[];
 
+
     abstract metadata: DateArrayDecoratorConfigInternal | DateTimeArrayDecoratorConfigInternal | DateRangeArrayDecoratorConfigInternal;
 
     constructor(private readonly matDialog: MatDialog) {}
 
     init(): void {
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key) as typeof this.metadata;
-        if (!this.entity[this.key]) {
-            (this.entity[this.key] as unknown as T[]) = [];
+        if (this.entity[this.key] == null) {
+            (this.entity[this.key] as T[]) = [];
         }
-        this.arrayValues = this.entity[this.key] as unknown as T[];
+        this.arrayValues = this.entity[this.key] as T[];
         const givenDisplayColumns: string[] = this.metadata.displayColumns.map((v) => v.displayName);
         if (givenDisplayColumns.find(s => s === 'select')) {
             throw new Error(
@@ -72,10 +74,12 @@ export abstract class ArrayTable<T, EntityType extends object> {
      * Tries to add an item to the array.
      */
     add(): void {
-        if (this.input) {
+        if (this.input != null) {
             if (
                 !this.metadata.allowDuplicates
-                && this.arrayValues.find(v => EntityUtilities.isEqual(this.input, v, this.metadata, this.metadata.itemType))
+                && this.arrayValues.find(
+                    async v => await EntityUtilities.isEqual(this.input, v, this.metadata, this.metadata.itemType)
+                ) != null
             ) {
                 this.matDialog.open(NgxMatEntityConfirmDialogComponent, {
                     data: this.metadata.duplicatesErrorDialog,
@@ -87,6 +91,7 @@ export abstract class ArrayTable<T, EntityType extends object> {
             this.arrayValues.push(LodashUtilities.cloneDeep(this.input));
             this.dataSource.data = this.arrayValues;
             this.resetInput();
+            this.emitChange();
         }
     }
 
@@ -106,5 +111,8 @@ export abstract class ArrayTable<T, EntityType extends object> {
         });
         this.dataSource.data = this.arrayValues;
         this.selection.clear();
+        this.emitChange();
     }
+
+    protected abstract emitChange(): void;
 }

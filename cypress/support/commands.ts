@@ -120,5 +120,10 @@ Cypress.Commands.add(
         cy.getInputByLabel('Custom Date Time Value').click().type('2/2/2022');
         cy.getInputByLabel('Custom Time Display Name', 1).click();
         cy.get('mat-option').contains('8:30').click();
+
+        cy.fixture('test.jpg').as('testImage');
+        for (let i = 0; i < 5; i++) {
+            cy.get('input[type=file]').eq(i).selectFile('@testImage', { force: true });
+        }
     }
 );

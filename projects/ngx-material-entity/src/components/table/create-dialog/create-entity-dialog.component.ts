@@ -6,6 +6,7 @@ import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from './create-entity-dialog-data.builder';
 import { CreateEntityDialogData } from './create-entity-dialog-data';
+import { BaseEntityType } from '../../../classes/entity.model';
 
 /**
  * The default dialog used to create new entities based on the configuration passed in the MAT_DIALOG_DATA "inputData".
@@ -18,7 +19,7 @@ import { CreateEntityDialogData } from './create-entity-dialog-data';
     templateUrl: './create-entity-dialog.component.html',
     styleUrls: ['./create-entity-dialog.component.scss']
 })
-export class NgxMatEntityCreateDialogComponent<EntityType extends object> implements OnInit {
+export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
     EntityUtilities = EntityUtilities;
 
     entityRows!: EntityRow<EntityType>[];
@@ -26,6 +27,8 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends object> implem
     entityService!: EntityService<EntityType>;
 
     data!: CreateEntityDialogDataInternal<EntityType>;
+
+    isEntityValid: boolean = false;
 
     constructor(
         @Inject(MAT_DIALOG_DATA)
@@ -43,14 +46,22 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends object> implem
     }
 
     /**
+     * Checks if the entity is valid.
+     */
+    checkIsEntityValid(): void {
+        this.isEntityValid = EntityUtilities.isEntityValid(this.data.entity, 'create');
+    }
+
+    /**
      * Tries add the new entity and close the dialog afterwards.
      * Also handles the confirmation if required.
      */
     create(): void {
-        if (!this.data.createDialogData?.createRequiresConfirmDialog) {
-            return this.confirmCreate();
+        if (!this.data.createDialogData.createRequiresConfirmDialog) {
+            this.confirmCreate();
+            return;
         }
-        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.createDialogData?.confirmCreateDialogData)
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.createDialogData.confirmCreateDialogData)
             .withDefault('text', ['Do you really want to create this entity?'])
             .withDefault('confirmButtonLabel', 'Create')
             .withDefault('title', 'Create')
@@ -67,7 +78,7 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends object> implem
         });
     }
     private confirmCreate(): void {
-        this.entityService.create(this.data.entity).then(() => this.dialogRef.close());
+        void this.entityService.create(this.data.entity).then(() => this.dialogRef.close());
     }
 
     /**

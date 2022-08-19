@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { DateRangeDateDecoratorConfigInternal } from '../../../../decorators/date/date-decorator-internal.data';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
@@ -8,6 +8,13 @@ import { DateFilterFn } from '@angular/material/datepicker';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
 import { LodashUtilities } from '../../../../capsulation/lodash.utilities';
 import { DateUtilities } from '../../../../classes/date.utilities';
+import { BaseEntityType } from '../../../../classes/entity.model';
+
+const EMPTY_DATERANGE: DateRange = {
+    start: undefined as unknown as Date,
+    end: undefined as unknown as Date,
+    values: undefined
+};
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -15,7 +22,7 @@ import { DateUtilities } from '../../../../classes/date.utilities';
     templateUrl: './date-range-input.component.html',
     styleUrls: ['./date-range-input.component.scss']
 })
-export class DateRangeInputComponent<EntityType extends object> implements OnInit {
+export class DateRangeInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     @Input()
     entity!: EntityType;
@@ -26,11 +33,14 @@ export class DateRangeInputComponent<EntityType extends object> implements OnIni
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
 
+    @Output()
+    inputChangeEvent = new EventEmitter<void>();
+
     metadata!: DateRangeDateDecoratorConfigInternal;
 
     dateRange!: DateRange;
-    dateRangeStart!: Date;
-    dateRangeEnd!: Date;
+    dateRangeStart?: Date;
+    dateRangeEnd?: Date;
 
     constructor() { }
 
@@ -39,14 +49,7 @@ export class DateRangeInputComponent<EntityType extends object> implements OnIni
     ngOnInit(): void {
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.DATE_RANGE);
 
-        this.dateRange = LodashUtilities.cloneDeep(this.entity[this.key] as unknown as DateRange);
-        if (!this.dateRange) {
-            this.dateRange = {
-                start: undefined as unknown as Date,
-                end: undefined as unknown as Date,
-                values: undefined
-            }
-        }
+        this.dateRange = LodashUtilities.cloneDeep(this.entity[this.key] as DateRange) ?? EMPTY_DATERANGE;
         this.dateRangeStart = new Date(this.dateRange.start);
         this.dateRangeEnd = new Date(this.dateRange.end);
         this.setDateRangeValues();
@@ -69,6 +72,11 @@ export class DateRangeInputComponent<EntityType extends object> implements OnIni
         else {
             this.dateRange.values = undefined;
         }
-        this.entity[this.key] = this.dateRange as unknown as EntityType[keyof EntityType]
+        (this.entity[this.key] as DateRange) = this.dateRange;
+        this.emitChange();
+    }
+
+    emitChange(): void {
+        this.inputChangeEvent.emit();
     }
 }

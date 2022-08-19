@@ -8,21 +8,13 @@ export const navbarRows: NavbarRow[] = [
     {
         elements: [
             {
-                type: 'imageWithInternalLink',
-                url: 'https://pbs.twimg.com/profile_images/1498641868397191170/6qW2XkuI_400x400.png',
-                link: {
-                    route: 'home',
-                },
-                collapse: 'never'
-            },
-            {
                 type: 'titleWithInternalLink',
                 title: 'Showcase Project',
                 icon: 'fa-brands fa-angular',
                 link: {
                     route: 'home'
                 },
-                collapse: 'sm'
+                collapse: 'never'
             },
             {
                 type: 'internalLink',
@@ -74,6 +66,16 @@ export const navbarRows: NavbarRow[] = [
                         type: 'internalLink',
                         name: '@object',
                         route: 'inputs/object'
+                    },
+                    {
+                        type: 'internalLink',
+                        name: '@date',
+                        route: 'inputs/date'
+                    },
+                    {
+                        type: 'internalLink',
+                        name: '@file',
+                        route: 'inputs/file'
                     }
                 ],
                 position: 'center',

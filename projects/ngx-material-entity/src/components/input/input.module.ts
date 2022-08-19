@@ -31,6 +31,10 @@ import { DateTimeInputComponent } from './date/date-time-input/date-time-input.c
 import { ArrayDateInputComponent } from './array/array-date-input/array-date-input.component';
 import { ArrayDateTimeInputComponent } from './array/array-date-time-input/array-date-time-input.component';
 import { ArrayDateRangeInputComponent } from './array/array-date-range-input/array-date-range-input.component';
+import { FileInputComponent } from './file/file-input/file-input.component';
+import { FileImageInputComponent } from './file/file-image-input/file-image-input.component';
+import { FileDefaultInputComponent } from './file/file-default-input/file-default-input.component';
+import { DragDropDirective } from './file/file-input/dragDrop.directive';
 
 @NgModule({
     declarations: [
@@ -51,6 +55,10 @@ import { ArrayDateRangeInputComponent } from './array/array-date-range-input/arr
         ArrayDateInputComponent,
         ArrayDateTimeInputComponent,
         ArrayDateRangeInputComponent,
+        FileInputComponent,
+        FileImageInputComponent,
+        FileDefaultInputComponent,
+        DragDropDirective,
         NgxMatEntityInputComponent
     ],
     imports: [

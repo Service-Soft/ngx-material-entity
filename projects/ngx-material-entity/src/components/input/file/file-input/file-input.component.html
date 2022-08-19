@@ -1,0 +1,32 @@
+<input #fileInput
+    type="file" hidden
+    [multiple]="metadata.multiple"
+    [accept]="FileUtilities.getAcceptString(metadata.allowedMimeTypes)"
+    (change)="setFileFromInput($event)"
+>
+
+<mat-form-field floatLabel="always" (click)="fileInput.click()">
+    <mat-label>{{metadata.displayName}}</mat-label>
+    <mat-chip-list #chipList
+        [(ngModel)]="filenames"
+        [name]="key.toString()"
+        #model="ngModel"
+        [required]="metadata.required"
+    >
+        <mat-chip *ngFor="let name of filenames" (removed)="removeFile(name)">
+            {{name}}
+            <button matChipRemove>
+                <i class="{{metadata.deleteIcon}}"></i>
+            </button>
+        </mat-chip>
+        <input [matChipInputFor]="chipList" [readonly]="true">
+    </mat-chip-list>
+    <button mat-icon-button matSuffix>
+        <i class="fas fa-upload"></i>
+    </button>
+    <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
+</mat-form-field>
+
+<div *ngIf="metadata.dragAndDrop" class="dropdown" dragDrop (files)="setFile($event)">
+    <i class="fas fa-file-arrow-up"></i>
+</div>

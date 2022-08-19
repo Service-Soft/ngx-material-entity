@@ -1,9 +1,10 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { ToggleBooleanDecoratorConfigInternal } from '../../../../decorators/boolean/boolean-decorator-internal.data';
 import { NgModel } from '@angular/forms';
+import { BaseEntityType } from '../../../../classes/entity.model';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -11,7 +12,7 @@ import { NgModel } from '@angular/forms';
     templateUrl: './boolean-toggle-input.component.html',
     styleUrls: ['./boolean-toggle-input.component.scss']
 })
-export class BooleanToggleInputComponent<EntityType extends object> implements OnInit {
+export class BooleanToggleInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     @Input()
     entity!: EntityType;
@@ -22,6 +23,9 @@ export class BooleanToggleInputComponent<EntityType extends object> implements O
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
 
+    @Output()
+    inputChangeEvent = new EventEmitter<void>();
+
     metadata!: ToggleBooleanDecoratorConfigInternal;
 
     constructor() { }
@@ -29,7 +33,11 @@ export class BooleanToggleInputComponent<EntityType extends object> implements O
     ngOnInit(): void {
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.BOOLEAN_TOGGLE);
         if (this.entity[this.key] == null) {
-            (this.entity[this.key] as unknown as boolean) = false;
+            (this.entity[this.key] as boolean) = false;
         }
+    }
+
+    emitChange(): void {
+        this.inputChangeEvent.emit();
     }
 }

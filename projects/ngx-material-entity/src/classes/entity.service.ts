@@ -2,6 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { EntityUtilities } from './entity.utilities';
 import { LodashUtilities } from '../capsulation/lodash.utilities';
+import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
+import { FileData } from '../decorators/file/file-decorator.data';
+import { FileUtilities } from './file.utilities';
+import { BaseEntityType } from './entity.model';
 
 /**
  * A generic EntityService class.
@@ -9,7 +13,7 @@ import { LodashUtilities } from '../capsulation/lodash.utilities';
  * You should create a service for every Entity you have.
  * If you extend from this you need to make sure that the extended Service can be injected.
  */
-export abstract class EntityService<EntityType extends object> {
+export abstract class EntityService<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The base url used for api requests. If u want to have more control over this,
      * you can override the create, read, update and delete methods.
@@ -55,7 +59,60 @@ export abstract class EntityService<EntityType extends object> {
      * @returns A Promise of the created entity.
      */
     async create(entity: EntityType): Promise<EntityType> {
-        const body = LodashUtilities.omit(entity, EntityUtilities.getOmitForCreate(entity));
+        const body: Partial<EntityType> = LodashUtilities.omit(entity, EntityUtilities.getOmitForCreate(entity)) as Partial<EntityType>;
+        const filePropertyKeys: (keyof EntityType)[] = EntityUtilities.getFileProperties(entity);
+        if (!filePropertyKeys.length) {
+            return await this.createWithJson(body);
+        }
+        else {
+            return await this.createWithFormData(body, filePropertyKeys, entity);
+        }
+    }
+
+    // TODO: Find a way to use blobs with jest
+    /* istanbul ignore next */
+    /**
+     * Creates the entity with form data when the entity contains files in contrast to creating it with a normal json body.
+     * All file values are stored inside their respective property key and their name.
+     * Form data is able to handle setting multiple files to the same key.
+     *
+     * @param body - The body Of the request.
+     * @param filePropertyKeys - All property keys that are files and need to be added to the form data.
+     * @param entity - The entity to create. This is needed in addition to the body because the body doesn't contain any metadata.
+     * @returns The created entity from the server.
+     */
+    protected async createWithFormData(
+        body: Partial<EntityType>,
+        filePropertyKeys: (keyof EntityType)[],
+        entity: EntityType
+    ): Promise<EntityType> {
+        const formData = new FormData();
+        formData.append('body', JSON.stringify(LodashUtilities.omit(body, filePropertyKeys)));
+        for (const key of filePropertyKeys) {
+            if (EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT).multiple) {
+                const fileDataValues: FileData[] = body[key] as FileData[];
+                for (const value of fileDataValues) {
+                    formData.append(key as string, (await FileUtilities.getFileData(value)).file, value.name);
+                }
+            }
+            else {
+                const fileData: FileData = body[key] as FileData;
+                formData.append(key as string, (await FileUtilities.getFileData(fileData)).file, fileData.name);
+            }
+        }
+        const e = await firstValueFrom(this.http.post<EntityType>(this.baseUrl, formData));
+        this.entities.push(e);
+        this.entitiesSubject.next(this.entities);
+        return e;
+    }
+
+    /**
+     * Creates the entity with a normal json body in contrast to creating it with form data when the entity contains files.
+     *
+     * @param body - The body Of the request.
+     * @returns The created entity from the server.
+     */
+    protected async createWithJson(body: Partial<EntityType>): Promise<EntityType> {
         const e = await firstValueFrom(this.http.post<EntityType>(this.baseUrl, body));
         this.entities.push(e);
         this.entitiesSubject.next(this.entities);
@@ -82,17 +139,74 @@ export abstract class EntityService<EntityType extends object> {
      * It Is used to get changed values and only update them instead of sending the whole entity data.
      */
     async update(entity: EntityType, entityPriorChanges: EntityType): Promise<void> {
-        const reqBody = LodashUtilities.omit(
-            EntityUtilities.difference(entity, entityPriorChanges),
+        const body: Partial<EntityType> = LodashUtilities.omit(
+            await EntityUtilities.difference(entity, entityPriorChanges),
             EntityUtilities.getOmitForUpdate(entity)
+        ) as unknown as Partial<EntityType>;
+        const filePropertyKeys = EntityUtilities.getFileProperties(entityPriorChanges);
+        if (!filePropertyKeys.length) {
+            await this.updateWithJson(body, entityPriorChanges[this.idKey]);
+        }
+        else {
+            await this.updateWithFormData(body, filePropertyKeys, entity, entityPriorChanges[this.idKey]);
+        }
+    }
+
+    // TODO: Find a way to use blobs with jest
+    /* istanbul ignore next */
+    /**
+     * Updates the entity with form data when the entity contains files in contrast to creating it with a normal json body.
+     * All file values are stored inside their respective property key and their name.
+     * Form data is able to handle setting multiple files to the same key.
+     *
+     * @param body - The request body. Already contains only properties that have changed.
+     * @param filePropertyKeys - The keys of all properties which are files and need to separately be appended to the form data.
+     * @param entity - The original entity. Is needed to get the metadata of all the files.
+     * @param id - The id of the entity to update.
+     */
+    protected async updateWithFormData(
+        body: Partial<EntityType>,
+        filePropertyKeys: (keyof EntityType)[],
+        entity: EntityType,
+        id: EntityType[keyof EntityType]
+    ): Promise<void> {
+        const formData = new FormData();
+        formData.append('body', JSON.stringify(LodashUtilities.omitBy(body, LodashUtilities.isNil)));
+        for (const key of filePropertyKeys) {
+            if (EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT).multiple) {
+                // eslint-disable-next-line max-len
+                const fileDataValues = body[key] as FileData[];
+                for (const value of fileDataValues) {
+                    formData.append(key as string, (await FileUtilities.getFileData(value)).file, value.name);
+                }
+            }
+            else {
+                // eslint-disable-next-line max-len
+                const fileData = body[key] as FileData;
+                formData.append(key as string, (await FileUtilities.getFileData(fileData)).file, fileData.name);
+            }
+        }
+        const updatedEntity = await firstValueFrom(
+            this.http.patch<EntityType>(`${this.baseUrl}/${id}`, formData)
         );
+        this.entities[this.entities.findIndex(e => e[this.idKey] === id)] = updatedEntity;
+        this.entitiesSubject.next(this.entities);
+    }
+
+    /**
+     * Updates the entity with a normal json body in contrast to updating it with form data when the entity contains files.
+     *
+     * @param body - The body of the Request. Has already removed all unnecessary values.
+     * @param id - The id of the entity to update.
+     */
+    protected async updateWithJson(body: Partial<EntityType>, id: EntityType[keyof EntityType]): Promise<void> {
         const updatedEntity = await firstValueFrom(
             this.http.patch<EntityType>(
-                `${this.baseUrl}/${entityPriorChanges[this.idKey]}`,
-                LodashUtilities.omitBy(reqBody, LodashUtilities.isNil)
+                `${this.baseUrl}/${id}`,
+                LodashUtilities.omitBy(body, LodashUtilities.isNil)
             )
         );
-        this.entities[this.entities.findIndex(e => e[this.idKey] === entityPriorChanges[this.idKey])] = updatedEntity;
+        this.entities[this.entities.findIndex(e => e[this.idKey] === id)] = updatedEntity;
         this.entitiesSubject.next(this.entities);
     }
 

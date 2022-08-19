@@ -1,7 +1,8 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { BaseEntityType } from '../../../../classes/entity.model';
 import { DateUtilities } from '../../../../classes/date.utilities';
 import { DateRangeArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
@@ -13,7 +14,8 @@ import { ArrayTable } from '../array-table.class';
     templateUrl: './array-date-range-input.component.html',
     styleUrls: ['./array-date-range-input.component.scss']
 })
-export class ArrayDateRangeInputComponent<EntityType extends object> extends ArrayTable<DateRange, EntityType> implements OnInit {
+export class ArrayDateRangeInputComponent<EntityType extends BaseEntityType<EntityType>>
+    extends ArrayTable<DateRange, EntityType> implements OnInit {
 
     DateUtilities = DateUtilities;
 
@@ -29,8 +31,11 @@ export class ArrayDateRangeInputComponent<EntityType extends object> extends Arr
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
 
-    dateRangeStart!: Date;
-    dateRangeEnd!: Date;
+    @Output()
+    inputChangeEvent = new EventEmitter<void>();
+
+    dateRangeStart?: Date;
+    dateRangeEnd?: Date;
 
     constructor(private readonly dialog: MatDialog) {
         super(dialog);
@@ -42,14 +47,14 @@ export class ArrayDateRangeInputComponent<EntityType extends object> extends Arr
             start: undefined as unknown as Date,
             end: undefined as unknown as Date,
             values: undefined
-        }
+        };
     }
 
     /**
      * Adds a DateRange to the array.
      */
     addDateRange(): void {
-        if (this.input) {
+        if (this.input && this.dateRangeStart && this.dateRangeEnd) {
             this.input.start = new Date(this.dateRangeStart);
             this.input.end = new Date(this.dateRangeEnd);
             const values: Date[] = DateUtilities.getDatesBetween(
@@ -60,5 +65,15 @@ export class ArrayDateRangeInputComponent<EntityType extends object> extends Arr
             this.input.values = values.length ? values : undefined;
             this.add();
         }
+    }
+
+    protected override resetInput(): void {
+        this.input = undefined;
+        this.dateRangeStart = undefined;
+        this.dateRangeEnd = undefined;
+    }
+
+    protected emitChange(): void {
+        this.inputChangeEvent.emit();
     }
 }

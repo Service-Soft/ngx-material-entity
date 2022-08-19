@@ -74,6 +74,6 @@ export abstract class ReflectUtilities {
         target: T,
         propertyKey: string
     ): void {
-        return Reflect.defineMetadata(metadataKey, metadataValue, target, propertyKey);
+        Reflect.defineMetadata(metadataKey, metadataValue, target, propertyKey);
     }
 }

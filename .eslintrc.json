@@ -39,7 +39,7 @@
                         "contexts": [
                             "ClassDeclaration[decorators.0.expression.callee.name!='NgModule']",
                             "TSPropertySignature",
-                            "PropertyDefinition[accessibility!='private'][decorators.0.expression.callee.name!='string'][decorators.0.expression.callee.name!='number'][decorators.0.expression.callee.name!='array'][decorators.0.expression.callee.name!='object'][decorators.0.expression.callee.name!='boolean'][decorators.0.expression.callee.name!='date']",
+                            "PropertyDefinition[accessibility!='private'][decorators.0.expression.callee.name!='string'][decorators.0.expression.callee.name!='number'][decorators.0.expression.callee.name!='array'][decorators.0.expression.callee.name!='object'][decorators.0.expression.callee.name!='boolean'][decorators.0.expression.callee.name!='date'][decorators.0.expression.callee.name!='file']",
                             "MethodDefinition[accessibility!='private'][key.name!='constructor'][key.name!='ngOnInit'][key.name!='ngAfterViewInit'][key.name!='ngOnDestroy']",
                             "FunctionDeclaration",
                             "TSInterfaceDeclaration",
@@ -84,7 +84,7 @@
                         "contexts": [
                             "ClassDeclaration[decorators.0.expression.callee.name!='NgModule']",
                             "TSPropertySignature",
-                            "PropertyDefinition[accessibility!='private'][decorators.0.expression.callee.name!='string'][decorators.0.expression.callee.name!='number'][decorators.0.expression.callee.name!='array'][decorators.0.expression.callee.name!='object'][decorators.0.expression.callee.name!='boolean'][decorators.0.expression.callee.name!='date'][decorators.0.expression.callee.name='Input']",
+                            "PropertyDefinition[accessibility!='private'][decorators.0.expression.callee.name!='string'][decorators.0.expression.callee.name!='number'][decorators.0.expression.callee.name!='array'][decorators.0.expression.callee.name!='object'][decorators.0.expression.callee.name!='boolean'][decorators.0.expression.callee.name!='date'][decorators.0.expression.callee.name!='file'][decorators.0.expression.callee.name='Input']",
                             "MethodDefinition[accessibility!='private'][key.name!='constructor'][key.name!='ngOnInit'][key.name!='ngAfterViewInit'][key.name!='ngOnDestroy']",
                             "FunctionDeclaration",
                             "TSInterfaceDeclaration",

@@ -66,11 +66,11 @@ export class ConfirmDialogDataBuilder extends BaseBuilder<ConfirmDialogDataInter
         if (!data) {
             return;
         }
-        if (data.requireConfirmation && !data.confirmationText) {
+        if (data.requireConfirmation === true && !data.confirmationText) {
             throw new Error(`Missing required Input data "confirmationText".
             You can only omit this value when "requireConfirmation" is false.`);
         }
-        if (!data.requireConfirmation && data.confirmationText) {
+        if (data.requireConfirmation !== true && data.confirmationText) {
             throw new Error('The "confirmationText" will never be shown because "requireConfirmation" is not set to true');
         }
         if (data.type === 'info-only' && data.cancelButtonLabel) {

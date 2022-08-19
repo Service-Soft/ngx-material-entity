@@ -1,6 +1,6 @@
 <mat-form-field>
     <mat-label>{{metadata.displayName}}</mat-label>
-    <mat-select [(ngModel)]="entity[key]" [name]="key.toString()" #model="ngModel" [required]="metadata.required">
+    <mat-select (ngModelChange)="emitChange()" [(ngModel)]="entity[key]" [name]="key.toString()" #model="ngModel" [required]="metadata.required">
         <mat-option *ngFor="let value of metadata.dropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
     </mat-select>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>

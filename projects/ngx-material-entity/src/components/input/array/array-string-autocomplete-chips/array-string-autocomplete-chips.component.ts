@@ -1,8 +1,9 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { BaseEntityType } from '../../../../classes/entity.model';
 import { LodashUtilities } from '../../../../capsulation/lodash.utilities';
 import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { AutocompleteStringChipsArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
@@ -14,7 +15,7 @@ import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum
     templateUrl: './array-string-autocomplete-chips.component.html',
     styleUrls: ['./array-string-autocomplete-chips.component.scss']
 })
-export class ArrayStringAutocompleteChipsComponent<EntityType extends object> implements OnInit {
+export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     @Input()
     entity!: EntityType;
@@ -25,9 +26,12 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends object> im
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
 
+    @Output()
+    inputChangeEvent = new EventEmitter<void>();
+
     metadata!: AutocompleteStringChipsArrayDecoratorConfigInternal;
 
-    stringChipsArrayValues!: string[];
+    stringChipsArrayValues?: string[];
 
     filteredAutocompleteStrings!: string[];
 
@@ -38,8 +42,8 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends object> im
     ngOnInit(): void {
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS);
         this.filteredAutocompleteStrings = LodashUtilities.cloneDeep(this.metadata.autocompleteValues);
-        if ((this.entity[this.key] as unknown as string[])?.length) {
-            this.stringChipsArrayValues = (this.entity[this.key] as unknown as string[]);
+        if ((this.entity[this.key] as string[] | undefined)?.length) {
+            this.stringChipsArrayValues = (this.entity[this.key] as string[]);
         }
     }
 
@@ -67,14 +71,14 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends object> im
                 return;
             }
             if (!this.stringChipsArrayValues) {
-                if (!this.entity[this.key] as unknown as string[]) {
-                    (this.entity[this.key] as unknown as string[]) = [];
+                if (this.entity[this.key] == null) {
+                    (this.entity[this.key] as string[]) = [];
                 }
-                this.stringChipsArrayValues = this.entity[this.key] as unknown as string[];
+                this.stringChipsArrayValues = this.entity[this.key] as string[];
             }
             this.stringChipsArrayValues.push(value);
         }
-        event.chipInput!.clear();
+        event.chipInput?.clear();
     }
 
     /**
@@ -88,10 +92,10 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends object> im
      * @param value - The string to remove from the array.
      */
     removeStringChipArrayValue(value: string): void {
-        this.stringChipsArrayValues.splice(this.stringChipsArrayValues.indexOf(value), 1);
-        if (!this.stringChipsArrayValues.length) {
+        this.stringChipsArrayValues?.splice(this.stringChipsArrayValues.indexOf(value), 1);
+        if (!this.stringChipsArrayValues?.length) {
             (this.entity[this.key] as unknown) = undefined;
-            this.stringChipsArrayValues = this.entity[this.key] as unknown as string[];
+            this.stringChipsArrayValues = this.entity[this.key] as undefined;
         }
     }
 
@@ -113,10 +117,10 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends object> im
             return;
         }
         if (!this.stringChipsArrayValues) {
-            if (!this.entity[this.key] as unknown as string[]) {
-                (this.entity[this.key] as unknown as string[]) = [];
+            if (this.entity[this.key] == null) {
+                (this.entity[this.key] as string[]) = [];
             }
-            this.stringChipsArrayValues = this.entity[this.key] as unknown as string[];
+            this.stringChipsArrayValues = this.entity[this.key] as string[];
         }
         this.stringChipsArrayValues.push(value);
         chipsInput.value = '';
@@ -128,9 +132,13 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends object> im
      * @param input - The input of the user.
      */
     filterAutocompleteStrings(input: unknown): void {
-        if (input) {
+        if (input != null) {
             const filterValue = (input as string).toLowerCase();
             this.filteredAutocompleteStrings = this.metadata.autocompleteValues.filter(s => s.toLowerCase().includes(filterValue));
         }
+    }
+
+    emitChange(): void {
+        this.inputChangeEvent.emit();
     }
 }

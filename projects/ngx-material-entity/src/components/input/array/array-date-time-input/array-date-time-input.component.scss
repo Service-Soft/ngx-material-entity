@@ -32,3 +32,12 @@ mat-table {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
+
+.date-time {
+    display: flex;
+    align-items: baseline;
+
+    .timepicker {
+        margin-left: 10px;
+    }
+}

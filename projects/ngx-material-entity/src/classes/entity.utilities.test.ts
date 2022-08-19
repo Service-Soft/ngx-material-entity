@@ -11,7 +11,6 @@ const testEntity: TestEntity = builder.testEntity;
 const testEntityWithoutData: TestEntity = builder.testEntityWithoutData;
 const testEntityWithoutMetadata: TestEntity = builder.testEntityData;
 
-
 /**
  * Checks whether or not a given value is an Entity.
  *
@@ -19,7 +18,7 @@ const testEntityWithoutMetadata: TestEntity = builder.testEntityData;
  * @returns Whether or not the given value is an Entity.
  */
 function valueIsEntity(value: unknown): value is Entity {
-    if (value && typeof value === 'object') {
+    if (value != null && typeof value === 'object') {
         return ReflectUtilities.has(value, 'id' as keyof typeof value);
     }
     else {
@@ -59,15 +58,36 @@ describe('new', () => {
 
 describe('getOmitForCreate', () => {
     test('should get correct omitForCreate values from metadata', async () => {
-        expect(EntityUtilities.getOmitForCreate(testEntity)).toEqual(['id', 'omitForCreateValue']);
-        expect(EntityUtilities.getOmitForCreate(testEntityWithoutData)).toEqual(['id', 'omitForCreateValue']);
+        expect(EntityUtilities.getOmitForCreate(testEntity)).toEqual(['id', 'omitForCreateValue', 'customFileValues']);
+        expect(EntityUtilities.getOmitForCreate(testEntityWithoutData)).toEqual(['id', 'omitForCreateValue', 'customFileValues']);
+    });
+});
+
+describe('getFileProperties', () => {
+    test('should get all file property keys from the entity', async () => {
+        expect(EntityUtilities.getFileProperties(testEntity)).toEqual([
+            'fileValue',
+            'dragDropFileValue',
+            'customFileValues',
+            'imageValue',
+            'imageDragDropValue',
+            'customImageValues'
+        ]);
+        expect(EntityUtilities.getFileProperties(testEntityWithoutData)).toEqual([
+            'fileValue',
+            'dragDropFileValue',
+            'customFileValues',
+            'imageValue',
+            'imageDragDropValue',
+            'customImageValues'
+        ]);
     });
 });
 
 describe('getOmitForUpdate', () => {
     test('should get correct omitForUpdate values from metadata', async () => {
-        expect(EntityUtilities.getOmitForUpdate(testEntity)).toEqual(['id', 'omitForUpdateValue']);
-        expect(EntityUtilities.getOmitForUpdate(testEntityWithoutData)).toEqual(['id', 'omitForUpdateValue']);
+        expect(EntityUtilities.getOmitForUpdate(testEntity)).toEqual(['id', 'omitForUpdateValue', 'customFileValues']);
+        expect(EntityUtilities.getOmitForUpdate(testEntityWithoutData)).toEqual(['id', 'omitForUpdateValue', 'customFileValues']);
     });
 });
 
@@ -354,6 +374,56 @@ describe('isEntityValid', () => {
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
 
+    // FILE
+    test('FILE missing name', () => {
+        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        tE.fileValue.name = undefined as unknown as string;
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.fileValue.name = '6qW2XkuI_400x400.png';
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('FILE missing file and url', () => {
+        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        tE.fileValue.file = undefined;
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+        tE.fileValue.url = undefined;
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+
+        tE.fileValue.file = testEntity.fileValue.file;
+        tE.fileValue.url = testEntity.fileValue.url;
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('FILE mimetype invalid', () => {
+        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        tE.imageValue.type = 'application/pdf';
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.imageValue.type = 'image/jpg';
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('FILE single size invalid', () => {
+        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        tE.fileValue.size = 10000001;
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.fileValue.size = 10000000;
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('FILE multi size invalid', () => {
+        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        for (let i = 0; i < 10; i++) {
+            tE.customImageValues.push(
+                {
+                    url: 'http://localhost:3000/file/',
+                    name: '6qW2XkuI_400x400.png',
+                    type: 'image/jpg',
+                    size: 10000000,
+                }
+            );
+        }
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.customImageValues = testEntity.customImageValues;
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+
     // unknown metadata type
     test('should throw error for unknown metadata type', () => {
         const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
@@ -364,13 +434,30 @@ describe('isEntityValid', () => {
 });
 
 describe('dirty', () => {
-    test('should be able to tell if an entity was modified', () => {
+    test('should be able to tell if an entity was modified', async () => {
         const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
         const tEPriorChanges: TestEntity = LodashUtilities.cloneDeep(tE);
-        expect(EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
+        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
         tE.minNumberValue = 1234;
-        expect(EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
-        expect(EntityUtilities.dirty(tE, undefined as never)).toBe(false);
+        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
+        expect(await EntityUtilities.dirty(tE, undefined as never)).toBe(false);
+    });
+    test('should tell if date range array is dirty', async () => {
+        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tEPriorChanges: TestEntity = LodashUtilities.cloneDeep(tE);
+        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
+
+        tE.dateRangeArrayValue[0].start = new Date();
+        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
+
+        tE.dateRangeArrayValue[0].start = testEntity.dateRangeArrayValue[0].start;
+        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
+
+        tE.dateRangeArrayValue.push({start: new Date(), end: new Date()});
+        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
+
+        tE.dateRangeArrayValue = testEntity.dateRangeArrayValue;
+        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
     });
 });
 
@@ -395,13 +482,13 @@ describe('getWidth', () => {
 });
 
 describe('resetChangesOnEntity', () => {
-    test('should reset entity', () => {
+    test('should reset entity', async () => {
         const tE: TestEntity = new TestEntity(testEntity);
         const tEPriorChanges: TestEntity = LodashUtilities.cloneDeep(tE);
         tE.minLengthStringValue = 'changed value';
-        expect(EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
+        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
         EntityUtilities.resetChangesOnEntity(tE, tEPriorChanges);
-        expect(EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
+        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
     });
 });
 
@@ -415,7 +502,7 @@ describe('getEntityRows', () => {
 describe('keysOf', () => {
     test('should get all keys of the entity', () => {
         const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
-        expect(EntityUtilities.keysOf(tE)).toHaveLength(42);
+        expect(EntityUtilities.keysOf(tE)).toHaveLength(48);
     });
     test('should get keys without omitForCreate', () => {
         const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);

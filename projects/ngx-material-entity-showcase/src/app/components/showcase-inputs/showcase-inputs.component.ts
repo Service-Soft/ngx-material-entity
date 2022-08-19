@@ -42,8 +42,21 @@ export class ShowcaseInputsComponent {
         DecoratorTypes.OBJECT
     ];
 
+    private readonly DATE_DECORATOR_TYPES = [
+        DecoratorTypes.DATE,
+        DecoratorTypes.DATE_TIME,
+        DecoratorTypes.DATE_RANGE
+    ];
+
+    private readonly FILE_DECORATOR_TYPES = [
+        DecoratorTypes.FILE_DEFAULT,
+        DecoratorTypes.FILE_IMAGE
+    ];
+
     testEntity = new TestEntityMockBuilder().testEntityWithoutData;
     keys!: (keyof TestEntity)[];
+
+    inputValues: boolean = false;
 
     EntityUtilities = EntityUtilities;
 
@@ -52,10 +65,10 @@ export class ShowcaseInputsComponent {
         private readonly router: Router
     ) {
         this.route.params.subscribe(params => {
-            if (params) {
+            if ((params as unknown) != null) {
                 const type: string | undefined = params['type'] as string | undefined;
                 if (!type) {
-                    this.router.navigate(['/']);
+                    void this.router.navigate(['/']);
                 }
                 switch (type) {
                     case 'string':
@@ -73,14 +86,30 @@ export class ShowcaseInputsComponent {
                     case 'object':
                         this.setKeys(this.OBJECT_DECORATOR_TYPES);
                         break;
+                    case 'date':
+                        this.setKeys(this.DATE_DECORATOR_TYPES);
+                        break;
+                    case 'file':
+                        this.setKeys(this.FILE_DECORATOR_TYPES);
+                        break;
                     default:
                         throw new Error(`The specified type ${type} is unknown`);
                 }
             }
             else {
-                this.router.navigate(['/']);
+                void this.router.navigate(['/']);
             }
         });
+    }
+
+    async toggleInputValues(): Promise<void> {
+        if (this.inputValues) {
+            this.testEntity = new TestEntityMockBuilder().testEntityWithoutData;
+        }
+        else {
+            this.testEntity = new TestEntityMockBuilder().testEntity;
+        }
+        this.inputValues = !this.inputValues;
     }
 
     private setKeys(types: DecoratorTypes[]): void {

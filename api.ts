@@ -16,7 +16,15 @@ const reset = (req: Request, res: Response, next: NextFunction): void => {
         next();
     }
 };
-const middlewares = jsonServer.defaults().concat(reset);
+const getFile = (req: Request, res: Response, next: NextFunction): void => {
+    if (req.method === 'GET' && req.url.endsWith('/file/')) {
+        res.sendFile('./projects/ngx-material-entity/src/mocks/test.jpg', {root: __dirname});
+    }
+    else {
+        next();
+    }
+}
+const middlewares = jsonServer.defaults().concat(reset, getFile);
 
 const port = 3000;
 

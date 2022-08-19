@@ -1,8 +1,9 @@
+import { BaseEntityType } from './entity.model';
 
 /**
  * The abstract BaseBuilder class.
  */
-export abstract class BaseBuilder<InternalType extends InputType, InputType extends object> {
+export abstract class BaseBuilder<InternalType extends InputType, InputType extends BaseEntityType<InputType>> {
 
     private readonly data: InternalType;
     private readonly inputData?: InputType;
@@ -30,7 +31,7 @@ export abstract class BaseBuilder<InternalType extends InputType, InputType exte
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected validateInput(data?: InputType): void {
         // By default, no validation is done
-    };
+    }
 
     /**
      * Sets the value for the given key if no user value was provided.
@@ -40,7 +41,7 @@ export abstract class BaseBuilder<InternalType extends InputType, InputType exte
      * @returns The Builder.
      */
     withDefault(key: keyof InputType, value: Omit<InternalType[keyof InputType], 'undefined'>): BaseBuilder<InternalType, InputType> {
-        if (!this.inputData || !this.inputData[key]) {
+        if (this.inputData == null || this.inputData[key] == null) {
             this.data[key] = value as InternalType[keyof InputType];
         }
         return this;

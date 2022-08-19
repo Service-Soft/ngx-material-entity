@@ -1,11 +1,12 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { StringChipsArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
 import { NgModel } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { BaseEntityType } from '../../../../classes/entity.model';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -13,7 +14,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
     templateUrl: './array-string-chips-input.component.html',
     styleUrls: ['./array-string-chips-input.component.scss']
 })
-export class ArrayStringChipsInputComponent<EntityType extends object> implements OnInit {
+export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     @Input()
     entity!: EntityType;
@@ -24,9 +25,12 @@ export class ArrayStringChipsInputComponent<EntityType extends object> implement
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
 
+    @Output()
+    inputChangeEvent = new EventEmitter<void>();
+
     metadata!: StringChipsArrayDecoratorConfigInternal;
 
-    stringChipsArrayValues!: string[];
+    stringChipsArrayValues?: string[];
 
     chipsInput: string = '';
 
@@ -34,8 +38,8 @@ export class ArrayStringChipsInputComponent<EntityType extends object> implement
 
     ngOnInit(): void {
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.ARRAY_STRING_CHIPS);
-        if ((this.entity[this.key] as unknown as string[])?.length) {
-            this.stringChipsArrayValues = (this.entity[this.key] as unknown as string[]);
+        if ((this.entity[this.key] as string[] | undefined)?.length) {
+            this.stringChipsArrayValues = (this.entity[this.key] as string[]);
         }
     }
 
@@ -63,14 +67,14 @@ export class ArrayStringChipsInputComponent<EntityType extends object> implement
                 return;
             }
             if (!this.stringChipsArrayValues) {
-                if (!this.entity[this.key] as unknown as string[]) {
-                    (this.entity[this.key] as unknown as string[]) = [];
+                if (this.entity[this.key] == null) {
+                    (this.entity[this.key] as string[]) = [];
                 }
-                this.stringChipsArrayValues = this.entity[this.key] as unknown as string[];
+                this.stringChipsArrayValues = this.entity[this.key] as string[];
             }
             this.stringChipsArrayValues.push(value);
         }
-        event.chipInput!.clear();
+        event.chipInput?.clear();
     }
 
     /**
@@ -84,10 +88,10 @@ export class ArrayStringChipsInputComponent<EntityType extends object> implement
      * @param value - The string to remove from the array.
      */
     removeStringChipArrayValue(value: string): void {
-        this.stringChipsArrayValues.splice(this.stringChipsArrayValues.indexOf(value), 1);
-        if (!this.stringChipsArrayValues.length) {
+        this.stringChipsArrayValues?.splice(this.stringChipsArrayValues.indexOf(value), 1);
+        if (!this.stringChipsArrayValues?.length) {
             (this.entity[this.key] as unknown) = undefined;
-            this.stringChipsArrayValues = this.entity[this.key] as unknown as string[];
+            this.stringChipsArrayValues = this.entity[this.key] as undefined;
         }
     }
 
@@ -109,12 +113,16 @@ export class ArrayStringChipsInputComponent<EntityType extends object> implement
             return;
         }
         if (!this.stringChipsArrayValues) {
-            if (!this.entity[this.key] as unknown as string[]) {
-                (this.entity[this.key] as unknown as string[]) = [];
+            if (this.entity[this.key] == null) {
+                (this.entity[this.key] as string[]) = [];
             }
-            this.stringChipsArrayValues = this.entity[this.key] as unknown as string[];
+            this.stringChipsArrayValues = this.entity[this.key] as string[];
         }
         this.stringChipsArrayValues.push(value);
         chipsInput.value = '';
+    }
+
+    emitChange(): void {
+        this.inputChangeEvent.emit();
     }
 }
