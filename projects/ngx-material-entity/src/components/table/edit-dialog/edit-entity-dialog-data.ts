@@ -6,7 +6,7 @@ import { EditDialogData } from '../table-data';
 /**
  * The Definition of the Edit Entity Dialog Data.
  */
-export interface EditEntityDialogData<EntityType extends BaseEntityType> {
+export interface EditEntityDialogData<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The entity to edit.
      */

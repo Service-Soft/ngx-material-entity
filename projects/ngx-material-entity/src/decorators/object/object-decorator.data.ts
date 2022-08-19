@@ -4,7 +4,7 @@ import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 /**
  * Definition for the @object metadata.
  */
-abstract class ObjectDecoratorConfig<EntityType extends BaseEntityType> extends PropertyDecoratorConfig {
+abstract class ObjectDecoratorConfig<EntityType extends BaseEntityType<EntityType>> extends PropertyDecoratorConfig {
     /**
      * The class of the object. Is used to call the constructor so that all metadata is initialized.
      */
@@ -22,7 +22,7 @@ abstract class ObjectDecoratorConfig<EntityType extends BaseEntityType> extends 
 /**
  * The configuration options for a object property.
  */
-export interface DefaultObjectDecoratorConfig<EntityType extends BaseEntityType> extends ObjectDecoratorConfig<EntityType> {
+export interface DefaultObjectDecoratorConfig<EntityType extends BaseEntityType<EntityType>> extends ObjectDecoratorConfig<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'inline'
 }

@@ -22,7 +22,7 @@ const EMPTY_DATERANGE: DateRange = {
     templateUrl: './date-range-input.component.html',
     styleUrls: ['./date-range-input.component.scss']
 })
-export class DateRangeInputComponent<EntityType extends BaseEntityType> implements OnInit {
+export class DateRangeInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     @Input()
     entity!: EntityType;
@@ -49,7 +49,7 @@ export class DateRangeInputComponent<EntityType extends BaseEntityType> implemen
     ngOnInit(): void {
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.DATE_RANGE);
 
-        this.dateRange = LodashUtilities.cloneDeep(this.entity[this.key]) ?? EMPTY_DATERANGE;
+        this.dateRange = LodashUtilities.cloneDeep(this.entity[this.key] as DateRange) ?? EMPTY_DATERANGE;
         this.dateRangeStart = new Date(this.dateRange.start);
         this.dateRangeEnd = new Date(this.dateRange.end);
         this.setDateRangeValues();
@@ -72,7 +72,7 @@ export class DateRangeInputComponent<EntityType extends BaseEntityType> implemen
         else {
             this.dateRange.values = undefined;
         }
-        this.entity[this.key] = this.dateRange as unknown as EntityType[keyof EntityType];
+        (this.entity[this.key] as DateRange) = this.dateRange;
         this.emitChange();
     }
 

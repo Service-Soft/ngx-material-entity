@@ -14,7 +14,8 @@ import { ArrayTable } from '../array-table.class';
     templateUrl: './array-date-range-input.component.html',
     styleUrls: ['./array-date-range-input.component.scss']
 })
-export class ArrayDateRangeInputComponent<EntityType extends BaseEntityType> extends ArrayTable<DateRange, EntityType> implements OnInit {
+export class ArrayDateRangeInputComponent<EntityType extends BaseEntityType<EntityType>>
+    extends ArrayTable<DateRange, EntityType> implements OnInit {
 
     DateUtilities = DateUtilities;
 
@@ -33,8 +34,8 @@ export class ArrayDateRangeInputComponent<EntityType extends BaseEntityType> ext
     @Output()
     inputChangeEvent = new EventEmitter<void>();
 
-    dateRangeStart!: Date;
-    dateRangeEnd!: Date;
+    dateRangeStart?: Date;
+    dateRangeEnd?: Date;
 
     constructor(private readonly dialog: MatDialog) {
         super(dialog);
@@ -53,7 +54,7 @@ export class ArrayDateRangeInputComponent<EntityType extends BaseEntityType> ext
      * Adds a DateRange to the array.
      */
     addDateRange(): void {
-        if (this.input) {
+        if (this.input && this.dateRangeStart && this.dateRangeEnd) {
             this.input.start = new Date(this.dateRangeStart);
             this.input.end = new Date(this.dateRangeEnd);
             const values: Date[] = DateUtilities.getDatesBetween(
@@ -68,8 +69,8 @@ export class ArrayDateRangeInputComponent<EntityType extends BaseEntityType> ext
 
     protected override resetInput(): void {
         this.input = undefined;
-        this.dateRangeStart = undefined as unknown as Date;
-        this.dateRangeEnd = undefined as unknown as Date;
+        this.dateRangeStart = undefined;
+        this.dateRangeEnd = undefined;
     }
 
     protected emitChange(): void {

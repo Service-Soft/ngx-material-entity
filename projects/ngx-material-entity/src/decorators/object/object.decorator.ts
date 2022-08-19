@@ -10,7 +10,7 @@ import { BaseEntityType } from '../../classes/entity.model';
  * @param metadata - The metadata of the object property.
  * @returns The method that defines the metadata.
  */
-export function object<EntityType extends BaseEntityType>(
+export function object<EntityType extends BaseEntityType<EntityType>>(
     metadata: DefaultObjectDecoratorConfig<EntityType>
 ): (target: object, propertyKey: string) => void {
     return baseProperty(new DefaultObjectDecoratorConfigInternal(metadata), DecoratorTypes.OBJECT);

@@ -18,4 +18,13 @@ export class TestEntityService extends EntityService<TestEntity> {
     protected override async createWithFormData(body: Omit<TestEntity, keyof TestEntity>): Promise<TestEntity> {
         return this.createWithJson(body);
     }
+
+    protected override async updateWithFormData(
+        body: Partial<TestEntity>,
+        filePropertyKeys: (keyof TestEntity)[],
+        entity: TestEntity,
+        id: TestEntity[keyof TestEntity]
+    ): Promise<void> {
+        return this.updateWithJson(body, id);
+    }
 }

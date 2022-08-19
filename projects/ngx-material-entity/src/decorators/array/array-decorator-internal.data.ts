@@ -13,7 +13,7 @@ import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialo
 /**
  * The internal EntityArrayDecoratorConfig. Sets default values.
  */
-export class EntityArrayDecoratorConfigInternal<EntityType extends BaseEntityType>
+export class EntityArrayDecoratorConfigInternal<EntityType extends BaseEntityType<EntityType>>
     extends PropertyDecoratorConfigInternal implements EntityArrayDecoratorConfig<EntityType> {
 
     // eslint-disable-next-line jsdoc/require-jsdoc

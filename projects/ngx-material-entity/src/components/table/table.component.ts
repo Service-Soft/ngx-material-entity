@@ -28,7 +28,7 @@ import { BaseEntityType } from '../../classes/entity.model';
     templateUrl: './table.component.html',
     styleUrls: ['./table.component.scss']
 })
-export class NgxMatEntityTableComponent<EntityType extends BaseEntityType> implements OnInit, OnDestroy {
+export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit, OnDestroy {
 
     /**
      * The configuration for the component.

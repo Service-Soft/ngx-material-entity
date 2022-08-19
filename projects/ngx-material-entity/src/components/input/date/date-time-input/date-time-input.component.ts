@@ -16,7 +16,7 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './date-time-input.component.html',
     styleUrls: ['./date-time-input.component.scss']
 })
-export class DateTimeInputComponent<EntityType extends BaseEntityType> implements OnInit {
+export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     DateUtilities = DateUtilities;
 
@@ -44,10 +44,10 @@ export class DateTimeInputComponent<EntityType extends BaseEntityType> implement
 
     ngOnInit(): void {
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.DATE_TIME);
-        this.time = DateUtilities.getTimeFromDate(this.entity[this.key] as unknown as Date);
+        this.time = DateUtilities.getTimeFromDate(this.entity[this.key] as Date);
         this.timeDropdownValues = this.metadata.times;
         if (this.entity[this.key] != null) {
-            this.dateTime = new Date(this.entity[this.key] as unknown as Date);
+            this.dateTime = new Date(this.entity[this.key] as Date);
         }
     }
 
@@ -67,16 +67,16 @@ export class DateTimeInputComponent<EntityType extends BaseEntityType> implement
      */
     setTime(): void {
         if (!this.dateTime) {
-            this.entity[this.key] = undefined as unknown as EntityType[keyof EntityType];
+            (this.entity[this.key] as undefined) = undefined;
             this.emitChange();
             return;
         }
-        this.entity[this.key] = new Date(this.dateTime) as unknown as EntityType[keyof EntityType];
+        (this.entity[this.key] as Date) = new Date(this.dateTime);
         if (this.time?.hours != null && this.time?.minutes != null) {
-            (this.entity[this.key] as unknown as Date).setHours(this.time.hours, this.time.minutes, 0, 0);
+            (this.entity[this.key] as Date).setHours(this.time.hours, this.time.minutes, 0, 0);
         }
         else {
-            (this.entity[this.key] as unknown as Date).setHours(0, 0, 0, 0);
+            (this.entity[this.key] as Date).setHours(0, 0, 0, 0);
         }
         this.emitChange();
     }

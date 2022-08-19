@@ -19,7 +19,7 @@ import { BaseEntityType } from './entity.model';
 /**
  * Shows information about differences between two entities.
  */
-interface Difference<EntityType extends BaseEntityType> {
+interface Difference<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The key where the two entities have different values.
      */
@@ -45,7 +45,7 @@ export abstract class EntityUtilities {
      * @param entity - The entity to get the properties which should be left out for updating from.
      * @returns The properties which should be left out for updating an Entity.
      */
-    static getOmitForUpdate<EntityType extends BaseEntityType>(entity: EntityType): (keyof EntityType)[] {
+    static getOmitForUpdate<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
         for (const key of EntityUtilities.keysOf(entity)) {
             const metadata = EntityUtilities.getPropertyMetadata(entity, key);
@@ -62,7 +62,7 @@ export abstract class EntityUtilities {
      * @param entity - The entity to get the properties which should be left out for creating from.
      * @returns The properties which should be left out for creating a new Entity.
      */
-    static getOmitForCreate<EntityType extends BaseEntityType>(entity: EntityType): (keyof EntityType)[] {
+    static getOmitForCreate<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
         for (const key of EntityUtilities.keysOf(entity)) {
             const metadata = EntityUtilities.getPropertyMetadata(entity, key);
@@ -80,7 +80,10 @@ export abstract class EntityUtilities {
      * @param omit - Whether to leave out values that are omitted for create or delete.
      * @returns The keys of all file properties on the given entity.
      */
-    static getFileProperties<EntityType extends BaseEntityType>(entity: EntityType, omit?: 'create' | 'update'): (keyof EntityType)[] {
+    static getFileProperties<EntityType extends BaseEntityType<EntityType>>(
+        entity: EntityType,
+        omit?: 'create' | 'update'
+    ): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
         for (const key of EntityUtilities.keysOf(entity)) {
             const type = EntityUtilities.getPropertyType(entity, key);
@@ -103,7 +106,7 @@ export abstract class EntityUtilities {
      * @returns The metadata of the property.
      * @throws When no metadata can be found for the given property.
      */
-    static getPropertyMetadata<EntityType extends BaseEntityType, T extends DecoratorTypes>(
+    static getPropertyMetadata<EntityType extends BaseEntityType<EntityType>, T extends DecoratorTypes>(
         entity: EntityType,
         propertyKey: keyof EntityType,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -126,7 +129,7 @@ export abstract class EntityUtilities {
      * @returns The type of the metadata.
      * @throws Will throw an error if no metadata can be found for the given property.
      */
-    static getPropertyType<EntityType extends BaseEntityType>(
+    static getPropertyType<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType, propertyKey: keyof EntityType
     ): DecoratorTypes {
         try {
@@ -154,7 +157,7 @@ export abstract class EntityUtilities {
      * @alias build
      * @alias construct
      */
-    static new<EntityType extends BaseEntityType>(target: EntityType, entity?: EntityType): void {
+    static new<EntityType extends BaseEntityType<EntityType>>(target: EntityType, entity?: EntityType): void {
         for (const key in target) {
             const type = EntityUtilities.getPropertyType(target, key);
             let value = entity ? ReflectUtilities.get(entity, key) : undefined;
@@ -194,7 +197,7 @@ export abstract class EntityUtilities {
      * @param omit - Whether to check for creating or editing validity.
      * @returns Whether or not the entity is valid.
      */
-    static isEntityValid<EntityType extends BaseEntityType>(entity: EntityType, omit: 'create' | 'update'): boolean {
+    static isEntityValid<EntityType extends BaseEntityType<EntityType>>(entity: EntityType, omit: 'create' | 'update'): boolean {
         for (const key in entity) {
             if (!EntityUtilities.isPropertyValid(entity, key, omit)) {
                 return false;
@@ -211,7 +214,7 @@ export abstract class EntityUtilities {
      * @returns Whether or not the property value is valid.
      * @throws Throws when it extracts an unknown metadata type.
      */
-    private static isPropertyValid<EntityType extends BaseEntityType>(
+    private static isPropertyValid<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         key: keyof EntityType,
         omit: 'create' | 'update'
@@ -233,7 +236,7 @@ export abstract class EntityUtilities {
                 break;
             case DecoratorTypes.BOOLEAN_CHECKBOX:
             case DecoratorTypes.BOOLEAN_TOGGLE:
-                const entityBoolean = entity[key] as unknown as boolean;
+                const entityBoolean = entity[key] as boolean;
                 const booleanMetadata = metadata as ToggleBooleanDecoratorConfigInternal;
                 if (!EntityUtilities.isBooleanValid(entityBoolean, booleanMetadata)) {
                     return false;
@@ -243,14 +246,14 @@ export abstract class EntityUtilities {
                 break;
             case DecoratorTypes.STRING:
             case DecoratorTypes.STRING_AUTOCOMPLETE:
-                const entityString = entity[key] as unknown as string;
+                const entityString = entity[key] as string;
                 const stringMetadata = metadata as DefaultStringDecoratorConfigInternal;
                 if (!EntityUtilities.isStringValid(entityString, stringMetadata)) {
                     return false;
                 }
                 break;
             case DecoratorTypes.STRING_TEXTBOX:
-                const entityTextbox = entity[key] as unknown as string;
+                const entityTextbox = entity[key] as string;
                 const textboxMetadata = metadata as TextboxStringDecoratorConfigInternal;
                 if (!EntityUtilities.isTextboxValid(entityTextbox, textboxMetadata)) {
                     return false;
@@ -259,14 +262,14 @@ export abstract class EntityUtilities {
             case DecoratorTypes.NUMBER_DROPDOWN:
                 return true;
             case DecoratorTypes.NUMBER:
-                const entityNumber = entity[key] as unknown as number;
+                const entityNumber = entity[key] as number;
                 const numberMetadata = metadata as DefaultNumberDecoratorConfigInternal;
                 if (!EntityUtilities.isNumberValid(entityNumber, numberMetadata)) {
                     return false;
                 }
                 break;
             case DecoratorTypes.OBJECT:
-                const entityObject = entity[key] as unknown as EntityType;
+                const entityObject = entity[key] as EntityType;
                 for (const parameterKey in entityObject) {
                     if (!EntityUtilities.isPropertyValid(entityObject, parameterKey, omit)) {
                         return false;
@@ -279,28 +282,28 @@ export abstract class EntityUtilities {
             case DecoratorTypes.ARRAY_DATE_TIME:
             case DecoratorTypes.ARRAY_DATE_RANGE:
             case DecoratorTypes.ARRAY:
-                const entityArray = entity[key] as unknown as unknown[];
+                const entityArray = entity[key] as unknown[];
                 const arrayMetadata = metadata as EntityArrayDecoratorConfigInternal<EntityType>;
                 if (arrayMetadata.required && !entityArray.length) {
                     return false;
                 }
                 break;
             case DecoratorTypes.DATE:
-                const entityDate: Date = new Date(entity[key] as unknown as Date);
+                const entityDate: Date = new Date(entity[key] as Date);
                 const dateMetadata = metadata as DefaultDateDecoratorConfigInternal;
                 if (!EntityUtilities.isDateValid(entityDate, dateMetadata)) {
                     return false;
                 }
                 break;
             case DecoratorTypes.DATE_RANGE:
-                const entityDateRange: DateRange = LodashUtilities.cloneDeep(entity[key] as unknown as DateRange);
+                const entityDateRange: DateRange = LodashUtilities.cloneDeep(entity[key] as DateRange);
                 const dateRangeMetadata = metadata as DateRangeDateDecoratorConfigInternal;
                 if (!EntityUtilities.isDateRangeValid(entityDateRange, dateRangeMetadata)) {
                     return false;
                 }
                 break;
             case DecoratorTypes.DATE_TIME:
-                const entityDateTime: Date = new Date(entity[key] as unknown as Date);
+                const entityDateTime: Date = new Date(entity[key] as Date);
                 const dateTimeMetadata = metadata as DateTimeDateDecoratorConfigInternal;
                 if (!EntityUtilities.isDateTimeValid(entityDateTime, dateTimeMetadata)) {
                     return false;
@@ -308,7 +311,7 @@ export abstract class EntityUtilities {
                 break;
             case DecoratorTypes.FILE_DEFAULT:
             case DecoratorTypes.FILE_IMAGE:
-                const entityFile: FileData | FileData[] = entity[key] as unknown as FileData | FileData[];
+                const entityFile: FileData | FileData[] = entity[key] as FileData | FileData[];
                 const entityFileMetadata = metadata as DefaultFileDecoratorConfigInternal;
                 if (!EntityUtilities.isFileDataValid(entityFile, entityFileMetadata)) {
                     return false;
@@ -375,10 +378,10 @@ export abstract class EntityUtilities {
 
     private static isDateRangeValid(value: DateRange, metadata: DateRangeDateDecoratorConfigInternal): boolean {
         if (metadata.required) {
-            if (!(value.start as unknown as DateRange | undefined)) {
+            if (!(value.start as Date | undefined)) {
                 return false;
             }
-            if (!(value.end as unknown as DateRange | undefined)) {
+            if (!(value.end as Date | undefined)) {
                 return false;
             }
         }
@@ -495,7 +498,10 @@ export abstract class EntityUtilities {
      * @param entityPriorChanges - The entity before the changes.
      * @returns Whether or not the entity is dirty.
      */
-    static async dirty<EntityType extends BaseEntityType>(entity: EntityType, entityPriorChanges: EntityType): Promise<boolean> {
+    static async dirty<EntityType extends BaseEntityType<EntityType>>(
+        entity: EntityType,
+        entityPriorChanges: EntityType
+    ): Promise<boolean> {
         if (!(entityPriorChanges as EntityType | undefined)) {
             return false;
         }
@@ -505,7 +511,7 @@ export abstract class EntityUtilities {
         }
     }
 
-    private static async differencesForDirty<EntityType extends BaseEntityType>(
+    private static async differencesForDirty<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         entityPriorChanges: EntityType
     ): Promise<Difference<EntityType>[]> {
@@ -531,7 +537,7 @@ export abstract class EntityUtilities {
      * @param entityPriorChanges - The second entity to compare.
      * @returns The difference between the two Entities in form of a Partial.
      */
-    static async difference<EntityType extends BaseEntityType>(
+    static async difference<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         entityPriorChanges: EntityType
     ): Promise<Partial<EntityType>> {
@@ -674,7 +680,11 @@ export abstract class EntityUtilities {
      * @param entity - Current entity (used to get metadata of entity keys).
      * @returns 0 if both values have the same order, a negative value if 'a' comes before 'b', a positive value if 'a' comes behind 'b'.
      */
-    static compareOrder<EntityType extends BaseEntityType>(a: keyof EntityType, b: keyof EntityType, entity: EntityType): number {
+    static compareOrder<EntityType extends BaseEntityType<EntityType>>(
+        a: keyof EntityType,
+        b: keyof EntityType,
+        entity: EntityType
+    ): number {
         const metadataA = EntityUtilities.getPropertyMetadata(entity, a);
         const metadataB = EntityUtilities.getPropertyMetadata(entity, b);
 
@@ -698,7 +708,10 @@ export abstract class EntityUtilities {
      * @param type - Defines for which screen size the column values should be returned.
      * @returns Bootstrap column value.
      */
-    static getWidth<EntityType extends BaseEntityType>(entity: EntityType, key: keyof EntityType, type: 'lg' | 'md' | 'sm'): number {
+    static getWidth<EntityType extends BaseEntityType<EntityType>>(
+        entity: EntityType,
+        key: keyof EntityType, type: 'lg' | 'md' | 'sm'
+    ): number {
         const metadata = EntityUtilities.getPropertyMetadata(entity, key);
         switch (type) {
             case 'lg':
@@ -716,7 +729,7 @@ export abstract class EntityUtilities {
      * @param entity - The entity to reset.
      * @param entityPriorChanges - The entity before any changes.
      */
-    static resetChangesOnEntity<EntityType extends BaseEntityType>(entity: EntityType, entityPriorChanges: EntityType): void {
+    static resetChangesOnEntity<EntityType extends BaseEntityType<EntityType>>(entity: EntityType, entityPriorChanges: EntityType): void {
         for (const key in entityPriorChanges) {
             ReflectUtilities.set(entity, key, ReflectUtilities.get(entityPriorChanges, key));
         }
@@ -730,7 +743,7 @@ export abstract class EntityUtilities {
      * @param hideOmitForEdit - Whether or not keys with the metadata omitForUpdate should be filtered out.
      * @returns The sorted Rows containing the row number and the keys to display in that row.
      */
-    static getEntityRows<EntityType extends BaseEntityType>(
+    static getEntityRows<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         hideOmitForCreate: boolean = false,
         hideOmitForEdit: boolean = false
@@ -754,7 +767,7 @@ export abstract class EntityUtilities {
         return res;
     }
 
-    private static getKeysForRow<EntityType extends BaseEntityType>(
+    private static getKeysForRow<EntityType extends BaseEntityType<EntityType>>(
         keys: (keyof EntityType)[],
         entity: EntityType,
         i: number
@@ -764,7 +777,7 @@ export abstract class EntityUtilities {
             .sort((a, b) => EntityUtilities.compareOrder(a, b, entity));
     }
 
-    private static getNumberOfRows<EntityType extends BaseEntityType>(keys: (keyof EntityType)[], entity: EntityType): number {
+    private static getNumberOfRows<EntityType extends BaseEntityType<EntityType>>(keys: (keyof EntityType)[], entity: EntityType): number {
         return keys
             .map(k => EntityUtilities.getPropertyMetadata(entity, k).position.row)
             .sort((a, b) => (a > b ? -1 : 1))[0];
@@ -778,7 +791,7 @@ export abstract class EntityUtilities {
      * @param hideOmitForEdit - Whether or not keys with the metadata omitForUpdate should be filtered out.
      * @returns An array of keys of the entity.
      */
-    static keysOf<EntityType extends BaseEntityType>(
+    static keysOf<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         hideOmitForCreate: boolean = false,
         hideOmitForEdit: boolean = false
@@ -799,7 +812,7 @@ export abstract class EntityUtilities {
 /**
  * A row that contains all the information about how to display an entity.
  */
-export interface EntityRow<EntityType extends BaseEntityType> {
+export interface EntityRow<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The row in which this should be displayed.
      */

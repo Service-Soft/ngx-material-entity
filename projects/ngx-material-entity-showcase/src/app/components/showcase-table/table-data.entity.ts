@@ -120,7 +120,7 @@ export class CreateDialogDataEntity extends Entity {
     }
 }
 
-export class EditDialogDataEntity<EntityType extends BaseEntityType> extends Entity {
+export class EditDialogDataEntity<EntityType extends BaseEntityType<EntityType>> extends Entity {
 
     @string({
         required: false,
@@ -190,7 +190,7 @@ export class EditDialogDataEntity<EntityType extends BaseEntityType> extends Ent
     }
 }
 
-export class DisplayColumnEntity<EntityType extends BaseEntityType> extends Entity {
+export class DisplayColumnEntity<EntityType extends BaseEntityType<EntityType>> extends Entity {
     @string({
         displayName: 'Display Column Display Name',
         displayStyle: 'line'
@@ -209,7 +209,7 @@ export class DisplayColumnEntity<EntityType extends BaseEntityType> extends Enti
     }
 }
 
-export class MultiSelectActionEntity<EntityType extends BaseEntityType> extends Entity {
+export class MultiSelectActionEntity<EntityType extends BaseEntityType<EntityType>> extends Entity {
     @string({
         displayName: 'Multi Select Display Name',
         displayStyle: 'line'
@@ -251,7 +251,7 @@ export class MultiSelectActionEntity<EntityType extends BaseEntityType> extends 
     }
 }
 
-export class BaseDataEntity<EntityType extends BaseEntityType> extends Entity {
+export class BaseDataEntity<EntityType extends BaseEntityType<EntityType>> extends Entity {
     @string({
         displayName: 'Base Data Title',
         displayStyle: 'line'
@@ -375,7 +375,7 @@ export class BaseDataEntity<EntityType extends BaseEntityType> extends Entity {
     }
 }
 
-export class TableDataEntity<EntityType extends BaseEntityType> extends Entity {
+export class TableDataEntity<EntityType extends BaseEntityType<EntityType>> extends Entity {
     @object({
         displayName: 'Base Data',
         displayStyle: 'inline',

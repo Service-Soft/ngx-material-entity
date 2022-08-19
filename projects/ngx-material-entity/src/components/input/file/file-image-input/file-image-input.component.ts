@@ -15,7 +15,7 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './file-image-input.component.html',
     styleUrls: ['./file-image-input.component.scss']
 })
-export class FileImageInputComponent<EntityType extends BaseEntityType> implements OnInit {
+export class FileImageInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     FileUtilities = FileUtilities;
 
@@ -46,7 +46,7 @@ export class FileImageInputComponent<EntityType extends BaseEntityType> implemen
     }
 
     private async setSinglePreviewImage(): Promise<void> {
-        let singleFileData = this.entity[this.key] as unknown as FileData | undefined;
+        let singleFileData = this.entity[this.key] as FileData | undefined;
         if (singleFileData) {
             singleFileData = await FileUtilities.getFileData(singleFileData);
             this.singlePreviewImage = await FileUtilities.getDataURLFromFile(singleFileData.file);
@@ -57,7 +57,7 @@ export class FileImageInputComponent<EntityType extends BaseEntityType> implemen
     }
 
     private async setMultiPreviewImages(index: number): Promise<void> {
-        const multiFileData = this.entity[this.key] as unknown as FileData[] | undefined;
+        const multiFileData = this.entity[this.key] as FileData[] | undefined;
         const previewImages: string[] = [];
         if (multiFileData?.length) {
             for (let i = 0; i < multiFileData.length; i++) {
@@ -74,7 +74,7 @@ export class FileImageInputComponent<EntityType extends BaseEntityType> implemen
     }
 
     async refreshFileData(fileData?: FileData | FileData[]): Promise<void> {
-        this.entity[this.key] = fileData as unknown as EntityType[keyof EntityType];
+        (this.entity[this.key] as FileData | FileData[] | undefined) = fileData;
         this.emitChange();
         if (this.metadata.multiple) {
             if (!((fileData as FileData[] | undefined)?.[this.imageIndex])) {

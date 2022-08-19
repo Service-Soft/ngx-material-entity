@@ -13,7 +13,7 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './array-date-input.component.html',
     styleUrls: ['./array-date-input.component.scss']
 })
-export class ArrayDateInputComponent<EntityType extends BaseEntityType> extends ArrayTable<Date, EntityType> implements OnInit {
+export class ArrayDateInputComponent<EntityType extends BaseEntityType<EntityType>> extends ArrayTable<Date, EntityType> implements OnInit {
 
     DateUtilities = DateUtilities;
 

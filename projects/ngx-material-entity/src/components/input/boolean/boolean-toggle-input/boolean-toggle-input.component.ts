@@ -12,7 +12,7 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './boolean-toggle-input.component.html',
     styleUrls: ['./boolean-toggle-input.component.scss']
 })
-export class BooleanToggleInputComponent<EntityType extends BaseEntityType> implements OnInit {
+export class BooleanToggleInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     @Input()
     entity!: EntityType;
@@ -33,7 +33,7 @@ export class BooleanToggleInputComponent<EntityType extends BaseEntityType> impl
     ngOnInit(): void {
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.BOOLEAN_TOGGLE);
         if (this.entity[this.key] == null) {
-            (this.entity[this.key] as unknown as boolean) = false;
+            (this.entity[this.key] as boolean) = false;
         }
     }
 

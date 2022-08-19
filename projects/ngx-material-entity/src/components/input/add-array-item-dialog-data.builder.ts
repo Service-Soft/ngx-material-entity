@@ -8,7 +8,7 @@ import { AddArrayItemDialogData } from './add-array-item-dialog-data';
 /**
  * The internal AddArrayItemDialogData. Requires all default values the user can leave out.
  */
-export class AddArrayItemDialogDataInternal<EntityType extends BaseEntityType> implements AddArrayItemDialogData<EntityType> {
+export class AddArrayItemDialogDataInternal<EntityType extends BaseEntityType<EntityType>> implements AddArrayItemDialogData<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     entity: EntityType;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -30,7 +30,7 @@ export class AddArrayItemDialogDataInternal<EntityType extends BaseEntityType> i
 /**
  * The Builder for the AddArrayItemDialogData. Sets default values.
  */
-export class AddArrayItemDialogDataBuilder<EntityType extends BaseEntityType>
+export class AddArrayItemDialogDataBuilder<EntityType extends BaseEntityType<EntityType>>
     extends BaseBuilder<AddArrayItemDialogDataInternal<EntityType>, AddArrayItemDialogData<EntityType>> {
 
     constructor(data: AddArrayItemDialogData<EntityType>) {

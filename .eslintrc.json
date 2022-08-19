@@ -1,6 +1,6 @@
 {
     "root": true,
-    "extends": "../eslint-config/.eslintrc.js",
+    "extends": "eslint-config-service-soft",
     "overrides": [
         {
             "files": [

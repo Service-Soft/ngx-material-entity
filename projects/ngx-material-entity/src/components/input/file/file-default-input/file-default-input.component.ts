@@ -14,7 +14,7 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './file-default-input.component.html',
     styleUrls: ['./file-default-input.component.scss']
 })
-export class FileDefaultInputComponent<EntityType extends BaseEntityType> implements OnInit {
+export class FileDefaultInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     FileUtilities = FileUtilities;
 
@@ -39,7 +39,7 @@ export class FileDefaultInputComponent<EntityType extends BaseEntityType> implem
     }
 
     async refreshFileData(fileData?: FileData | FileData[]): Promise<void> {
-        this.entity[this.key] = fileData as unknown as EntityType[keyof EntityType];
+        (this.entity[this.key] as FileData | FileData[] | undefined) = fileData;
         this.emitChange();
     }
 

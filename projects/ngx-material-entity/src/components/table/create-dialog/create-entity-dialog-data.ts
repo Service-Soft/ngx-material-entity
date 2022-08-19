@@ -6,7 +6,7 @@ import { CreateDialogData } from '../table-data';
 /**
  * The Definition of the Create Entity Dialog Data.
  */
-export interface CreateEntityDialogData<EntityType extends BaseEntityType> {
+export interface CreateEntityDialogData<EntityType extends BaseEntityType<EntityType>> {
     /**
      * An empty entity that is used as the data model.
      */

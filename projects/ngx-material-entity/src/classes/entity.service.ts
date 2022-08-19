@@ -6,7 +6,6 @@ import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { FileData } from '../decorators/file/file-decorator.data';
 import { FileUtilities } from './file.utilities';
 import { BaseEntityType } from './entity.model';
-import { Dictionary } from 'lodash';
 
 /**
  * A generic EntityService class.
@@ -14,7 +13,7 @@ import { Dictionary } from 'lodash';
  * You should create a service for every Entity you have.
  * If you extend from this you need to make sure that the extended Service can be injected.
  */
-export abstract class EntityService<EntityType extends BaseEntityType> {
+export abstract class EntityService<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The base url used for api requests. If u want to have more control over this,
      * you can override the create, read, update and delete methods.
@@ -91,13 +90,13 @@ export abstract class EntityService<EntityType extends BaseEntityType> {
         formData.append('body', JSON.stringify(LodashUtilities.omit(body, filePropertyKeys)));
         for (const key of filePropertyKeys) {
             if (EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT).multiple) {
-                const fileDataValues: FileData[] = body[key] as unknown as FileData[];
+                const fileDataValues: FileData[] = body[key] as FileData[];
                 for (const value of fileDataValues) {
                     formData.append(key as string, (await FileUtilities.getFileData(value)).file, value.name);
                 }
             }
             else {
-                const fileData: FileData = body[key] as unknown as FileData;
+                const fileData: FileData = body[key] as FileData;
                 formData.append(key as string, (await FileUtilities.getFileData(fileData)).file, fileData.name);
             }
         }
@@ -172,18 +171,18 @@ export abstract class EntityService<EntityType extends BaseEntityType> {
         id: EntityType[keyof EntityType]
     ): Promise<void> {
         const formData = new FormData();
-        formData.append('body', JSON.stringify(LodashUtilities.omitBy((body as Dictionary<EntityType[string]>), LodashUtilities.isNil)));
+        formData.append('body', JSON.stringify(LodashUtilities.omitBy(body, LodashUtilities.isNil)));
         for (const key of filePropertyKeys) {
             if (EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT).multiple) {
                 // eslint-disable-next-line max-len
-                const fileDataValues = body[key] as unknown as FileData[];
+                const fileDataValues = body[key] as FileData[];
                 for (const value of fileDataValues) {
                     formData.append(key as string, (await FileUtilities.getFileData(value)).file, value.name);
                 }
             }
             else {
                 // eslint-disable-next-line max-len
-                const fileData = body[key] as unknown as FileData;
+                const fileData = body[key] as FileData;
                 formData.append(key as string, (await FileUtilities.getFileData(fileData)).file, fileData.name);
             }
         }
@@ -204,7 +203,7 @@ export abstract class EntityService<EntityType extends BaseEntityType> {
         const updatedEntity = await firstValueFrom(
             this.http.patch<EntityType>(
                 `${this.baseUrl}/${id}`,
-                LodashUtilities.omitBy((body as Dictionary<EntityType[string]>), LodashUtilities.isNil)
+                LodashUtilities.omitBy(body, LodashUtilities.isNil)
             )
         );
         this.entities[this.entities.findIndex(e => e[this.idKey] === id)] = updatedEntity;

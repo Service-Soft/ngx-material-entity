@@ -11,7 +11,7 @@ import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialo
 /**
  * The configuration options for an array property displayed as a table.
  */
-export interface ArrayTableDisplayColumn<EntityType extends BaseEntityType> {
+export interface ArrayTableDisplayColumn<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The name inside the header.
      */
@@ -47,7 +47,7 @@ export abstract class ArrayDecoratorConfig extends PropertyDecoratorConfig {
 /**
  * Definition for an array of Entities.
  */
-export interface EntityArrayDecoratorConfig<EntityType extends BaseEntityType> extends ArrayDecoratorConfig {
+export interface EntityArrayDecoratorConfig<EntityType extends BaseEntityType<EntityType>> extends ArrayDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.OBJECT,
 

@@ -12,7 +12,7 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './string-dropdown-input.component.html',
     styleUrls: ['./string-dropdown-input.component.scss']
 })
-export class StringDropdownInputComponent<EntityType extends BaseEntityType> implements OnInit {
+export class StringDropdownInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     @Input()
     entity!: EntityType;

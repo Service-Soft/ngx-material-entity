@@ -15,7 +15,8 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './array-date-time-input.component.html',
     styleUrls: ['./array-date-time-input.component.scss']
 })
-export class ArrayDateTimeInputComponent<EntityType extends BaseEntityType> extends ArrayTable<Date, EntityType> implements OnInit {
+export class ArrayDateTimeInputComponent<EntityType extends BaseEntityType<EntityType>>
+    extends ArrayTable<Date, EntityType> implements OnInit {
 
     DateUtilities = DateUtilities;
 
@@ -43,16 +44,16 @@ export class ArrayDateTimeInputComponent<EntityType extends BaseEntityType> exte
 
     ngOnInit(): void {
         this.init();
-        this.time = DateUtilities.getTimeFromDate(this.entity[this.key] as unknown as Date);
+        this.time = DateUtilities.getTimeFromDate(this.entity[this.key] as Date);
         this.timeDropdownValues = this.metadata.times;
         if (this.entity[this.key] != null) {
-            this.dateTime = new Date(this.entity[this.key] as unknown as Date);
+            this.dateTime = new Date(this.entity[this.key] as Date);
         }
     }
 
     protected override resetInput(): void {
         this.input = undefined;
-        this.time = undefined as unknown as Time;
+        this.time = undefined;
     }
 
     /**

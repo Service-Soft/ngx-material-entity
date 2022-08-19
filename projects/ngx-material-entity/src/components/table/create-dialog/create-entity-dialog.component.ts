@@ -19,7 +19,7 @@ import { BaseEntityType } from '../../../classes/entity.model';
     templateUrl: './create-entity-dialog.component.html',
     styleUrls: ['./create-entity-dialog.component.scss']
 })
-export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType> implements OnInit {
+export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
     EntityUtilities = EntityUtilities;
 
     entityRows!: EntityRow<EntityType>[];

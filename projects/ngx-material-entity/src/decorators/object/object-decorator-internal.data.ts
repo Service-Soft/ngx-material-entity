@@ -5,7 +5,7 @@ import { DefaultObjectDecoratorConfig } from './object-decorator.data';
 /**
  * The internal DefaultObjectDecoratorConfig. Sets default values.
  */
-export class DefaultObjectDecoratorConfigInternal<EntityType extends BaseEntityType>
+export class DefaultObjectDecoratorConfigInternal<EntityType extends BaseEntityType<EntityType>>
     extends PropertyDecoratorConfigInternal implements DefaultObjectDecoratorConfig<EntityType> {
 
 

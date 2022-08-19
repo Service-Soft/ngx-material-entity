@@ -6,7 +6,7 @@ import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
 /**
  * The Definition of a Column inside the table.
  */
-export interface DisplayColumn<EntityType extends BaseEntityType> {
+export interface DisplayColumn<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The name inside the header.
      */
@@ -20,7 +20,7 @@ export interface DisplayColumn<EntityType extends BaseEntityType> {
 /**
  * The Definition of an Action that can be run on multiple selected entities.
  */
-export interface MultiSelectAction<EntityType extends BaseEntityType> {
+export interface MultiSelectAction<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The name of the action.
      */
@@ -50,7 +50,7 @@ export interface MultiSelectAction<EntityType extends BaseEntityType> {
 /**
  * The base data of the ngx-mat-entity-table.
  */
-export interface BaseData<EntityType extends BaseEntityType> {
+export interface BaseData<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The title of the table.
      */
@@ -149,7 +149,7 @@ export interface CreateDialogData {
 /**
  * The data of the default edit-dialog.
  */
-export interface EditDialogData<EntityType extends BaseEntityType> {
+export interface EditDialogData<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The title of the default edit-dialog.
      */
@@ -189,7 +189,7 @@ export interface EditDialogData<EntityType extends BaseEntityType> {
 /**
  * All the configuration data required to display a ngx-mat-entity-table.
  */
-export interface TableData<EntityType extends BaseEntityType> {
+export interface TableData<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The base data for the table-component.
      * Includes stuff like the title for the table, what to display inside the rows etc.

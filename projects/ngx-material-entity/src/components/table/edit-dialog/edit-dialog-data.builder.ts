@@ -7,7 +7,7 @@ import { EditDialogData } from '../table-data';
 /**
  * The internal EditDialogData. Requires all default values the user can leave out.
  */
-export class EditDialogDataInternal<EntityType extends BaseEntityType> implements EditDialogData<EntityType> {
+export class EditDialogDataInternal<EntityType extends BaseEntityType<EntityType>> implements EditDialogData<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     title: (entity: EntityType) => string;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -49,7 +49,7 @@ export class EditDialogDataInternal<EntityType extends BaseEntityType> implement
 /**
  * The Builder for the EditDialogData. Sets default values.
  */
-export class EditDialogDataBuilder<EntityType extends BaseEntityType>
+export class EditDialogDataBuilder<EntityType extends BaseEntityType<EntityType>>
     extends BaseBuilder<EditDialogDataInternal<EntityType>, EditDialogData<EntityType>> {
 
     constructor(data?: EditDialogData<EntityType>) {

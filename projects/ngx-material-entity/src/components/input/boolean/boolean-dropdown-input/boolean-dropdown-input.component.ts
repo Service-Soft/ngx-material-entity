@@ -12,7 +12,7 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './boolean-dropdown-input.component.html',
     styleUrls: ['./boolean-dropdown-input.component.scss']
 })
-export class BooleanDropdownInputComponent<EntityType extends BaseEntityType> implements OnInit {
+export class BooleanDropdownInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     @Input()
     entity!: EntityType;

@@ -9,7 +9,7 @@ import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 /**
  * The internal TableData. Requires all default values the user can leave out.
  */
-export class TableDataInternal<EntityType extends BaseEntityType> implements TableData<EntityType> {
+export class TableDataInternal<EntityType extends BaseEntityType<EntityType>> implements TableData<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     baseData: BaseDataInternal<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -31,7 +31,8 @@ export class TableDataInternal<EntityType extends BaseEntityType> implements Tab
 /**
  * The Builder for the table BaseData. Sets default values.
  */
-export class BaseDataBuilder<EntityType extends BaseEntityType> extends BaseBuilder<BaseDataInternal<EntityType>, BaseData<EntityType>> {
+export class BaseDataBuilder<EntityType extends BaseEntityType<EntityType>>
+    extends BaseBuilder<BaseDataInternal<EntityType>, BaseData<EntityType>> {
 
     constructor(data: BaseData<EntityType>) {
         super(data);
@@ -61,7 +62,7 @@ export class BaseDataBuilder<EntityType extends BaseEntityType> extends BaseBuil
 /**
  * The internal TableData. Requires all default values the user can leave out.
  */
-export class BaseDataInternal<EntityType extends BaseEntityType> implements BaseData<EntityType> {
+export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> implements BaseData<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     title: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -129,7 +130,8 @@ export class BaseDataInternal<EntityType extends BaseEntityType> implements Base
 /**
  * The Builder for the complete TableData. Sets default values and validates user input.
  */
-export class TableDataBuilder<EntityType extends BaseEntityType> extends BaseBuilder<TableDataInternal<EntityType>, TableData<EntityType>> {
+export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
+    extends BaseBuilder<TableDataInternal<EntityType>, TableData<EntityType>> {
 
     constructor(data: TableData<EntityType>) {
         super(data);
@@ -199,10 +201,10 @@ export class TableDataBuilder<EntityType extends BaseEntityType> extends BaseBui
  * @param entity - An entity that is in the search.
  * @returns The generated string of the given entity used for comparison with the search input.
  */
-function defaultSearchFunction<EntityType extends BaseEntityType>(entity: EntityType): string {
-    const searchString = Object.keys(entity as unknown as Record<string, unknown>)
+function defaultSearchFunction<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): string {
+    const searchString = Object.keys(entity)
         .reduce((currentTerm: string, key: string) => {
-            return `${currentTerm}${(entity as unknown as Record<string, unknown>)[key]}◬`;
+            return `${currentTerm}${(entity as Record<string, unknown>)[key]}◬`;
         }, '')
         .toLowerCase();
     return searchString;

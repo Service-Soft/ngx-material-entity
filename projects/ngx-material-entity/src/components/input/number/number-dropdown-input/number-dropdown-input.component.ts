@@ -12,7 +12,7 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './number-dropdown-input.component.html',
     styleUrls: ['./number-dropdown-input.component.scss']
 })
-export class NumberDropdownInputComponent<EntityType extends BaseEntityType> implements OnInit {
+export class NumberDropdownInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     @Input()
     entity!: EntityType;

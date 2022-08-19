@@ -14,7 +14,7 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './date-input.component.html',
     styleUrls: ['./date-input.component.scss']
 })
-export class DateInputComponent<EntityType extends BaseEntityType> implements OnInit {
+export class DateInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     DateUtilities = DateUtilities;
 

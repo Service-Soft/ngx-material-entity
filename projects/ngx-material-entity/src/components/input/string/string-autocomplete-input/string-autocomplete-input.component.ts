@@ -13,7 +13,7 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './string-autocomplete-input.component.html',
     styleUrls: ['./string-autocomplete-input.component.scss']
 })
-export class StringAutocompleteInputComponent<EntityType extends BaseEntityType> implements OnInit {
+export class StringAutocompleteInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     @Input()
     entity!: EntityType;

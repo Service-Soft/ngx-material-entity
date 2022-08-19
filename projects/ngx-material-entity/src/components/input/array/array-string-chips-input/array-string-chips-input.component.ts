@@ -14,7 +14,7 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './array-string-chips-input.component.html',
     styleUrls: ['./array-string-chips-input.component.scss']
 })
-export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType> implements OnInit {
+export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     @Input()
     entity!: EntityType;
@@ -38,8 +38,8 @@ export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType> i
 
     ngOnInit(): void {
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.ARRAY_STRING_CHIPS);
-        if ((this.entity[this.key] as unknown as string[] | undefined)?.length) {
-            this.stringChipsArrayValues = (this.entity[this.key] as unknown as string[]);
+        if ((this.entity[this.key] as string[] | undefined)?.length) {
+            this.stringChipsArrayValues = (this.entity[this.key] as string[]);
         }
     }
 
@@ -68,9 +68,9 @@ export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType> i
             }
             if (!this.stringChipsArrayValues) {
                 if (this.entity[this.key] == null) {
-                    (this.entity[this.key] as unknown as string[]) = [];
+                    (this.entity[this.key] as string[]) = [];
                 }
-                this.stringChipsArrayValues = this.entity[this.key] as unknown as string[];
+                this.stringChipsArrayValues = this.entity[this.key] as string[];
             }
             this.stringChipsArrayValues.push(value);
         }
@@ -91,7 +91,7 @@ export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType> i
         this.stringChipsArrayValues?.splice(this.stringChipsArrayValues.indexOf(value), 1);
         if (!this.stringChipsArrayValues?.length) {
             (this.entity[this.key] as unknown) = undefined;
-            this.stringChipsArrayValues = this.entity[this.key] as unknown as undefined;
+            this.stringChipsArrayValues = this.entity[this.key] as undefined;
         }
     }
 
@@ -114,9 +114,9 @@ export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType> i
         }
         if (!this.stringChipsArrayValues) {
             if (this.entity[this.key] == null) {
-                (this.entity[this.key] as unknown as string[]) = [];
+                (this.entity[this.key] as string[]) = [];
             }
-            this.stringChipsArrayValues = this.entity[this.key] as unknown as string[];
+            this.stringChipsArrayValues = this.entity[this.key] as string[];
         }
         this.stringChipsArrayValues.push(value);
         chipsInput.value = '';

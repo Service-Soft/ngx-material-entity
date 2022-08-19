@@ -5,7 +5,7 @@ import { CreateDialogData } from '../table/table-data';
 /**
  * The configuration options for the dialog that adds items to an array.
  */
-export interface AddArrayItemDialogData<EntityType extends BaseEntityType> {
+export interface AddArrayItemDialogData<EntityType extends BaseEntityType<EntityType>> {
     /**
      * An empty entity that is used as the data model.
      */

@@ -3,7 +3,7 @@ import { BaseEntityType } from './entity.model';
 /**
  * The abstract BaseBuilder class.
  */
-export abstract class BaseBuilder<InternalType extends InputType, InputType extends BaseEntityType> {
+export abstract class BaseBuilder<InternalType extends InputType, InputType extends BaseEntityType<InputType>> {
 
     private readonly data: InternalType;
     private readonly inputData?: InputType;

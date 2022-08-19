@@ -17,7 +17,7 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './file-input.component.html',
     styleUrls: ['./file-input.component.scss']
 })
-export class FileInputComponent<EntityType extends BaseEntityType> implements OnInit {
+export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     singleFileData?: FileData;
     multiFileData?: FileData[];
@@ -53,14 +53,14 @@ export class FileInputComponent<EntityType extends BaseEntityType> implements On
     }
 
     private initMultiFile(): void {
-        this.multiFileData = this.entity[this.key] as unknown as FileData[] | undefined;
+        this.multiFileData = this.entity[this.key] as FileData[] | undefined;
         if (this.multiFileData) {
             this.filenames = this.multiFileData.map(f => f.name);
         }
     }
 
     private initSingleFile(): void {
-        this.singleFileData = this.entity[this.key] as unknown as FileData | undefined;
+        this.singleFileData = this.entity[this.key] as FileData | undefined;
         if (this.singleFileData) {
             this.filenames = LodashUtilities.cloneDeep([this.singleFileData.name]);
         }

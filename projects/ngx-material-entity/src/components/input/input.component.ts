@@ -29,7 +29,7 @@ import { BaseEntityType } from '../../classes/entity.model';
     templateUrl: './input.component.html',
     styleUrls: ['./input.component.scss']
 })
-export class NgxMatEntityInputComponent<EntityType extends BaseEntityType> implements OnInit {
+export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
     /**
      * The entity on which the property exists. Used in conjunction with the "propertyKey"
      * to determine the property for which the input should be generated.
@@ -141,9 +141,9 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType> imple
     private initEntityArray(): void {
         this.metadataEntityArray = this.metadata as EntityArrayDecoratorConfigInternal<EntityType>;
         if (this.internalEntity[this.internalPropertyKey] == null) {
-            (this.internalEntity[this.internalPropertyKey] as unknown as EntityType[]) = [];
+            (this.internalEntity[this.internalPropertyKey] as EntityType[]) = [];
         }
-        this.entityArrayValues = this.internalEntity[this.internalPropertyKey] as unknown as EntityType[];
+        this.entityArrayValues = this.internalEntity[this.internalPropertyKey] as EntityType[];
         if (!this.metadataEntityArray.createInline && !this.metadataEntityArray.createDialogData) {
             this.metadataEntityArray.createDialogData = {
                 title: 'Add'
@@ -178,7 +178,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType> imple
 
     private initObjectInput(): void {
         this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfigInternal<EntityType>;
-        this.objectProperty = this.internalEntity[this.internalPropertyKey] as unknown as EntityType;
+        this.objectProperty = this.internalEntity[this.internalPropertyKey] as EntityType;
         this.objectPropertyRows = EntityUtilities.getEntityRows(this.objectProperty, this.hideOmitForCreate, this.hideOmitForEdit);
     }
 

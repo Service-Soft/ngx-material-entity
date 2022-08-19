@@ -11,7 +11,7 @@ import { AutocompleteStringChipsArrayDecoratorConfig, DateArrayDecoratorConfig, 
  * @returns The method that defines the metadata.
  * @throws When the given type of the array-items is unknown.
  */
-export function array<EntityType extends BaseEntityType>(
+export function array<EntityType extends BaseEntityType<EntityType>>(
     metadata: EntityArrayDecoratorConfig<EntityType>
                 | StringChipsArrayDecoratorConfig
                 | AutocompleteStringChipsArrayDecoratorConfig

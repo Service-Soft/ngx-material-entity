@@ -8,7 +8,7 @@ import { BaseEntityType } from '../../../classes/entity.model';
 /**
  * The internal EditEntityDialogData. Requires all default values the user can leave out.
  */
-export class EditEntityDialogDataInternal<EntityType extends BaseEntityType> implements EditEntityDialogData<EntityType> {
+export class EditEntityDialogDataInternal<EntityType extends BaseEntityType<EntityType>> implements EditEntityDialogData<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     entity: EntityType;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -34,7 +34,7 @@ export class EditEntityDialogDataInternal<EntityType extends BaseEntityType> imp
 /**
  * The Builder for the EditEntityDialogData. Sets default values.
  */
-export class EditEntityDialogDataBuilder<EntityType extends BaseEntityType>
+export class EditEntityDialogDataBuilder<EntityType extends BaseEntityType<EntityType>>
     extends BaseBuilder<EditEntityDialogDataInternal<EntityType>, EditEntityDialogData<EntityType>> {
 
     constructor(data: EditEntityDialogData<EntityType>) {

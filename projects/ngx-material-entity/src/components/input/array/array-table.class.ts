@@ -12,7 +12,7 @@ import { BaseEntityType } from '../../../classes/entity.model';
 /**
  * The base data needed for all arrays that are displayed as a table.
  */
-export abstract class ArrayTable<T, EntityType extends BaseEntityType> {
+export abstract class ArrayTable<T, EntityType extends BaseEntityType<EntityType>> {
     abstract entity: EntityType;
     abstract key: keyof EntityType;
     abstract getValidationErrorMessage: (model: NgModel) => string;

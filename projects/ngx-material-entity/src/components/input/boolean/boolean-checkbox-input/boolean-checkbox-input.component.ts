@@ -12,7 +12,7 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './boolean-checkbox-input.component.html',
     styleUrls: ['./boolean-checkbox-input.component.scss']
 })
-export class BooleanCheckboxInputComponent<EntityType extends BaseEntityType> implements OnInit {
+export class BooleanCheckboxInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     @Input()
     entity!: EntityType;

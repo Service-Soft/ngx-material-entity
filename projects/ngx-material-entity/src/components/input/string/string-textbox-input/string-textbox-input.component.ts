@@ -12,7 +12,7 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './string-textbox-input.component.html',
     styleUrls: ['./string-textbox-input.component.scss']
 })
-export class StringTextboxInputComponent<EntityType extends BaseEntityType> implements OnInit {
+export class StringTextboxInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     @Input()
     entity!: EntityType;

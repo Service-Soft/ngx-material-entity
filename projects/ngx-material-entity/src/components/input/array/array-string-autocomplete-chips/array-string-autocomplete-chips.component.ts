@@ -15,7 +15,7 @@ import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum
     templateUrl: './array-string-autocomplete-chips.component.html',
     styleUrls: ['./array-string-autocomplete-chips.component.scss']
 })
-export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntityType> implements OnInit {
+export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
     @Input()
     entity!: EntityType;
@@ -42,8 +42,8 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntity
     ngOnInit(): void {
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS);
         this.filteredAutocompleteStrings = LodashUtilities.cloneDeep(this.metadata.autocompleteValues);
-        if ((this.entity[this.key] as unknown as string[] | undefined)?.length) {
-            this.stringChipsArrayValues = (this.entity[this.key] as unknown as string[]);
+        if ((this.entity[this.key] as string[] | undefined)?.length) {
+            this.stringChipsArrayValues = (this.entity[this.key] as string[]);
         }
     }
 
@@ -72,9 +72,9 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntity
             }
             if (!this.stringChipsArrayValues) {
                 if (this.entity[this.key] == null) {
-                    (this.entity[this.key] as unknown as string[]) = [];
+                    (this.entity[this.key] as string[]) = [];
                 }
-                this.stringChipsArrayValues = this.entity[this.key] as unknown as string[];
+                this.stringChipsArrayValues = this.entity[this.key] as string[];
             }
             this.stringChipsArrayValues.push(value);
         }
@@ -95,7 +95,7 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntity
         this.stringChipsArrayValues?.splice(this.stringChipsArrayValues.indexOf(value), 1);
         if (!this.stringChipsArrayValues?.length) {
             (this.entity[this.key] as unknown) = undefined;
-            this.stringChipsArrayValues = this.entity[this.key] as unknown as undefined;
+            this.stringChipsArrayValues = this.entity[this.key] as undefined;
         }
     }
 
@@ -118,9 +118,9 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntity
         }
         if (!this.stringChipsArrayValues) {
             if (this.entity[this.key] == null) {
-                (this.entity[this.key] as unknown as string[]) = [];
+                (this.entity[this.key] as string[]) = [];
             }
-            this.stringChipsArrayValues = this.entity[this.key] as unknown as string[];
+            this.stringChipsArrayValues = this.entity[this.key] as string[];
         }
         this.stringChipsArrayValues.push(value);
         chipsInput.value = '';
