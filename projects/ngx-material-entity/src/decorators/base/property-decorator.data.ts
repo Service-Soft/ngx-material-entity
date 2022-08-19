@@ -48,7 +48,7 @@ export abstract class PropertyDecoratorConfig {
      *
      * @default { row: -1,  order: -1} (Adds the property at the end)
      */
-    position?: Position
+    position?: Position;
 }
 
 /**

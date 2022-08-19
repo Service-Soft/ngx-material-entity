@@ -3,148 +3,39 @@
     <!-----------------Strings-------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.STRING">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <input
-                matInput
-                [(ngModel)]="entity[propertyKey]"
-                [name]="propertyKey.toString()"
-                #model="ngModel"
-                [required]="metadata.required"
-                [pattern]="metadataDefaultString.regex ? metadataDefaultString.regex : '[\\s\\S]*'"
-                [minlength]="metadataDefaultString.minLength ? metadataDefaultString.minLength : null"
-                [maxlength]="metadataDefaultString.maxLength ? metadataDefaultString.maxLength : null"
-            />
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <string-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></string-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.STRING_TEXTBOX">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <textarea
-                matInput
-                [(ngModel)]="entity[propertyKey]"
-                [name]="propertyKey.toString()"
-                #model="ngModel"
-                cdkTextareaAutosize
-                cdkAutosizeMinRows="10"
-                [required]="metadata.required"
-                [minlength]="metadataTextboxString.minLength ? metadataTextboxString.minLength : null"
-                [maxlength]="metadataTextboxString.maxLength ? metadataTextboxString.maxLength : null"
-            >
-            </textarea>
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <string-textbox-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></string-textbox-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.STRING_AUTOCOMPLETE">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <input
-                matInput
-                [(ngModel)]="entity[propertyKey]"
-                [name]="propertyKey.toString()"
-                #model="ngModel"
-                [matAutocomplete]="auto"
-                (keyup)="filterAutocompleteStrings(entity[propertyKey])"
-                [required]="metadata.required"
-                [minlength]="metadataAutocompleteString.minLength ? metadataAutocompleteString.minLength : null"
-                [maxlength]="metadataAutocompleteString.maxLength ? metadataAutocompleteString.maxLength : null"
-                [pattern]="metadataAutocompleteString.regex ? metadataAutocompleteString.regex : '[\\s\\S]*'"
-            />
-            <mat-autocomplete #auto="matAutocomplete">
-                <mat-option *ngFor="let value of filteredAutocompleteStrings" [value]="value">
-                    {{value}}
-                </mat-option>
-            </mat-autocomplete>
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <string-autocomplete-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></string-autocomplete-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.STRING_DROPDOWN">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required">
-                <mat-option *ngFor="let value of metadataDropdownString.dropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
-            </mat-select>
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <string-dropdown-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></string-dropdown-input>
     </div>
 
     <!-------------------------------------------->
     <!-----------------Booleans------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_CHECKBOX">
-        <mat-form-field class="hideUnderline">
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-checkbox (click)="model.control.markAsTouched()" [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()"></mat-checkbox>
-            <!-- hidden input is needed so that the checkbox can be used inside a mat-form-field -->
-            <input matInput hidden
-                [(ngModel)]="entity[propertyKey]"
-                [name]="propertyKey.toString() + 'Helper'"
-                #model="ngModel"
-                [pattern]="metadata.required ? 'true' : '[\\s\\S]*'"
-                [required]="metadata.required">
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <boolean-checkbox-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></boolean-checkbox-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_TOGGLE">
-        <mat-form-field class="hideUnderline">
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-slide-toggle (click)="model.control.markAsTouched()" [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()"></mat-slide-toggle>
-            <!-- hidden input is needed so that the toggle can be used inside a mat-form-field -->
-            <input matInput hidden
-                [(ngModel)]="entity[propertyKey]"
-                [name]="propertyKey.toString() + 'Helper'"
-                #model="ngModel"
-                [pattern]="metadata.required ? 'true' : '[\\s\\S]*'"
-                [required]="metadata.required">
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <boolean-toggle-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></boolean-toggle-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_DROPDOWN">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required">
-                <mat-option [value]="undefined">-</mat-option>
-                <mat-option [value]="true">{{metadataDropdownBoolean.dropdownTrue}}</mat-option>
-                <mat-option [value]="false">{{metadataDropdownBoolean.dropdownFalse}}</mat-option>
-            </mat-select>
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <boolean-dropdown-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></boolean-dropdown-input>
     </div>
 
     <!-------------------------------------------->
     <!------------------Numbers------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.NUMBER">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <input
-                matInput
-                type="number"
-                [(ngModel)]="entity[propertyKey]"
-                [name]="propertyKey.toString()"
-                #model="ngModel"
-                [required]="metadata.required"
-                [min]="metadataDefaultNumber.min ? metadataDefaultNumber.min : null"
-                [max]="metadataDefaultNumber.max ? metadataDefaultNumber.max : null"
-            />
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <number-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></number-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.NUMBER_DROPDOWN">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-select [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel" [required]="metadata.required">
-                <mat-option *ngFor="let value of metadataDropdownNumber.dropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
-            </mat-select>
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <number-dropdown-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></number-dropdown-input>
     </div>
 
     <!-------------------------------------------->
@@ -153,22 +44,15 @@
     <div *ngSwitchCase="DecoratorTypes.OBJECT">
         <b>{{metadataDefaultObject.displayName}}</b>
         <!-- iterates over the object properties -->
-
         <div class="row" *ngFor="let row of objectPropertyRows">
-            <!--
-                displays another ngx-material-entity with the:
-                object as the entity,
-                the current key in the loop received by the keyvalue direction as the propertyKey
-                and the getValidationErrorMessage of the current component
-            -->
-            <ngx-mat-entity-input
-                *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
+            <ngx-mat-entity-input *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
                 [entity]="objectProperty"
                 [propertyKey]="key"
-                [getValidationErrorMessage]="getValidationErrorMessage"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
                 [hideOmitForCreate]="hideOmitForCreate"
                 [hideOmitForEdit]="hideOmitForEdit"
                 class="col-lg-{{EntityUtilities.getWidth(objectProperty, key, 'lg')}} col-md-{{EntityUtilities.getWidth(objectProperty, key, 'md')}} col-sm-{{EntityUtilities.getWidth(objectProperty, key, 'sm')}}"
+                (inputChangeEvent)="emitChange()"
             >
             </ngx-mat-entity-input>
         </div>
@@ -179,7 +63,6 @@
     <!-------------------------------------------->
     <div class="entityArray" *ngSwitchCase="DecoratorTypes.ARRAY">
         <div class="mat-elevation-z8" style="border-radius: 5px;padding: 15px;margin-bottom: 15px;margin-top: 15px;">
-
             <div style="padding-bottom: 10px">
                 <b>{{metadataEntityArray.displayName}}</b>
             </div>
@@ -190,8 +73,9 @@
                         [entity]="arrayItem"
                         [propertyKey]="key"
                         [hideOmitForCreate]="true"
-                        [getValidationErrorMessage]="getValidationErrorMessage"
+                        [getValidationErrorMessage]="internalGetValidationErrorMessage"
                         class="col-lg-{{EntityUtilities.getWidth(arrayItem, key, 'lg')}} col-md-{{EntityUtilities.getWidth(arrayItem, key, 'md')}} col-sm-{{EntityUtilities.getWidth(arrayItem, key, 'sm')}}"
+                        (inputChangeEvent)="checkIsArrayItemValid()"
                     >
                     </ngx-mat-entity-input>
                 </div>
@@ -199,13 +83,13 @@
             
             <div class="buttons">
                 <button mat-raised-button
-                    [disabled]="metadataEntityArray.createInline && !EntityUtilities.isEntityValid(arrayItem, 'create')"
-                    (click)="add()">
+                    [disabled]="metadataEntityArray.createInline && !isArrayItemValid"
+                    (click)="addEntity()">
                     {{metadataEntityArray.addButtonLabel}}
                 </button>
                 <button mat-raised-button
                     [disabled]="!selection.selected.length"
-                    (click)="remove()">
+                    (click)="remove(selection, entityArrayValues, dataSource)">
                     {{metadataEntityArray.removeButtonLabel}}
                 </button>
             </div>
@@ -214,9 +98,9 @@
                 <!-- select Column -->
                 <ng-container matColumnDef="select">
                     <mat-header-cell *matHeaderCellDef>
-                        <mat-checkbox [disabled]="!dataSource.data.length" (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()" [indeterminate]="selection.hasValue() && !isAllSelected()"></mat-checkbox>
+                        <mat-checkbox [disabled]="!dataSource.data.length" (change)="$event ? masterToggle(selection, dataSource) : null" [checked]="selection.hasValue() && isAllSelected(selection, dataSource)" [indeterminate]="selection.hasValue() && !isAllSelected(selection, dataSource)"></mat-checkbox>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let module" class="module">
+                    <mat-cell *matCellDef="let module">
                         <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(module) : null" [checked]="selection.isSelected(module)"></mat-checkbox>
                     </mat-cell>
                 </ng-container>
@@ -240,170 +124,43 @@
         </div>
     </div>
 
-    <div *ngSwitchCase="DecoratorTypes.ARRAY_STRING_CHIPS">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-chip-list #chipList
-                [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel"
-                [required]="metadata.required"
-            >
-                <mat-chip *ngFor="let value of stringChipsArrayValues" (removed)="removeStringChipArrayValue(value)">
-                    {{value}}
-                    <button matChipRemove>
-                        <i class="{{metadataStringChipsArray.deleteIcon}}"></i>
-                    </button>
-                </mat-chip>
-                <input matInput
-                    [matChipInputFor]="chipList"
-                    [matChipInputAddOnBlur]="true"
-                    (matChipInputTokenEnd)="addStringChipArrayValue($event)"
-                    [(ngModel)]="chipsInput" [name]="propertyKey.toString()" #chipsModel="ngModel"
-                    [minlength]='metadataStringChipsArray.minLength ? metadataStringChipsArray.minLength : null'
-                    [maxlength]='metadataStringChipsArray.maxLength ? metadataStringChipsArray.maxLength : null'
-                    [pattern]="metadataStringChipsArray.regex ? metadataStringChipsArray.regex : '[\\s\\S]*'"
-                >
-                <mat-error *ngIf="chipsModel.errors">{{getValidationErrorMessage(chipsModel)}}</mat-error>
-            </mat-chip-list>
-            <mat-error *ngIf="!chipsModel.errors">{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+    <div *ngSwitchCase="DecoratorTypes.ARRAY_DATE">
+        <array-date-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></array-date-input>
     </div>
-
+    <div *ngSwitchCase="DecoratorTypes.ARRAY_DATE_TIME">
+        <array-date-time-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></array-date-time-input>
+    </div>
+    <div *ngSwitchCase="DecoratorTypes.ARRAY_DATE_RANGE">
+        <array-date-range-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></array-date-range-input>
+    </div>
+    <div *ngSwitchCase="DecoratorTypes.ARRAY_STRING_CHIPS">
+        <array-string-chips-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></array-string-chips-input>
+    </div>
     <div *ngSwitchCase="DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-chip-list #chipList
-                [(ngModel)]="entity[propertyKey]" [name]="propertyKey.toString()" #model="ngModel"
-                [required]="metadata.required"
-            >
-                <mat-chip *ngFor="let value of stringChipsArrayValues" (removed)="removeStringChipArrayValue(value)">
-                    {{value}}
-                    <button matChipRemove>
-                        <i class="{{metadataStringChipsArray.deleteIcon}}"></i>
-                    </button>
-                </mat-chip>
-                <input matInput
-                    [matChipInputFor]="chipList"
-                    [matAutocomplete]="auto"
-                    [matChipInputAddOnBlur]="true"
-                    (matChipInputTokenEnd)="addStringChipArrayValue($event)"
-                    (keyup)="filterAutocompleteStrings(chipsInput)"
-                    [(ngModel)]="chipsInput" [name]="propertyKey.toString()" #chipsModel="ngModel"
-                    #chipsElement
-                    [minlength]='metadataStringChipsArray.minLength ? metadataStringChipsArray.minLength : null'
-                    [maxlength]='metadataStringChipsArray.maxLength ? metadataStringChipsArray.maxLength : null'
-                    [pattern]="metadataStringChipsArray.regex ? metadataStringChipsArray.regex : '[\\s\\S]*'"
-                >
-                <mat-error *ngIf="chipsModel.errors">{{getValidationErrorMessage(chipsModel)}}</mat-error>
-            </mat-chip-list>
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event, chipsElement)">
-                <mat-option *ngFor="let value of filteredAutocompleteStrings" [value]="value">
-                  {{value}}
-                </mat-option>
-            </mat-autocomplete>
-            <mat-error *ngIf="!chipsModel.errors">{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <array-string-autocomplete-chips (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></array-string-autocomplete-chips>
     </div>
 
     <!-------------------------------------------->
     <!-------------------Dates-------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.DATE">
-        <mat-form-field appearance="standard">
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <input
-                matInput
-                [(ngModel)]="entity[propertyKey]"
-                [name]="propertyKey.toString()"
-                #model="ngModel"
-                [matDatepicker]="picker"
-                [required]="metadata.required"
-                [min]="metadataDefaultDate.min ? metadataDefaultDate.min(DateUtilities.asDate(entity[propertyKey])) : undefined"
-                [max]="metadataDefaultDate.max ? metadataDefaultDate.max(DateUtilities.asDate(entity[propertyKey])) : undefined"
-                [matDatepickerFilter]="metadataDefaultDate.filter ? metadataDefaultDate.filter : defaultDateFilter"
-            >
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
+        <date-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></date-input>
     </div>
-
     <div *ngSwitchCase="DecoratorTypes.DATE_RANGE">
-        <mat-form-field appearance="standard">
-            <mat-label>{{metadata.displayName}}</mat-label>
-            
-            <mat-date-range-input [rangePicker]="picker" [required]="metadata.required" [dateFilter]="metadataDateRangeDate.filter ? metadataDateRangeDate.filter : defaultDateFilter">
-                <input matStartDate
-                    [(ngModel)]="dateRangeStart"
-                    [name]="propertyKey.toString() + 'start'"
-                    #startModel="ngModel"
-                    [required]="metadata.required"
-                    [min]="metadataDateRangeDate.minStart ? metadataDateRangeDate.minStart(dateRange.start) : undefined"
-                    [max]="metadataDateRangeDate.maxStart ? metadataDateRangeDate.maxStart(dateRange.start) : undefined"
-                    [placeholder]="metadataDateRangeDate.placeholderStart ? metadataDateRangeDate.placeholderStart : 'Start'"
-                    (ngModelChange)="setDateRangeValues()"
-                >
-                <input matEndDate
-                    [(ngModel)]="dateRangeEnd"
-                    [name]="propertyKey.toString() + 'end'"
-                    #endModel="ngModel"
-                    [required]="metadata.required"
-                    [min]="metadataDateRangeDate.minEnd ? metadataDateRangeDate.minEnd(dateRange.end) : undefined"
-                    [max]="metadataDateRangeDate.maxEnd ? metadataDateRangeDate.maxEnd(dateRange.end) : undefined"
-                    [placeholder]="metadataDateRangeDate.placeholderEnd ? metadataDateRangeDate.placeholderEnd : 'End'"
-                    (ngModelChange)="setDateRangeValues()"
-                >
-            </mat-date-range-input>
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-date-range-picker #picker></mat-date-range-picker>
-
-            <mat-error *ngIf="startModel.errors">{{getValidationErrorMessage(startModel)}}</mat-error>
-            <mat-error *ngIf="!startModel.errors && endModel.errors">{{getValidationErrorMessage(endModel)}}</mat-error>
-        </mat-form-field>
+        <date-range-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></date-range-input>
+    </div>
+    <div *ngSwitchCase="DecoratorTypes.DATE_TIME">
+        <date-time-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></date-time-input>
     </div>
 
-    <div *ngSwitchCase="DecoratorTypes.DATE_TIME" class="date-time">
-        <mat-form-field appearance="standard" class="datepicker">
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <input
-                matInput
-                [(ngModel)]="dateTime"
-                [name]="propertyKey.toString()"
-                #model="ngModel"
-                [matDatepicker]="picker"
-                [required]="metadata.required"
-                [min]="metadataDateTimeDate.minDate ? metadataDateTimeDate.minDate(dateTime) : undefined"
-                [max]="metadataDateTimeDate.maxDate ? metadataDateTimeDate.maxDate(dateTime) : undefined"
-                [matDatepickerFilter]="metadataDateTimeDate.filterDate ? metadataDateTimeDate.filterDate : defaultDateFilter"
-                (dateInput)="setTime()"
-            >
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-        </mat-form-field>
-        <mat-form-field class="timepicker">
-            <mat-label>{{metadataDateTimeDate.timeDisplayName}}</mat-label>
-            <mat-select
-                [(ngModel)]="time"
-                [name]="propertyKey.toString() + 'time'"
-                #timeModel="ngModel"
-                [required]="metadata.required"
-                [compareWith]="compareTimes"
-                (ngModelChange)="setTime()"
-            >
-                <mat-option *ngFor="let validTime of DateUtilities.getValidTimesForDropdown(
-                        DateUtilities.asDate(entity[propertyKey]),
-                        metadataDateTimeDate.times,
-                        metadataDateTimeDate.minTime,
-                        metadataDateTimeDate.maxTime,
-                        metadataDateTimeDate.filterTime
-                    )"
-                    [value]="validTime.value"
-                >
-                    {{validTime.displayName}}
-                </mat-option>
-            </mat-select>
-            <mat-error>{{getValidationErrorMessage(timeModel)}}</mat-error>
-        </mat-form-field>
+    <!-------------------------------------------->
+    <!-------------------Files-------------------->
+    <!-------------------------------------------->
+    <div *ngSwitchCase="DecoratorTypes.FILE_DEFAULT">
+        <file-default-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></file-default-input>
+    </div>
+    <div *ngSwitchCase="DecoratorTypes.FILE_IMAGE">
+        <file-image-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></file-image-input>
     </div>
 
     <div *ngSwitchDefault>ERROR: The type {{type}} is not known.</div>
@@ -425,6 +182,7 @@
                     [hideOmitForCreate]="true"
                     [getValidationErrorMessage]="dialogData.getValidationErrorMessage"
                     class="col-lg-{{EntityUtilities.getWidth(dialogData.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(dialogData.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(dialogData.entity, key, 'sm')}}"
+                    (inputChangeEvent)="checkIsDialogArrayItemValid()"
                 >
                 </ngx-mat-entity-input>
             </div>
@@ -432,7 +190,7 @@
     </mat-dialog-content>
 
     <mat-dialog-actions>
-        <button mat-raised-button (click)="addArrayItem()" [disabled]="!EntityUtilities.isEntityValid(dialogData.entity, 'create')">
+        <button mat-raised-button (click)="addArrayItem()" [disabled]="!isDialogArrayItemValid">
             {{dialogData.createDialogData.createButtonLabel}}
         </button>
         <button mat-raised-button (click)="cancelAddArrayItem()" class="cancel-button">

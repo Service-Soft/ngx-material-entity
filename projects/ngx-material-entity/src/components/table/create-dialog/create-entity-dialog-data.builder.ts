@@ -1,13 +1,14 @@
 import { EntityService } from '../../../classes/entity.service';
-import { CreateEntityDialogData } from './create-entity-dialog-data'
+import { CreateEntityDialogData } from './create-entity-dialog-data';
 import { HttpClient } from '@angular/common/http';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from './create-dialog-data.builder';
 import { BaseBuilder } from '../../../classes/base.builder';
+import { BaseEntityType } from '../../../classes/entity.model';
 
 /**
  * The internal CreateEntityDialogData. Requires all default values the user can leave out.
  */
-export class CreateEntityDialogDataInternal<EntityType extends object> implements CreateEntityDialogData<EntityType> {
+export class CreateEntityDialogDataInternal<EntityType extends BaseEntityType<EntityType>> implements CreateEntityDialogData<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     entity: EntityType;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -29,7 +30,7 @@ export class CreateEntityDialogDataInternal<EntityType extends object> implement
 /**
  * The Builder for the CreateEntityDialogData. Sets default values.
  */
-export class CreateEntityDialogDataBuilder<EntityType extends object>
+export class CreateEntityDialogDataBuilder<EntityType extends BaseEntityType<EntityType>>
     extends BaseBuilder<CreateEntityDialogDataInternal<EntityType>, CreateEntityDialogData<EntityType>> {
 
     constructor(data: CreateEntityDialogData<EntityType>) {

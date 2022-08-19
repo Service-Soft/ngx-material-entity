@@ -51,12 +51,12 @@ export class ConfirmDialogDataBuilder extends BaseBuilder<ConfirmDialogDataInter
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected override generateBaseData(data?: ConfirmDialogData): ConfirmDialogDataInternal {
         return new ConfirmDialogDataInternal(
-            data?.text ? data.text : ['Do you really want to do this?'],
-            data?.type ? data.type : 'default',
-            data?.confirmButtonLabel ? data.confirmButtonLabel : 'Confirm',
-            data?.cancelButtonLabel ? data.cancelButtonLabel : 'Cancel',
-            data?.title ? data.title : 'Confirmation',
-            data?.requireConfirmation ? data.requireConfirmation : false,
+            data?.text ?? ['Do you really want to do this?'],
+            data?.type ?? 'default',
+            data?.confirmButtonLabel ?? 'Confirm',
+            data?.cancelButtonLabel ?? 'Cancel',
+            data?.title ?? 'Confirmation',
+            data?.requireConfirmation ?? false,
             data?.confirmationText
         );
     }
@@ -66,11 +66,11 @@ export class ConfirmDialogDataBuilder extends BaseBuilder<ConfirmDialogDataInter
         if (!data) {
             return;
         }
-        if (data.requireConfirmation && !data.confirmationText) {
+        if (data.requireConfirmation === true && !data.confirmationText) {
             throw new Error(`Missing required Input data "confirmationText".
             You can only omit this value when "requireConfirmation" is false.`);
         }
-        if (!data.requireConfirmation && data.confirmationText) {
+        if (data.requireConfirmation !== true && data.confirmationText) {
             throw new Error('The "confirmationText" will never be shown because "requireConfirmation" is not set to true');
         }
         if (data.type === 'info-only' && data.cancelButtonLabel) {

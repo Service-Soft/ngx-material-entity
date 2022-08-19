@@ -1,20 +1,12 @@
 /* eslint-disable max-len */
 /* eslint-disable jsdoc/require-jsdoc */
 import { Routes } from '@angular/router';
+import { NavUtilities } from 'ngx-material-navigation';
 import { NavbarRow } from './nav.model';
-import { NavUtilities } from './utilities/nav.utilities';
 
 export const navbarRows: NavbarRow[] = [
     {
         elements: [
-            {
-                type: 'imageWithInternalLink',
-                url: 'https://pbs.twimg.com/profile_images/1498641868397191170/6qW2XkuI_400x400.png',
-                link: {
-                    route: 'home',
-                },
-                collapse: 'never'
-            },
             {
                 type: 'titleWithInternalLink',
                 title: 'Showcase Project',
@@ -22,7 +14,7 @@ export const navbarRows: NavbarRow[] = [
                 link: {
                     route: 'home'
                 },
-                collapse: 'sm'
+                collapse: 'never'
             },
             {
                 type: 'internalLink',
@@ -74,6 +66,16 @@ export const navbarRows: NavbarRow[] = [
                         type: 'internalLink',
                         name: '@object',
                         route: 'inputs/object'
+                    },
+                    {
+                        type: 'internalLink',
+                        name: '@date',
+                        route: 'inputs/date'
+                    },
+                    {
+                        type: 'internalLink',
+                        name: '@file',
+                        route: 'inputs/file'
                     }
                 ],
                 position: 'center',
@@ -104,6 +106,6 @@ export const additionalRoutes: Routes = [
         path: 'inputs/:type',
         loadChildren: () => import('./components/showcase-inputs/showcase-inputs.module').then(m => m.ShowcaseInputsModule)
     }
-]
+];
 
 export const routes: Routes = NavUtilities.getAngularRoutes(navbarRows, additionalRoutes);

@@ -1,0 +1,84 @@
+.file-input {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.image-preview {
+    height: 250px;
+    display: flex;
+    align-items: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+    .prev-button {
+        font-size: 100px;
+        margin-left: 5px;
+    }
+
+    .next-button {
+        font-size: 100px;
+        margin-right: 5px;
+    }
+
+    .prev-button:hover,
+    .next-button:hover {
+        cursor: pointer;
+    }
+
+    .prev-button.disabled,
+    .next-button.disabled {
+        color: rgba(black, 0.38);
+    }
+
+    .prev-button.disabled:hover,
+    .next-button.disabled:hover {
+        cursor: default;
+    }
+
+    img {
+        max-width: calc(100% - 100px);
+        max-height: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 3px;
+    }
+}
+
+.preview-nav {
+    text-align: center;
+
+    button {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        margin-left: 5px;
+        margin-right: 5px;
+
+        .dot {
+            height: 100%;
+            width: 100%;
+            background-color: rgba(black, 0.38);
+            border-radius: 50%;
+            display: block;
+        }
+
+        .dot.selected {
+            background-color: rgba(0, 0, 0, .87);
+        }
+
+        .image-index {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            display: block;
+            top: -11.5px;
+            color: white;
+        }
+    }
+
+    button:hover {
+        background-color: black;
+    }
+}

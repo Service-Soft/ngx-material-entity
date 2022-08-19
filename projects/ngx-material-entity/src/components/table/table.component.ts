@@ -15,6 +15,7 @@ import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-
 import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from './create-dialog/create-entity-dialog-data.builder';
 import { TableDataBuilder, TableDataInternal } from './table-data.builder';
 import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from '../table/edit-dialog/edit-entity-dialog.builder';
+import { BaseEntityType } from '../../classes/entity.model';
 
 /**
  * Generates a fully functional table for displaying, creating, updating and deleting entities
@@ -27,7 +28,7 @@ import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from '../ta
     templateUrl: './table.component.html',
     styleUrls: ['./table.component.scss']
 })
-export class NgxMatEntityTableComponent<EntityType extends object> implements OnInit, OnDestroy {
+export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit, OnDestroy {
 
     /**
      * The configuration for the component.
@@ -68,14 +69,12 @@ export class NgxMatEntityTableComponent<EntityType extends object> implements On
             return this.data.baseData.displayColumns.find((dp) => dp.displayName === header)?.value(entity) as string;
         };
         this.dataSource.sort = this.sort;
-        if (this.data.baseData.searchString) {
-            this.dataSource.filterPredicate = (entity: EntityType, filter: string) => {
-                const searchStr = this.data.baseData.searchString(entity) ;
-                const formattedSearchString = searchStr.toLowerCase();
-                const formattedFilterString = filter.toLowerCase();
-                return formattedSearchString.includes(formattedFilterString);
-            };
-        }
+        this.dataSource.filterPredicate = (entity: EntityType, filter: string) => {
+            const searchStr = this.data.baseData.searchString(entity) ;
+            const formattedSearchString = searchStr.toLowerCase();
+            const formattedFilterString = filter.toLowerCase();
+            return formattedSearchString.includes(formattedFilterString);
+        };
         this.dataSource.filter = this.filter;
         this.dataSource.paginator = this.paginator;
 
@@ -83,7 +82,7 @@ export class NgxMatEntityTableComponent<EntityType extends object> implements On
             this.dataSource.data = entities;
             this.selection.clear();
         });
-        this.entityService.read();
+        void this.entityService.read();
     }
 
     /**
@@ -101,34 +100,33 @@ export class NgxMatEntityTableComponent<EntityType extends object> implements On
                 this.data.baseData.edit(new this.data.baseData.EntityClass(entity));
             }
             else {
-                this.editDefault(new this.data.baseData.EntityClass(entity));
+                void this.editDefault(new this.data.baseData.EntityClass(entity));
             }
         }
     }
 
-    private editDefault(entity: EntityType): void {
+    private async editDefault(entity: EntityType): Promise<void> {
         const inputDialogData: EditEntityDialogData<EntityType> = {
             entity: entity,
             EntityServiceClass: this.data.baseData.EntityServiceClass,
             allowDelete: this.data.baseData.allowDelete,
             editDialogData: this.data.editDialogData
-        }
+        };
         const dialogData: EditEntityDialogDataInternal<EntityType> = new EditEntityDialogDataBuilder(inputDialogData).getResult();
-        firstValueFrom(
+        const res: number = await firstValueFrom(
             this.dialog.open(NgxMatEntityEditDialogComponent, {
                 data: dialogData,
                 minWidth: '60%',
                 autoFocus: false,
                 restoreFocus: false
             }).afterClosed()
-        ).then((res: number) => {
-            if (res === 0) {
-                const data = this.dataSource.data;
-                data[this.dataSource.data.findIndex((e) => e[this.entityService.idKey] === entity[this.entityService.idKey])] = entity;
-                this.dataSource.data = data;
-                this.selection.clear();
-            }
-        });
+        ) as number;
+        if (res === 0) {
+            const data = this.dataSource.data;
+            data[this.dataSource.data.findIndex((e) => e[this.entityService.idKey] === entity[this.entityService.idKey])] = entity;
+            this.dataSource.data = data;
+            this.selection.clear();
+        }
     }
 
     /**
@@ -174,7 +172,8 @@ export class NgxMatEntityTableComponent<EntityType extends object> implements On
      */
     runMultiAction(action: MultiSelectAction<EntityType>): void {
         if (!action.requireConfirmDialog || !action.requireConfirmDialog(this.selection.selected)) {
-            return this.confirmRunMultiAction(action);
+            this.confirmRunMultiAction(action);
+            return;
         }
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(action.confirmDialogData)
             .withDefault('text', [`Do you really want to run this action on ${this.selection.selected.length} entries?`])
@@ -220,7 +219,7 @@ export class NgxMatEntityTableComponent<EntityType extends object> implements On
             this.selection.clear();
         }
         else {
-            this.dataSource.data.forEach((row) => this.selection.select(row));
+            this.dataSource.data.forEach(row => this.selection.select(row));
         }
     }
 

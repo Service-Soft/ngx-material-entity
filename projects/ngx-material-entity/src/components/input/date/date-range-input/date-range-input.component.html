@@ -1,0 +1,31 @@
+<mat-form-field appearance="standard">
+    <mat-label>{{metadata.displayName}}</mat-label>
+    
+    <mat-date-range-input [rangePicker]="picker" [required]="metadata.required" [dateFilter]="metadata.filter ?? defaultDateFilter">
+        <input matStartDate
+            [(ngModel)]="dateRangeStart"
+            [name]="key.toString() + 'start'"
+            #startModel="ngModel"
+            [required]="metadata.required"
+            [min]="metadata.minStart ? metadata.minStart(dateRange.start) : undefined"
+            [max]="metadata.maxStart ? metadata.maxStart(dateRange.start) : undefined"
+            [placeholder]="metadata.placeholderStart"
+            (ngModelChange)="setDateRangeValues()"
+        >
+        <input matEndDate
+            [(ngModel)]="dateRangeEnd"
+            [name]="key.toString() + 'end'"
+            #endModel="ngModel"
+            [required]="metadata.required"
+            [min]="metadata.minEnd ? metadata.minEnd(dateRange.end) : undefined"
+            [max]="metadata.maxEnd ? metadata.maxEnd(dateRange.end) : undefined"
+            [placeholder]="metadata.placeholderEnd"
+            (ngModelChange)="setDateRangeValues()"
+        >
+    </mat-date-range-input>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+
+    <mat-error *ngIf="startModel.errors">{{getValidationErrorMessage(startModel)}}</mat-error>
+    <mat-error *ngIf="!startModel.errors && endModel.errors">{{getValidationErrorMessage(endModel)}}</mat-error>
+</mat-form-field>

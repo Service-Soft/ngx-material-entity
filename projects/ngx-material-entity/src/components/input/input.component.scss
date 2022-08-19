@@ -2,10 +2,6 @@ mat-form-field {
     width: 100%;
 }
 
-::ng-deep .hideUnderline .mat-form-field-underline {
-    opacity: 0%;
-}
-
 .entityArray {
     .buttons {
         display: flex;
@@ -36,14 +32,5 @@ mat-form-field {
         height: 25.8px;
         border-bottom-left-radius: 5px;
         border-bottom-right-radius: 5px;
-    }
-}
-
-.date-time {
-    display: flex;
-    align-items: baseline;
-
-    .timepicker {
-        margin-left: 10px;
     }
 }

@@ -1,5 +1,6 @@
 import { NgModel } from '@angular/forms';
 import { BaseBuilder } from '../../classes/base.builder';
+import { BaseEntityType } from '../../classes/entity.model';
 import { getValidationErrorMessage as defaultGetValidationErrorMessage } from '../get-validation-error-message.function';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from '../table/create-dialog/create-dialog-data.builder';
 import { AddArrayItemDialogData } from './add-array-item-dialog-data';
@@ -7,7 +8,7 @@ import { AddArrayItemDialogData } from './add-array-item-dialog-data';
 /**
  * The internal AddArrayItemDialogData. Requires all default values the user can leave out.
  */
-export class AddArrayItemDialogDataInternal<EntityType extends object> implements AddArrayItemDialogData<EntityType> {
+export class AddArrayItemDialogDataInternal<EntityType extends BaseEntityType<EntityType>> implements AddArrayItemDialogData<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     entity: EntityType;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -29,7 +30,7 @@ export class AddArrayItemDialogDataInternal<EntityType extends object> implement
 /**
  * The Builder for the AddArrayItemDialogData. Sets default values.
  */
-export class AddArrayItemDialogDataBuilder<EntityType extends object>
+export class AddArrayItemDialogDataBuilder<EntityType extends BaseEntityType<EntityType>>
     extends BaseBuilder<AddArrayItemDialogDataInternal<EntityType>, AddArrayItemDialogData<EntityType>> {
 
     constructor(data: AddArrayItemDialogData<EntityType>) {
@@ -45,7 +46,7 @@ export class AddArrayItemDialogDataBuilder<EntityType extends object>
         return new AddArrayItemDialogDataInternal(
             data.entity,
             createDialogData,
-            data.getValidationErrorMessage ? data.getValidationErrorMessage : defaultGetValidationErrorMessage,
+            data.getValidationErrorMessage ?? defaultGetValidationErrorMessage,
         );
     }
 }

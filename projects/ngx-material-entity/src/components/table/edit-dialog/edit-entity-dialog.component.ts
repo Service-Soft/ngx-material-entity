@@ -2,11 +2,12 @@ import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EntityService } from '../../../classes/entity.service';
 import { EntityRow, EntityUtilities } from '../../../classes/entity.utilities';
-import { cloneDeep } from 'lodash';
 import { EditEntityDialogData } from './edit-entity-dialog-data';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from './edit-entity-dialog.builder';
+import { LodashUtilities } from '../../../capsulation/lodash.utilities';
+import { BaseEntityType } from '../../../classes/entity.model';
 
 /**
  * The default dialog used to edit an existing entity based on the configuration passed in the MAT_DIALOG_DATA "inputData".
@@ -19,7 +20,7 @@ import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from './edi
     templateUrl: './edit-entity-dialog.component.html',
     styleUrls: ['./edit-entity-dialog.component.scss']
 })
-export class NgxMatEntityEditDialogComponent<EntityType extends object> implements OnInit {
+export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
     EntityUtilities = EntityUtilities;
 
     entityRows!: EntityRow<EntityType>[];
@@ -30,7 +31,8 @@ export class NgxMatEntityEditDialogComponent<EntityType extends object> implemen
 
     data!: EditEntityDialogDataInternal<EntityType>;
 
-    getWidth = EntityUtilities.getWidth;
+    isEntityValid: boolean = true;
+    isEntityDirty: Promise<boolean> = (async () => false).call(this);
 
     constructor(
         @Inject(MAT_DIALOG_DATA)
@@ -45,7 +47,13 @@ export class NgxMatEntityEditDialogComponent<EntityType extends object> implemen
         this.dialogRef.disableClose = true;
         this.entityRows = EntityUtilities.getEntityRows(this.data.entity, false, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
-        this.entityPriorChanges = cloneDeep(this.data.entity);
+        this.entityPriorChanges = LodashUtilities.cloneDeep(this.data.entity);
+    }
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    checkEntity(): void {
+        this.isEntityValid = EntityUtilities.isEntityValid(this.data.entity, 'update');
+        this.isEntityDirty = EntityUtilities.dirty(this.data.entity, this.entityPriorChanges);
     }
 
     /**
@@ -54,7 +62,8 @@ export class NgxMatEntityEditDialogComponent<EntityType extends object> implemen
      */
     edit(): void {
         if (!this.data.editDialogData.editRequiresConfirmDialog) {
-            return this.confirmEdit();
+            this.confirmEdit();
+            return;
         }
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.editDialogData.confirmEditDialogData)
             .withDefault('text', ['Do you really want to save all changes?'])
@@ -74,7 +83,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends object> implemen
     }
 
     private confirmEdit(): void {
-        this.entityService.update(this.data.entity, this.entityPriorChanges).then(() => this.dialogRef.close(1));
+        void this.entityService.update(this.data.entity, this.entityPriorChanges).then(() => this.dialogRef.close(1));
     }
 
     /**
@@ -83,7 +92,8 @@ export class NgxMatEntityEditDialogComponent<EntityType extends object> implemen
      */
     delete(): void {
         if (!this.data.editDialogData.deleteRequiresConfirmDialog) {
-            return this.confirmDelete();
+            this.confirmDelete();
+            return;
         }
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.editDialogData.confirmDeleteDialogData)
             .withDefault('text', ['Do you really want to delete this entity?'])
@@ -104,7 +114,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends object> implemen
     }
 
     private confirmDelete(): void {
-        this.entityService.delete(this.entityPriorChanges).then(() => this.dialogRef.close(2));
+        void this.entityService.delete(this.entityPriorChanges).then(() => this.dialogRef.close(2));
     }
 
     /**

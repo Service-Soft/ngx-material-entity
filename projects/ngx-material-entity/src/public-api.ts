@@ -8,6 +8,7 @@ export * from './classes/entity.model';
 export * from './classes/entity.service';
 export * from './classes/entity.utilities';
 export * from './classes/date.utilities';
+export * from './classes/file.utilities';
 
 // components
 export * from './components/confirm-dialog/confirm-dialog-data';
@@ -42,6 +43,9 @@ export { Col, Position } from './decorators/base/property-decorator.data';
 export * from './decorators/boolean/boolean.decorator';
 export * from './decorators/boolean/boolean-decorator.data';
 
+export * from './decorators/date/date.decorator';
+export * from './decorators/date/date-decorator.data';
+
 export * from './decorators/number/number.decorator';
 export * from './decorators/number/number-decorator.data';
 
@@ -50,3 +54,6 @@ export * from './decorators/object/object-decorator.data';
 
 export * from './decorators/string/string.decorator';
 export * from './decorators/string/string-decorator.data';
+
+export * from './decorators/file/file.decorator';
+export * from './decorators/file/file-decorator.data';

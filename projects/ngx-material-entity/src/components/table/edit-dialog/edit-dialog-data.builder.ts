@@ -1,3 +1,4 @@
+import { BaseEntityType } from '../../../classes/entity.model';
 import { BaseBuilder } from '../../../classes/base.builder';
 import { ConfirmDialogData } from '../../confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
@@ -6,7 +7,7 @@ import { EditDialogData } from '../table-data';
 /**
  * The internal EditDialogData. Requires all default values the user can leave out.
  */
-export class EditDialogDataInternal<EntityType extends object> implements EditDialogData<EntityType> {
+export class EditDialogDataInternal<EntityType extends BaseEntityType<EntityType>> implements EditDialogData<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     title: (entity: EntityType) => string;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -48,7 +49,7 @@ export class EditDialogDataInternal<EntityType extends object> implements EditDi
 /**
  * The Builder for the EditDialogData. Sets default values.
  */
-export class EditDialogDataBuilder<EntityType extends object>
+export class EditDialogDataBuilder<EntityType extends BaseEntityType<EntityType>>
     extends BaseBuilder<EditDialogDataInternal<EntityType>, EditDialogData<EntityType>> {
 
     constructor(data?: EditDialogData<EntityType>) {
@@ -71,12 +72,12 @@ export class EditDialogDataBuilder<EntityType extends object>
             .getResult();
 
         return new EditDialogDataInternal(
-            data?.title ? data.title : () => 'Edit',
-            data?.confirmButtonLabel ? data.confirmButtonLabel : 'Save',
-            data?.deleteButtonLabel ? data.deleteButtonLabel : 'Delete',
-            data?.cancelButtonLabel ? data.cancelButtonLabel : 'Cancel',
-            data?.deleteRequiresConfirmDialog ? data.deleteRequiresConfirmDialog : true,
-            data?.editRequiresConfirmDialog ? data.editRequiresConfirmDialog : false,
+            data?.title ?? (() => 'Edit'),
+            data?.confirmButtonLabel ?? 'Save',
+            data?.deleteButtonLabel ?? 'Delete',
+            data?.cancelButtonLabel ?? 'Cancel',
+            data?.deleteRequiresConfirmDialog ?? true,
+            data?.editRequiresConfirmDialog ?? false,
             confirmDeleteDialogData,
             confirmEditDialogData
         );

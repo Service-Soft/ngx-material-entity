@@ -11,7 +11,7 @@ import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, Dropdo
  */
 export function string(
     metadata: DropdownStringDecoratorConfig | AutocompleteStringDecoratorConfig
-        | DefaultStringDecoratorConfig | TextboxStringDecoratorConfig
+    | DefaultStringDecoratorConfig | TextboxStringDecoratorConfig
 ): (target: object, propertyKey: string) => void {
     if (metadata.displayStyle === 'dropdown') {
         return baseProperty(new DropdownStringDecoratorConfigInternal(metadata), DecoratorTypes.STRING_DROPDOWN);

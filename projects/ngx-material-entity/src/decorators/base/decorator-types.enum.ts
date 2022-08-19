@@ -1,6 +1,7 @@
-import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal } from '../array/array-decorator-internal.data';
+import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, DateArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal, DateTimeArrayDecoratorConfigInternal, DateRangeArrayDecoratorConfigInternal } from '../array/array-decorator-internal.data';
 import { CheckboxBooleanDecoratorConfigInternal, DropdownBooleanDecoratorConfigInternal, ToggleBooleanDecoratorConfigInternal } from '../boolean/boolean-decorator-internal.data';
 import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from '../date/date-decorator-internal.data';
+import { DefaultFileDecoratorConfigInternal, ImageFileDecoratorConfigInternal } from '../file/file-decorator-internal.data';
 import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal } from '../number/number-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../object/object-decorator-internal.data';
 import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../string/string-decorator-internal.data';
@@ -20,11 +21,16 @@ export enum DecoratorTypes {
     BOOLEAN_DROPDOWN = 'booleanDropdown',
     OBJECT = 'object',
     ARRAY = 'array',
+    ARRAY_DATE = 'arrayDate',
+    ARRAY_DATE_TIME = 'arrayDateTime',
+    ARRAY_DATE_RANGE = 'arrayDateRange',
     ARRAY_STRING_CHIPS = 'arrayStringChips',
     ARRAY_STRING_AUTOCOMPLETE_CHIPS = 'arrayStringAutocompleteChips',
     DATE = 'date',
     DATE_RANGE = 'dateRange',
-    DATE_TIME = 'dateTime'
+    DATE_TIME = 'dateTime',
+    FILE_DEFAULT = 'fileDefault',
+    FILE_IMAGE = 'fileImage'
 }
 
 /**
@@ -40,11 +46,18 @@ export type DecoratorType<T> =
     : T extends DecoratorTypes.BOOLEAN_CHECKBOX ? CheckboxBooleanDecoratorConfigInternal
     : T extends DecoratorTypes.BOOLEAN_TOGGLE ? ToggleBooleanDecoratorConfigInternal
     : T extends DecoratorTypes.BOOLEAN_DROPDOWN ? DropdownBooleanDecoratorConfigInternal
-    : T extends DecoratorTypes.OBJECT ? DefaultObjectDecoratorConfigInternal<object>
-    : T extends DecoratorTypes.ARRAY ? EntityArrayDecoratorConfigInternal<object>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    : T extends DecoratorTypes.OBJECT ? DefaultObjectDecoratorConfigInternal<any>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    : T extends DecoratorTypes.ARRAY ? EntityArrayDecoratorConfigInternal<any>
+    : T extends DecoratorTypes.ARRAY_DATE ? DateArrayDecoratorConfigInternal
+    : T extends DecoratorTypes.ARRAY_DATE_TIME ? DateTimeArrayDecoratorConfigInternal
+    : T extends DecoratorTypes.ARRAY_DATE_RANGE ? DateRangeArrayDecoratorConfigInternal
     : T extends DecoratorTypes.ARRAY_STRING_CHIPS ? StringChipsArrayDecoratorConfigInternal
     : T extends DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS ? AutocompleteStringChipsArrayDecoratorConfigInternal
     : T extends DecoratorTypes.DATE ? DefaultDateDecoratorConfigInternal
     : T extends DecoratorTypes.DATE_RANGE ? DateRangeDateDecoratorConfigInternal
     : T extends DecoratorTypes.DATE_TIME ? DateTimeDateDecoratorConfigInternal
+    : T extends DecoratorTypes.FILE_DEFAULT ? DefaultFileDecoratorConfigInternal
+    : T extends DecoratorTypes.FILE_IMAGE ? ImageFileDecoratorConfigInternal
     : never;

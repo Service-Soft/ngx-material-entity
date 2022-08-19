@@ -13,7 +13,8 @@
                 [entity]="data.entity"
                 [propertyKey]="key"
                 [hideOmitForEdit]="true"
-                class="col-lg-{{getWidth(data.entity, key, 'lg')}} col-md-{{getWidth(data.entity, key, 'md')}} col-sm-{{getWidth(data.entity, key, 'sm')}}"
+                class="col-lg-{{EntityUtilities.getWidth(data.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(data.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(data.entity, key, 'sm')}}"
+                (inputChangeEvent)="checkEntity()"
             >
             </ngx-mat-entity-input>
         </div>
@@ -21,7 +22,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button mat-raised-button (click)="edit()" [disabled]="!EntityUtilities.isEntityValid(data.entity, 'update') || !EntityUtilities.dirty(data.entity, entityPriorChanges)">
+    <button mat-raised-button (click)="edit()" [disabled]="!isEntityValid || (isEntityDirty | async) === false">
         {{data.editDialogData.confirmButtonLabel}}
     </button>
     <button mat-raised-button (click)="cancel()" class="cancel-button">

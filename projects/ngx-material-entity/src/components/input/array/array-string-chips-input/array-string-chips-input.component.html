@@ -1,0 +1,26 @@
+<mat-form-field>
+    <mat-label>{{metadata.displayName}}</mat-label>
+    <mat-chip-list #chipList
+        (ngModelChange)="emitChange()"
+        [(ngModel)]="entity[key]" [name]="key.toString()" #model="ngModel"
+        [required]="metadata.required"
+    >
+        <mat-chip *ngFor="let value of stringChipsArrayValues" (removed)="removeStringChipArrayValue(value)">
+            {{value}}
+            <button matChipRemove>
+                <i class="{{metadata.deleteIcon}}"></i>
+            </button>
+        </mat-chip>
+        <input matInput
+            [matChipInputFor]="chipList"
+            [matChipInputAddOnBlur]="true"
+            (matChipInputTokenEnd)="addStringChipArrayValue($event)"
+            [(ngModel)]="chipsInput" [name]="key.toString()" #chipsModel="ngModel"
+            [minlength]='metadata.minLength ?? null'
+            [maxlength]='metadata.maxLength ?? null'
+            [pattern]="metadata.regex ?? '[\\s\\S]*'"
+        >
+        <mat-error *ngIf="chipsModel.errors">{{getValidationErrorMessage(chipsModel)}}</mat-error>
+    </mat-chip-list>
+    <mat-error *ngIf="!chipsModel.errors">{{getValidationErrorMessage(model)}}</mat-error>
+</mat-form-field>

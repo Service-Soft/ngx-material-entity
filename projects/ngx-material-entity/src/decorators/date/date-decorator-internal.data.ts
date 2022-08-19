@@ -44,9 +44,9 @@ export class DateRangeDateDecoratorConfigInternal extends PropertyDecoratorConfi
     // eslint-disable-next-line jsdoc/require-jsdoc
     filter?: DateFilterFn<Date>;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    placeholderStart?: string;
+    placeholderStart: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    placeholderEnd?: string;
+    placeholderEnd: string;
 
     constructor(data: DateRangeDateDecoratorConfig) {
         super(data);
@@ -56,8 +56,8 @@ export class DateRangeDateDecoratorConfigInternal extends PropertyDecoratorConfi
         this.minEnd = data.minEnd;
         this.maxEnd = data.maxEnd;
         this.filter = data.filter;
-        this.placeholderStart = data.placeholderStart;
-        this.placeholderEnd = data.placeholderEnd;
+        this.placeholderStart = data.placeholderStart ?? 'Start';
+        this.placeholderEnd = data.placeholderEnd ?? 'End';
     }
 }
 
@@ -87,8 +87,8 @@ export class DateTimeDateDecoratorConfigInternal extends PropertyDecoratorConfig
     constructor(data: DateTimeDateDecoratorConfig) {
         super(data);
         this.displayStyle = data.displayStyle;
-        this.times = data.times ? data.times : DateUtilities.getDefaultTimes();
-        this.timeDisplayName = data.timeDisplayName ? data.timeDisplayName : 'Time';
+        this.times = data.times ?? DateUtilities.getDefaultTimes();
+        this.timeDisplayName = data.timeDisplayName ?? 'Time';
         this.minDate = data.minDate;
         this.maxDate = data.maxDate;
         this.filterDate = data.filterDate;

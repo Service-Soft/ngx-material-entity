@@ -3,11 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { EditEntityDialogData } from './edit-entity-dialog-data';
 import { EditDialogDataBuilder, EditDialogDataInternal } from './edit-dialog-data.builder';
 import { BaseBuilder } from '../../../classes/base.builder';
+import { BaseEntityType } from '../../../classes/entity.model';
 
 /**
  * The internal EditEntityDialogData. Requires all default values the user can leave out.
  */
-export class EditEntityDialogDataInternal<EntityType extends object> implements EditEntityDialogData<EntityType> {
+export class EditEntityDialogDataInternal<EntityType extends BaseEntityType<EntityType>> implements EditEntityDialogData<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     entity: EntityType;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -33,7 +34,7 @@ export class EditEntityDialogDataInternal<EntityType extends object> implements 
 /**
  * The Builder for the EditEntityDialogData. Sets default values.
  */
-export class EditEntityDialogDataBuilder<EntityType extends object>
+export class EditEntityDialogDataBuilder<EntityType extends BaseEntityType<EntityType>>
     extends BaseBuilder<EditEntityDialogDataInternal<EntityType>, EditEntityDialogData<EntityType>> {
 
     constructor(data: EditEntityDialogData<EntityType>) {
@@ -47,7 +48,7 @@ export class EditEntityDialogDataBuilder<EntityType extends object>
             data.entity,
             data.EntityServiceClass,
             editDialogData,
-            data.allowDelete ? data.allowDelete : () => true
+            data.allowDelete ?? (() => true)
         );
     }
 }

@@ -11,7 +11,6 @@ test('should have array Metadata', () => {
     const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'entityArrayValue', DecoratorTypes.ARRAY);
     expect(metadata).toBeDefined();
     expect(metadata.EntityClass).toBeDefined();
-    expect(metadata.displayStyle).toEqual('table');
     expect(metadata.itemType).toEqual(DecoratorTypes.OBJECT);
     expect(metadata.displayColumns).toBeDefined();
     expect(metadata.createInline).toEqual(true);
@@ -39,7 +38,6 @@ test('should throw error for invalid itemType metadata', () => {
         () => {
             class ArrayTestEntity extends Entity {
                 @array({
-                    displayStyle: 'chips',
                     displayName: 'Wrong itemType Array Value',
                     itemType: 'invalidValue' as DecoratorTypes.STRING
                 })

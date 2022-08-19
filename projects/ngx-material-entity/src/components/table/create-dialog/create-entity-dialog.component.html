@@ -8,7 +8,8 @@
                 [entity]="data.entity"
                 [propertyKey]="key"
                 [hideOmitForCreate]="true"
-                class="col-lg-{{getWidth(data.entity, key, 'lg')}} col-md-{{getWidth(data.entity, key, 'md')}} col-sm-{{getWidth(data.entity, key, 'sm')}}"
+                class="col-lg-{{EntityUtilities.getWidth(data.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(data.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(data.entity, key, 'sm')}}"
+                (inputChangeEvent)="checkIsEntityValid()"
             >
             </ngx-mat-entity-input>
         </div>
@@ -16,7 +17,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button mat-raised-button (click)="create()" [disabled]="!EntityUtilities.isEntityValid(data.entity, 'create')">
+    <button mat-raised-button (click)="create()" [disabled]="!isEntityValid">
         {{data.createDialogData.createButtonLabel}}
     </button>
     <button mat-raised-button (click)="cancel()" class="cancel-button">

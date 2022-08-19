@@ -1,12 +1,27 @@
-<form class="row">
+<form class="row" *ngIf="!inputValues">
     <ngx-mat-entity-input
         *ngFor="let key of keys"
         [entity]="testEntity"
         [propertyKey]="key"
         [hideOmitForCreate]="true"
-        class="col-lg-{{getWidth(testEntity, key, 'lg')}} col-md-{{getWidth(testEntity, key, 'md')}} col-sm-{{getWidth(testEntity, key, 'sm')}}"
+        class="col-lg-{{EntityUtilities.getWidth(testEntity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(testEntity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(testEntity, key, 'sm')}}"
     >
     </ngx-mat-entity-input>
     <hr style="margin-top: 10px;">
     <button mat-raised-button>dirty</button>
+    <button mat-raised-button (click)="toggleInputValues()">Toggle Input Values</button>
+</form>
+
+<form class="row" *ngIf="inputValues">
+    <ngx-mat-entity-input
+        *ngFor="let key of keys"
+        [entity]="testEntity"
+        [propertyKey]="key"
+        [hideOmitForCreate]="true"
+        class="col-lg-{{EntityUtilities.getWidth(testEntity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(testEntity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(testEntity, key, 'sm')}}"
+    >
+    </ngx-mat-entity-input>
+    <hr style="margin-top: 10px;">
+    <button mat-raised-button>dirty</button>
+    <button mat-raised-button (click)="toggleInputValues()">Toggle Input Values</button>
 </form>

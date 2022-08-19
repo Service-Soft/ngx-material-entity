@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-jsdoc */
 import { Entity } from '../classes/entity.model';
 import { EntityUtilities } from '../classes/entity.utilities';
 import { string } from '../decorators/string/string.decorator';
@@ -10,6 +11,10 @@ import { date } from '../decorators/date/date.decorator';
 import { DateRange } from '../decorators/date/date-decorator.data';
 import { Time } from '@angular/common';
 import { DateUtilities } from '../classes/date.utilities';
+import { FileUtilities } from '../classes/file.utilities';
+import { DateFilterFn } from '@angular/material/datepicker';
+import { file } from '../decorators/file/file.decorator';
+import { FileData } from '../decorators/file/file-decorator.data';
 
 /**
  * An Entity used to Test the @object decorator on the TestEntity class.
@@ -207,23 +212,21 @@ export class TestEntity extends Entity {
     objectValue!: TestObjectEntity;
 
     @array({
-        displayStyle: 'chips',
         displayName: 'String Chips Array Value',
         itemType: DecoratorTypes.STRING
     })
     stringChipsArrayValue!: string[];
 
     @array({
-        displayStyle: 'chips',
         displayName: 'String Chips Array Value With Config',
         itemType: DecoratorTypes.STRING,
         deleteIcon: 'fas fa-trash',
-        defaultWidths: [12, 12, 12]
+        defaultWidths: [12, 12, 12],
+        allowDuplicates: true
     })
     stringChipsArrayValueWithConfig!: string[];
 
     @array({
-        displayStyle: 'chips',
         displayName: 'String Chips Autocomplete Array Value',
         itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
         // eslint-disable-next-line @cspell/spellchecker
@@ -232,20 +235,19 @@ export class TestEntity extends Entity {
     stringChipsAutocompleteArrayValue!: string[];
 
     @array({
-        displayStyle: 'chips',
         displayName: 'String Chips Autocomplete Array Value With Config',
         itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
         // eslint-disable-next-line @cspell/spellchecker
         autocompleteValues: ['ABCDE', 'FGHIJ'],
         deleteIcon: 'fas fa-trash',
-        defaultWidths: [6, 6, 6]
+        defaultWidths: [6, 6, 6],
+        allowDuplicates: true
     })
     stringChipsAutocompleteArrayValueWithConfig!: string[];
 
     @array({
         displayName: 'Entity Array',
         itemType: DecoratorTypes.OBJECT,
-        displayStyle: 'table',
         EntityClass: TestObjectArrayEntity,
         displayColumns: [
             {
@@ -263,7 +265,6 @@ export class TestEntity extends Entity {
     @array({
         displayName: 'Entity Array With Config',
         itemType: DecoratorTypes.OBJECT,
-        displayStyle: 'table',
         EntityClass: TestObjectArrayEntity,
         displayColumns: [
             {
@@ -279,9 +280,146 @@ export class TestEntity extends Entity {
         createInline: false,
         addButtonLabel: 'Custom Add',
         removeButtonLabel: 'Custom Remove',
-        defaultWidths: [6, 6, 6]
+        defaultWidths: [6, 6, 6],
+        allowDuplicates: true
     })
     entityArrayValueWithConfig!: TestObjectArrayEntity[];
+
+    @array({
+        displayName: 'Date Array Value',
+        itemType: DecoratorTypes.DATE,
+        displayColumns: [
+            {
+                displayName: 'Date',
+                value: (entity) => `${new Date(entity).getDate()}.${new Date(entity).getMonth() + 1}.${new Date(entity).getFullYear()}`
+            }
+        ],
+        duplicatesErrorDialog: {
+            type: 'default',
+            text: ['Custom Error Text'],
+            title: 'Custom Error Title'
+        }
+    })
+    dateArrayValue!: Date[];
+
+    @array({
+        displayName: 'Custom Date Array Value',
+        itemType: DecoratorTypes.DATE,
+        displayColumns: [
+            {
+                displayName: 'Date',
+                value: (entity) => `${new Date(entity).getDate()}.${new Date(entity).getMonth() + 1}.${new Date(entity).getFullYear()}`
+            }
+        ],
+        max: () => new Date(2022, 11, 30, 0, 0, 0, 0),
+        min: () => new Date(2022, 0, 1, 0, 0, 0, 0),
+        filter: (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1,
+        missingErrorMessage: 'custom missing error message',
+        addButtonLabel: 'Custom Add',
+        removeButtonLabel: 'Custom Remove',
+        defaultWidths: [6, 6, 6],
+        allowDuplicates: true
+    })
+    customDateArrayValue!: Date[];
+
+    @array({
+        displayName: 'Date Time Array Value',
+        itemType: DecoratorTypes.DATE_TIME,
+        displayColumns: [
+            {
+                displayName: 'Date',
+                value: (entity) => `${new Date(entity).getHours()}:${new Date(entity).getMinutes()}`
+            }
+        ]
+    })
+    dateTimeArrayValue!: Date[];
+
+    @array({
+        displayName: 'Custom Date Time Array Value',
+        itemType: DecoratorTypes.DATE_TIME,
+        displayColumns: [
+            {
+                displayName: 'Date',
+                value: (entity) => `${new Date(entity).getHours()}:${new Date(entity).getMinutes()}`
+            }
+        ],
+        maxDate: () => new Date(2022, 11, 30, 0, 0, 0, 0),
+        minDate: () => new Date(2022, 0, 1, 0, 0, 0, 0),
+        filterDate: (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1,
+        maxTime: () => {
+            return {
+                hours: 16,
+                minutes: 30
+            };
+        },
+        minTime: () => {
+            return {
+                hours: 8,
+                minutes: 30
+            };
+        },
+        filterTime: (time: Time) => time.hours !== 12,
+        timeDisplayName: 'Custom Time Display Name',
+        times: DateUtilities.getDefaultTimes(12, 15),
+        missingErrorMessage: 'custom missing error message',
+        addButtonLabel: 'Custom Add',
+        removeButtonLabel: 'Custom Remove',
+        defaultWidths: [6, 6, 6],
+        allowDuplicates: true
+    })
+    customDateTimeArrayValue!: Date[];
+
+    @array({
+        displayName: 'Date Range Array Value',
+        itemType: DecoratorTypes.DATE_RANGE,
+        displayColumns: [
+            {
+                displayName: 'From',
+                value: (entity) => new Date(entity.start).toLocaleDateString('de')
+            },
+            {
+                displayName: 'Until',
+                value: (entity) => new Date(entity.end).toLocaleDateString('de')
+            },
+            {
+                displayName: 'Days',
+                value: (entity) => `${entity.values?.length ?? 0}`
+            }
+        ]
+    })
+    dateRangeArrayValue!: DateRange[];
+
+    @array({
+        displayName: 'Custom Date Range Array Value',
+        itemType: DecoratorTypes.DATE_RANGE,
+        displayColumns: [
+            {
+                displayName: 'From',
+                value: (entity) => new Date(entity.start).toLocaleDateString('de')
+            },
+            {
+                displayName: 'Until',
+                value: (entity) => new Date(entity.end).toLocaleDateString('de')
+            },
+            {
+                displayName: 'Days',
+                value: (entity) => `${entity.values?.length ?? 0}`
+            }
+        ],
+        maxStart: () => new Date(2022, 11, 30, 0, 0, 0, 0),
+        minStart: () => new Date(2022, 0, 1, 0, 0, 0, 0),
+        maxEnd: () => new Date(2022, 11, 30, 0, 0, 0, 0),
+        minEnd: () => new Date(2022, 0, 1, 0, 0, 0, 0),
+        filter: (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1,
+        missingErrorMessage: 'custom missing error message',
+        addButtonLabel: 'Custom Add',
+        removeButtonLabel: 'Custom Remove',
+        placeholderStart: 'Custom Start',
+        placeholderEnd: 'Custom End',
+        defaultWidths: [6, 6, 6],
+        allowDuplicates: true
+    })
+    customDateRangeArrayValue!: DateRange[];
 
     @number({
         displayName: 'Number Dropdown Value',
@@ -366,6 +504,8 @@ export class TestEntity extends Entity {
         maxEnd: () => new Date(2022, 11, 30, 0, 0, 0, 0),
         minEnd: () => new Date(2022, 0, 1, 0, 0, 0, 0),
         filter: (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1,
+        placeholderStart: 'Custom Start',
+        placeholderEnd: 'Custom End'
     })
     customDateRangeValue!: DateRange;
 
@@ -385,19 +525,70 @@ export class TestEntity extends Entity {
             return {
                 hours: 16,
                 minutes: 30
-            }
+            };
         },
         minTime: () => {
             return {
                 hours: 8,
                 minutes: 30
-            }
+            };
         },
         filterTime: (time: Time) => time.hours !== 12,
         timeDisplayName: 'Custom Time Display Name',
         times: DateUtilities.getDefaultTimes(12, 15)
     })
     customDateTimeValue!: Date;
+
+    @file({
+        type: 'other',
+        multiple: false,
+        displayName: 'File Value'
+    })
+    fileValue!: FileData;
+
+    @file({
+        type: 'other',
+        multiple: false,
+        displayName: 'Drag Drop File Value',
+        dragAndDrop: true
+    })
+    dragDropFileValue!: FileData;
+
+    @file({
+        type: 'other',
+        multiple: true,
+        displayName: 'Custom File Values',
+        allowedMimeTypes: ['image/*', 'application/pdf', 'application/x-javascript'],
+        deleteIcon: 'fas fa-trash',
+        maxSize: FileUtilities.transformToMegaBytes(3, 'KB'),
+        maxSizeTotal: FileUtilities.transformToMegaBytes(5, 'KB'),
+        omitForCreate: true,
+        omitForUpdate: true
+    })
+    customFileValues!: FileData[];
+
+    @file({
+        type: 'image',
+        multiple: false,
+        displayName: 'Image Value',
+        preview: false
+    })
+    imageValue!: FileData;
+
+    @file({
+        type: 'image',
+        multiple: false,
+        displayName: 'Image Drag Drop Value',
+        dragAndDrop: true
+    })
+    imageDragDropValue!: FileData;
+
+    @file({
+        type: 'image',
+        multiple: true,
+        displayName: 'Custom Image Values'
+    })
+    customImageValues!: FileData[];
 
     constructor(entity?: TestEntity) {
         super();
@@ -459,6 +650,46 @@ const testEntityData: TestEntity = {
             stringValue: 'stringValue2'
         }
     ],
+    dateArrayValue: [
+        new Date(2022, 0, 1),
+        new Date(2022, 0, 20),
+    ],
+    customDateArrayValue: [
+        new Date(2022, 0, 2),
+        new Date(2022, 0, 20),
+    ],
+    dateTimeArrayValue: [
+        new Date(2022, 0, 1, 0, 30),
+        new Date(2022, 0, 20, 16, 0),
+    ],
+    customDateTimeArrayValue: [
+        new Date(2022, 0, 2, 8, 30),
+        new Date(2022, 0, 20, 16, 0),
+    ],
+    dateRangeArrayValue: [
+        {
+            start: new Date(2022, 0, 1, 0, 0, 0, 0),
+            end: new Date(2022, 0, 20, 0, 0, 0, 0),
+            values: getDatesBetween(new Date(2022, 0, 1, 0, 0, 0, 0), new Date(2022, 0, 20, 0, 0, 0, 0))
+        },
+        {
+            start: new Date(2022, 0, 25, 0, 0, 0, 0),
+            end: new Date(2022, 0, 30, 0, 0, 0, 0),
+            values: getDatesBetween(new Date(2022, 0, 25, 0, 0, 0, 0), new Date(2022, 0, 30, 0, 0, 0, 0))
+        },
+    ],
+    customDateRangeArrayValue: [
+        {
+            start: new Date(2022, 0, 2, 0, 0, 0, 0),
+            end: new Date(2022, 0, 20, 0, 0, 0, 0),
+            values: getDatesBetween(new Date(2022, 0, 2, 0, 0, 0, 0), new Date(2022, 0, 20, 0, 0, 0, 0))
+        },
+        {
+            start: new Date(2022, 0, 25, 0, 0, 0, 0),
+            end: new Date(2022, 0, 30, 0, 0, 0, 0),
+            values: getDatesBetween(new Date(2022, 0, 25, 0, 0, 0, 0), new Date(2022, 0, 30, 0, 0, 0, 0))
+        },
+    ],
     numberDropdownValue: 42,
     stringDropdownValue: 'String Dropdown #1',
     booleanDropdownValue: true,
@@ -473,11 +704,64 @@ const testEntityData: TestEntity = {
     customDateRangeValue: {
         start: new Date(2022, 0, 2, 0, 0, 0, 0),
         end: new Date(2022, 0, 20, 0, 0, 0, 0),
-        values: getDatesBetween(new Date(2022, 0, 2, 0, 0, 0, 0), new Date(2022, 0, 20, 0, 0, 0, 0))
+        // eslint-disable-next-line max-len
+        values: getDatesBetween(new Date(2022, 0, 2, 0, 0, 0, 0), new Date(2022, 0, 20, 0, 0, 0, 0), (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1,)
     },
     dateTimeValue: new Date(2022, 0, 1, 8, 30, 0, 0),
-    customDateTimeValue: new Date(2022, 0, 2, 16, 30, 0, 0)
-}
+    customDateTimeValue: new Date(2022, 0, 2, 16, 30, 0, 0),
+    fileValue: {
+        name: '6qW2XkuI_400x400.png',
+        url: 'http://localhost:3000/file/',
+        size: 4429,
+        type: 'image/jpg'
+    },
+    dragDropFileValue: {
+        name: '6qW2XkuI_400x400.png',
+        url: 'http://localhost:3000/file/',
+        size: 4429,
+        type: 'image/jpg'
+    },
+    customFileValues: [
+        {
+            url: 'http://localhost:3000/file/',
+            name: '6qW2XkuI_400x400.png',
+            size: 4429,
+            type: 'image/jpg'
+        },
+        {
+            url: 'http://localhost:3000/file/',
+            name: 'test-2.png',
+            size: 4429,
+            type: 'image/jpg'
+        }
+    ],
+    imageValue: {
+        url: 'http://localhost:3000/file/',
+        name: 'image-value.png',
+        size: 4429,
+        type: 'image/jpg'
+    },
+    imageDragDropValue: {
+        url: 'http://localhost:3000/file/',
+        name: 'image-value.png',
+        size: 4429,
+        type: 'image/jpg'
+    },
+    customImageValues: [
+        {
+            url: 'http://localhost:3000/file/',
+            name: '6qW2XkuI_400x400.png',
+            size: 4429,
+            type: 'image/jpg'
+        },
+        {
+            url: 'http://localhost:3000/file/',
+            name: 'test-2.png',
+            size: 4429,
+            type: 'image/jpg'
+        }
+    ],
+};
 
 /**
  * A builder used to generate TestEntity Mocks.
@@ -505,7 +789,12 @@ export class TestEntityMockBuilder {
 }
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export function getDatesBetween(startDate: Date, endDate: Date): Date[] {
+export function getDatesBetween(
+    startDate: Date,
+    endDate: Date,
+    filter?: DateFilterFn<Date>
+): Date[] {
+    const DAY_IN_MS = 1000 * 60 * 60 * 24;
     const res: Date[] = [];
     while (
         startDate.getFullYear() < endDate.getFullYear()
@@ -513,7 +802,12 @@ export function getDatesBetween(startDate: Date, endDate: Date): Date[] {
         || startDate.getDate() <= endDate.getDate()
     ) {
         res.push(new Date(startDate));
-        startDate.setTime(startDate.getTime() + (1000 * 60 * 60 * 24));
+        startDate.setTime(startDate.getTime() + DAY_IN_MS);
     }
-    return res.filter(d => d.getDate() !== 1);
+    if (filter) {
+        return res.filter(d => filter(d));
+    }
+    else {
+        return res;
+    }
 }

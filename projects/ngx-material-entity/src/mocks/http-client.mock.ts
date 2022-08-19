@@ -6,6 +6,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Observable, of } from 'rxjs';
+import { ReflectUtilities } from '../capsulation/reflect.utilities';
 
 /**
  * A Mock for the angular http-client. Is needed for testing crud inside a ngx-mat-entity-table.
@@ -26,8 +27,8 @@ export class HttpClientMock {
     patch(url: string, body: any): Observable<any> {
         const id = this.getIdFromUrl(url);
         const res = this.exampleData[this.exampleData.findIndex((e) => e.id === id)];
-        for (const key of Reflect.ownKeys(body)) {
-            if (res[key]) {
+        for (const key of ReflectUtilities.ownKeys(body)) {
+            if (res[key] != null) {
                 res[key] = body[key];
             }
         }

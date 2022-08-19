@@ -1,6 +1,6 @@
-import { TableData } from 'ngx-material-entity'
-import { TestEntityService } from '../../../services/test-entity.service'
-import { TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock'
+import { TableData } from 'ngx-material-entity';
+import { TestEntityService } from '../../../services/test-entity.service';
+import { TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';
 
 export const defaultTableData: TableData<TestEntity> = {
     baseData: {
@@ -24,7 +24,7 @@ export const defaultTableData: TableData<TestEntity> = {
     editDialogData: {
         title: (entity: TestEntity) => `Test Entity #${entity.id}`
     }
-}
+};
 
 export const customTableData: TableData<TestEntity> = {
     baseData: {
@@ -61,4 +61,4 @@ export const customTableData: TableData<TestEntity> = {
     editDialogData: {
         title: (entity: TestEntity) => `Test Entity #${entity.id}`
     }
-}
+};

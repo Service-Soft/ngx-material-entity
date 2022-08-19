@@ -1,7 +1,7 @@
 import { Time } from '@angular/common';
-import { cloneDeep } from 'lodash';
+import { DateFilterFn } from '@angular/material/datepicker';
+import { LodashUtilities } from '../capsulation/lodash.utilities';
 import { DropdownValue } from '../decorators/base/dropdown-value.interface';
-import { DateRangeDateDecoratorConfigInternal } from '../decorators/date/date-decorator-internal.data';
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
 
@@ -14,6 +14,11 @@ type MinuteSteps = 1 | 2 | 3 | 4 | 5 | 6 | 10 | 12 | 15 | 20 | 30 | 60;
  * Contains Helper Functions for handling date properties.
  */
 export abstract class DateUtilities {
+
+    /**
+     * The default filter function to user when none was provided by the user.
+     */
+    static defaultDateFilter: DateFilterFn<Date | null | undefined> = (): boolean => true;
 
     /**
      * Gets the given value as a date value.
@@ -36,22 +41,22 @@ export abstract class DateUtilities {
         const res: DropdownValue<Time>[] = [{ displayName: '-', value: undefined as unknown as Time}];
         for (let hour = 0; hour < 24; hour++) {
             for (let minute = 0; minute < 60; minute += minuteSteps) {
-                res.push(this.getTimeDropdownValue(format, hour, minute));
+                res.push(DateUtilities.getTimeDropdownValue(format, hour, minute));
             }
         }
         return res;
     }
 
     private static getTimeDropdownValue(format: 12 | 24, hour: number, minute: number): DropdownValue<Time> {
-        const displayHour: number = this.getFormattedHour(format, cloneDeep(hour));
-        const displayMinute: string = this.getFormattedMinute(format, hour, minute);
+        const displayHour: number = DateUtilities.getFormattedHour(format, LodashUtilities.cloneDeep(hour));
+        const displayMinute: string = DateUtilities.getFormattedMinute(format, hour, minute);
         return {
             displayName: `${displayHour}:${displayMinute}`,
             value: {
                 hours: hour,
                 minutes: minute
             }
-        }
+        };
     }
 
     private static getFormattedHour(format: 12 | 24, hour: number): number {
@@ -83,12 +88,9 @@ export abstract class DateUtilities {
      * @param value - The date to get the time object from.
      * @returns The Time object build from the date value.
      */
-    static getTimeFromDate(value: Date): Time {
-        if (!value) {
-            return {
-                hours: undefined,
-                minutes: undefined
-            } as unknown as Time;
+    static getTimeFromDate(value: Date): Time | undefined {
+        if (!(value as Date | undefined)) {
+            return undefined;
         }
         else {
             return {
@@ -103,13 +105,13 @@ export abstract class DateUtilities {
      *
      * @param startDate - The start date.
      * @param endDate - The end date.
-     * @param metadataDateRangeDate - The metadata.
+     * @param filter - The custom filter from the metadata.
      * @returns All dates between the two provided dates. Includes start and end date.
      */
     static getDatesBetween(
         startDate: Date,
         endDate: Date,
-        metadataDateRangeDate: DateRangeDateDecoratorConfigInternal
+        filter?: DateFilterFn<Date>
     ): Date[] {
         const res: Date[] = [];
         while (
@@ -120,8 +122,8 @@ export abstract class DateUtilities {
             res.push(new Date(startDate));
             startDate.setTime(startDate.getTime() + DAY_IN_MS);
         }
-        if (metadataDateRangeDate.filter) {
-            return res.filter(d => metadataDateRangeDate.filter?.(d));
+        if (filter) {
+            return res.filter(d => filter(d));
         }
         else {
             return res;
@@ -148,7 +150,7 @@ export abstract class DateUtilities {
         if (min) {
             const minTime: Time = min(date);
             times = times.filter(t =>
-                !t.value
+                !(t.value as Time | undefined)
                 || t.value.hours > minTime.hours
                 || (
                     t.value.hours === minTime.hours
@@ -159,7 +161,7 @@ export abstract class DateUtilities {
         if (max) {
             const maxTime: Time = max(date);
             times = times.filter(t =>
-                !t.value
+                !(t.value as Time | undefined)
                 || t.value.hours < maxTime.hours
                 || (
                     t.value.hours === maxTime.hours
@@ -168,9 +170,31 @@ export abstract class DateUtilities {
             );
         }
         if (filter) {
-            times = times.filter(t => !t.value || filter(t.value))
+            times = times.filter(t => !(t.value as Time | undefined) || filter(t.value));
         }
 
         return times;
+    }
+
+    /**
+     * Checks if the time object has processable hours and minutes properties.
+     * Doesn't check custom validators like min/max from the metadata configuration.
+     *
+     * @param time - The time to check.
+     * @returns Whether or not the time object is unprocessable.
+     */
+    static timeIsUnprocessable(time?: Time): boolean {
+        if (
+            !time
+            || time.hours == null
+            || typeof time.hours !== 'number'
+            || Number.isNaN(time.hours)
+            || time.minutes == null
+            || typeof time.minutes !== 'number'
+            || Number.isNaN(time.minutes)
+        ) {
+            return true;
+        }
+        return false;
     }
 }
