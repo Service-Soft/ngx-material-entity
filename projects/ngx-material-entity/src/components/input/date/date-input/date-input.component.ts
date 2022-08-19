@@ -6,6 +6,7 @@ import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum
 import { NgModel } from '@angular/forms';
 import { DateUtilities } from '../../../../classes/date.utilities';
 import { DateFilterFn } from '@angular/material/datepicker';
+import { BaseEntityType } from '../../../../classes/entity.model';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -13,7 +14,7 @@ import { DateFilterFn } from '@angular/material/datepicker';
     templateUrl: './date-input.component.html',
     styleUrls: ['./date-input.component.scss']
 })
-export class DateInputComponent<EntityType extends object> implements OnInit {
+export class DateInputComponent<EntityType extends BaseEntityType> implements OnInit {
 
     DateUtilities = DateUtilities;
 

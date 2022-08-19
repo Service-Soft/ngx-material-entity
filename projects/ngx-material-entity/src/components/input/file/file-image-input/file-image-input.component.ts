@@ -7,6 +7,7 @@ import { FileUtilities } from '../../../../classes/file.utilities';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { FileData } from '../../../../decorators/file/file-decorator.data';
 import { placeholder } from '../../../../mocks/placeholder-data.png';
+import { BaseEntityType } from '../../../../classes/entity.model';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -14,7 +15,7 @@ import { placeholder } from '../../../../mocks/placeholder-data.png';
     templateUrl: './file-image-input.component.html',
     styleUrls: ['./file-image-input.component.scss']
 })
-export class FileImageInputComponent<EntityType extends object> implements OnInit {
+export class FileImageInputComponent<EntityType extends BaseEntityType> implements OnInit {
 
     FileUtilities = FileUtilities;
 
@@ -62,7 +63,7 @@ export class FileImageInputComponent<EntityType extends object> implements OnIni
             for (let i = 0; i < multiFileData.length; i++) {
                 if (i === index) {
                     multiFileData[index] = await FileUtilities.getFileData(multiFileData[index]);
-                    previewImages.push(await FileUtilities.getDataURLFromFile(multiFileData[index].file as Blob));
+                    previewImages.push(await FileUtilities.getDataURLFromFile(multiFileData[index].file as Blob) as string);
                 }
                 else {
                     previewImages.push('empty');
@@ -76,7 +77,7 @@ export class FileImageInputComponent<EntityType extends object> implements OnIni
         this.entity[this.key] = fileData as unknown as EntityType[keyof EntityType];
         this.emitChange();
         if (this.metadata.multiple) {
-            if (!(fileData as FileData[])?.[this.imageIndex]) {
+            if (!((fileData as FileData[] | undefined)?.[this.imageIndex])) {
                 this.imageIndex = 0;
             }
             await this.setMultiPreviewImages(this.imageIndex);

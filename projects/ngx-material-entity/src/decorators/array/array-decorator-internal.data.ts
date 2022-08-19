@@ -1,5 +1,5 @@
 import { CreateDialogData } from '../../components/table/table-data';
-import { EntityClassNewable } from '../../classes/entity.model';
+import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { ArrayDecoratorConfig, ArrayTableDisplayColumn, AutocompleteStringChipsArrayDecoratorConfig, DateArrayDecoratorConfig, DateRangeArrayDecoratorConfig, DateTimeArrayDecoratorConfig, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from './array-decorator.data';
@@ -13,7 +13,7 @@ import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialo
 /**
  * The internal EntityArrayDecoratorConfig. Sets default values.
  */
-export class EntityArrayDecoratorConfigInternal<EntityType extends object>
+export class EntityArrayDecoratorConfigInternal<EntityType extends BaseEntityType>
     extends PropertyDecoratorConfigInternal implements EntityArrayDecoratorConfig<EntityType> {
 
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -39,13 +39,13 @@ export class EntityArrayDecoratorConfigInternal<EntityType extends object>
 
     constructor(data: EntityArrayDecoratorConfig<EntityType>) {
         super(data);
-        this.createInline = data.createInline != undefined ? data.createInline : true;
+        this.createInline = data.createInline ?? true;
         this.itemType = data.itemType;
-        this.allowDuplicates = data.allowDuplicates != null ? data.allowDuplicates : false;
+        this.allowDuplicates = data.allowDuplicates ?? false;
         this.duplicatesErrorDialog = getDefaultDuplicateErrorDialogData(data);
         this.EntityClass = data.EntityClass;
         this.displayColumns = data.displayColumns;
-        this.createInline = data.createInline != undefined ? data.createInline : true;
+        this.createInline = data.createInline ?? true;
         this.missingErrorMessage = data.missingErrorMessage ?? 'Needs to contain at least one value';
         this.defaultWidths = data.defaultWidths ?? [12, 12, 12];
         this.addButtonLabel = data.addButtonLabel ?? 'Add';
@@ -81,7 +81,7 @@ export class DateArrayDecoratorConfigInternal extends PropertyDecoratorConfigInt
     constructor(data: DateArrayDecoratorConfig) {
         super(data);
         this.itemType = data.itemType;
-        this.allowDuplicates = data.allowDuplicates != null ? data.allowDuplicates : false;
+        this.allowDuplicates = data.allowDuplicates ?? false;
         this.duplicatesErrorDialog = getDefaultDuplicateErrorDialogData(data);
         this.displayColumns = data.displayColumns;
         this.defaultWidths = data.defaultWidths ?? [12, 12, 12];
@@ -132,7 +132,7 @@ export class DateTimeArrayDecoratorConfigInternal extends PropertyDecoratorConfi
     constructor(data: DateTimeArrayDecoratorConfig) {
         super(data);
         this.itemType = data.itemType;
-        this.allowDuplicates = data.allowDuplicates != null ? data.allowDuplicates : false;
+        this.allowDuplicates = data.allowDuplicates ?? false;
         this.duplicatesErrorDialog = getDefaultDuplicateErrorDialogData(data);
         this.displayColumns = data.displayColumns;
         this.defaultWidths = data.defaultWidths ?? [12, 12, 12];
@@ -186,7 +186,7 @@ export class DateRangeArrayDecoratorConfigInternal extends PropertyDecoratorConf
     constructor(data: DateRangeArrayDecoratorConfig) {
         super(data);
         this.itemType = data.itemType;
-        this.allowDuplicates = data.allowDuplicates != null ? data.allowDuplicates : false;
+        this.allowDuplicates = data.allowDuplicates ?? false;
         this.duplicatesErrorDialog = getDefaultDuplicateErrorDialogData(data);
         this.displayColumns = data.displayColumns;
         this.defaultWidths = data.defaultWidths ?? [12, 12, 12];
@@ -226,7 +226,7 @@ export class StringChipsArrayDecoratorConfigInternal extends PropertyDecoratorCo
         super(data);
         this.deleteIcon = data.deleteIcon ?? 'fas fa-circle-minus';
         this.itemType = data.itemType;
-        this.allowDuplicates = data.allowDuplicates != null ? data.allowDuplicates : false;
+        this.allowDuplicates = data.allowDuplicates ?? false;
         this.duplicatesErrorDialog = getDefaultDuplicateErrorDialogData(data);
         this.maxLength = data.maxLength;
         this.minLength = data.minLength;
@@ -262,7 +262,7 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
         this.autocompleteValues = data.autocompleteValues;
         this.deleteIcon = data.deleteIcon ?? 'fas fa-circle-minus';
         this.itemType = data.itemType;
-        this.allowDuplicates = data.allowDuplicates != null ? data.allowDuplicates : false;
+        this.allowDuplicates = data.allowDuplicates ?? false;
         this.duplicatesErrorDialog = getDefaultDuplicateErrorDialogData(data);
         this.maxLength = data.maxLength;
         this.minLength = data.minLength;

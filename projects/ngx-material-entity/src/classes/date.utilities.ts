@@ -88,9 +88,9 @@ export abstract class DateUtilities {
      * @param value - The date to get the time object from.
      * @returns The Time object build from the date value.
      */
-    static getTimeFromDate(value: Date): Time {
-        if (!value) {
-            return undefined as unknown as Time;
+    static getTimeFromDate(value: Date): Time | undefined {
+        if (!(value as Date | undefined)) {
+            return undefined;
         }
         else {
             return {
@@ -150,7 +150,7 @@ export abstract class DateUtilities {
         if (min) {
             const minTime: Time = min(date);
             times = times.filter(t =>
-                !t.value
+                !(t.value as Time | undefined)
                 || t.value.hours > minTime.hours
                 || (
                     t.value.hours === minTime.hours
@@ -161,7 +161,7 @@ export abstract class DateUtilities {
         if (max) {
             const maxTime: Time = max(date);
             times = times.filter(t =>
-                !t.value
+                !(t.value as Time | undefined)
                 || t.value.hours < maxTime.hours
                 || (
                     t.value.hours === maxTime.hours
@@ -170,7 +170,7 @@ export abstract class DateUtilities {
             );
         }
         if (filter) {
-            times = times.filter(t => !t.value || filter(t.value));
+            times = times.filter(t => !(t.value as Time | undefined) || filter(t.value));
         }
 
         return times;
@@ -183,7 +183,7 @@ export abstract class DateUtilities {
      * @param time - The time to check.
      * @returns Whether or not the time object is unprocessable.
      */
-    static timeIsUnprocessable(time: Time): boolean {
+    static timeIsUnprocessable(time?: Time): boolean {
         if (
             !time
             || time.hours == null

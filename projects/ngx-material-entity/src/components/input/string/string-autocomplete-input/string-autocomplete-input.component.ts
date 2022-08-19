@@ -5,6 +5,7 @@ import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum
 import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { AutocompleteStringDecoratorConfigInternal } from '../../../../decorators/string/string-decorator-internal.data';
 import { LodashUtilities } from '../../../../capsulation/lodash.utilities';
+import { BaseEntityType } from '../../../../classes/entity.model';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -12,7 +13,7 @@ import { LodashUtilities } from '../../../../capsulation/lodash.utilities';
     templateUrl: './string-autocomplete-input.component.html',
     styleUrls: ['./string-autocomplete-input.component.scss']
 })
-export class StringAutocompleteInputComponent<EntityType extends object> implements OnInit {
+export class StringAutocompleteInputComponent<EntityType extends BaseEntityType> implements OnInit {
 
     @Input()
     entity!: EntityType;
@@ -45,8 +46,9 @@ export class StringAutocompleteInputComponent<EntityType extends object> impleme
      * @param input - The input of the user.
      */
     filterAutocompleteStrings(input: unknown): void {
-        if (input) {
-            const filterValue = (input as string).toLowerCase();
+        const inputString = input as string;
+        if (inputString) {
+            const filterValue = inputString.toLowerCase();
             this.filteredAutocompleteStrings = this.autocompleteStrings.filter(s => s.toLowerCase().includes(filterValue));
         }
     }

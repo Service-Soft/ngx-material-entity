@@ -1,11 +1,11 @@
-import { EntityClassNewable } from '../../classes/entity.model';
+import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { DefaultObjectDecoratorConfig } from './object-decorator.data';
 
 /**
  * The internal DefaultObjectDecoratorConfig. Sets default values.
  */
-export class DefaultObjectDecoratorConfigInternal<EntityType extends object>
+export class DefaultObjectDecoratorConfigInternal<EntityType extends BaseEntityType>
     extends PropertyDecoratorConfigInternal implements DefaultObjectDecoratorConfig<EntityType> {
 
 

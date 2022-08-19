@@ -24,19 +24,19 @@ export abstract class FileUtilities {
      * Reads a url to display the given file.
      *
      * @param file - The file to get the url from.
-     * @returns A promise of the url.
+     * @returns A promise of the url. Undefined if no file was provided.
      */
-    static async getDataURLFromFile(file: Blob): Promise<string> {
+    static async getDataURLFromFile(file?: Blob): Promise<string | undefined> {
         if (!file) {
-            return undefined as unknown as string;
+            return undefined;
         }
         return new Promise<string>((resolve, reject) => {
             const reader = new FileReader();
-            reader.onload = e => resolve(e?.target?.result as string);
+            reader.onload = e => resolve(e.target?.result as string);
             reader.onerror = e => reject(e);
             reader.readAsDataURL(file);
         });
-    };
+    }
 
     // TODO: Find a way to use blobs with jest
     /* istanbul ignore next */
@@ -71,7 +71,7 @@ export abstract class FileUtilities {
                 url: data.url,
                 type: data.type,
                 size: data.size
-            }
+            };
         }
         else {
             return {
@@ -80,7 +80,7 @@ export abstract class FileUtilities {
                 url: data.url,
                 type: data.type,
                 size: data.size
-            }
+            };
         }
     }
 

@@ -4,6 +4,7 @@ import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum
 import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { DropdownNumberDecoratorConfigInternal } from '../../../../decorators/number/number-decorator-internal.data';
 import { NgModel } from '@angular/forms';
+import { BaseEntityType } from '../../../../classes/entity.model';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -11,7 +12,7 @@ import { NgModel } from '@angular/forms';
     templateUrl: './number-dropdown-input.component.html',
     styleUrls: ['./number-dropdown-input.component.scss']
 })
-export class NumberDropdownInputComponent<EntityType extends object> implements OnInit {
+export class NumberDropdownInputComponent<EntityType extends BaseEntityType> implements OnInit {
 
     @Input()
     entity!: EntityType;

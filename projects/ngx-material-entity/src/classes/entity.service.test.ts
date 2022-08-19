@@ -22,7 +22,7 @@ export class TestEntityService extends EntityService<TestEntity> {
         entity: TestEntity,
         id: TestEntity[keyof TestEntity]
     ): Promise<void> {
-        this.updateWithJson(body, id);
+        void this.updateWithJson(body, id);
     }
 }
 

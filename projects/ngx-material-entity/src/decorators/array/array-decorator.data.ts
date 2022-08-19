@@ -1,5 +1,5 @@
 import { CreateDialogData } from '../../components/table/table-data';
-import { EntityClassNewable } from '../../classes/entity.model';
+import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 import { DateFilterFn } from '@angular/material/datepicker';
@@ -11,7 +11,7 @@ import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialo
 /**
  * The configuration options for an array property displayed as a table.
  */
-export interface ArrayTableDisplayColumn<EntityType extends object> {
+export interface ArrayTableDisplayColumn<EntityType extends BaseEntityType> {
     /**
      * The name inside the header.
      */
@@ -47,7 +47,7 @@ export abstract class ArrayDecoratorConfig extends PropertyDecoratorConfig {
 /**
  * Definition for an array of Entities.
  */
-export interface EntityArrayDecoratorConfig<EntityType extends object> extends ArrayDecoratorConfig {
+export interface EntityArrayDecoratorConfig<EntityType extends BaseEntityType> extends ArrayDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.OBJECT,
 

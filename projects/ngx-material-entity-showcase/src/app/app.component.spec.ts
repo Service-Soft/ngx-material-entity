@@ -17,12 +17,14 @@ describe('AppComponent', () => {
     it('should create the app', () => {
         const fixture = TestBed.createComponent(AppComponent);
         const app = fixture.componentInstance;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         expect(app).toBeTruthy();
     });
 
     it('should have as title \'ngx-material-entity-showcase\'', () => {
         const fixture = TestBed.createComponent(AppComponent);
         const app = fixture.componentInstance;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         expect(app.title).toEqual('ngx-material-entity-showcase');
     });
 
@@ -30,6 +32,7 @@ describe('AppComponent', () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();
         const compiled = fixture.nativeElement as HTMLElement;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         expect(compiled.querySelector('.content span')?.textContent).toContain('ngx-material-entity-showcase app is running!');
     });
 });

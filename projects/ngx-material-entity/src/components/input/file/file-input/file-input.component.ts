@@ -9,6 +9,7 @@ import { FileData } from '../../../../decorators/file/file-decorator.data';
 import { LodashUtilities } from '../../../../capsulation/lodash.utilities';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxMatEntityConfirmDialogComponent } from '../../../confirm-dialog/confirm-dialog.component';
+import { BaseEntityType } from '../../../../classes/entity.model';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -16,7 +17,7 @@ import { NgxMatEntityConfirmDialogComponent } from '../../../confirm-dialog/conf
     templateUrl: './file-input.component.html',
     styleUrls: ['./file-input.component.scss']
 })
-export class FileInputComponent<EntityType extends object> implements OnInit {
+export class FileInputComponent<EntityType extends BaseEntityType> implements OnInit {
 
     singleFileData?: FileData;
     multiFileData?: FileData[];
@@ -53,7 +54,7 @@ export class FileInputComponent<EntityType extends object> implements OnInit {
 
     private initMultiFile(): void {
         this.multiFileData = this.entity[this.key] as unknown as FileData[] | undefined;
-        if (this.multiFileData?.length) {
+        if (this.multiFileData) {
             this.filenames = this.multiFileData.map(f => f.name);
         }
     }
@@ -66,8 +67,8 @@ export class FileInputComponent<EntityType extends object> implements OnInit {
     }
 
     async setFileFromInput(event: Event): Promise<void> {
-        const files = Array.from((event.target as HTMLInputElement).files as FileList) ?? [];
-        await this.setFile(files);
+        const files = (event.target as HTMLInputElement).files ?? [];
+        await this.setFile(Array.from(files));
     }
 
     async setFile(files: File[]): Promise<void> {
@@ -116,7 +117,7 @@ export class FileInputComponent<EntityType extends object> implements OnInit {
         this.filenames = undefined;
         this.singleFileData = undefined;
         this.multiFileData = undefined;
-        this.fileDataChangeEvent.emit(this.singleFileData ?? this.multiFileData);
+        this.fileDataChangeEvent.emit();
     }
 
     private async setMultiFile(files: File[]): Promise<void> {
@@ -150,7 +151,8 @@ export class FileInputComponent<EntityType extends object> implements OnInit {
             if (!this.filenames?.length) {
                 this.filenames = undefined;
             }
-            this.multiFileData?.splice(this.multiFileData.indexOf(this.multiFileData.find(f => f.name === name) as FileData), 1);
+            const fileDataToRemove = this.multiFileData?.find(f => f.name === name) as FileData;
+            this.multiFileData?.splice(this.multiFileData.indexOf(fileDataToRemove), 1);
             if (!this.multiFileData?.length) {
                 this.multiFileData = undefined;
             }

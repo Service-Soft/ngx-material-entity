@@ -4,6 +4,7 @@ import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum
 import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { DefaultNumberDecoratorConfigInternal } from '../../../../decorators/number/number-decorator-internal.data';
 import { NgModel } from '@angular/forms';
+import { BaseEntityType } from '../../../../classes/entity.model';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -11,7 +12,7 @@ import { NgModel } from '@angular/forms';
     templateUrl: './number-input.component.html',
     styleUrls: ['./number-input.component.scss']
 })
-export class NumberInputComponent<EntityType extends object> implements OnInit {
+export class NumberInputComponent<EntityType extends BaseEntityType> implements OnInit {
 
     @Input()
     entity!: EntityType;

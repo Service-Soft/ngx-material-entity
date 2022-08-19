@@ -66,7 +66,7 @@ export interface NavInternalLink extends NavLink {
 export interface NavExternalLink extends NavLink {
     type: 'externalLink',
     url: string
-};
+}
 
 
 export type NavElement =

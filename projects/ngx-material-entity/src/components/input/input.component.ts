@@ -14,6 +14,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DateUtilities } from '../../classes/date.utilities';
 import { LodashUtilities } from '../../capsulation/lodash.utilities';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { BaseEntityType } from '../../classes/entity.model';
 
 /**
  * The default input component. It gets the metadata of the property from the given @Input "entity" and @Input "propertyKey"
@@ -28,25 +29,28 @@ import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-di
     templateUrl: './input.component.html',
     styleUrls: ['./input.component.scss']
 })
-export class NgxMatEntityInputComponent<EntityType extends object> implements OnInit {
+export class NgxMatEntityInputComponent<EntityType extends BaseEntityType> implements OnInit {
     /**
      * The entity on which the property exists. Used in conjunction with the "propertyKey"
      * to determine the property for which the input should be generated.
      */
     @Input()
-    entity!: EntityType;
+    entity?: EntityType;
+    internalEntity!: EntityType;
 
     /**
      * The name of the property to generate the input for. Used in conjunction with the "entity".
      */
     @Input()
-    propertyKey!: keyof EntityType;
+    propertyKey?: keyof EntityType;
+    internalPropertyKey!: keyof EntityType;
 
     /**
      * (optional) A custom function to generate the error-message for invalid inputs.
      */
     @Input()
-    getValidationErrorMessage!: (model: NgModel) => string;
+    getValidationErrorMessage?: (model: NgModel) => string;
+    internalGetValidationErrorMessage!: (model: NgModel) => string;
 
     /**
      * Whether to hide a value if it is omitted for creation.
@@ -114,59 +118,68 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
         if (!this.entity) {
             throw new Error('Missing required Input data "entity"');
         }
-        if (!this.propertyKey) {
+        this.internalEntity = this.entity;
+
+        if (this.propertyKey == null) {
             throw new Error('Missing required Input data "propertyKey"');
         }
+        this.internalPropertyKey = this.propertyKey;
+
+        this.internalGetValidationErrorMessage = this.getValidationErrorMessage ?? getValidationErrorMessage;
+
         this.type = EntityUtilities.getPropertyType(this.entity, this.propertyKey);
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.propertyKey, this.type);
 
-        this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfigInternal<EntityType>;
-        this.objectProperty = this.entity[this.propertyKey] as unknown as EntityType;
         if (this.type === DecoratorTypes.OBJECT) {
-            this.objectPropertyRows = EntityUtilities.getEntityRows(this.objectProperty, this.hideOmitForCreate, this.hideOmitForEdit);
+            this.initObjectInput();
         }
-
-        this.metadataEntityArray = this.metadata as EntityArrayDecoratorConfigInternal<EntityType>;
         if (this.type === DecoratorTypes.ARRAY) {
-            if (!this.entity[this.propertyKey]) {
-                (this.entity[this.propertyKey] as unknown as EntityType[]) = [];
-            }
-            this.entityArrayValues = this.entity[this.propertyKey] as unknown as EntityType[];
-            if (!this.metadataEntityArray.createInline && !this.metadataEntityArray.createDialogData) {
-                this.metadataEntityArray.createDialogData = {
-                    title: 'Add'
-                }
-            }
-            const givenDisplayColumns: string[] = this.metadataEntityArray.displayColumns.map((v) => v.displayName);
-            if (givenDisplayColumns.find(s => s === 'select')) {
-                throw new Error(
-                    `The name "select" for a display column is reserved.
-                    Please choose a different name.`
-                );
-            }
-            this.displayedColumns = ['select'].concat(givenDisplayColumns);
-            this.dataSource = new MatTableDataSource();
-            this.dataSource.data = this.entityArrayValues;
-            this.arrayItem = new this.metadataEntityArray.EntityClass();
-            this.arrayItemInlineRows = EntityUtilities.getEntityRows(
-                this.arrayItem,
-                this.hideOmitForCreate === false ? false : true,
-                this.hideOmitForEdit ? true : false
+            this.initEntityArray();
+        }
+    }
+
+    private initEntityArray(): void {
+        this.metadataEntityArray = this.metadata as EntityArrayDecoratorConfigInternal<EntityType>;
+        if (this.internalEntity[this.internalPropertyKey] == null) {
+            (this.internalEntity[this.internalPropertyKey] as unknown as EntityType[]) = [];
+        }
+        this.entityArrayValues = this.internalEntity[this.internalPropertyKey] as unknown as EntityType[];
+        if (!this.metadataEntityArray.createInline && !this.metadataEntityArray.createDialogData) {
+            this.metadataEntityArray.createDialogData = {
+                title: 'Add'
+            };
+        }
+        const givenDisplayColumns: string[] = this.metadataEntityArray.displayColumns.map((v) => v.displayName);
+        if (givenDisplayColumns.find(s => s === 'select')) {
+            throw new Error(
+                `The name "select" for a display column is reserved.
+                Please choose a different name.`
             );
-            this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
-
-            this.dialogInputData = {
-                entity: this.arrayItem,
-                createDialogData: this.metadataEntityArray.createDialogData,
-                getValidationErrorMessage: this.getValidationErrorMessage
-            }
-            this.dialogData = new AddArrayItemDialogDataBuilder(this.dialogInputData).getResult();
-            this.arrayItemDialogRows = EntityUtilities.getEntityRows(this.dialogData.entity, true);
         }
+        this.displayedColumns = ['select'].concat(givenDisplayColumns);
+        this.dataSource = new MatTableDataSource();
+        this.dataSource.data = this.entityArrayValues;
+        this.arrayItem = new this.metadataEntityArray.EntityClass();
+        this.arrayItemInlineRows = EntityUtilities.getEntityRows(
+            this.arrayItem,
+            this.hideOmitForCreate ?? true,
+            this.hideOmitForEdit
+        );
+        this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
 
-        if (!this.getValidationErrorMessage) {
-            this.getValidationErrorMessage = getValidationErrorMessage;
-        }
+        this.dialogInputData = {
+            entity: this.arrayItem,
+            createDialogData: this.metadataEntityArray.createDialogData,
+            getValidationErrorMessage: this.getValidationErrorMessage
+        };
+        this.dialogData = new AddArrayItemDialogDataBuilder(this.dialogInputData).getResult();
+        this.arrayItemDialogRows = EntityUtilities.getEntityRows(this.dialogData.entity, true);
+    }
+
+    private initObjectInput(): void {
+        this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfigInternal<EntityType>;
+        this.objectProperty = this.internalEntity[this.internalPropertyKey] as unknown as EntityType;
+        this.objectPropertyRows = EntityUtilities.getEntityRows(this.objectProperty, this.hideOmitForCreate, this.hideOmitForEdit);
     }
 
     /**
@@ -197,25 +210,23 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
      */
     addEntity(): void {
         if (this.metadataEntityArray.createInline) {
-            if (this.arrayItem) {
-                if (
-                    !this.metadataEntityArray.allowDuplicates
-                    && this.entityArrayValues.find(async v =>
-                        await EntityUtilities.isEqual(this.arrayItem, v, this.metadata, this.metadataEntityArray.itemType)
-                    )
-                ) {
-                    this.dialog.open(NgxMatEntityConfirmDialogComponent, {
-                        data: this.metadataEntityArray.duplicatesErrorDialog,
-                        autoFocus: false,
-                        restoreFocus: false
-                    });
-                    return;
-                }
-                this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
-                this.dataSource.data = this.entityArrayValues;
-                EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
-                this.emitChange();
+            if (
+                !this.metadataEntityArray.allowDuplicates
+                && this.entityArrayValues.find(async v =>
+                    await EntityUtilities.isEqual(this.arrayItem, v, this.metadata, this.metadataEntityArray.itemType)
+                )
+            ) {
+                this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+                    data: this.metadataEntityArray.duplicatesErrorDialog,
+                    autoFocus: false,
+                    restoreFocus: false
+                });
+                return;
             }
+            this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
+            this.dataSource.data = this.entityArrayValues;
+            EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
+            this.emitChange();
         }
         else {
             this.addArrayItemDialogRef = this.dialog.open(
@@ -225,7 +236,7 @@ export class NgxMatEntityInputComponent<EntityType extends object> implements On
                     autoFocus: false,
                     restoreFocus: false
                 }
-            )
+            );
         }
     }
 

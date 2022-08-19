@@ -8,6 +8,7 @@ import { DateFilterFn } from '@angular/material/datepicker';
 import { Time } from '@angular/common';
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
 import { DateUtilities } from '../../../../classes/date.utilities';
+import { BaseEntityType } from '../../../../classes/entity.model';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -15,7 +16,7 @@ import { DateUtilities } from '../../../../classes/date.utilities';
     templateUrl: './date-time-input.component.html',
     styleUrls: ['./date-time-input.component.scss']
 })
-export class DateTimeInputComponent<EntityType extends object> implements OnInit {
+export class DateTimeInputComponent<EntityType extends BaseEntityType> implements OnInit {
 
     DateUtilities = DateUtilities;
 
@@ -33,8 +34,8 @@ export class DateTimeInputComponent<EntityType extends object> implements OnInit
 
     metadata!: DateTimeDateDecoratorConfigInternal;
 
-    dateTime!: Date;
-    time!: Time;
+    dateTime?: Date;
+    time?: Time;
     timeDropdownValues!: DropdownValue<Time>[];
 
     constructor() { }
@@ -45,7 +46,7 @@ export class DateTimeInputComponent<EntityType extends object> implements OnInit
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.DATE_TIME);
         this.time = DateUtilities.getTimeFromDate(this.entity[this.key] as unknown as Date);
         this.timeDropdownValues = this.metadata.times;
-        if (this.entity[this.key]) {
+        if (this.entity[this.key] != null) {
             this.dateTime = new Date(this.entity[this.key] as unknown as Date);
         }
     }
@@ -58,7 +59,7 @@ export class DateTimeInputComponent<EntityType extends object> implements OnInit
      * @returns Whether or not the time objects are the same.
      */
     compareTimes(time1: Time, time2: Time): boolean {
-        return time1 && time2 && time1.hours === time2.hours && time1.minutes === time2.minutes;
+        return time1.hours === time2.hours && time1.minutes === time2.minutes;
     }
 
     /**

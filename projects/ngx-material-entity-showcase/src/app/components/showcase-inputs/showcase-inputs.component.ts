@@ -65,10 +65,10 @@ export class ShowcaseInputsComponent {
         private readonly router: Router
     ) {
         this.route.params.subscribe(params => {
-            if (params) {
+            if ((params as unknown) != null) {
                 const type: string | undefined = params['type'] as string | undefined;
                 if (!type) {
-                    this.router.navigate(['/']);
+                    void this.router.navigate(['/']);
                 }
                 switch (type) {
                     case 'string':
@@ -97,7 +97,7 @@ export class ShowcaseInputsComponent {
                 }
             }
             else {
-                this.router.navigate(['/']);
+                void this.router.navigate(['/']);
             }
         });
     }

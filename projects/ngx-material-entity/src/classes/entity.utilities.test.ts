@@ -18,7 +18,7 @@ const testEntityWithoutMetadata: TestEntity = builder.testEntityData;
  * @returns Whether or not the given value is an Entity.
  */
 function valueIsEntity(value: unknown): value is Entity {
-    if (value && typeof value === 'object') {
+    if (value != null && typeof value === 'object') {
         return ReflectUtilities.has(value, 'id' as keyof typeof value);
     }
     else {

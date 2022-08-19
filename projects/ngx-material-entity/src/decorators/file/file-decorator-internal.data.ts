@@ -97,7 +97,7 @@ export class DefaultFileDecoratorConfigInternal extends PropertyDecoratorConfigI
         this.mimeTypeErrorDialog = data.mimeTypeErrorDialog ?? getDefaultMimeTypeErrorDialogData(data);
         this.maxSizeErrorDialog = data.maxSizeErrorDialog ?? getDefaultMaxSizeErrorDialogData(data);
         this.maxSizeTotalErrorDialog = data.maxSizeTotalErrorDialog ?? getDefaultMaxSizeTotalErrorDialogData(data);
-        this.dragAndDrop = data.dragAndDrop != null ? data.dragAndDrop : data.multiple ? true : false;
+        this.dragAndDrop = data.dragAndDrop ?? data.multiple;
     }
 }
 
@@ -135,7 +135,7 @@ export class ImageFileDecoratorConfigInternal extends PropertyDecoratorConfigInt
         this.type = data.type;
         this.allowedMimeTypes = data.allowedMimeTypes ?? ['image/*'];
         this.multiple = data.multiple;
-        this.preview = data.preview == null ? true : false;
+        this.preview = data.preview ?? true;
         this.deleteIcon = data.deleteIcon ?? 'fas fa-circle-minus';
         this.maxSize = data.maxSize ?? 10;
         this.maxSizeTotal = data.maxSizeTotal ?? 100;
@@ -143,7 +143,7 @@ export class ImageFileDecoratorConfigInternal extends PropertyDecoratorConfigInt
         this.maxSizeErrorDialog = data.maxSizeErrorDialog ?? getDefaultMaxSizeErrorDialogData(data);
         this.maxSizeTotalErrorDialog = data.maxSizeTotalErrorDialog ?? getDefaultMaxSizeTotalErrorDialogData(data);
         this.previewPlaceholderUrl = data.previewPlaceholderUrl;
-        this.dragAndDrop = data.dragAndDrop != null ? data.dragAndDrop : data.multiple ? true : false;
+        this.dragAndDrop = data.dragAndDrop ?? data.multiple;
     }
 }
 

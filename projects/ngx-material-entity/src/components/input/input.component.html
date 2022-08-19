@@ -3,39 +3,39 @@
     <!-----------------Strings-------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.STRING">
-        <string-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></string-input>
+        <string-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></string-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.STRING_TEXTBOX">
-        <string-textbox-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></string-textbox-input>
+        <string-textbox-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></string-textbox-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.STRING_AUTOCOMPLETE">
-        <string-autocomplete-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></string-autocomplete-input>
+        <string-autocomplete-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></string-autocomplete-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.STRING_DROPDOWN">
-        <string-dropdown-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></string-dropdown-input>
+        <string-dropdown-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></string-dropdown-input>
     </div>
 
     <!-------------------------------------------->
     <!-----------------Booleans------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_CHECKBOX">
-        <boolean-checkbox-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></boolean-checkbox-input>
+        <boolean-checkbox-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></boolean-checkbox-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_TOGGLE">
-        <boolean-toggle-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></boolean-toggle-input>
+        <boolean-toggle-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></boolean-toggle-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.BOOLEAN_DROPDOWN">
-        <boolean-dropdown-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></boolean-dropdown-input>
+        <boolean-dropdown-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></boolean-dropdown-input>
     </div>
 
     <!-------------------------------------------->
     <!------------------Numbers------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.NUMBER">
-        <number-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></number-input>
+        <number-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></number-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.NUMBER_DROPDOWN">
-        <number-dropdown-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></number-dropdown-input>
+        <number-dropdown-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></number-dropdown-input>
     </div>
 
     <!-------------------------------------------->
@@ -48,7 +48,7 @@
             <ngx-mat-entity-input *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
                 [entity]="objectProperty"
                 [propertyKey]="key"
-                [getValidationErrorMessage]="getValidationErrorMessage"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
                 [hideOmitForCreate]="hideOmitForCreate"
                 [hideOmitForEdit]="hideOmitForEdit"
                 class="col-lg-{{EntityUtilities.getWidth(objectProperty, key, 'lg')}} col-md-{{EntityUtilities.getWidth(objectProperty, key, 'md')}} col-sm-{{EntityUtilities.getWidth(objectProperty, key, 'sm')}}"
@@ -73,7 +73,7 @@
                         [entity]="arrayItem"
                         [propertyKey]="key"
                         [hideOmitForCreate]="true"
-                        [getValidationErrorMessage]="getValidationErrorMessage"
+                        [getValidationErrorMessage]="internalGetValidationErrorMessage"
                         class="col-lg-{{EntityUtilities.getWidth(arrayItem, key, 'lg')}} col-md-{{EntityUtilities.getWidth(arrayItem, key, 'md')}} col-sm-{{EntityUtilities.getWidth(arrayItem, key, 'sm')}}"
                         (inputChangeEvent)="checkIsArrayItemValid()"
                     >
@@ -125,42 +125,42 @@
     </div>
 
     <div *ngSwitchCase="DecoratorTypes.ARRAY_DATE">
-        <array-date-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-date-input>
+        <array-date-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></array-date-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.ARRAY_DATE_TIME">
-        <array-date-time-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-date-time-input>
+        <array-date-time-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></array-date-time-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.ARRAY_DATE_RANGE">
-        <array-date-range-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-date-range-input>
+        <array-date-range-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></array-date-range-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.ARRAY_STRING_CHIPS">
-        <array-string-chips-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-string-chips-input>
+        <array-string-chips-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></array-string-chips-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS">
-        <array-string-autocomplete-chips (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></array-string-autocomplete-chips>
+        <array-string-autocomplete-chips (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></array-string-autocomplete-chips>
     </div>
 
     <!-------------------------------------------->
     <!-------------------Dates-------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.DATE">
-        <date-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></date-input>
+        <date-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></date-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.DATE_RANGE">
-        <date-range-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></date-range-input>
+        <date-range-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></date-range-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.DATE_TIME">
-        <date-time-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></date-time-input>
+        <date-time-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></date-time-input>
     </div>
 
     <!-------------------------------------------->
     <!-------------------Files-------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.FILE_DEFAULT">
-        <file-default-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></file-default-input>
+        <file-default-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></file-default-input>
     </div>
     <div *ngSwitchCase="DecoratorTypes.FILE_IMAGE">
-        <file-image-input (inputChangeEvent)="emitChange()" [entity]="entity" [key]="propertyKey" [getValidationErrorMessage]="getValidationErrorMessage"></file-image-input>
+        <file-image-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></file-image-input>
     </div>
 
     <div *ngSwitchDefault>ERROR: The type {{type}} is not known.</div>

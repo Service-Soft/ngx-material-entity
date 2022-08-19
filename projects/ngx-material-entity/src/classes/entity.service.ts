@@ -5,6 +5,8 @@ import { LodashUtilities } from '../capsulation/lodash.utilities';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { FileData } from '../decorators/file/file-decorator.data';
 import { FileUtilities } from './file.utilities';
+import { BaseEntityType } from './entity.model';
+import { Dictionary } from 'lodash';
 
 /**
  * A generic EntityService class.
@@ -12,7 +14,7 @@ import { FileUtilities } from './file.utilities';
  * You should create a service for every Entity you have.
  * If you extend from this you need to make sure that the extended Service can be injected.
  */
-export abstract class EntityService<EntityType extends object> {
+export abstract class EntityService<EntityType extends BaseEntityType> {
     /**
      * The base url used for api requests. If u want to have more control over this,
      * you can override the create, read, update and delete methods.
@@ -170,7 +172,7 @@ export abstract class EntityService<EntityType extends object> {
         id: EntityType[keyof EntityType]
     ): Promise<void> {
         const formData = new FormData();
-        formData.append('body', JSON.stringify(LodashUtilities.omitBy(body, LodashUtilities.isNil)));
+        formData.append('body', JSON.stringify(LodashUtilities.omitBy((body as Dictionary<EntityType[string]>), LodashUtilities.isNil)));
         for (const key of filePropertyKeys) {
             if (EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT).multiple) {
                 // eslint-disable-next-line max-len
@@ -202,7 +204,7 @@ export abstract class EntityService<EntityType extends object> {
         const updatedEntity = await firstValueFrom(
             this.http.patch<EntityType>(
                 `${this.baseUrl}/${id}`,
-                LodashUtilities.omitBy(body, LodashUtilities.isNil)
+                LodashUtilities.omitBy((body as Dictionary<EntityType[string]>), LodashUtilities.isNil)
             )
         );
         this.entities[this.entities.findIndex(e => e[this.idKey] === id)] = updatedEntity;

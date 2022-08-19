@@ -4,6 +4,7 @@ import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum
 import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { DropdownStringDecoratorConfigInternal } from '../../../../decorators/string/string-decorator-internal.data';
 import { NgModel } from '@angular/forms';
+import { BaseEntityType } from '../../../../classes/entity.model';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -11,7 +12,7 @@ import { NgModel } from '@angular/forms';
     templateUrl: './string-dropdown-input.component.html',
     styleUrls: ['./string-dropdown-input.component.scss']
 })
-export class StringDropdownInputComponent<EntityType extends object> implements OnInit {
+export class StringDropdownInputComponent<EntityType extends BaseEntityType> implements OnInit {
 
     @Input()
     entity!: EntityType;

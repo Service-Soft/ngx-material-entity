@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
+import { BaseEntityType } from '../../../classes/entity.model';
 import { EntityService } from '../../../classes/entity.service';
 import { CreateDialogData } from '../table-data';
 
 /**
  * The Definition of the Create Entity Dialog Data.
  */
-export interface CreateEntityDialogData<EntityType extends object> {
+export interface CreateEntityDialogData<EntityType extends BaseEntityType> {
     /**
      * An empty entity that is used as the data model.
      */

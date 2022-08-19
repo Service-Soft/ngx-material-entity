@@ -4,6 +4,7 @@ import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum
 import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { ToggleBooleanDecoratorConfigInternal } from '../../../../decorators/boolean/boolean-decorator-internal.data';
 import { NgModel } from '@angular/forms';
+import { BaseEntityType } from '../../../../classes/entity.model';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -11,7 +12,7 @@ import { NgModel } from '@angular/forms';
     templateUrl: './boolean-toggle-input.component.html',
     styleUrls: ['./boolean-toggle-input.component.scss']
 })
-export class BooleanToggleInputComponent<EntityType extends object> implements OnInit {
+export class BooleanToggleInputComponent<EntityType extends BaseEntityType> implements OnInit {
 
     @Input()
     entity!: EntityType;

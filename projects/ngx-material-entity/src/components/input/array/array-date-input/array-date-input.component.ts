@@ -5,6 +5,7 @@ import { NgModel } from '@angular/forms';
 import { DateUtilities } from '../../../../classes/date.utilities';
 import { MatDialog } from '@angular/material/dialog';
 import { ArrayTable } from '../array-table.class';
+import { BaseEntityType } from '../../../../classes/entity.model';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -12,7 +13,7 @@ import { ArrayTable } from '../array-table.class';
     templateUrl: './array-date-input.component.html',
     styleUrls: ['./array-date-input.component.scss']
 })
-export class ArrayDateInputComponent<EntityType extends object> extends ArrayTable<Date, EntityType> implements OnInit {
+export class ArrayDateInputComponent<EntityType extends BaseEntityType> extends ArrayTable<Date, EntityType> implements OnInit {
 
     DateUtilities = DateUtilities;
 

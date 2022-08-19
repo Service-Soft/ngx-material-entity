@@ -8,6 +8,13 @@ import { DateFilterFn } from '@angular/material/datepicker';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
 import { LodashUtilities } from '../../../../capsulation/lodash.utilities';
 import { DateUtilities } from '../../../../classes/date.utilities';
+import { BaseEntityType } from '../../../../classes/entity.model';
+
+const EMPTY_DATERANGE: DateRange = {
+    start: undefined as unknown as Date,
+    end: undefined as unknown as Date,
+    values: undefined
+};
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -15,7 +22,7 @@ import { DateUtilities } from '../../../../classes/date.utilities';
     templateUrl: './date-range-input.component.html',
     styleUrls: ['./date-range-input.component.scss']
 })
-export class DateRangeInputComponent<EntityType extends object> implements OnInit {
+export class DateRangeInputComponent<EntityType extends BaseEntityType> implements OnInit {
 
     @Input()
     entity!: EntityType;
@@ -32,8 +39,8 @@ export class DateRangeInputComponent<EntityType extends object> implements OnIni
     metadata!: DateRangeDateDecoratorConfigInternal;
 
     dateRange!: DateRange;
-    dateRangeStart!: Date;
-    dateRangeEnd!: Date;
+    dateRangeStart?: Date;
+    dateRangeEnd?: Date;
 
     constructor() { }
 
@@ -42,14 +49,7 @@ export class DateRangeInputComponent<EntityType extends object> implements OnIni
     ngOnInit(): void {
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.DATE_RANGE);
 
-        this.dateRange = LodashUtilities.cloneDeep(this.entity[this.key] as unknown as DateRange);
-        if (!this.dateRange) {
-            this.dateRange = {
-                start: undefined as unknown as Date,
-                end: undefined as unknown as Date,
-                values: undefined
-            }
-        }
+        this.dateRange = LodashUtilities.cloneDeep(this.entity[this.key]) ?? EMPTY_DATERANGE;
         this.dateRangeStart = new Date(this.dateRange.start);
         this.dateRangeEnd = new Date(this.dateRange.end);
         this.setDateRangeValues();

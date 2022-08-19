@@ -2,6 +2,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { BaseEntityType } from '../../../../classes/entity.model';
 import { DateUtilities } from '../../../../classes/date.utilities';
 import { DateRangeArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
@@ -13,7 +14,7 @@ import { ArrayTable } from '../array-table.class';
     templateUrl: './array-date-range-input.component.html',
     styleUrls: ['./array-date-range-input.component.scss']
 })
-export class ArrayDateRangeInputComponent<EntityType extends object> extends ArrayTable<DateRange, EntityType> implements OnInit {
+export class ArrayDateRangeInputComponent<EntityType extends BaseEntityType> extends ArrayTable<DateRange, EntityType> implements OnInit {
 
     DateUtilities = DateUtilities;
 
@@ -45,7 +46,7 @@ export class ArrayDateRangeInputComponent<EntityType extends object> extends Arr
             start: undefined as unknown as Date,
             end: undefined as unknown as Date,
             values: undefined
-        }
+        };
     }
 
     /**

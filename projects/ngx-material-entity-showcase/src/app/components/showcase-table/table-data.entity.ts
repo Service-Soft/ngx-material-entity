@@ -1,7 +1,6 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { HttpClient } from '@angular/common/http';
-import { array, boolean, ConfirmDialogTypes, DecoratorTypes, Entity, EntityService, EntityUtilities, object, string } from 'ngx-material-entity';
-import { EntityClassNewable } from 'projects/ngx-material-entity/src/public-api';
+import { array, boolean, ConfirmDialogTypes, DecoratorTypes, Entity, EntityService, EntityUtilities, object, string, BaseEntityType, EntityClassNewable } from 'ngx-material-entity';
 
 class ConfirmDialogDataEntity extends Entity {
     @array({
@@ -121,7 +120,7 @@ export class CreateDialogDataEntity extends Entity {
     }
 }
 
-export class EditDialogDataEntity<EntityType extends object> extends Entity {
+export class EditDialogDataEntity<EntityType extends BaseEntityType> extends Entity {
 
     @string({
         required: false,
@@ -191,7 +190,7 @@ export class EditDialogDataEntity<EntityType extends object> extends Entity {
     }
 }
 
-export class DisplayColumnEntity<EntityType extends object> extends Entity {
+export class DisplayColumnEntity<EntityType extends BaseEntityType> extends Entity {
     @string({
         displayName: 'Display Column Display Name',
         displayStyle: 'line'
@@ -210,7 +209,7 @@ export class DisplayColumnEntity<EntityType extends object> extends Entity {
     }
 }
 
-export class MultiSelectActionEntity<EntityType extends object> extends Entity {
+export class MultiSelectActionEntity<EntityType extends BaseEntityType> extends Entity {
     @string({
         displayName: 'Multi Select Display Name',
         displayStyle: 'line'
@@ -252,7 +251,7 @@ export class MultiSelectActionEntity<EntityType extends object> extends Entity {
     }
 }
 
-export class BaseDataEntity<EntityType extends object> extends Entity {
+export class BaseDataEntity<EntityType extends BaseEntityType> extends Entity {
     @string({
         displayName: 'Base Data Title',
         displayStyle: 'line'
@@ -376,7 +375,7 @@ export class BaseDataEntity<EntityType extends object> extends Entity {
     }
 }
 
-export class TableDataEntity<EntityType extends object> extends Entity {
+export class TableDataEntity<EntityType extends BaseEntityType> extends Entity {
     @object({
         displayName: 'Base Data',
         displayStyle: 'inline',

@@ -6,6 +6,7 @@ import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { FileUtilities } from '../../../../classes/file.utilities';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { FileData } from '../../../../decorators/file/file-decorator.data';
+import { BaseEntityType } from '../../../../classes/entity.model';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -13,7 +14,7 @@ import { FileData } from '../../../../decorators/file/file-decorator.data';
     templateUrl: './file-default-input.component.html',
     styleUrls: ['./file-default-input.component.scss']
 })
-export class FileDefaultInputComponent<EntityType extends object> implements OnInit {
+export class FileDefaultInputComponent<EntityType extends BaseEntityType> implements OnInit {
 
     FileUtilities = FileUtilities;
 
