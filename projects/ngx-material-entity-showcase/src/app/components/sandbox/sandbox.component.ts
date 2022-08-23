@@ -1,7 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { HttpClient } from '@angular/common/http';
 import { Component, Injectable } from '@angular/core';
-import {array, DecoratorTypes, EntityService, EntityUtilities, string, TableData } from 'ngx-material-entity';
+import {array, DecoratorTypes, Entity, EntityService, EntityUtilities, string, TableData } from 'ngx-material-entity';
 import { environment } from '../../../environments/environment';
 
 class Address {
@@ -37,16 +37,7 @@ class Address {
     }
 }
 
-class Person {
-    @string({
-        omitForCreate: true,
-        omitForUpdate: true,
-        display: false,
-        displayStyle: 'line',
-        displayName: 'ID',
-        required: true
-    })
-    id!: string;
+class Person extends Entity {
 
     @string({
         displayName: 'First Name',
@@ -74,6 +65,7 @@ class Person {
     addresses!: Address[];
 
     constructor(entity?: Person) {
+        super();
         EntityUtilities.new(this, entity);
     }
 }

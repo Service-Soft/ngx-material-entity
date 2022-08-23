@@ -12,7 +12,6 @@ export class TestRandomInputComponent
     extends NgxMatEntityBaseInputComponent<TestEntity, DecoratorTypes.CUSTOM, RandomMetadata> implements OnInit {
 
     randomInput(): void {
-        // this conversion is not needed under real life conditions
         (this.entity[this.key] as string) = this.metadata.customMetadata.random();
         this.emitChange();
     }
