@@ -92,6 +92,9 @@ export class ShowcaseInputsComponent {
                     case 'file':
                         this.setKeys(this.FILE_DECORATOR_TYPES);
                         break;
+                    case 'custom':
+                        this.setKeys([DecoratorTypes.CUSTOM]);
+                        break;
                     default:
                         throw new Error(`The specified type ${type} is unknown`);
                 }

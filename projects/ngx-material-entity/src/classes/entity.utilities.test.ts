@@ -1,15 +1,15 @@
-import { TestEntityMockBuilder, TestEntity, getDatesBetween } from '../mocks/test-entity.mock';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { EntityUtilities } from './entity.utilities';
 import { expect } from '@jest/globals';
 import { ReflectUtilities } from '../capsulation/reflect.utilities';
 import { LodashUtilities } from '../capsulation/lodash.utilities';
 import { Entity } from '../classes/entity.model';
+import { getDatesBetween, TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../mocks/test-entity.interface';
 
-const builder = new TestEntityMockBuilder();
-const testEntity: TestEntity = builder.testEntity;
-const testEntityWithoutData: TestEntity = builder.testEntityWithoutData;
-const testEntityWithoutMetadata: TestEntity = builder.testEntityData;
+const builder = new TestEntityWithoutCustomPropertiesMockBuilder();
+const testEntity: TestEntityWithoutCustomProperties = builder.testEntity;
+const testEntityWithoutData: TestEntityWithoutCustomProperties = builder.testEntityWithoutData;
+const testEntityWithoutMetadata: TestEntityWithoutCustomProperties = builder.testEntityData;
 
 /**
  * Checks whether or not a given value is an Entity.
@@ -125,7 +125,7 @@ describe('isEntityValid', () => {
         expect(EntityUtilities.isEntityValid(testEntityWithoutData, 'update')).toBe(false);
     });
     test('Optional value should not invalidate when set to undefined', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.optionalValue = undefined;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
         tE.optionalValue = 'optional';
@@ -134,7 +134,7 @@ describe('isEntityValid', () => {
 
     // BOOLEAN
     test('BOOLEAN_CHECKBOX BOOLEAN_TOGGLE required', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.booleanCheckboxValue = false;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.booleanCheckboxValue = true;
@@ -148,21 +148,21 @@ describe('isEntityValid', () => {
 
     // STRING
     test('STRING maxLength', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.maxLengthStringValue = '12345';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.maxLengthStringValue = 'ABCD';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('STRING minLength', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.minLengthStringValue = '123';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.minLengthStringValue = 'ABCDEFG';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('STRING regex', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.regexStringValue = '12345s';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.regexStringValue = '54321';
@@ -171,14 +171,14 @@ describe('isEntityValid', () => {
 
     // STRING_AUTOCOMPLETE
     test('STRING_AUTOCOMPLETE maxLength', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.maxLengthAutocompleteStringValue = '12345';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.maxLengthAutocompleteStringValue = 'ABCD';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('STRING_AUTOCOMPLETE minLength', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.minLengthAutocompleteStringValue = '123';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.minLengthAutocompleteStringValue = 'ABCDEFG';
@@ -193,14 +193,14 @@ describe('isEntityValid', () => {
 
     // STRING_TEXTBOX
     test('STRING_TEXTBOX maxLength', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.maxLengthTextboxStringValue = '12345';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.maxLengthTextboxStringValue = 'ABCD';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('STRING_TEXTBOX minLength', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.minLengthTextboxStringValue = '123';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.minLengthTextboxStringValue = 'ABCDEFG';
@@ -209,14 +209,14 @@ describe('isEntityValid', () => {
 
     // NUMBER
     test('NUMBER max', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.maxNumberValue = 11;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.maxNumberValue = 10;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('NUMBER min', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.minNumberValue = 9;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.minNumberValue = 10;
@@ -225,7 +225,7 @@ describe('isEntityValid', () => {
 
     // OBJECT
     test('OBJECT', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.objectValue.maxLengthStringValue = '12345';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.objectValue.maxLengthStringValue = '1234';
@@ -234,7 +234,7 @@ describe('isEntityValid', () => {
 
     // ARRAY
     test('ARRAY', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.stringChipsArrayValue = [];
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.stringChipsArrayValue = ['1234'];
@@ -243,21 +243,21 @@ describe('isEntityValid', () => {
 
     // DATE
     test('DATE max', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.customDateValue.setFullYear(2023);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateValue.setFullYear(2022);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('DATE min', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.customDateValue.setFullYear(2021);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateValue.setFullYear(2022);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('DATE filter', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.customDateValue.setDate(1);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateValue.setDate(2);
@@ -266,7 +266,7 @@ describe('isEntityValid', () => {
 
     // DATE_RANGE
     test('DATE_RANGE undefined', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.customDateRangeValue.start = undefined as unknown as Date;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateRangeValue.start = new Date(testEntity.customDateRangeValue.start);
@@ -278,35 +278,35 @@ describe('isEntityValid', () => {
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('DATE_RANGE maxStart', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.customDateRangeValue.start.setFullYear(2023);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateRangeValue.start.setFullYear(2022);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('DATE_RANGE minStart', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.customDateRangeValue.start.setFullYear(2021);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateRangeValue.start.setFullYear(2022);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('DATE_RANGE maxEnd', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.customDateRangeValue.end.setFullYear(2023);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateRangeValue.end.setFullYear(2022);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('DATE_RANGE minEnd', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.customDateRangeValue.end.setFullYear(2021);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateRangeValue.end.setFullYear(2022);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('DATE_RANGE filter', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.customDateRangeValue.start.setDate(1);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateRangeValue.start.setDate(2);
@@ -325,35 +325,35 @@ describe('isEntityValid', () => {
 
     // DATE_TIME
     test('DATE_TIME maxDate', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.customDateTimeValue.setFullYear(2023);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateTimeValue.setFullYear(2022);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('DATE_TIME minDate', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.customDateTimeValue.setFullYear(2021);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateTimeValue.setFullYear(2022);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('DATE_TIME filterDate', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.customDateTimeValue.setDate(1);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateTimeValue.setDate(2);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('DATE_TIME maxHours', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.customDateTimeValue.setHours(17);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateTimeValue.setHours(16);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('DATE_TIME minHours', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.customDateTimeValue.setHours(7);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateTimeValue.setHours(16);
@@ -367,7 +367,7 @@ describe('isEntityValid', () => {
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('DATE_TIME filter', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.customDateTimeValue.setHours(12);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateTimeValue.setHours(16);
@@ -376,14 +376,14 @@ describe('isEntityValid', () => {
 
     // FILE
     test('FILE missing name', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.fileValue.name = undefined as unknown as string;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.fileValue.name = '6qW2XkuI_400x400.png';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('FILE missing file and url', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.fileValue.file = undefined;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
         tE.fileValue.url = undefined;
@@ -394,21 +394,21 @@ describe('isEntityValid', () => {
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('FILE mimetype invalid', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.imageValue.type = 'application/pdf';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.imageValue.type = 'image/jpg';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('FILE single size invalid', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.fileValue.size = 10000001;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.fileValue.size = 10000000;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
     test('FILE multi size invalid', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         for (let i = 0; i < 10; i++) {
             tE.customImageValues.push(
                 {
@@ -424,9 +424,18 @@ describe('isEntityValid', () => {
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
 
+    // CUSTOM
+    test('CUSTOM isValid', () => {
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        tE.randomValue = '123456';
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.randomValue = '42';
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+
     // unknown metadata type
     test('should throw error for unknown metadata type', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         ReflectUtilities.defineMetadata('type', 'invalid type', tE, 'maxLengthStringValue');
         const expectedEm: string = 'Could not validate the input because the DecoratorType invalid type is not known';
         expect(() => EntityUtilities.isEntityValid(tE, 'create')).toThrow(expectedEm);
@@ -435,16 +444,16 @@ describe('isEntityValid', () => {
 
 describe('dirty', () => {
     test('should be able to tell if an entity was modified', async () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
-        const tEPriorChanges: TestEntity = LodashUtilities.cloneDeep(tE);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(tE);
         expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
         tE.minNumberValue = 1234;
         expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
         expect(await EntityUtilities.dirty(tE, undefined as never)).toBe(false);
     });
     test('should tell if date range array is dirty', async () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
-        const tEPriorChanges: TestEntity = LodashUtilities.cloneDeep(tE);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(tE);
         expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
 
         tE.dateRangeArrayValue[0].start = new Date();
@@ -459,12 +468,20 @@ describe('dirty', () => {
         tE.dateRangeArrayValue = testEntity.dateRangeArrayValue;
         expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
     });
+    test('should tell if custom value is dirty', async () => {
+        const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        tE.randomValue = '12345';
+        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
+        tE.randomValue = '42';
+        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
+    });
 });
 
 describe('compareOrder', () => {
     test('should sort entity properties by their order value', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
-        let keys: (keyof TestEntity)[] = EntityUtilities.keysOf(tE);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        let keys: (keyof TestEntityWithoutCustomProperties)[] = EntityUtilities.keysOf(tE);
         expect(keys[0]).not.toBe('orderValue1');
         keys = keys.sort((a, b) => EntityUtilities.compareOrder(a, b, tE));
         expect(keys[0]).toBe('orderValue1');
@@ -483,8 +500,8 @@ describe('getWidth', () => {
 
 describe('resetChangesOnEntity', () => {
     test('should reset entity', async () => {
-        const tE: TestEntity = new TestEntity(testEntity);
-        const tEPriorChanges: TestEntity = LodashUtilities.cloneDeep(tE);
+        const tE: TestEntityWithoutCustomProperties = new TestEntityWithoutCustomProperties(testEntity);
+        const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(tE);
         tE.minLengthStringValue = 'changed value';
         expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
         EntityUtilities.resetChangesOnEntity(tE, tEPriorChanges);
@@ -494,24 +511,24 @@ describe('resetChangesOnEntity', () => {
 
 describe('getEntityRows', () => {
     test('should get only one row when nothing is defined', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         expect(EntityUtilities.getEntityRows(tE)).toHaveLength(2);
     });
 });
 
 describe('keysOf', () => {
     test('should get all keys of the entity', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
-        expect(EntityUtilities.keysOf(tE)).toHaveLength(48);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        expect(EntityUtilities.keysOf(tE)).toHaveLength(49);
     });
     test('should get keys without omitForCreate', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         const keysWithoutCreate = EntityUtilities.keysOf(tE, true);
         expect(keysWithoutCreate.includes('omitForCreateValue')).toBe(false);
         expect(keysWithoutCreate.includes('omitForUpdateValue')).toBe(true);
     });
     test('should get keys without omitForUpdate', () => {
-        const tE: TestEntity = LodashUtilities.cloneDeep(testEntity);
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         const keysWithoutUpdate = EntityUtilities.keysOf(tE, false, true);
         expect(keysWithoutUpdate.includes('omitForUpdateValue')).toBe(false);
         expect(keysWithoutUpdate.includes('omitForCreateValue')).toBe(true);

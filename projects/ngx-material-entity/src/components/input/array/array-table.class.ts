@@ -2,20 +2,26 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { DateArrayDecoratorConfigInternal, DateRangeArrayDecoratorConfigInternal, DateTimeArrayDecoratorConfigInternal } from '../../../decorators/array/array-decorator-internal.data';
 import { LodashUtilities } from '../../../capsulation/lodash.utilities';
 import { EntityUtilities } from '../../../classes/entity.utilities';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
-import { NgModel } from '@angular/forms';
 import { BaseEntityType } from '../../../classes/entity.model';
+import { NgxMatEntityBaseInputComponent } from '../base-input.component';
+import { DecoratorTypes } from '../../../decorators/base/decorator-types.enum';
+import { Component, OnInit } from '@angular/core';
+
+type ArrayTableType = DecoratorTypes.ARRAY | DecoratorTypes.ARRAY_DATE
+    | DecoratorTypes.ARRAY_DATE_RANGE | DecoratorTypes.ARRAY_DATE_TIME;
 
 /**
  * The base data needed for all arrays that are displayed as a table.
  */
-export abstract class ArrayTable<T, EntityType extends BaseEntityType<EntityType>> {
-    abstract entity: EntityType;
-    abstract key: keyof EntityType;
-    abstract getValidationErrorMessage: (model: NgModel) => string;
+@Component({
+    selector: 'ngx-mat-entity-array-table',
+    template: ''
+})
+export abstract class ArrayTableComponent<T, EntityType extends BaseEntityType<EntityType>, ArrayType extends ArrayTableType>
+    extends NgxMatEntityBaseInputComponent<EntityType, ArrayType> implements OnInit {
 
     arrayValues!: T[];
     input?: T = undefined;
@@ -23,13 +29,12 @@ export abstract class ArrayTable<T, EntityType extends BaseEntityType<EntityType
     selection: SelectionModel<T> = new SelectionModel<T>(true, []);
     displayedColumns!: string[];
 
+    constructor(private readonly matDialog: MatDialog) {
+        super();
+    }
 
-    abstract metadata: DateArrayDecoratorConfigInternal | DateTimeArrayDecoratorConfigInternal | DateRangeArrayDecoratorConfigInternal;
-
-    constructor(private readonly matDialog: MatDialog) {}
-
-    init(): void {
-        this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key) as typeof this.metadata;
+    override ngOnInit(): void {
+        super.ngOnInit();
         if (this.entity[this.key] == null) {
             (this.entity[this.key] as T[]) = [];
         }
@@ -113,6 +118,4 @@ export abstract class ArrayTable<T, EntityType extends BaseEntityType<EntityType
         this.selection.clear();
         this.emitChange();
     }
-
-    protected abstract emitChange(): void;
 }

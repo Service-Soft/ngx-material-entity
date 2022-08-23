@@ -1,14 +1,12 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { EntityUtilities } from '../../../../classes/entity.utilities';
-import { DateTimeDateDecoratorConfigInternal } from '../../../../decorators/date/date-decorator-internal.data';
+import { Component, OnInit } from '@angular/core';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
-import { NgModel } from '@angular/forms';
 import { DateFilterFn } from '@angular/material/datepicker';
 import { Time } from '@angular/common';
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
 import { DateUtilities } from '../../../../classes/date.utilities';
 import { BaseEntityType } from '../../../../classes/entity.model';
+import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -16,34 +14,19 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './date-time-input.component.html',
     styleUrls: ['./date-time-input.component.scss']
 })
-export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
+export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType>>
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.DATE_TIME> implements OnInit {
 
     DateUtilities = DateUtilities;
-
-    @Input()
-    entity!: EntityType;
-
-    @Input()
-    key!: keyof EntityType;
-
-    @Input()
-    getValidationErrorMessage!: (model: NgModel) => string;
-
-    @Output()
-    inputChangeEvent = new EventEmitter<void>();
-
-    metadata!: DateTimeDateDecoratorConfigInternal;
 
     dateTime?: Date;
     time?: Time;
     timeDropdownValues!: DropdownValue<Time>[];
 
-    constructor() { }
-
     defaultDateFilter: DateFilterFn<Date | null | undefined> = (): boolean => true;
 
-    ngOnInit(): void {
-        this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.DATE_TIME);
+    override ngOnInit(): void {
+        super.ngOnInit();
         this.time = DateUtilities.getTimeFromDate(this.entity[this.key] as Date);
         this.timeDropdownValues = this.metadata.times;
         if (this.entity[this.key] != null) {
@@ -59,7 +42,8 @@ export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType
      * @returns Whether or not the time objects are the same.
      */
     compareTimes(time1: Time, time2: Time): boolean {
-        return time1.hours === time2.hours && time1.minutes === time2.minutes;
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        return time1 && time2 && time1.hours === time2.hours && time1.minutes === time2.minutes;
     }
 
     /**
@@ -79,9 +63,5 @@ export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType
             (this.entity[this.key] as Date).setHours(0, 0, 0, 0);
         }
         this.emitChange();
-    }
-
-    emitChange(): void {
-        this.inputChangeEvent.emit();
     }
 }

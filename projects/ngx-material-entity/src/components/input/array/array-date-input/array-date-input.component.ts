@@ -1,11 +1,9 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DateArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
-import { NgModel } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 import { DateUtilities } from '../../../../classes/date.utilities';
-import { MatDialog } from '@angular/material/dialog';
-import { ArrayTable } from '../array-table.class';
+import { ArrayTableComponent } from '../array-table.class';
 import { BaseEntityType } from '../../../../classes/entity.model';
+import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -13,33 +11,8 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './array-date-input.component.html',
     styleUrls: ['./array-date-input.component.scss']
 })
-export class ArrayDateInputComponent<EntityType extends BaseEntityType<EntityType>> extends ArrayTable<Date, EntityType> implements OnInit {
+export class ArrayDateInputComponent<EntityType extends BaseEntityType<EntityType>>
+    extends ArrayTableComponent<Date, EntityType, DecoratorTypes.ARRAY_DATE> implements OnInit {
 
     DateUtilities = DateUtilities;
-
-    @Input()
-    entity!: EntityType;
-
-    @Input()
-    key!: keyof EntityType;
-
-    @Input()
-    getValidationErrorMessage!: (model: NgModel) => string;
-
-    @Output()
-    inputChangeEvent = new EventEmitter<void>();
-
-    metadata!: DateArrayDecoratorConfigInternal;
-
-    constructor(private readonly dialog: MatDialog) {
-        super(dialog);
-    }
-
-    ngOnInit(): void {
-        this.init();
-    }
-
-    protected emitChange(): void {
-        this.inputChangeEvent.emit();
-    }
 }

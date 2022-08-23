@@ -1,5 +1,6 @@
 import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, DateArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal, DateTimeArrayDecoratorConfigInternal, DateRangeArrayDecoratorConfigInternal } from '../array/array-decorator-internal.data';
 import { CheckboxBooleanDecoratorConfigInternal, DropdownBooleanDecoratorConfigInternal, ToggleBooleanDecoratorConfigInternal } from '../boolean/boolean-decorator-internal.data';
+import { CustomDecoratorConfigInternal } from '../custom/custom-decorator-internal.data';
 import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from '../date/date-decorator-internal.data';
 import { DefaultFileDecoratorConfigInternal, ImageFileDecoratorConfigInternal } from '../file/file-decorator-internal.data';
 import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal } from '../number/number-decorator-internal.data';
@@ -30,13 +31,14 @@ export enum DecoratorTypes {
     DATE_RANGE = 'dateRange',
     DATE_TIME = 'dateTime',
     FILE_DEFAULT = 'fileDefault',
-    FILE_IMAGE = 'fileImage'
+    FILE_IMAGE = 'fileImage',
+    CUSTOM = 'custom'
 }
 
 /**
  * Gives the metadata-config Type based on the DecoratorTypes enum.
  */
-export type DecoratorType<T> =
+export type DecoratorType<T, CustomMetadataType extends Record<string, unknown>> =
     T extends DecoratorTypes.STRING ? DefaultStringDecoratorConfigInternal
     : T extends DecoratorTypes.STRING_TEXTBOX ? TextboxStringDecoratorConfigInternal
     : T extends DecoratorTypes.STRING_DROPDOWN ? DropdownStringDecoratorConfigInternal
@@ -60,4 +62,6 @@ export type DecoratorType<T> =
     : T extends DecoratorTypes.DATE_TIME ? DateTimeDateDecoratorConfigInternal
     : T extends DecoratorTypes.FILE_DEFAULT ? DefaultFileDecoratorConfigInternal
     : T extends DecoratorTypes.FILE_IMAGE ? ImageFileDecoratorConfigInternal
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    : T extends DecoratorTypes.CUSTOM ? CustomDecoratorConfigInternal<any, any, CustomMetadataType, any>
     : never;

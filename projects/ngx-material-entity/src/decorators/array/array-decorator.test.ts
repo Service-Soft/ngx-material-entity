@@ -3,9 +3,9 @@ import { expect } from '@jest/globals';
 import { Entity } from '../../classes/entity.model';
 import { EntityUtilities } from '../../classes/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
-import { TestEntity, TestEntityMockBuilder } from '../../mocks/test-entity.mock';
+import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../../mocks/test-entity.interface';
 
-const testEntity: TestEntity = new TestEntityMockBuilder().testEntity;
+const testEntity: TestEntityWithoutCustomProperties = new TestEntityWithoutCustomPropertiesMockBuilder().testEntity;
 
 test('should have array Metadata', () => {
     const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'entityArrayValue', DecoratorTypes.ARRAY);

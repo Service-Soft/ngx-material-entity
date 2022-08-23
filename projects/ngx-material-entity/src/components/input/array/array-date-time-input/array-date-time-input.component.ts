@@ -1,13 +1,11 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DateTimeArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
-import { NgModel } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 import { DateUtilities } from '../../../../classes/date.utilities';
-import { ArrayTable } from '../array-table.class';
-import { MatDialog } from '@angular/material/dialog';
+import { ArrayTableComponent } from '../array-table.class';
 import { Time } from '@angular/common';
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
 import { BaseEntityType } from '../../../../classes/entity.model';
+import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -16,34 +14,16 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     styleUrls: ['./array-date-time-input.component.scss']
 })
 export class ArrayDateTimeInputComponent<EntityType extends BaseEntityType<EntityType>>
-    extends ArrayTable<Date, EntityType> implements OnInit {
+    extends ArrayTableComponent<Date, EntityType, DecoratorTypes.ARRAY_DATE_TIME> implements OnInit {
 
     DateUtilities = DateUtilities;
-
-    @Input()
-    entity!: EntityType;
-
-    @Input()
-    key!: keyof EntityType;
-
-    @Input()
-    getValidationErrorMessage!: (model: NgModel) => string;
-
-    @Output()
-    inputChangeEvent = new EventEmitter<void>();
-
-    metadata!: DateTimeArrayDecoratorConfigInternal;
 
     dateTime?: Date;
     time?: Time;
     timeDropdownValues!: DropdownValue<Time>[];
 
-    constructor(private readonly dialog: MatDialog) {
-        super(dialog);
-    }
-
-    ngOnInit(): void {
-        this.init();
+    override ngOnInit(): void {
+        super.ngOnInit();
         this.time = DateUtilities.getTimeFromDate(this.entity[this.key] as Date);
         this.timeDropdownValues = this.metadata.times;
         if (this.entity[this.key] != null) {
@@ -65,9 +45,5 @@ export class ArrayDateTimeInputComponent<EntityType extends BaseEntityType<Entit
             this.input.setHours(this.time.hours, this.time.minutes, 0, 0);
             this.add();
         }
-    }
-
-    protected emitChange(): void {
-        this.inputChangeEvent.emit();
     }
 }
