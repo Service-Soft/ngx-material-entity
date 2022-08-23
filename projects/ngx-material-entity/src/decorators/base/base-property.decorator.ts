@@ -8,7 +8,10 @@ import { DecoratorType, DecoratorTypes } from './decorator-types.enum';
  * @param type - The type of metadata.
  * @returns The method that sets the metadata.
  */
-export function baseProperty<T extends DecoratorTypes>(metadata: DecoratorType<T>, type: T) {
+export function baseProperty<
+    T extends DecoratorTypes,
+    CustomMetadataType extends Record<string, unknown>
+>(metadata: DecoratorType<T, CustomMetadataType>, type: T) {
     return function (target: object, propertyKey: string) {
         ReflectUtilities.defineMetadata('metadata', metadata, target, propertyKey);
         ReflectUtilities.defineMetadata('type', type, target, propertyKey);

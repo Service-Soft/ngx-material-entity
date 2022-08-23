@@ -1,13 +1,14 @@
 import { EntityUtilities } from '../../classes/entity.utilities';
 import { string } from '../string/string.decorator';
 import { Entity } from '../../classes/entity.model';
-import { TestEntityMockBuilder } from '../../mocks/test-entity.mock';
+import { TestEntityWithoutCustomPropertiesMockBuilder } from '../../mocks/test-entity.interface';
 import { DecoratorTypes } from './decorator-types.enum';
 import { expect } from '@jest/globals';
 
 describe('baseProperty', () => {
     test('id should have base Metadata', () => {
-        const metadata = EntityUtilities.getPropertyMetadata(new TestEntityMockBuilder().testEntity, 'id', DecoratorTypes.STRING);
+        // eslint-disable-next-line max-len
+        const metadata = EntityUtilities.getPropertyMetadata(new TestEntityWithoutCustomPropertiesMockBuilder().testEntity, 'id', DecoratorTypes.STRING);
         expect(metadata).toBeDefined();
         expect(metadata.display).toBe(false);
         expect(metadata.displayName).toBe('ID');

@@ -35,6 +35,7 @@ import { FileInputComponent } from './file/file-input/file-input.component';
 import { FileImageInputComponent } from './file/file-image-input/file-image-input.component';
 import { FileDefaultInputComponent } from './file/file-default-input/file-default-input.component';
 import { DragDropDirective } from './file/file-input/dragDrop.directive';
+import { CustomInputComponent } from './custom/custom.component';
 
 @NgModule({
     declarations: [
@@ -59,6 +60,7 @@ import { DragDropDirective } from './file/file-input/dragDrop.directive';
         FileImageInputComponent,
         FileDefaultInputComponent,
         DragDropDirective,
+        CustomInputComponent,
         NgxMatEntityInputComponent
     ],
     imports: [

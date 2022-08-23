@@ -32,6 +32,8 @@ export * from './components/table/edit-dialog/edit-entity-dialog.component';
 
 export * from './components/get-validation-error-message.function';
 
+export * from './components/input/base-input.component';
+
 // decorators
 export * from './decorators/array/array.decorator';
 export * from './decorators/array/array-decorator.data';
@@ -57,3 +59,6 @@ export * from './decorators/string/string-decorator.data';
 
 export * from './decorators/file/file.decorator';
 export * from './decorators/file/file-decorator.data';
+
+export * from './decorators/custom/custom.decorator';
+export * from './decorators/custom/custom-decorator.data';

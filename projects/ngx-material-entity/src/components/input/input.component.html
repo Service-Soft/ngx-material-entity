@@ -163,6 +163,13 @@
         <file-image-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></file-image-input>
     </div>
 
+    <!-------------------------------------------->
+    <!-------------------Custom------------------->
+    <!-------------------------------------------->
+    <div *ngSwitchCase="DecoratorTypes.CUSTOM">
+        <custom-input (inputChangeEvent)="emitChange()" [entity]="internalEntity" [key]="internalPropertyKey" [getValidationErrorMessage]="internalGetValidationErrorMessage"></custom-input>
+    </div>
+
     <div *ngSwitchDefault>ERROR: The type {{type}} is not known.</div>
 </div>
 

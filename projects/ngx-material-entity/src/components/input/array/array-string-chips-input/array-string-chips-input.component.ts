@@ -1,12 +1,10 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
-import { EntityUtilities } from '../../../../classes/entity.utilities';
-import { StringChipsArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
-import { NgModel } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { BaseEntityType } from '../../../../classes/entity.model';
+import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -14,30 +12,15 @@ import { BaseEntityType } from '../../../../classes/entity.model';
     templateUrl: './array-string-chips-input.component.html',
     styleUrls: ['./array-string-chips-input.component.scss']
 })
-export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
-
-    @Input()
-    entity!: EntityType;
-
-    @Input()
-    key!: keyof EntityType;
-
-    @Input()
-    getValidationErrorMessage!: (model: NgModel) => string;
-
-    @Output()
-    inputChangeEvent = new EventEmitter<void>();
-
-    metadata!: StringChipsArrayDecoratorConfigInternal;
+export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<EntityType>>
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.ARRAY_STRING_CHIPS> implements OnInit {
 
     stringChipsArrayValues?: string[];
 
     chipsInput: string = '';
 
-    constructor() { }
-
-    ngOnInit(): void {
-        this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.ARRAY_STRING_CHIPS);
+    override ngOnInit(): void {
+        super.ngOnInit();
         if ((this.entity[this.key] as string[] | undefined)?.length) {
             this.stringChipsArrayValues = (this.entity[this.key] as string[]);
         }
@@ -120,9 +103,5 @@ export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<En
         }
         this.stringChipsArrayValues.push(value);
         chipsInput.value = '';
-    }
-
-    emitChange(): void {
-        this.inputChangeEvent.emit();
     }
 }

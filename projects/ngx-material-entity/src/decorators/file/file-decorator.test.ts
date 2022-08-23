@@ -1,11 +1,11 @@
 import { expect } from '@jest/globals';
 import { EntityUtilities } from '../../classes/entity.utilities';
-import { TestEntity, TestEntityMockBuilder } from '../../mocks/test-entity.mock';
+import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../../mocks/test-entity.interface';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DefaultFileDecoratorConfig } from './file-decorator.data';
 import { file } from './file.decorator';
 
-const testEntity: TestEntity = new TestEntityMockBuilder().testEntity;
+const testEntity: TestEntityWithoutCustomProperties = new TestEntityWithoutCustomPropertiesMockBuilder().testEntity;
 
 test('should have default file metadata', () => {
     const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'fileValue', DecoratorTypes.FILE_DEFAULT);

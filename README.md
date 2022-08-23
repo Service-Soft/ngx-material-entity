@@ -1,9 +1,13 @@
 # NgxMaterialEntity
 With NgxMaterialEntity you can define how to display entities directly on their properties by using a multitude of decorators for them. You can then use the input component to display the value solely based on the entity and the propertyKey.
 
-It also offers a table component which generates complete CRUD-functionality right out of the box.
+If the predefined decorators dont quite fit your needs you can also build your own.
+
+The library also offers a table component which generates complete CRUD-functionality right out of the box.
 
 NgxMaterialEntity aims to have a fast way to get started with a lot of default options which can be overriden to allow high customization aswell.
+
+![](https://raw.githubusercontent.com/tim-fabian/ngx-material-entity/release/ngx-mat-entity.gif)
 
 [![CI/CD](https://github.com/tim-fabian/ngx-material-entity/actions/workflows/main.yml/badge.svg?branch=release)](https://github.com/tim-fabian/ngx-material-entity/actions/workflows/main.yml)
 [![npm version](https://badge.fury.io/js/ngx-material-entity.svg)](https://badge.fury.io/js/ngx-material-entity)
@@ -19,7 +23,7 @@ NgxMaterialEntity aims to have a fast way to get started with a lot of default o
   - [Use the input for your entity property](#use-the-input-for-your-entity-property)
   - [Generate a complete CRUD Table for your entity](#generate-a-complete-crud-table-for-your-entity)
     - [Create a Service for your entity](#create-a-service-for-your-entity)
-    - [Define the CRUD-Element](#define-the-crud-element)
+    - [Define the Table-Element](#define-the-table-element)
 - [PropertyDecorators](#propertydecorators)
   - [base](#base)
   - [@string default](#string-default)
@@ -39,6 +43,16 @@ NgxMaterialEntity aims to have a fast way to get started with a lot of default o
   - [@array entity](#array-entity)
   - [@array string chips](#array-string-chips)
   - [@array string chips autocomplete](#array-string-chips-autocomplete)
+  - [@array date](#array-date)
+  - [@array date time](#array-date-time)
+  - [@array date range](#array-date-range)
+  - [@file data](#file-data)
+  - [@file](#file)
+  - [@file default](#file-default)
+  - [@file image](#file-image)
+  - [@custom](#custom)
+    - [metadata](#metadata)
+    - [component](#component)
 - [NgxMatEntityInput Configuration](#ngxmatentityinput-configuration)
 - [NgxMatEntityTable Configuration](#ngxmatentitytable-configuration)
   - [Display Columns](#display-columns)
@@ -116,12 +130,12 @@ For a list of further configuration options for the input see [PropertyInput Con
 It is pretty easy to use the input component inside a for-loop that iterates over every key of an entity to build a complete form for that entity.
 <br>
 We thought this approach a bit further and build a complete CRUD table component with support for:
-- omitting values for creation or updating
-- layouting
-- responsive design
+- omitting values for creating or updating entities
+- layouting & responsive design (based on bootstrap)
 - multi select actions
+- validation
 
-As always is the component ready to use out of the box but offers a lot of customization aswell.
+The component is usable out of the box but offers a lot of customization aswell.
 
 ### Create a Service for your entity
 In order to use the table component you have to define a service that handles http-Requests for the entity and extends from the abstract EntityService-Class:
@@ -138,10 +152,12 @@ export class MyEntityService extends EntityService<MyEntity> {
     constructor(private readonly httpClient: HttpClient) {
         super(httpClient);
     }
+
+    // All the create, read, update and delete logic is already implemented, but you can of course override it.
 }
 ```
 
-### Define the CRUD-Element
+### Define the Table-Element
 Import the `NgxMatEntityTableModule` anywhere in your code:
 
 ```typescript
@@ -154,18 +170,41 @@ import { NgxMatEntityTableModule } from 'ngx-material-entity';
 ...
 ```
 
+In your ts you can then define the table configuration data, eg.:
+
+```typescript
+const tableData: TableData<MyEntity> = {
+    baseData: {
+        title: 'My Entities', // The title above the table
+        displayColumns: [
+            {
+                displayName: 'id',
+                value: (entity: MyEntity) => entity.id
+            },
+            {
+                displayName: 'My String',
+                value: (entity: MyEntity) => entity.myString
+            }
+        ],
+        EntityClass: MyEntity,
+        EntityServiceClass: MyEntityService,
+    },
+    createDialogData: {
+        title: 'Create My Entity'
+    },
+    editDialogData: {
+        title: (entity: MyEntity) => `My Entity #${entity.id}`
+    }
+};
+```
+
 In the html you can then define:
 
 ```html
-<ngx-mat-entity-table
-    [displayColumns]="displayColumns"
-    [title]="title"
-    [EntityServiceClass]="MyEntityService"
-    [EntityClass]="MyEntity"
-    [multiSelectActions]="multiSelectActions"
-    [createDialogTitle]="'Custom Create Dialog Title'">
+<ngx-mat-entity-table [tableData]="tableData">
 </ngx-mat-entity-table>
 ```
+
 For a list of all configuration options see [NgxMatEntityTable Configuration](#ngxmatentitytable-configuration).
 
 # PropertyDecorators
@@ -220,14 +259,13 @@ export abstract class PropertyDecoratorConfig {
     position?: Position
 }
 ```
-For more information regarding the defaultWidths see the bootstrap guide about the [Grid system](https://getbootstrap.com/docs/5.0/layout/grid/).
+For more information regarding the "defaultWidths" see the bootstrap guide about the [Grid system](https://getbootstrap.com/docs/5.0/layout/grid/).
 
 ## @string default
 The "default" display of a string value. Inside a single line mat-input.
 
 ```typescript
 export interface DefaultStringDecoratorConfig extends StringDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'line',
     /**
      * The minimum required length of the string.
@@ -249,13 +287,11 @@ Displays a string as a dropdown where the user can input one of the defined drop
 
 ```typescript
 export interface DropdownStringDecoratorConfig extends StringDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown',
     /**
      * The values of the dropdown, consisting of a name to display and the actual value
      * Can also receive a function to determine the values.
      */
-    // eslint-disable-next-line jsdoc/require-jsdoc
     dropdownValues: DropdownValue<string>[]
 }
 ```
@@ -265,7 +301,6 @@ Displays a string as a textbox.
 
 ```typescript
 export interface TextboxStringDecoratorConfig extends StringDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'textbox',
     /**
      * The minimum required length of the string.
@@ -283,7 +318,6 @@ Just like the default @string, but the user has additional autocomplete values t
 
 ```typescript
 export interface AutocompleteStringDecoratorConfig extends StringDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'autocomplete',
     /**
      * The autocomplete values.
@@ -309,7 +343,6 @@ The "default" display of a number value. Inside a single line mat-input.
 
 ```typescript
 export interface DefaultNumberDecoratorConfig extends NumberDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'line',
     /**
      * The minimum value of the number.
@@ -327,12 +360,10 @@ Displays the numbers in a dropdown
 
 ```typescript
 export interface DropdownNumberDecoratorConfig extends NumberDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown',
     /**
      * The values of the dropdown, consisting of a name to display and the actual value.
      */
-    // eslint-disable-next-line jsdoc/require-jsdoc
     dropdownValues: DropdownValue<number>[]
 }
 ```
@@ -342,7 +373,6 @@ Displays the boolean value as a MatSlideToggle
 
 ```typescript
 export interface ToggleBooleanDecoratorConfig extends BooleanDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'toggle'
 }
 ```
@@ -352,7 +382,6 @@ Displays the boolean value as a MatCheckbox
 
 ```typescript
 export interface CheckboxBooleanDecoratorConfig extends BooleanDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'checkbox'
 }
 ```
@@ -362,7 +391,6 @@ Displays the boolean value as a MatCheckbox
 
 ```typescript
 export interface DropdownBooleanDecoratorConfig extends BooleanDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown',
     /**
      * The name of the true value if displayStyle dropdown is used.
@@ -379,7 +407,6 @@ export interface DropdownBooleanDecoratorConfig extends BooleanDecoratorConfig {
 Displays a date value as an mat-datepicker.
 ```typescript
 export interface DefaultDateDecoratorConfig extends DateDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'date',
     /**
      * A function to get the minimum value of the date.
@@ -401,7 +428,6 @@ Displays the selection of a time period as the daterange-picker.
 
 ```typescript
 export interface DateRangeDateDecoratorConfig extends DateDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'daterange',
     /**
      * A function to get the minimum value of the start date.
@@ -443,7 +469,6 @@ Displays the date as a datetime input.
 
 ```typescript
 export interface DateTimeDateDecoratorConfig extends DateDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'datetime',
     /**
      * The selectable times.
@@ -525,9 +550,7 @@ abstract class ArrayDecoratorConfig extends PropertyDecoratorConfig {
  * Definition for an array of Entities.
  */
 export interface EntityArrayDecoratorConfig<EntityType extends object> extends ArrayDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.OBJECT,
-    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'table',
 
     /**
@@ -582,9 +605,7 @@ export interface EntityArrayDecoratorConfig<EntityType extends object> extends A
  * Definition for an array of strings displayed as a chips list.
  */
 export interface StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.STRING,
-    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'chips',
 
     /**
@@ -614,9 +635,7 @@ export interface StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
  * Definition for an array of autocomplete strings displayed as a chips list.
  */
 export interface AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
-    // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'chips',
 
     /**
@@ -641,6 +660,358 @@ export interface AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecora
      * A regex used for validation.
      */
     regex?: RegExp
+}
+```
+
+## @array date
+```typescript
+/**
+ * Definition for an array of Dates.
+ */
+export interface DateArrayDecoratorConfig extends ArrayDecoratorConfig {
+    itemType: DecoratorTypes.DATE,
+
+    /**
+     * The definition of the columns to display. Consists of the displayName to show in the header of the row
+     * and the value, which is a function that generates the value to display inside a column.
+     */
+    displayColumns: ArrayTableDisplayColumn<Date>[],
+
+    /**
+     * The label for the add button.
+     *
+     * @default 'Add'
+     */
+    addButtonLabel?: string,
+
+     /**
+      * The label for the remove button.
+      *
+      * @default 'Remove'
+      */
+    removeButtonLabel?: string,
+
+    /**
+     * The error-message to display when the array is required but contains no values.
+     */
+    missingErrorMessage?: string,
+
+    /**
+     * A function to get the minimum value of the date.
+     */
+    min?: (date?: Date) => Date,
+
+    /**
+     * A function to get the maximum value of the date.
+     */
+    max?: (date?: Date) => Date,
+
+    /**
+     * A filter function to do more specific filtering. This could be the removal of e.g. All weekends.
+     */
+    filter?: DateFilterFn<Date | null | undefined>
+}
+```
+
+## @array date time
+```typescript
+/**
+ * Definition for an array of DateTimes.
+ */
+export interface DateTimeArrayDecoratorConfig extends ArrayDecoratorConfig {
+    itemType: DecoratorTypes.DATE_TIME,
+
+    /**
+     * The definition of the columns to display. Consists of the displayName to show in the header of the row
+     * and the value, which is a function that generates the value to display inside a column.
+     */
+    displayColumns: ArrayTableDisplayColumn<Date>[],
+
+    /**
+     * The label for the add button.
+     *
+     * @default 'Add'
+     */
+    addButtonLabel?: string,
+
+     /**
+      * The label for the remove button.
+      *
+      * @default 'Remove'
+      */
+    removeButtonLabel?: string,
+
+    /**
+     * The error-message to display when the array is required but contains no values.
+     */
+    missingErrorMessage?: string,
+
+    /**
+     * The selectable times.
+     */
+    times?: DropdownValue<Time>[],
+
+    /**
+     * The name to use as a label for the time form field.
+     *
+     * @default 'Time'
+     */
+    timeDisplayName?: string,
+
+    /**
+     * A function to get the minimum value of the date.
+     */
+    minDate?: (date?: Date) => Date,
+
+    /**
+     * A function to get the maximum value of the date.
+     */
+    maxDate?: (date?: Date) => Date,
+
+    /**
+     * A filter function to do more specific date filtering. This could be the removal of e.g. All weekends.
+     */
+    filterDate?: DateFilterFn<Date | null | undefined>,
+
+    /**
+     * A function to get the minimum value of the time.
+     */
+    minTime?: (date?: Date) => Time,
+
+    /**
+     * A function to get the maximum value of the time.
+     */
+    maxTime?: (date?: Date) => Time,
+
+    /**
+     * A filter function to do more specific time filtering. This could be e.g. The removal of lunch breaks.
+     */
+    filterTime?: ((time: Time) => boolean) | (() => boolean)
+}
+```
+
+## @array date range
+```typescript
+/**
+ * Definition for an array of DateRanges.
+ */
+export interface DateRangeArrayDecoratorConfig extends ArrayDecoratorConfig {
+    itemType: DecoratorTypes.DATE_RANGE,
+
+    /**
+     * The definition of the columns to display. Consists of the displayName to show in the header of the row
+     * and the value, which is a function that generates the value to display inside a column.
+     */
+    displayColumns: ArrayTableDisplayColumn<DateRange>[],
+
+    /**
+     * The label for the add button.
+     *
+     * @default 'Add'
+     */
+    addButtonLabel?: string,
+
+     /**
+      * The label for the remove button.
+      *
+      * @default 'Remove'
+      */
+    removeButtonLabel?: string,
+
+    /**
+     * The error-message to display when the array is required but contains no values.
+     */
+    missingErrorMessage?: string,
+
+    /**
+     * A function to get the minimum value of the start date.
+     */
+    minStart?: (date?: Date) => Date,
+    /**
+     * A function to get the maximum value of the start date.
+     */
+    maxStart?: (date?: Date) => Date,
+    /**
+     * A function to get the minimum value of the end date.
+     */
+    minEnd?: (date?: Date) => Date,
+    /**
+     * A function to get the maximum value of the end date.
+     */
+    maxEnd?: (date?: Date) => Date,
+    /**
+     * A filter function to do more specific filtering on the disallowed end date values. This could be the removal of e.g. All weekends.
+     */
+    filter?: DateFilterFn<Date>,
+    /**
+     * The placeholder for the start date of the date range picker.
+     *
+     * @default "Start"
+     */
+    placeholderStart?: string,
+    /**
+     * The placeholder for the end date of the date range picker.
+     *
+     * @default "End"
+     */
+    placeholderEnd?: string
+}
+```
+
+## @file data
+```typescript
+/**
+ * The type of any property annotated with @file.
+ */
+export type FileData = FileDataWithFile | FileDataWithUrl;
+```
+
+## @file
+```typescript
+abstract class FileDecoratorConfig extends PropertyDecoratorConfig {
+    /**
+     * Specifies whether or not the decorated property can have multiple files.
+     */
+    multiple!: boolean;
+
+    /**
+     * The type of the upload.
+     */
+    type!: 'image' | 'other';
+
+    /**
+     * The class for the <i> tag used to remove a file from the input.
+     *
+     * @default 'fas fa-circle-minus'
+     */
+    deleteIcon?: string;
+
+    /**
+     * Whether or not the file should be displayed inside a preview.
+     *
+     * @default true
+     */
+    preview?: boolean;
+
+    /**
+     * Specifies allowed File types like 'image/jpg' etc.
+     * Allows every file type if not set.
+     */
+    allowedMimeTypes?: string[];
+
+    /**
+     * The error dialog to display when the user inputs files that are not of the allowed mime types.
+     */
+    mimeTypeErrorDialog?: ConfirmDialogData;
+
+    /**
+     * The maximum allowed size of a single file in MB.
+     *
+     * @default 10
+     */
+    maxSize?: number;
+
+    /**
+     * The error dialog to display when the user inputs a single file that is bigger than the 'maxSize' value.
+     */
+    maxSizeErrorDialog?: ConfirmDialogData;
+
+    /**
+     * The maximum allowed size of all files in MB.
+     *
+     * @default 100
+     */
+    maxSizeTotal?: number;
+
+    /**
+     * The error dialog to display when the user inputs files which are in total bigger than the 'maxSizeTotal' value.
+     */
+    maxSizeTotalErrorDialog?: ConfirmDialogData;
+
+    /**
+     * Defines whether or not a dropdown box is displayed.
+     *
+     * @default true // when multiple is set to true.
+     * false // when multiple is set to false.
+     */
+    dragAndDrop?: boolean;
+}
+```
+
+## @file default
+```typescript
+/**
+ * Definition for a default file.
+ */
+export interface DefaultFileDecoratorConfig extends FileDecoratorConfig {
+    type: 'other',
+    preview?: false
+}
+```
+
+## @file image
+```typescript
+/**
+ * Definition for a image file.
+ */
+export interface ImageFileDecoratorConfig extends FileDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    type: 'image',
+    /**
+     * Specifies allowed File types like image/jpg etc. In a comma separated string.
+     *
+     * @default ['image/*']
+     */
+    allowedMimeTypes?: string[],
+    /**
+     * Url to the file that gets displayed in the preview when no file has been selected yet.
+     */
+    previewPlaceholderUrl?: string
+}
+```
+
+## @custom
+Wit the custom decorator you have the freedom to build your own input components.
+
+### metadata
+The @custom decorator gives you the option to provide additional metadata.
+It also uses generics to provide type safety for you:
+
+```typescript
+// Somewhere outside the entity
+// This is the additional metadata to provide for the property.
+interface MyCustomMetadata {
+    random: () => string
+}
+.
+.
+.
+// Somewhere inside the entity
+@custom<string, MyCustomMetadata, MyEntity>({
+    customMetadata: {
+        // This is type safe because we defined two lines above that the custom metadata has the type "MyCustomMetadata"
+        random: () => (Math.random() + 1).toString(36).substring(7)
+    },
+    displayName: 'Random Value',
+    component: CustomInputComponent // will be defined below
+})
+randomValue!: string;
+```
+### component
+The component needs to extend the NgxMatEntityBaseInputComponent:
+```typescript
+@Component({
+    selector: 'custom-input-component',
+    templateUrl: './custom-input.component.html',
+    styleUrls: ['./custom-input.component.scss']
+})
+export class CustomInputComponent
+    extends NgxMatEntityBaseInputComponent<MyEntity, DecoratorTypes.CUSTOM, MyCustomMetadata>
+    implements OnInit {
+    // Define your logic here.
+    // The base class already provides the entity and key values and handles getting the metadata.
+    // This is also type safe because we defined above that the custom metadata has the type "MyCustomMetadata"
+    // and the entity has the type "MyEntity"
 }
 ```
 
