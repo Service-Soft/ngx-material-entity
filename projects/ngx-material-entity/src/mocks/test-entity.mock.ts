@@ -24,7 +24,9 @@ export class TestEntity extends TestEntityWithoutCustomProperties implements Tes
             random: () => (Math.random() + 1).toString(36).substring(7)
         },
         displayName: 'Random Value',
-        // this conversion is not needed under real life conditions
+        // this conversion is not needed under real life conditions.
+        // The problem is that this file uses the library BEFORE it is compiled,
+        // while the imported "TestRandomInputComponent" uses the library AFTER it was compiled.
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
         component: TestRandomInputComponent as any
     })
