@@ -1,8 +1,7 @@
 /* eslint-disable max-len */
 /* eslint-disable jsdoc/require-jsdoc */
 import { Routes } from '@angular/router';
-import { NavUtilities } from 'ngx-material-navigation';
-import { NavbarRow } from './nav.model';
+import { NavUtilities, NavbarRow } from 'ngx-material-navigation';
 
 export const navbarRows: NavbarRow[] = [
     {
@@ -23,6 +22,16 @@ export const navbarRows: NavbarRow[] = [
                 route: {
                     path: 'home',
                     loadChildren: () => import('./components/home/home.module').then(m => m.HomeModule)
+                },
+                collapse: 'md'
+            },
+            {
+                type: 'internalLink',
+                name: 'Sandbox',
+                icon: 'fas fa-umbrella-beach',
+                route: {
+                    path: 'sandbox',
+                    loadChildren: () => import('./components/sandbox/sandbox.module').then(m => m.SandboxModule)
                 },
                 collapse: 'md'
             },
@@ -76,7 +85,12 @@ export const navbarRows: NavbarRow[] = [
                         type: 'internalLink',
                         name: '@file',
                         route: 'inputs/file'
-                    }
+                    },
+                    {
+                        type: 'internalLink',
+                        name: '@custom',
+                        route: 'inputs/custom'
+                    },
                 ],
                 position: 'center',
                 collapse: 'md'

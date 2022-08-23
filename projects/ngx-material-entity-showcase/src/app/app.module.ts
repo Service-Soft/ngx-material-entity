@@ -6,10 +6,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgxMatNavigationFooterModule, NgxMatNavigationNavbarModule } from 'ngx-material-navigation';
 import { MatNativeDateModule } from '@angular/material/core';
+import { TestRandomInputComponent } from './components/custom-input-component/custom-input.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        TestRandomInputComponent
     ],
     imports: [
         BrowserModule,
@@ -18,7 +24,11 @@ import { MatNativeDateModule } from '@angular/material/core';
         NgxMatNavigationNavbarModule,
         NgxMatNavigationFooterModule,
         HttpClientModule,
-        MatNativeDateModule
+        MatNativeDateModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        FormsModule
     ],
     providers: [],
     bootstrap: [AppComponent]

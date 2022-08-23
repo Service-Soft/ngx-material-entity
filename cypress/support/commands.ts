@@ -2,6 +2,7 @@
 import 'reflect-metadata';
 
 declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace Cypress {
         // eslint-disable-next-line jsdoc/require-jsdoc
         interface Chainable {
@@ -125,5 +126,7 @@ Cypress.Commands.add(
         for (let i = 0; i < 5; i++) {
             cy.get('input[type=file]').eq(i).selectFile('@testImage', { force: true });
         }
+
+        cy.get('.fa-dice').click();
     }
 );

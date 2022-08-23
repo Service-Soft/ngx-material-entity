@@ -15,6 +15,7 @@ import { FileData } from '../decorators/file/file-decorator.data';
 import { DefaultFileDecoratorConfigInternal } from '../decorators/file/file-decorator-internal.data';
 import { FileUtilities } from './file.utilities';
 import { BaseEntityType } from './entity.model';
+import { CustomDecoratorConfigInternal } from '../decorators/custom/custom-decorator-internal.data';
 
 /**
  * Shows information about differences between two entities.
@@ -106,19 +107,23 @@ export abstract class EntityUtilities {
      * @returns The metadata of the property.
      * @throws When no metadata can be found for the given property.
      */
-    static getPropertyMetadata<EntityType extends BaseEntityType<EntityType>, T extends DecoratorTypes>(
+    static getPropertyMetadata<
+        EntityType extends BaseEntityType<EntityType>,
+        T extends DecoratorTypes,
+        CustomMetadataType extends Record<string, unknown>
+    >(
         entity: EntityType,
         propertyKey: keyof EntityType,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         type?: T
-    ): DecoratorType<T> {
+    ): DecoratorType<T, CustomMetadataType> {
         const metadata = ReflectUtilities.getMetadata('metadata', entity, propertyKey);
         if (metadata == null) {
             throw new Error(
                 `Could not find metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`
             );
         }
-        return metadata as DecoratorType<T>;
+        return metadata as DecoratorType<T, CustomMetadataType>;
     }
 
     /**
@@ -314,6 +319,13 @@ export abstract class EntityUtilities {
                 const entityFile: FileData | FileData[] = entity[key] as FileData | FileData[];
                 const entityFileMetadata = metadata as DefaultFileDecoratorConfigInternal;
                 if (!EntityUtilities.isFileDataValid(entityFile, entityFileMetadata)) {
+                    return false;
+                }
+                break;
+            case DecoratorTypes.CUSTOM:
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const customMetadata = metadata as CustomDecoratorConfigInternal<EntityType, any, any, any>;
+                if (!customMetadata.isValid(entity[key], omit)) {
                     return false;
                 }
                 break;
@@ -562,8 +574,12 @@ export abstract class EntityUtilities {
      * @param type - The type of the property.
      * @returns Whether or not the given values are equal.
      */
-    // eslint-disable-next-line max-len
-    static async isEqual(value: unknown, valuePriorChanges: unknown, metadata: PropertyDecoratorConfigInternal, type: DecoratorTypes): Promise<boolean> {
+    static async isEqual(
+        value: unknown,
+        valuePriorChanges: unknown,
+        metadata: PropertyDecoratorConfigInternal,
+        type: DecoratorTypes
+    ): Promise<boolean> {
         switch (type) {
             case DecoratorTypes.DATE_RANGE:
                 return EntityUtilities.isEqualDateRange(
@@ -587,6 +603,9 @@ export abstract class EntityUtilities {
             case DecoratorTypes.FILE_IMAGE:
             case DecoratorTypes.FILE_DEFAULT:
                 return EntityUtilities.isEqualFile(value, valuePriorChanges, (metadata as DefaultFileDecoratorConfigInternal).multiple);
+            case DecoratorTypes.CUSTOM:
+                // eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
+                return EntityUtilities.isEqualCustom(value, valuePriorChanges, metadata as CustomDecoratorConfigInternal<any, any, any, any>);
             default:
                 return LodashUtilities.isEqual(value, valuePriorChanges);
         }
@@ -668,6 +687,18 @@ export abstract class EntityUtilities {
             if (!LodashUtilities.isEqual(await files[i].file?.text(), await filesPriorChanges[i].file?.text())) {
                 return false;
             }
+        }
+        return true;
+    }
+
+    private static isEqualCustom(
+        value: unknown,
+        valuePriorChanges: unknown,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        metadata: CustomDecoratorConfigInternal<any, any, any, any>
+    ): boolean {
+        if (!metadata.isEqual(value, valuePriorChanges, metadata)) {
+            return false;
         }
         return true;
     }

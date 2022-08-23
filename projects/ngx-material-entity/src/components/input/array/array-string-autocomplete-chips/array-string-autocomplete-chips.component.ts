@@ -1,13 +1,11 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { NgModel } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { LodashUtilities } from '../../../../capsulation/lodash.utilities';
-import { EntityUtilities } from '../../../../classes/entity.utilities';
-import { AutocompleteStringChipsArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
+import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -15,21 +13,8 @@ import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum
     templateUrl: './array-string-autocomplete-chips.component.html',
     styleUrls: ['./array-string-autocomplete-chips.component.scss']
 })
-export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
-
-    @Input()
-    entity!: EntityType;
-
-    @Input()
-    key!: keyof EntityType;
-
-    @Input()
-    getValidationErrorMessage!: (model: NgModel) => string;
-
-    @Output()
-    inputChangeEvent = new EventEmitter<void>();
-
-    metadata!: AutocompleteStringChipsArrayDecoratorConfigInternal;
+export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntityType<EntityType>>
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS> implements OnInit {
 
     stringChipsArrayValues?: string[];
 
@@ -37,10 +22,8 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntity
 
     chipsInput: string = '';
 
-    constructor() { }
-
-    ngOnInit(): void {
-        this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS);
+    override ngOnInit(): void {
+        super.ngOnInit();
         this.filteredAutocompleteStrings = LodashUtilities.cloneDeep(this.metadata.autocompleteValues);
         if ((this.entity[this.key] as string[] | undefined)?.length) {
             this.stringChipsArrayValues = (this.entity[this.key] as string[]);
@@ -136,9 +119,5 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntity
             const filterValue = (input as string).toLowerCase();
             this.filteredAutocompleteStrings = this.metadata.autocompleteValues.filter(s => s.toLowerCase().includes(filterValue));
         }
-    }
-
-    emitChange(): void {
-        this.inputChangeEvent.emit();
     }
 }

@@ -1,12 +1,10 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { NgModel } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DateUtilities } from '../../../../classes/date.utilities';
-import { DateRangeArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
-import { ArrayTable } from '../array-table.class';
+import { ArrayTableComponent } from '../array-table.class';
+import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -15,34 +13,15 @@ import { ArrayTable } from '../array-table.class';
     styleUrls: ['./array-date-range-input.component.scss']
 })
 export class ArrayDateRangeInputComponent<EntityType extends BaseEntityType<EntityType>>
-    extends ArrayTable<DateRange, EntityType> implements OnInit {
+    extends ArrayTableComponent<DateRange, EntityType, DecoratorTypes.ARRAY_DATE_RANGE> implements OnInit {
 
     DateUtilities = DateUtilities;
-
-    @Input()
-    entity!: EntityType;
-
-    @Input()
-    key!: keyof EntityType;
-
-    @Input()
-    metadata!: DateRangeArrayDecoratorConfigInternal;
-
-    @Input()
-    getValidationErrorMessage!: (model: NgModel) => string;
-
-    @Output()
-    inputChangeEvent = new EventEmitter<void>();
 
     dateRangeStart?: Date;
     dateRangeEnd?: Date;
 
-    constructor(private readonly dialog: MatDialog) {
-        super(dialog);
-    }
-
-    ngOnInit(): void {
-        this.init();
+    override ngOnInit(): void {
+        super.ngOnInit();
         this.input = {
             start: undefined as unknown as Date,
             end: undefined as unknown as Date,
@@ -71,9 +50,5 @@ export class ArrayDateRangeInputComponent<EntityType extends BaseEntityType<Enti
         this.input = undefined;
         this.dateRangeStart = undefined;
         this.dateRangeEnd = undefined;
-    }
-
-    protected emitChange(): void {
-        this.inputChangeEvent.emit();
     }
 }

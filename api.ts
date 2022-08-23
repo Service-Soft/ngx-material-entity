@@ -23,7 +23,7 @@ const getFile = (req: Request, res: Response, next: NextFunction): void => {
     else {
         next();
     }
-}
+};
 const middlewares = jsonServer.defaults().concat(reset, getFile);
 
 const port = 3000;

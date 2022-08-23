@@ -2,6 +2,7 @@
     "name": "ngx-material-entity",
     "version": "0.0.0",
     "scripts": {
+        "start": "npm run stack",
         "stack": "run-s clear:dist stack:only",
         "showcase": "ng serve ngx-material-entity-showcase",
         "build:watch": "ng build ngx-material-entity --watch",

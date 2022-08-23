@@ -208,24 +208,24 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * Does this either inline if the "createInline"-metadata is set to true
      * or in a separate dialog if it is set to false.
      */
-    addEntity(): void {
+    async addEntity(): Promise<void> {
         if (this.metadataEntityArray.createInline) {
-            if (
-                !this.metadataEntityArray.allowDuplicates
-                && this.entityArrayValues.find(async v =>
-                    await EntityUtilities.isEqual(this.arrayItem, v, this.metadata, this.metadataEntityArray.itemType)
-                )
-            ) {
-                this.dialog.open(NgxMatEntityConfirmDialogComponent, {
-                    data: this.metadataEntityArray.duplicatesErrorDialog,
-                    autoFocus: false,
-                    restoreFocus: false
-                });
-                return;
+            if (!this.metadataEntityArray.allowDuplicates) {
+                for (const v of this.entityArrayValues) {
+                    if ((await EntityUtilities.isEqual(this.arrayItem, v, this.metadata, this.metadataEntityArray.itemType))) {
+                        this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+                            data: this.metadataEntityArray.duplicatesErrorDialog,
+                            autoFocus: false,
+                            restoreFocus: false
+                        });
+                        return;
+                    }
+                }
             }
             this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
             this.dataSource.data = this.entityArrayValues;
             EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
+            this.checkIsArrayItemValid();
             this.emitChange();
         }
         else {
@@ -248,6 +248,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
         this.dataSource.data = this.entityArrayValues;
         EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
+        this.checkIsArrayItemValid();
         this.emitChange();
     }
 
