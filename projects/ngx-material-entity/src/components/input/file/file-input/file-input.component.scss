@@ -2,13 +2,16 @@ mat-form-field {
     width: 100%;
 }
 
+.readOnly:hover {
+    cursor: default;
+    input:hover {
+        cursor: default;
+    }
+}
+
 input:hover,
 mat-form-field:hover {
     cursor: pointer;
-}
-
-i {
-    color: #757575;
 }
 
 .dropdown {

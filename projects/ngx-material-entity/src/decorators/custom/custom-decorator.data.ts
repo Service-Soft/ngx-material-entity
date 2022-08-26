@@ -22,12 +22,16 @@ export interface CustomDecoratorConfig<
      * Used in addition to default checks like required etc.
      * Needed for the edit and create dialogs.
      *
+     * TIP: If you need additional data for checking if the value is valid, you can define them as metadata directly on the value.
+     *
      * @default () => true
      */
     isValid?: (value: ValueType, omit: 'create' | 'update') => boolean,
     /**
      * The function that defines whether or not two of your custom values are equal.
      * Needed for the edit and create dialogs.
+     *
+     * TIP: If you need additional data for checking if the value is valid, you can define them as metadata directly on the values.
      *
      * @default (value: ValueType, valuePriorChanges: ValueType) => LodashUtilities.isEqual(value, valuePriorChanges)
      */

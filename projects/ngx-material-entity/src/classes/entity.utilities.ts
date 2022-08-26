@@ -1,7 +1,7 @@
 import { DecoratorType, DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../decorators/base/property-decorator-internal.data';
 import { DateRangeArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
-import { DefaultStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../decorators/string/string-decorator-internal.data';
+import { DefaultStringDecoratorConfigInternal, PasswordStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../decorators/string/string-decorator-internal.data';
 import { DefaultNumberDecoratorConfigInternal } from '../decorators/number/number-decorator-internal.data';
 import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from '../decorators/date/date-decorator-internal.data';
 import { DateRange } from '../decorators/date/date-decorator.data';
@@ -264,6 +264,14 @@ export abstract class EntityUtilities {
                     return false;
                 }
                 break;
+            case DecoratorTypes.STRING_PASSWORD:
+                const entityPassword = entity[key] as string;
+                const passwordMetadata = metadata as PasswordStringDecoratorConfigInternal;
+                const confirmPassword = ReflectUtilities.getMetadata('confirmPassword', entity, key) as string;
+                if (!EntityUtilities.isPasswordValid(entityPassword, passwordMetadata, confirmPassword)) {
+                    return false;
+                }
+                break;
             case DecoratorTypes.NUMBER_DROPDOWN:
                 return true;
             case DecoratorTypes.NUMBER:
@@ -360,6 +368,22 @@ export abstract class EntityUtilities {
             return false;
         }
         if (metadata.minLength && value.length < metadata.minLength) {
+            return false;
+        }
+        return true;
+    }
+
+    private static isPasswordValid(value: string, metadata: PasswordStringDecoratorConfigInternal, confirmPassword: string): boolean {
+        if (value !== confirmPassword) {
+            return false;
+        }
+        if (metadata.maxLength && value.length > metadata.maxLength) {
+            return false;
+        }
+        if (metadata.minLength && value.length < metadata.minLength) {
+            return false;
+        }
+        if (metadata.regex && !value.match(metadata.regex)) {
             return false;
         }
         return true;

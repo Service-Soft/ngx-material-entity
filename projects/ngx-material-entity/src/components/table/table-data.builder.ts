@@ -47,8 +47,9 @@ export class BaseDataBuilder<EntityType extends BaseEntityType<EntityType>>
             data.searchLabel ?? 'Search',
             data.createButtonLabel ?? 'Create',
             data.searchString ?? defaultSearchFunction,
-            data.allowCreate ?? true,
-            data.allowEdit ?? (() => true),
+            data.allowCreate ?? (() => true),
+            data.allowRead ?? (() => true),
+            data.allowUpdate ?? (() => true),
             data.allowDelete ?? (() => true),
             data.multiSelectActions ?? [],
             data.multiSelectLabel ?? 'Actions',
@@ -76,9 +77,11 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
     // eslint-disable-next-line jsdoc/require-jsdoc
     searchString: (entity: EntityType) => string;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    allowCreate: boolean;
+    allowCreate: () => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    allowEdit: (entity: EntityType) => boolean;
+    allowRead: (entity: EntityType) => boolean;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    allowUpdate: (entity: EntityType) => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
     allowDelete: (entity: EntityType) => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -100,12 +103,12 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         searchLabel: string,
         createButtonLabel: string,
         searchString: (entity: EntityType) => string,
-        allowCreate: boolean,
-        allowEdit: (entity: EntityType) => boolean,
+        allowCreate: () => boolean,
+        allowRead: (entity: EntityType) => boolean,
+        allowUpdate: (entity: EntityType) => boolean,
         allowDelete: (entity: EntityType) => boolean,
         multiSelectActions: MultiSelectAction<EntityType>[],
         multiSelectLabel: string,
-
         EntityClass?: EntityClassNewable<EntityType>,
         edit?: (entity: EntityType) => unknown,
         create?: (entity: EntityType) => unknown,
@@ -118,7 +121,8 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         this.createButtonLabel = createButtonLabel;
         this.searchString = searchString;
         this.allowCreate = allowCreate;
-        this.allowEdit = allowEdit;
+        this.allowRead = allowRead;
+        this.allowUpdate = allowUpdate;
         this.allowDelete = allowDelete;
         this.multiSelectActions = multiSelectActions;
         this.multiSelectLabel = multiSelectLabel;
@@ -159,9 +163,10 @@ export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
         }
         if (
             (
-                data.baseData.allowEdit && data.baseData.allowEdit !== (() => false)
-                || data.baseData.allowDelete && data.baseData.allowDelete !== (() => false)
-                || data.baseData.allowCreate === true
+                data.baseData.allowCreate !== (() => false)
+                || data.baseData.allowRead !== (() => false)
+                || data.baseData.allowUpdate !== (() => false)
+                || data.baseData.allowDelete !== (() => false)
             )
             && !data.baseData.EntityClass
         ) {
@@ -170,7 +175,7 @@ export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
                 You can only omit this value if you can neither create or update entities.`
             );
         }
-        if (data.baseData.allowCreate !== false && !data.baseData.create && !data.createDialogData) {
+        if (data.baseData.allowCreate !== (() => false) && !data.baseData.create && !data.createDialogData) {
             throw new Error(
                 `Missing required Input data "createDialogData".
                 You can only omit this value when creation is disallowed or done with a custom create method.`
@@ -178,7 +183,8 @@ export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
         }
         if (
             (
-                data.baseData.allowEdit !== (() => false)
+                data.baseData.allowRead !== (() => false)
+                || data.baseData.allowUpdate !== (() => false)
                 || data.baseData.allowDelete !== (() => false)
             )
             && !data.baseData.edit
@@ -186,7 +192,7 @@ export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
         ) {
             throw new Error(
                 `Missing required Input data "editDialogData".
-                You can only omit this value when editing and deleting is disallowed or done with a custom edit method.`
+                You can only omit this value when viewing, editing and deleting is disallowed or done with a custom edit method.`
             );
         }
     }

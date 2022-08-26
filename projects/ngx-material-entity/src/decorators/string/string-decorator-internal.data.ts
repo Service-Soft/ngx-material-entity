@@ -1,6 +1,6 @@
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
-import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, DropdownStringDecoratorConfig, TextboxStringDecoratorConfig } from './string-decorator.data';
+import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, DropdownStringDecoratorConfig, PasswordStringDecoratorConfig, TextboxStringDecoratorConfig } from './string-decorator.data';
 
 /**
  * The internal DropdownStringDecoratorConfig. Sets default values.
@@ -83,5 +83,34 @@ export class AutocompleteStringDecoratorConfigInternal
         this.minLength = data.minLength;
         this.maxLength = data.maxLength;
         this.regex = data.regex;
+    }
+}
+
+/**
+ * The internal PasswordStringDecoratorConfig. Sets default values.
+ */
+export class PasswordStringDecoratorConfigInternal
+    extends PropertyDecoratorConfigInternal implements PasswordStringDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    displayStyle: 'password';
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    minLength?: number;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    maxLength?: number;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    regex?: RegExp;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    needsConfirmation: boolean;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    confirmationDisplayName: string;
+
+    constructor(data: PasswordStringDecoratorConfig) {
+        super(data);
+        this.displayStyle = data.displayStyle;
+        this.minLength = data.minLength;
+        this.maxLength = data.maxLength;
+        this.regex = data.regex;
+        this.needsConfirmation = data.needsConfirmation ?? true;
+        this.confirmationDisplayName = data.confirmationDisplayName ?? 'Confirm Password';
     }
 }

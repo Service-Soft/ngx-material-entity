@@ -34,6 +34,9 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
 
+    @Input()
+    isReadOnly!: boolean;
+
     @Output()
     fileDataChangeEvent = new EventEmitter<FileData | FileData[]>();
 

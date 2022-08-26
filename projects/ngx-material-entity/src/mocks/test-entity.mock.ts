@@ -54,6 +54,7 @@ const testEntityData: TestEntity = {
     regexAutocompleteStringValue: '12345',
     maxLengthTextboxStringValue: '1234',
     minLengthTextboxStringValue: '12345678',
+    passwordString: '12345678',
     minNumberValue: 42,
     maxNumberValue: 5,
     objectValue: {

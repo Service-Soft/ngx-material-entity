@@ -17,6 +17,7 @@ import { FileData } from '../decorators/file/file-decorator.data';
 import { DateFilterFn } from '@angular/material/datepicker';
 import { custom } from '../decorators/custom/custom.decorator';
 import { RandomMetadata } from './test-entity.mock';
+import { ReflectUtilities } from '../capsulation/reflect.utilities';
 
 /**
  * An Entity used to Test the @object decorator on the TestEntity class.
@@ -82,6 +83,7 @@ export interface TestEntityWithoutCustomPropertiesInterface {
     regexAutocompleteStringValue: string,
     maxLengthTextboxStringValue: string,
     minLengthTextboxStringValue: string,
+    passwordString: string,
     minNumberValue: number,
     maxNumberValue: number,
     objectValue: {
@@ -263,6 +265,15 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         minLength: 4
     })
     minLengthTextboxStringValue!: string;
+
+    @string({
+        displayStyle: 'password',
+        displayName: 'Password Value',
+        minLength: 8,
+        maxLength: 12,
+        regex: /.*[0-9].*/
+    })
+    passwordString!: string;
 
     @number({
         displayStyle: 'line',
@@ -696,6 +707,7 @@ const testEntityData: TestEntityWithoutCustomProperties = {
     regexAutocompleteStringValue: '12345',
     maxLengthTextboxStringValue: '1234',
     minLengthTextboxStringValue: '12345678',
+    passwordString: '12345678',
     minNumberValue: 42,
     maxNumberValue: 5,
     objectValue: {
@@ -871,6 +883,9 @@ export class TestEntityWithoutCustomPropertiesMockBuilder {
         this.testEntityData = data;
         this.testEntity = new TestEntityWithoutCustomProperties(data);
         this.testEntityWithoutData = new TestEntityWithoutCustomProperties();
+        ReflectUtilities.defineMetadata('confirmPassword', this.testEntity.passwordString, this.testEntity, 'passwordString');
+        // eslint-disable-next-line max-len
+        ReflectUtilities.defineMetadata('confirmPassword', this.testEntityWithoutData.passwordString, this.testEntityWithoutData, 'passwordString');
     }
 }
 

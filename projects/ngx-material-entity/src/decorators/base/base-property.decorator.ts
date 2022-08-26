@@ -13,7 +13,7 @@ export function baseProperty<
     CustomMetadataType extends Record<string, unknown>
 >(metadata: DecoratorType<T, CustomMetadataType>, type: T) {
     return function (target: object, propertyKey: string) {
-        ReflectUtilities.defineMetadata('metadata', metadata, target, propertyKey);
-        ReflectUtilities.defineMetadata('type', type, target, propertyKey);
+        ReflectUtilities.defineMetadata('metadata', metadata, target, propertyKey as keyof object);
+        ReflectUtilities.defineMetadata('type', type, target, propertyKey as keyof object);
     };
 }

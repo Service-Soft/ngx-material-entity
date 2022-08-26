@@ -10,6 +10,7 @@
         [minlength]="metadata.minLength ?? null"
         [maxlength]="metadata.maxLength ?? null"
         (ngModelChange)="emitChange()"
-    />
+        [disabled]="isReadOnly"
+    >
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>

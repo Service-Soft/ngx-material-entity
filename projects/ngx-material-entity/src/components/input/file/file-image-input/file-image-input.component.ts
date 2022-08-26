@@ -66,17 +66,22 @@ export class FileImageInputComponent<EntityType extends BaseEntityType<EntityTyp
     }
 
     async prev(): Promise<void> {
-        if (this.imageIndex > 0) {
-            await this.setMultiPreviewImages(this.imageIndex - 1);
-            this.imageIndex--;
+        if (this.imageIndex <= 0) {
+            return;
         }
+        await this.setMultiPreviewImages(this.imageIndex - 1);
+        this.imageIndex--;
     }
 
     async next(): Promise<void> {
-        if (this.multiPreviewImages?.length && this.imageIndex !== (this.multiPreviewImages.length - 1)) {
-            await this.setMultiPreviewImages(this.imageIndex + 1);
-            this.imageIndex++;
+        if (!this.multiPreviewImages?.length) {
+            return;
         }
+        if (this.imageIndex === (this.multiPreviewImages.length - 1)) {
+            return;
+        }
+        await this.setMultiPreviewImages(this.imageIndex + 1);
+        this.imageIndex++;
     }
 
     async setIndex(index: number): Promise<void> {

@@ -1,33 +1,38 @@
 <div class="mat-elevation-z8" style="border-radius: 5px;padding: 15px;margin-bottom: 15px;margin-top: 15px;">
-    <mat-form-field appearance="standard">
-        <mat-label>{{metadata.displayName}}</mat-label>
-        <input
-            matInput
-            [(ngModel)]="input"
-            [name]="key.toString()"
-            #model="ngModel"
-            [matDatepicker]="picker"
-            [required]="metadata.required"
-            [min]="metadata.min ? metadata.min(input) : undefined"
-            [max]="metadata.max ? metadata.max(input) : undefined"
-            [matDatepickerFilter]="metadata.filter ?? DateUtilities.defaultDateFilter"
-        >
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-        <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
-    </mat-form-field>
-    
-    <div class="buttons">
-        <button mat-raised-button
-            [disabled]="model.errors"
-            (click)="add()">
-            {{metadata.addButtonLabel}}
-        </button>
-        <button mat-raised-button
-            [disabled]="!selection.selected.length"
-            (click)="remove()">
-            {{metadata.removeButtonLabel}}
-        </button>
+    <div style="padding-bottom: 10px;">
+        <b>{{metadata.displayName}}</b>
+    </div>
+    <div *ngIf="!isReadOnly">
+        <mat-form-field appearance="standard">
+            <mat-label>{{metadata.displayName}}</mat-label>
+            <input
+                matInput
+                [(ngModel)]="input"
+                [name]="key.toString()"
+                #model="ngModel"
+                [matDatepicker]="picker"
+                [required]="metadata.required"
+                [min]="metadata.min ? metadata.min(input) : undefined"
+                [max]="metadata.max ? metadata.max(input) : undefined"
+                [matDatepickerFilter]="metadata.filter ?? DateUtilities.defaultDateFilter"
+            >
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
+        </mat-form-field>
+        
+        <div class="buttons">
+            <button mat-raised-button
+                [disabled]="model.errors"
+                (click)="add()">
+                {{metadata.addButtonLabel}}
+            </button>
+            <button mat-raised-button
+                [disabled]="!selection.selected.length"
+                (click)="remove()">
+                {{metadata.removeButtonLabel}}
+            </button>
+        </div>
     </div>
 
     <mat-table [dataSource]="dataSource">
