@@ -46,7 +46,7 @@ export abstract class ArrayTableComponent<T, EntityType extends BaseEntityType<E
                 Please choose a different name.`
             );
         }
-        this.displayedColumns = ['select'].concat(givenDisplayColumns);
+        this.displayedColumns = this.isReadOnly ? givenDisplayColumns : ['select'].concat(givenDisplayColumns);
         this.dataSource.data = this.arrayValues;
     }
 

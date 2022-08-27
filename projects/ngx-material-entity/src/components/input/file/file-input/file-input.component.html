@@ -5,13 +5,14 @@
     (change)="setFileFromInput($event)"
 >
 
-<mat-form-field floatLabel="always" (click)="fileInput.click()">
+<mat-form-field [class.readOnly]="isReadOnly" floatLabel="always" (click)="!isReadOnly ? fileInput.click() : null">
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-chip-list #chipList
         [(ngModel)]="filenames"
         [name]="key.toString()"
         #model="ngModel"
         [required]="metadata.required"
+        [disabled]="isReadOnly"
     >
         <mat-chip *ngFor="let name of filenames" (removed)="removeFile(name)">
             {{name}}
@@ -21,12 +22,12 @@
         </mat-chip>
         <input [matChipInputFor]="chipList" [readonly]="true">
     </mat-chip-list>
-    <button mat-icon-button matSuffix>
+    <button mat-icon-button matSuffix [disabled]="isReadOnly">
         <i class="fas fa-upload"></i>
     </button>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>
 
-<div *ngIf="metadata.dragAndDrop" class="dropdown" dragDrop (files)="setFile($event)">
+<div *ngIf="metadata.dragAndDrop && !isReadOnly" class="dropdown" dragDrop (files)="setFile($event)">
     <i class="fas fa-file-arrow-up"></i>
 </div>

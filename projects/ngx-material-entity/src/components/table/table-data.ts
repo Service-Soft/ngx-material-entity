@@ -96,17 +96,25 @@ export interface BaseData<EntityType extends BaseEntityType<EntityType>> {
     /**
      * Defines whether or not the user can add new entities.
      *
-     * @default true
+     * @default () => true
      */
-    allowCreate?: boolean,
+    allowCreate?: () => boolean,
     /**
-     * Defines whether or not the user can edit entities.
+     * Defines whether or not the user can view the specific entity.
      *
      * @default () => true
      */
-    allowEdit?: (entity: EntityType) => boolean,
+    allowRead?: (entity: EntityType) => boolean,
+    /**
+     * Defines whether or not the user can edit the specific entity.
+     *
+     * @default () => true
+     */
+    allowUpdate?: (entity: EntityType) => boolean,
     /**
      * Whether or not the user can delete this specific entity.
+     *
+     * @default () => true
      */
     allowDelete?: (entity: EntityType) => boolean,
     /**

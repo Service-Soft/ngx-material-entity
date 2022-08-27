@@ -1,46 +1,50 @@
 <div class="mat-elevation-z8" style="border-radius: 5px;padding: 15px;margin-bottom: 15px;margin-top: 15px;">
-
-    <mat-form-field appearance="standard">
-        <mat-label>{{metadata.displayName}}</mat-label>
-        
-        <mat-date-range-input [rangePicker]="picker" [required]="metadata.required" [dateFilter]="metadata.filter ? metadata.filter : DateUtilities.defaultDateFilter">
-            <input matStartDate
-                [(ngModel)]="dateRangeStart"
-                [name]="key.toString() + 'start'"
-                #startModel="ngModel"
-                [required]="metadata.required"
-                [min]="metadata.minStart ? metadata.minStart(input?.start) : undefined"
-                [max]="metadata.maxStart ? metadata.maxStart(input?.start) : undefined"
-                [placeholder]="metadata.placeholderStart"
-            >
-            <input matEndDate
-                [(ngModel)]="dateRangeEnd"
-                [name]="key.toString() + 'end'"
-                #endModel="ngModel"
-                [required]="metadata.required"
-                [min]="metadata.minEnd ? metadata.minEnd(input?.end) : undefined"
-                [max]="metadata.maxEnd ? metadata.maxEnd(input?.end) : undefined"
-                [placeholder]="metadata.placeholderEnd"
-            >
-        </mat-date-range-input>
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
-
-        <mat-error *ngIf="startModel.errors">{{getValidationErrorMessage(startModel)}}</mat-error>
-        <mat-error *ngIf="!startModel.errors && endModel.errors">{{getValidationErrorMessage(endModel)}}</mat-error>
-    </mat-form-field>
+    <div style="padding-bottom: 10px;">
+        <b>{{metadata.displayName}}</b>
+    </div>
+    <div *ngIf="!isReadOnly">
+        <mat-form-field appearance="standard">
+            <mat-label>{{metadata.displayName}}</mat-label>
+            
+            <mat-date-range-input [rangePicker]="picker" [required]="metadata.required" [dateFilter]="metadata.filter ? metadata.filter : DateUtilities.defaultDateFilter">
+                <input matStartDate
+                    [(ngModel)]="dateRangeStart"
+                    [name]="key.toString() + 'start'"
+                    #startModel="ngModel"
+                    [required]="metadata.required"
+                    [min]="metadata.minStart ? metadata.minStart(input?.start) : undefined"
+                    [max]="metadata.maxStart ? metadata.maxStart(input?.start) : undefined"
+                    [placeholder]="metadata.placeholderStart"
+                >
+                <input matEndDate
+                    [(ngModel)]="dateRangeEnd"
+                    [name]="key.toString() + 'end'"
+                    #endModel="ngModel"
+                    [required]="metadata.required"
+                    [min]="metadata.minEnd ? metadata.minEnd(input?.end) : undefined"
+                    [max]="metadata.maxEnd ? metadata.maxEnd(input?.end) : undefined"
+                    [placeholder]="metadata.placeholderEnd"
+                >
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
     
-    <div class="buttons">
-        <button mat-raised-button
-            [disabled]="startModel.errors || endModel.errors"
-            (click)="addDateRange()">
-            {{metadata.addButtonLabel}}
-        </button>
-        <button mat-raised-button
-            [disabled]="!selection.selected.length"
-            (click)="remove()">
-            {{metadata.removeButtonLabel}}
-        </button>
+            <mat-error *ngIf="startModel.errors">{{getValidationErrorMessage(startModel)}}</mat-error>
+            <mat-error *ngIf="!startModel.errors && endModel.errors">{{getValidationErrorMessage(endModel)}}</mat-error>
+        </mat-form-field>
+        
+        <div class="buttons">
+            <button mat-raised-button
+                [disabled]="startModel.errors || endModel.errors"
+                (click)="addDateRange()">
+                {{metadata.addButtonLabel}}
+            </button>
+            <button mat-raised-button
+                [disabled]="!selection.selected.length"
+                (click)="remove()">
+                {{metadata.removeButtonLabel}}
+            </button>
+        </div>
     </div>
 
     <mat-table [dataSource]="dataSource">

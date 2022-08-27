@@ -34,6 +34,8 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
     isEntityValid: boolean = true;
     isEntityDirty: Promise<boolean> = (async () => false).call(this);
 
+    isReadOnly!: boolean;
+
     constructor(
         @Inject(MAT_DIALOG_DATA)
         private readonly inputData: EditEntityDialogData<EntityType>,
@@ -44,6 +46,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
 
     ngOnInit(): void {
         this.data = new EditEntityDialogDataBuilder(this.inputData).getResult();
+        this.isReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
         this.dialogRef.disableClose = true;
         this.entityRows = EntityUtilities.getEntityRows(this.data.entity, false, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;

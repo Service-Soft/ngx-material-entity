@@ -6,6 +6,17 @@ import { EntityUtilities } from '../../classes/entity.utilities';
 
 /**
  * The abstract base class of any ngx-mat-entity input.
+ * Extend from this when implementing your own custom decorator.
+ *
+ * It already provides:
+ *
+ * - entity: The entity which the property is on. (type-safe due to the Generic "EntityType")
+ * - key: The key of the property. (type-safe due to the Generic "EntityType")
+ * - getValidationErrorMessage: The function that generates the error message when the input is invalid.
+ * - isReadOnly: Whether or not the input is read only. Can be used to disable elements.
+ * - metadata: The metadata of the property. (type-safe due to the Generic "CustomMetadataType")
+ * - ngOnInit: Gets the metadata for the property, be aware of this when overriding this method.
+ * - emitChange: Should be called when the input has changed. This is needed to trigger validation and dirty checks.
  */
 @Component({
     selector: 'ngx-mat-entity-base-input',
@@ -35,9 +46,19 @@ export abstract class NgxMatEntityBaseInputComponent<
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
 
+    /**
+     * Whether or not the input should be readonly.
+     * In that case it is disabled, but most of the disabled-styling is overridden.
+     */
+    @Input()
+    isReadOnly!: boolean;
+
     @Output()
     inputChangeEvent = new EventEmitter<void>();
 
+    /**
+     * The metadata of the property.
+     */
     metadata!: DecoratorType<Type, CustomMetadataType>;
 
     ngOnInit(): void {

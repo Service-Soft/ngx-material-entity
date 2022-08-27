@@ -15,6 +15,7 @@ export class ShowcaseInputsComponent {
         DecoratorTypes.STRING_DROPDOWN,
         DecoratorTypes.STRING_TEXTBOX,
         DecoratorTypes.STRING_AUTOCOMPLETE,
+        DecoratorTypes.STRING_PASSWORD,
         DecoratorTypes.STRING
     ];
 

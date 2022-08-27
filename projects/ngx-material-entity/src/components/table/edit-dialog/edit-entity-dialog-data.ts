@@ -22,5 +22,9 @@ export interface EditEntityDialogData<EntityType extends BaseEntityType<EntityTy
     /**
      * Whether or not the user can delete this specific entity.
      */
-    allowDelete?: (entity: EntityType) => boolean
+    allowDelete?: (entity: EntityType) => boolean,
+    /**
+     * Whether or not the user can update this specific entity.
+     */
+    allowUpdate?: (entity: EntityType) => boolean
 }

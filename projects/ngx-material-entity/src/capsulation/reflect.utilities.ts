@@ -72,8 +72,8 @@ export abstract class ReflectUtilities {
         metadataKey: unknown,
         metadataValue: unknown,
         target: T,
-        propertyKey: string
+        propertyKey: keyof T
     ): void {
-        Reflect.defineMetadata(metadataKey, metadataValue, target, propertyKey);
+        Reflect.defineMetadata(metadataKey, metadataValue, target, propertyKey as string);
     }
 }

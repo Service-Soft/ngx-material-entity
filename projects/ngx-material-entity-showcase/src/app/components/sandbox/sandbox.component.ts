@@ -102,6 +102,7 @@ export class SandboxComponent {
             ],
             EntityClass: Person,
             EntityServiceClass: PersonService,
+            allowUpdate: () => false
         },
         createDialogData: {
             title: 'Create Person'

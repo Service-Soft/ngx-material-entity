@@ -29,5 +29,6 @@ export class CustomInputComponent<
         this.component.instance.key = this.key;
         this.component.instance.getValidationErrorMessage = this.getValidationErrorMessage;
         this.component.instance.inputChangeEvent.subscribe(this.inputChangeEvent);
+        this.component.instance.isReadOnly = this.isReadOnly;
     }
 }

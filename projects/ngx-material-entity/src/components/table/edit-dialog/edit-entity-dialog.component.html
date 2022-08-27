@@ -15,6 +15,7 @@
                 [hideOmitForEdit]="true"
                 class="col-lg-{{EntityUtilities.getWidth(data.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(data.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(data.entity, key, 'sm')}}"
                 (inputChangeEvent)="checkEntity()"
+                [isReadOnly]="isReadOnly"
             >
             </ngx-mat-entity-input>
         </div>
@@ -22,7 +23,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button mat-raised-button (click)="edit()" [disabled]="!isEntityValid || (isEntityDirty | async) === false">
+    <button mat-raised-button (click)="edit()" [disabled]="isReadOnly || !isEntityValid || (isEntityDirty | async) === false">
         {{data.editDialogData.confirmButtonLabel}}
     </button>
     <button mat-raised-button (click)="cancel()" class="cancel-button">

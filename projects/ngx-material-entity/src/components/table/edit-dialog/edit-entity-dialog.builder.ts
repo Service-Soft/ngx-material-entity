@@ -16,18 +16,22 @@ export class EditEntityDialogDataInternal<EntityType extends BaseEntityType<Enti
     // eslint-disable-next-line jsdoc/require-jsdoc
     editDialogData: EditDialogDataInternal<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
+    allowUpdate: (entity: EntityType) => boolean;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     allowDelete: (entity: EntityType) => boolean;
 
     constructor(
         entity: EntityType,
         EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
         editDialogData: EditDialogDataInternal<EntityType>,
+        allowUpdate: (entity: EntityType) => boolean,
         allowDelete: (entity: EntityType) => boolean
     ) {
         this.entity = entity;
         this.EntityServiceClass = EntityServiceClass;
         this.editDialogData = editDialogData;
         this.allowDelete = allowDelete;
+        this.allowUpdate = allowUpdate;
     }
 }
 
@@ -48,6 +52,7 @@ export class EditEntityDialogDataBuilder<EntityType extends BaseEntityType<Entit
             data.entity,
             data.EntityServiceClass,
             editDialogData,
+            data.allowUpdate ?? (() => true),
             data.allowDelete ?? (() => true)
         );
     }

@@ -1,6 +1,19 @@
-::ng-deep .hideUnderline .mat-form-field-underline {
-    opacity: 0%;
+::ng-deep {
+    .hideUnderline .mat-form-field-underline {
+        opacity: 0%;
+    }
+
+    .disabled {
+        .mat-checkbox-ripple {
+            display: none;
+        }
+    }
+
+    .disabled:hover {
+        cursor: default;
+    }
 }
+
 mat-form-field {
     width: 100%;
 }

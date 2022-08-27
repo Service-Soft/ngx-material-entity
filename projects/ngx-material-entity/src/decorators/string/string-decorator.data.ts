@@ -8,7 +8,7 @@ abstract class StringDecoratorConfig extends PropertyDecoratorConfig {
     /**
      * How to display the string.
      */
-    displayStyle!: 'line' | 'textbox' | 'autocomplete' | 'dropdown';
+    displayStyle!: 'line' | 'textbox' | 'autocomplete' | 'dropdown' | 'password';
 }
 
 /**
@@ -83,4 +83,42 @@ export interface AutocompleteStringDecoratorConfig extends StringDecoratorConfig
      * A regex used for validation.
      */
     regex?: RegExp
+}
+
+/**
+ * The configuration options for a string property displayed in a password input.
+ */
+export interface PasswordStringDecoratorConfig extends StringDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    displayStyle: 'password',
+    /**
+     * The minimum required length of the password.
+     */
+    minLength?: number,
+    /**
+     * The maximum required length of the password.
+     */
+    maxLength?: number,
+    /**
+     * A regex used for validation.
+     */
+    regex?: RegExp,
+    /**
+     * Whether or not the password needs to be retyped.
+     *
+     * @default true
+     */
+    needsConfirmation?: boolean,
+    /**
+     * The display name of the confirmation password input.
+     *
+     * @default 'Confirm Password'
+     */
+    confirmationDisplayName?: string,
+    /**
+     * The error message to display when the password and the confirm password don't match.
+     *
+     * @default 'Passwords need to match!'
+     */
+    passwordsDontMatchErrorMessage?: string
 }

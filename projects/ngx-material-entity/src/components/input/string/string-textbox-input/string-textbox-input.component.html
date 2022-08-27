@@ -11,6 +11,7 @@
         [minlength]="metadata.minLength ?? null"
         [maxlength]="metadata.maxLength ?? null"
         (ngModelChange)="emitChange()"
+        [disabled]="isReadOnly"
     >
     </textarea>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>

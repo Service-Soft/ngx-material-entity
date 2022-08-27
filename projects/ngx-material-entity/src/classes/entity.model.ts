@@ -26,7 +26,7 @@ export abstract class Entity {
         displayName: 'ID',
         required: true
     })
-    id!: string;
+    readonly id!: string;
 
     constructor(entity?: Entity) {
         EntityUtilities.new(this, entity);

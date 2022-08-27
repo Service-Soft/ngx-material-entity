@@ -36,6 +36,7 @@ import { FileImageInputComponent } from './file/file-image-input/file-image-inpu
 import { FileDefaultInputComponent } from './file/file-default-input/file-default-input.component';
 import { DragDropDirective } from './file/file-input/dragDrop.directive';
 import { CustomInputComponent } from './custom/custom.component';
+import { StringPasswordInputComponent } from './string/string-password-input/string-password-input.component';
 
 @NgModule({
     declarations: [
@@ -43,6 +44,7 @@ import { CustomInputComponent } from './custom/custom.component';
         StringTextboxInputComponent,
         StringAutocompleteInputComponent,
         StringDropdownInputComponent,
+        StringPasswordInputComponent,
         BooleanCheckboxInputComponent,
         BooleanToggleInputComponent,
         BooleanDropdownInputComponent,

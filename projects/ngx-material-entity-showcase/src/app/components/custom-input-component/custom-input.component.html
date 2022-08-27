@@ -7,9 +7,10 @@
         #model="ngModel"
         [required]="metadata.required"
         (ngModelChange)="emitChange()"
-    />
-    <button mat-icon-button matSuffix>
-        <i class="fas fa-dice" (click)="randomInput()"></i>
+        [disabled]="isReadOnly"
+    >
+    <button (click)="randomInput()" mat-icon-button matSuffix [disabled]="isReadOnly">
+        <i class="fas fa-dice"></i>
     </button>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>

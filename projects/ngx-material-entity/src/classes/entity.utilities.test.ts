@@ -126,6 +126,7 @@ describe('isEntityValid', () => {
     });
     test('Optional value should not invalidate when set to undefined', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.optionalValue = undefined;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
         tE.optionalValue = 'optional';
@@ -135,6 +136,7 @@ describe('isEntityValid', () => {
     // BOOLEAN
     test('BOOLEAN_CHECKBOX BOOLEAN_TOGGLE required', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.booleanCheckboxValue = false;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.booleanCheckboxValue = true;
@@ -149,6 +151,7 @@ describe('isEntityValid', () => {
     // STRING
     test('STRING maxLength', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.maxLengthStringValue = '12345';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.maxLengthStringValue = 'ABCD';
@@ -156,6 +159,7 @@ describe('isEntityValid', () => {
     });
     test('STRING minLength', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.minLengthStringValue = '123';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.minLengthStringValue = 'ABCDEFG';
@@ -163,6 +167,7 @@ describe('isEntityValid', () => {
     });
     test('STRING regex', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.regexStringValue = '12345s';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.regexStringValue = '54321';
@@ -172,6 +177,7 @@ describe('isEntityValid', () => {
     // STRING_AUTOCOMPLETE
     test('STRING_AUTOCOMPLETE maxLength', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.maxLengthAutocompleteStringValue = '12345';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.maxLengthAutocompleteStringValue = 'ABCD';
@@ -179,6 +185,7 @@ describe('isEntityValid', () => {
     });
     test('STRING_AUTOCOMPLETE minLength', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.minLengthAutocompleteStringValue = '123';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.minLengthAutocompleteStringValue = 'ABCDEFG';
@@ -194,6 +201,7 @@ describe('isEntityValid', () => {
     // STRING_TEXTBOX
     test('STRING_TEXTBOX maxLength', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.maxLengthTextboxStringValue = '12345';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.maxLengthTextboxStringValue = 'ABCD';
@@ -201,15 +209,56 @@ describe('isEntityValid', () => {
     });
     test('STRING_TEXTBOX minLength', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.minLengthTextboxStringValue = '123';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.minLengthTextboxStringValue = 'ABCDEFG';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
 
+    // STRING_PASSWORD
+    test('STRING_PASSWORD maxLength', () => {
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
+        tE.passwordString = '1234567891011';
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.passwordString = '12345678';
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('STRING_PASSWORD minLength', () => {
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
+        tE.passwordString = '1234567';
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.passwordString = '12345678';
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('STRING_PASSWORD regex', () => {
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
+        tE.passwordString = 'ABCDEFGH';
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.passwordString = 'ABCDEFGH1';
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+    test('STRING_PASSWORD not confirmed', () => {
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString + 's', tE, 'passwordString');
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
+
     // NUMBER
     test('NUMBER max', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.maxNumberValue = 11;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.maxNumberValue = 10;
@@ -217,6 +266,7 @@ describe('isEntityValid', () => {
     });
     test('NUMBER min', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.minNumberValue = 9;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.minNumberValue = 10;
@@ -226,6 +276,7 @@ describe('isEntityValid', () => {
     // OBJECT
     test('OBJECT', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.objectValue.maxLengthStringValue = '12345';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.objectValue.maxLengthStringValue = '1234';
@@ -235,6 +286,7 @@ describe('isEntityValid', () => {
     // ARRAY
     test('ARRAY', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.stringChipsArrayValue = [];
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.stringChipsArrayValue = ['1234'];
@@ -244,6 +296,7 @@ describe('isEntityValid', () => {
     // DATE
     test('DATE max', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.customDateValue.setFullYear(2023);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateValue.setFullYear(2022);
@@ -251,6 +304,7 @@ describe('isEntityValid', () => {
     });
     test('DATE min', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.customDateValue.setFullYear(2021);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateValue.setFullYear(2022);
@@ -258,6 +312,7 @@ describe('isEntityValid', () => {
     });
     test('DATE filter', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.customDateValue.setDate(1);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateValue.setDate(2);
@@ -267,6 +322,7 @@ describe('isEntityValid', () => {
     // DATE_RANGE
     test('DATE_RANGE undefined', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.customDateRangeValue.start = undefined as unknown as Date;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateRangeValue.start = new Date(testEntity.customDateRangeValue.start);
@@ -279,6 +335,7 @@ describe('isEntityValid', () => {
     });
     test('DATE_RANGE maxStart', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.customDateRangeValue.start.setFullYear(2023);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateRangeValue.start.setFullYear(2022);
@@ -286,6 +343,7 @@ describe('isEntityValid', () => {
     });
     test('DATE_RANGE minStart', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.customDateRangeValue.start.setFullYear(2021);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateRangeValue.start.setFullYear(2022);
@@ -293,6 +351,7 @@ describe('isEntityValid', () => {
     });
     test('DATE_RANGE maxEnd', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.customDateRangeValue.end.setFullYear(2023);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateRangeValue.end.setFullYear(2022);
@@ -300,6 +359,7 @@ describe('isEntityValid', () => {
     });
     test('DATE_RANGE minEnd', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.customDateRangeValue.end.setFullYear(2021);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateRangeValue.end.setFullYear(2022);
@@ -307,6 +367,7 @@ describe('isEntityValid', () => {
     });
     test('DATE_RANGE filter', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.customDateRangeValue.start.setDate(1);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateRangeValue.start.setDate(2);
@@ -326,6 +387,7 @@ describe('isEntityValid', () => {
     // DATE_TIME
     test('DATE_TIME maxDate', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.customDateTimeValue.setFullYear(2023);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateTimeValue.setFullYear(2022);
@@ -333,6 +395,7 @@ describe('isEntityValid', () => {
     });
     test('DATE_TIME minDate', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.customDateTimeValue.setFullYear(2021);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateTimeValue.setFullYear(2022);
@@ -340,6 +403,7 @@ describe('isEntityValid', () => {
     });
     test('DATE_TIME filterDate', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.customDateTimeValue.setDate(1);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateTimeValue.setDate(2);
@@ -347,6 +411,7 @@ describe('isEntityValid', () => {
     });
     test('DATE_TIME maxHours', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.customDateTimeValue.setHours(17);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateTimeValue.setHours(16);
@@ -354,6 +419,7 @@ describe('isEntityValid', () => {
     });
     test('DATE_TIME minHours', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.customDateTimeValue.setHours(7);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateTimeValue.setHours(16);
@@ -368,6 +434,7 @@ describe('isEntityValid', () => {
     });
     test('DATE_TIME filter', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.customDateTimeValue.setHours(12);
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateTimeValue.setHours(16);
@@ -377,6 +444,7 @@ describe('isEntityValid', () => {
     // FILE
     test('FILE missing name', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.fileValue.name = undefined as unknown as string;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.fileValue.name = '6qW2XkuI_400x400.png';
@@ -384,6 +452,7 @@ describe('isEntityValid', () => {
     });
     test('FILE missing file and url', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.fileValue.file = undefined;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
         tE.fileValue.url = undefined;
@@ -395,6 +464,7 @@ describe('isEntityValid', () => {
     });
     test('FILE mimetype invalid', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.imageValue.type = 'application/pdf';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.imageValue.type = 'image/jpg';
@@ -402,6 +472,7 @@ describe('isEntityValid', () => {
     });
     test('FILE single size invalid', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.fileValue.size = 10000001;
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.fileValue.size = 10000000;
@@ -409,6 +480,7 @@ describe('isEntityValid', () => {
     });
     test('FILE multi size invalid', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         for (let i = 0; i < 10; i++) {
             tE.customImageValues.push(
                 {
@@ -427,6 +499,7 @@ describe('isEntityValid', () => {
     // CUSTOM
     test('CUSTOM isValid', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         tE.randomValue = '123456';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.randomValue = '42';
@@ -436,6 +509,7 @@ describe('isEntityValid', () => {
     // unknown metadata type
     test('should throw error for unknown metadata type', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         ReflectUtilities.defineMetadata('type', 'invalid type', tE, 'maxLengthStringValue');
         const expectedEm: string = 'Could not validate the input because the DecoratorType invalid type is not known';
         expect(() => EntityUtilities.isEntityValid(tE, 'create')).toThrow(expectedEm);
@@ -445,6 +519,7 @@ describe('isEntityValid', () => {
 describe('dirty', () => {
     test('should be able to tell if an entity was modified', async () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(tE);
         expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
         tE.minNumberValue = 1234;
@@ -453,6 +528,7 @@ describe('dirty', () => {
     });
     test('should tell if date range array is dirty', async () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(tE);
         expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
 
@@ -469,8 +545,9 @@ describe('dirty', () => {
         expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
     });
     test('should tell if custom value is dirty', async () => {
-        const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
+        const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.randomValue = '12345';
         expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
         tE.randomValue = '42';
@@ -481,6 +558,7 @@ describe('dirty', () => {
 describe('compareOrder', () => {
     test('should sort entity properties by their order value', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         let keys: (keyof TestEntityWithoutCustomProperties)[] = EntityUtilities.keysOf(tE);
         expect(keys[0]).not.toBe('orderValue1');
         keys = keys.sort((a, b) => EntityUtilities.compareOrder(a, b, tE));
@@ -501,6 +579,7 @@ describe('getWidth', () => {
 describe('resetChangesOnEntity', () => {
     test('should reset entity', async () => {
         const tE: TestEntityWithoutCustomProperties = new TestEntityWithoutCustomProperties(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(tE);
         tE.minLengthStringValue = 'changed value';
         expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
@@ -512,6 +591,7 @@ describe('resetChangesOnEntity', () => {
 describe('getEntityRows', () => {
     test('should get only one row when nothing is defined', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         expect(EntityUtilities.getEntityRows(tE)).toHaveLength(2);
     });
 });
@@ -519,16 +599,19 @@ describe('getEntityRows', () => {
 describe('keysOf', () => {
     test('should get all keys of the entity', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
-        expect(EntityUtilities.keysOf(tE)).toHaveLength(49);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
+        expect(EntityUtilities.keysOf(tE)).toHaveLength(50);
     });
     test('should get keys without omitForCreate', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         const keysWithoutCreate = EntityUtilities.keysOf(tE, true);
         expect(keysWithoutCreate.includes('omitForCreateValue')).toBe(false);
         expect(keysWithoutCreate.includes('omitForUpdateValue')).toBe(true);
     });
     test('should get keys without omitForUpdate', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         const keysWithoutUpdate = EntityUtilities.keysOf(tE, false, true);
         expect(keysWithoutUpdate.includes('omitForUpdateValue')).toBe(false);
         expect(keysWithoutUpdate.includes('omitForCreateValue')).toBe(true);

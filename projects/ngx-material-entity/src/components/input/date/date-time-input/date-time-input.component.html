@@ -12,6 +12,7 @@
             [max]="metadata.maxDate ? metadata.maxDate(dateTime) : undefined"
             [matDatepickerFilter]="metadata.filterDate ?? defaultDateFilter"
             (dateInput)="setTime()"
+            [disabled]="isReadOnly"
         >
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
@@ -26,6 +27,7 @@
             [required]="metadata.required"
             [compareWith]="compareTimes"
             (ngModelChange)="setTime()"
+            [disabled]="isReadOnly"
         >
             <mat-option *ngFor="let validTime of DateUtilities.getValidTimesForDropdown(
                     DateUtilities.asDate(entity[key]),
