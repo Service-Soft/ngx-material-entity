@@ -103,6 +103,8 @@ export class PasswordStringDecoratorConfigInternal
     needsConfirmation: boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
     confirmationDisplayName: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    passwordsDontMatchErrorMessage: string;
 
     constructor(data: PasswordStringDecoratorConfig) {
         super(data);
@@ -112,5 +114,6 @@ export class PasswordStringDecoratorConfigInternal
         this.regex = data.regex;
         this.needsConfirmation = data.needsConfirmation ?? true;
         this.confirmationDisplayName = data.confirmationDisplayName ?? 'Confirm Password';
+        this.passwordsDontMatchErrorMessage = data.passwordsDontMatchErrorMessage ?? 'Passwords need to match!';
     }
 }

@@ -114,5 +114,11 @@ export interface PasswordStringDecoratorConfig extends StringDecoratorConfig {
      *
      * @default 'Confirm Password'
      */
-    confirmationDisplayName?: string
+    confirmationDisplayName?: string,
+    /**
+     * The error message to display when the password and the confirm password don't match.
+     *
+     * @default 'Passwords need to match!'
+     */
+    passwordsDontMatchErrorMessage?: string
 }
