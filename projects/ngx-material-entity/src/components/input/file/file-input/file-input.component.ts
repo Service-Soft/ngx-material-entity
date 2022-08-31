@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { EntityUtilities } from '../../../../classes/entity.utilities';
-import { DefaultFileDecoratorConfigInternal } from '../../../../decorators/file/file-decorator-internal.data';
+import { DefaultFileDecoratorConfigInternal, FileDataWithFile } from '../../../../decorators/file/file-decorator-internal.data';
 import { FileUtilities } from '../../../../classes/file.utilities';
 import { FileData } from '../../../../decorators/file/file-decorator.data';
 import { LodashUtilities } from '../../../../capsulation/lodash.utilities';
@@ -165,5 +165,39 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
             this.singleFileData = undefined;
         }
         this.fileDataChangeEvent.emit(this.singleFileData ?? this.multiFileData);
+    }
+
+    async downloadFile(name: string): Promise<void> {
+        if (this.metadata.multiple && this.multiFileData?.length) {
+            const foundFileData = this.multiFileData.find(f => f.name === name) as FileData;
+            // the index need to be saved in a constant because we edit foundFileData
+            // => .indexOf() returns undefined.
+            const index = this.multiFileData.indexOf(foundFileData);
+            this.multiFileData[index] = await FileUtilities.getFileData(foundFileData);
+            FileUtilities.downloadSingleFile(this.multiFileData[index] as FileDataWithFile);
+        }
+        else if (this.singleFileData) {
+            this.singleFileData = await FileUtilities.getFileData(this.singleFileData);
+            FileUtilities.downloadSingleFile(this.singleFileData);
+        }
+    }
+
+    downloadAllEnabled(): boolean {
+        if (!this.metadata.multiple) {
+            return false;
+        }
+        if (!this.multiFileData) {
+            return false;
+        }
+        if (this.multiFileData.length < 2) {
+            return false;
+        }
+        return true;
+    }
+
+    async downloadAll(): Promise<void> {
+        if (this.multiFileData?.length) {
+            void FileUtilities.downloadMultipleFiles(this.metadata.displayName, this.multiFileData);
+        }
     }
 }

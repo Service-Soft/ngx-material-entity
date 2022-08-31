@@ -20,6 +20,17 @@ mat-table {
     flex: 0 0 75px;
 }
 
+.elevation-container {
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+
+.array-headline {
+    padding-bottom: 10px;
+}
+
 .array-error {
     display: flex;
     align-items: center;

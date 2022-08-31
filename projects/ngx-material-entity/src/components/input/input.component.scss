@@ -60,6 +60,17 @@ mat-dialog-actions {
 }
 
 .entityArray {
+    .elevation-container {
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 15px;
+        margin-top: 15px;
+    }
+
+    .array-headline {
+        padding-bottom: 10px;
+    }
+
     .buttons {
         display: flex;
         justify-content: space-between;

@@ -14,7 +14,7 @@ type ArrayTableType = DecoratorTypes.ARRAY | DecoratorTypes.ARRAY_DATE
     | DecoratorTypes.ARRAY_DATE_RANGE | DecoratorTypes.ARRAY_DATE_TIME;
 
 /**
- * The base data needed for all arrays that are displayed as a table.
+ * The base component needed for all arrays that are displayed as a table.
  */
 @Component({
     selector: 'ngx-mat-entity-array-table',
