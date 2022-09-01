@@ -3,7 +3,7 @@ mat-form-field {
 }
 
 ::ng-deep {
-    .mat-form-field-disabled {
+    .mat-form-field.mat-form-field-disabled {
         .mat-form-field-wrapper {
             .mat-form-field-underline {
                 background-image: none;

@@ -1,6 +1,6 @@
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
-import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig } from './number-decorator.data';
+import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig, SliderNumberDecoratorConfig } from './number-decorator.data';
 
 /**
  * The internal DefaultNumberDecoratorConfig. Sets default values.
@@ -35,4 +35,42 @@ export class DropdownNumberDecoratorConfigInternal extends PropertyDecoratorConf
         this.displayStyle = data.displayStyle;
         this.dropdownValues = data.dropdownValues;
     }
+}
+
+/**
+ * The internal SliderNumberDecoratorConfig. Sets default values.
+ */
+export class SliderNumberDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements SliderNumberDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    displayStyle: 'slider';
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    min?: number;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    max?: number;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    step?: number;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    formatThumbLabelValue: (value: number) => string | number;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    tickInterval?: number | 'auto';
+
+    constructor(data: SliderNumberDecoratorConfig) {
+        super(data);
+        this.displayStyle = data.displayStyle;
+        this.max = data.max;
+        this.min = data.min;
+        this.step = data.step;
+        this.formatThumbLabelValue = data.formatThumbLabelValue ?? defaultFormatThumbLabelValue;
+        this.tickInterval = data.tickInterval;
+    }
+}
+
+/**
+ * The default function to format values for the number slider thumb label.
+ *
+ * @param value - The value of the slider.
+ * @returns Just the value without any formatting done.
+ */
+export function defaultFormatThumbLabelValue(value: number): number {
+    return value;
 }

@@ -600,7 +600,7 @@ describe('keysOf', () => {
     test('should get all keys of the entity', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
-        expect(EntityUtilities.keysOf(tE)).toHaveLength(50);
+        expect(EntityUtilities.keysOf(tE)).toHaveLength(51);
     });
     test('should get keys without omitForCreate', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);

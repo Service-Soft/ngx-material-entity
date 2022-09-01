@@ -110,6 +110,16 @@
         >
         </number-dropdown-input>
     </div>
+    <div *ngSwitchCase="DecoratorTypes.NUMBER_SLIDER">
+        <number-slider-input
+            (inputChangeEvent)="emitChange()"
+            [entity]="internalEntity"
+            [key]="internalPropertyKey"
+            [getValidationErrorMessage]="internalGetValidationErrorMessage"
+            [isReadOnly]="internalIsReadOnly"
+        >
+        </number-slider-input>
+    </div>
 
     <!-------------------------------------------->
     <!-------------------Object------------------->

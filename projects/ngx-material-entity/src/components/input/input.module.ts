@@ -37,6 +37,8 @@ import { FileDefaultInputComponent } from './file/file-default-input/file-defaul
 import { DragDropDirective } from './file/file-input/dragDrop.directive';
 import { CustomInputComponent } from './custom/custom.component';
 import { StringPasswordInputComponent } from './string/string-password-input/string-password-input.component';
+import { NumberSliderInputComponent } from './number/number-slider-input/number-slider-input.component';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
     declarations: [
@@ -50,6 +52,7 @@ import { StringPasswordInputComponent } from './string/string-password-input/str
         BooleanDropdownInputComponent,
         NumberInputComponent,
         NumberDropdownInputComponent,
+        NumberSliderInputComponent,
         ArrayStringChipsInputComponent,
         ArrayStringAutocompleteChipsComponent,
         DateInputComponent,
@@ -79,7 +82,8 @@ import { StringPasswordInputComponent } from './string/string-password-input/str
         MatTableModule,
         MatDialogModule,
         MatButtonModule,
-        MatDatepickerModule
+        MatDatepickerModule,
+        MatSliderModule
     ],
     exports: [NgxMatEntityInputComponent]
 })

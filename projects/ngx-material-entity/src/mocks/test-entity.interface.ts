@@ -86,6 +86,7 @@ export interface TestEntityWithoutCustomPropertiesInterface {
     passwordString: string,
     minNumberValue: number,
     maxNumberValue: number,
+    numberSliderValue: number,
     objectValue: {
         id: string,
         maxLengthStringValue: string,
@@ -281,6 +282,13 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         min: 10
     })
     minNumberValue!: number;
+
+    @number({
+        displayStyle: 'slider',
+        displayName: 'Number Slider Value',
+        min: 10
+    })
+    numberSliderValue!: number;
 
     @number({
         displayStyle: 'line',
@@ -710,6 +718,7 @@ const testEntityData: TestEntityWithoutCustomProperties = {
     passwordString: '12345678',
     minNumberValue: 42,
     maxNumberValue: 5,
+    numberSliderValue: 12,
     objectValue: {
         id: '1',
         maxLengthStringValue: '1234',
