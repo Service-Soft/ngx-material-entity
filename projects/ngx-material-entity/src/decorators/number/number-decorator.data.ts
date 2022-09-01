@@ -8,7 +8,7 @@ abstract class NumberDecoratorConfig extends PropertyDecoratorConfig {
     /**
      * Whether to display the number in a single line or as a dropdown.
      */
-    displayStyle!: 'line' | 'dropdown';
+    displayStyle!: 'line' | 'dropdown' | 'slider';
 }
 
 /**
@@ -38,4 +38,32 @@ export interface DropdownNumberDecoratorConfig extends NumberDecoratorConfig {
      */
     // eslint-disable-next-line jsdoc/require-jsdoc
     dropdownValues: DropdownValue<number>[]
+}
+
+/**
+ * The configuration options for a number property displayed as a slider input.
+ */
+export interface SliderNumberDecoratorConfig extends NumberDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    displayStyle: 'slider',
+    /**
+     * The minimum value of the number.
+     */
+    min?: number,
+    /**
+     * The maximum value of the number.
+     */
+    max?: number,
+    /**
+     * How big a single step is at which the thumb label will snap.
+     */
+    step?: number,
+    /**
+     * Function that transforms the value to display inside the thumb label.
+     */
+    formatThumbLabelValue?: (value: number) => string | number,
+    /**
+     * How often ticks should be displayed.
+     */
+    tickInterval?: 'auto' | number
 }

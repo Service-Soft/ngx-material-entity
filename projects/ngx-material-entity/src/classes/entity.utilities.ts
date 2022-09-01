@@ -275,6 +275,7 @@ export abstract class EntityUtilities {
             case DecoratorTypes.NUMBER_DROPDOWN:
                 return true;
             case DecoratorTypes.NUMBER:
+            case DecoratorTypes.NUMBER_SLIDER:
                 const entityNumber = entity[key] as number;
                 const numberMetadata = metadata as DefaultNumberDecoratorConfigInternal;
                 if (!EntityUtilities.isNumberValid(entityNumber, numberMetadata)) {

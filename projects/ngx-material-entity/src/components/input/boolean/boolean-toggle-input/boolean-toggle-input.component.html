@@ -1,6 +1,7 @@
 <mat-form-field class="hideUnderline">
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-slide-toggle
+        color="primary"
         (click)="model.control.markAsTouched()"
         [(ngModel)]="entity[key]"
         [name]="key.toString()"
@@ -14,7 +15,7 @@
         #model="ngModel"
         [pattern]="metadata.required ? 'true' : '[\\s\\S]*'"
         [required]="metadata.required"
-        (ngModelChange)="emitChange"
+        (ngModelChange)="emitChange()"
     >
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>

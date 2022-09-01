@@ -1,0 +1,39 @@
+mat-form-field {
+    width: 100%;
+}
+
+input {
+    opacity: 0%;
+}
+
+mat-slider {
+    width: 100%;
+    position: absolute;
+    top: -7px;
+    left: 0;
+}
+
+::ng-deep {
+    .hideUnderline .mat-form-field-underline {
+        opacity: 0%;
+    }
+
+    #slider .mat-slider-thumb-label {
+        top: -15px;
+        display: flex;
+        transform: rotate(45deg) scale(1);
+        border-radius: 50% 50% 50% 50%;
+    }
+
+    #slider.mat-slider-min-value.cdk-focused .mat-slider-thumb-label {
+        background-color: rgba(0, 0, 0, .87);
+    }
+
+    #slider .mat-slider-thumb {
+        transform: scale(0);
+    }
+
+    #slider .mat-slider-thumb-label-text {
+        opacity: 1;
+    }
+}

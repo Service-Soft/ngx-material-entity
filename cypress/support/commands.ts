@@ -55,6 +55,7 @@ Cypress.Commands.add(
         cy.getInputByLabel('Confirm Password').click().type('12345678');
 
         cy.getInputByLabel('Min Number Value').click().type('42');
+        cy.get('.mat-slider-thumb-label').click().type('{rightArrow}');
         cy.getInputByLabel('Max Number Value').click().type('8');
 
         cy.getInputByLabel('Object Row Value 1').click().type('objectRowValue1');
