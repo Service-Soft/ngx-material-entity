@@ -13,8 +13,9 @@ import { NgxMatEntityBaseInputComponent } from '../base-input.component';
 export class CustomInputComponent<
     EntityType extends BaseEntityType<EntityType>,
     MetadataType extends BaseEntityType<MetadataType>,
-    ComponentType extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.CUSTOM, MetadataType>
-> extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.CUSTOM> implements OnInit {
+    ValueType,
+    ComponentType extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.CUSTOM, ValueType, MetadataType>
+> extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.CUSTOM, ValueType> implements OnInit {
 
     component!: ComponentRef<ComponentType>;
 

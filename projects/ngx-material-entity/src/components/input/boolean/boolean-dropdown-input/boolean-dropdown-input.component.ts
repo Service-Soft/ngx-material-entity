@@ -11,5 +11,5 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
     styleUrls: ['./boolean-dropdown-input.component.scss']
 })
 export class BooleanDropdownInputComponent<EntityType extends BaseEntityType<EntityType>>
-    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.BOOLEAN_DROPDOWN> implements OnInit {
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.BOOLEAN_DROPDOWN, boolean> implements OnInit {
 }

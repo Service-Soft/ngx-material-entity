@@ -2,11 +2,11 @@
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-chip-list #chipList
         (ngModelChange)="emitChange()"
-        [(ngModel)]="entity[key]" [name]="key.toString()" #model="ngModel"
+        [(ngModel)]="propertyValue" [name]="key.toString()" #model="ngModel"
         [required]="metadata.required"
         [disabled]="isReadOnly"
     >
-        <mat-chip *ngFor="let value of stringChipsArrayValues" (removed)="removeStringChipArrayValue(value)">
+        <mat-chip *ngFor="let value of propertyValue" (removed)="removeStringChipArrayValue(value)">
             {{value}}
             <button matChipRemove>
                 <i class="{{metadata.deleteIcon}}"></i>

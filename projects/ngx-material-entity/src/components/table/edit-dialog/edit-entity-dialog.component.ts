@@ -56,7 +56,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
     // eslint-disable-next-line jsdoc/require-jsdoc
     checkEntity(): void {
         this.isEntityValid = EntityUtilities.isEntityValid(this.data.entity, 'update');
-        this.isEntityDirty = EntityUtilities.dirty(this.data.entity, this.entityPriorChanges);
+        this.isEntityDirty = EntityUtilities.isDirty(this.data.entity, this.entityPriorChanges);
     }
 
     /**

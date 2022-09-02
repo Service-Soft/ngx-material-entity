@@ -11,12 +11,10 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
     styleUrls: ['./boolean-toggle-input.component.scss']
 })
 export class BooleanToggleInputComponent<EntityType extends BaseEntityType<EntityType>>
-    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.BOOLEAN_TOGGLE> implements OnInit {
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.BOOLEAN_TOGGLE, boolean> implements OnInit {
 
     override ngOnInit(): void {
         super.ngOnInit();
-        if (this.entity[this.key] == null) {
-            (this.entity[this.key] as boolean) = false;
-        }
+        this.propertyValue = this.propertyValue ?? false;
     }
 }

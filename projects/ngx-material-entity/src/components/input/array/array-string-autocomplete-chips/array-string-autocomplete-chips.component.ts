@@ -14,9 +14,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
     styleUrls: ['./array-string-autocomplete-chips.component.scss']
 })
 export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntityType<EntityType>>
-    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS> implements OnInit {
-
-    stringChipsArrayValues?: string[];
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS, string[]> implements OnInit {
 
     filteredAutocompleteStrings!: string[];
 
@@ -25,9 +23,6 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntity
     override ngOnInit(): void {
         super.ngOnInit();
         this.filteredAutocompleteStrings = LodashUtilities.cloneDeep(this.metadata.autocompleteValues);
-        if ((this.entity[this.key] as string[] | undefined)?.length) {
-            this.stringChipsArrayValues = (this.entity[this.key] as string[]);
-        }
     }
 
     /**
@@ -53,13 +48,8 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntity
             if (this.metadata.regex  && !value.match(this.metadata.regex)) {
                 return;
             }
-            if (!this.stringChipsArrayValues) {
-                if (this.entity[this.key] == null) {
-                    (this.entity[this.key] as string[]) = [];
-                }
-                this.stringChipsArrayValues = this.entity[this.key] as string[];
-            }
-            this.stringChipsArrayValues.push(value);
+            this.propertyValue = this.propertyValue ?? [];
+            this.propertyValue.push(value);
         }
         event.chipInput?.clear();
     }
@@ -75,11 +65,8 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntity
      * @param value - The string to remove from the array.
      */
     removeStringChipArrayValue(value: string): void {
-        this.stringChipsArrayValues?.splice(this.stringChipsArrayValues.indexOf(value), 1);
-        if (!this.stringChipsArrayValues?.length) {
-            (this.entity[this.key] as unknown) = undefined;
-            this.stringChipsArrayValues = this.entity[this.key] as undefined;
-        }
+        this.propertyValue?.splice(this.propertyValue.indexOf(value), 1);
+        this.propertyValue = this.propertyValue?.length ? this.propertyValue : undefined;
     }
 
     /**
@@ -99,13 +86,8 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntity
         if (this.metadata.regex  && !value.match(this.metadata.regex)) {
             return;
         }
-        if (!this.stringChipsArrayValues) {
-            if (this.entity[this.key] == null) {
-                (this.entity[this.key] as string[]) = [];
-            }
-            this.stringChipsArrayValues = this.entity[this.key] as string[];
-        }
-        this.stringChipsArrayValues.push(value);
+        this.propertyValue = this.propertyValue ?? [];
+        this.propertyValue.push(value);
         chipsInput.value = '';
     }
 

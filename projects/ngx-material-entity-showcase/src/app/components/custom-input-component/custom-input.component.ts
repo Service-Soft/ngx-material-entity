@@ -9,10 +9,10 @@ import { RandomMetadata, TestEntity } from '../../../../../ngx-material-entity/s
     styleUrls: ['./custom-input.component.scss']
 })
 export class TestRandomInputComponent
-    extends NgxMatEntityBaseInputComponent<TestEntity, DecoratorTypes.CUSTOM, RandomMetadata> implements OnInit {
+    extends NgxMatEntityBaseInputComponent<TestEntity, DecoratorTypes.CUSTOM, string, RandomMetadata> implements OnInit {
 
     randomInput(): void {
-        (this.entity[this.key] as string) = this.metadata.customMetadata.random();
+        this.propertyValue = this.metadata.customMetadata.random();
         this.emitChange();
     }
 }

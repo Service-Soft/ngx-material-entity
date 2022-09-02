@@ -11,5 +11,5 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
     styleUrls: ['./number-slider-input.component.scss']
 })
 export class NumberSliderInputComponent<EntityType extends BaseEntityType<EntityType>>
-    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.NUMBER_SLIDER> implements OnInit {
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.NUMBER_SLIDER, number> implements OnInit {
 }

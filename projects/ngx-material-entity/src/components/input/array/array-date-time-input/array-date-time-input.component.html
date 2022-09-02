@@ -30,8 +30,8 @@
                     [required]="metadata.required"
                 >
                     <mat-option *ngFor="let validTime of DateUtilities.getValidTimesForDropdown(
-                            DateUtilities.asDate(input),
                             metadata.times,
+                            input,
                             metadata.minTime,
                             metadata.maxTime,
                             metadata.filterTime

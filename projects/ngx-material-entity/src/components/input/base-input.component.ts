@@ -14,6 +14,7 @@ import { EntityUtilities } from '../../classes/entity.utilities';
  * - key: The key of the property. (type-safe due to the Generic "EntityType")
  * - getValidationErrorMessage: The function that generates the error message when the input is invalid.
  * - isReadOnly: Whether or not the input is read only. Can be used to disable elements.
+ * - propertyValue: Just the typed version of the property, its the same as entity[key].
  * - metadata: The metadata of the property. (type-safe due to the Generic "CustomMetadataType")
  * - ngOnInit: Gets the metadata for the property, be aware of this when overriding this method.
  * - emitChange: Should be called when the input has changed. This is needed to trigger validation and dirty checks.
@@ -26,6 +27,7 @@ import { EntityUtilities } from '../../classes/entity.utilities';
 export abstract class NgxMatEntityBaseInputComponent<
     EntityType extends BaseEntityType<EntityType>,
     Type extends DecoratorTypes,
+    ValueType,
     CustomMetadataType extends BaseEntityType<CustomMetadataType> = {}
 > implements OnInit {
     /**
@@ -55,6 +57,19 @@ export abstract class NgxMatEntityBaseInputComponent<
 
     @Output()
     inputChangeEvent = new EventEmitter<void>();
+
+    // eslint-disable-next-line jsdoc/require-returns
+    /**
+     * The property value of entity[key] correctly typed.
+     * Uses getters and setters so that inputs are always linked to the original value.
+     */
+    get propertyValue(): ValueType | undefined {
+        return this.entity[this.key] as ValueType | undefined;
+    }
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    set propertyValue(value: ValueType | undefined) {
+        (this.entity[this.key] as ValueType | undefined) = value;
+    }
 
     /**
      * The metadata of the property.

@@ -18,7 +18,7 @@ export abstract class DateUtilities {
     /**
      * The default filter function to user when none was provided by the user.
      */
-    static defaultDateFilter: DateFilterFn<Date | null | undefined> = (): boolean => true;
+    static defaultDateFilter: DateFilterFn<Date | null | undefined> = () => true;
 
     /**
      * Gets the given value as a date value.
@@ -88,8 +88,8 @@ export abstract class DateUtilities {
      * @param value - The date to get the time object from.
      * @returns The Time object build from the date value.
      */
-    static getTimeFromDate(value: Date): Time | undefined {
-        if (!(value as Date | undefined)) {
+    static getTimeFromDate(value?: Date): Time | undefined {
+        if (!value) {
             return undefined;
         }
         else {
@@ -133,16 +133,16 @@ export abstract class DateUtilities {
     /**
      * Get all valid times for the dropdown of a datetime property.
      *
-     * @param date - The date of the datetime.
      * @param times - All given times to filter.
+     * @param date - The date of the datetime.
      * @param min - The function that defines the minimum time.
      * @param max - The function that defines the maximum time.
      * @param filter - A filter function to do more specific time filtering. This could be e.g. The removal of lunch breaks.
      * @returns All valid dropdown values for the datetime property.
      */
     static getValidTimesForDropdown(
-        date: Date,
         times: DropdownValue<Time>[],
+        date?: Date,
         min?: (date?: Date) => Time,
         max?: (date?: Date) => Time,
         filter?: ((time: Time) => boolean) | (() => boolean)
