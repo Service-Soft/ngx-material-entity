@@ -12,7 +12,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
     styleUrls: ['./string-autocomplete-input.component.scss']
 })
 export class StringAutocompleteInputComponent<EntityType extends BaseEntityType<EntityType>>
-    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.STRING_AUTOCOMPLETE> implements OnInit {
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.STRING_AUTOCOMPLETE, string> implements OnInit {
 
     autocompleteStrings!: string[];
     filteredAutocompleteStrings!: string[];
@@ -28,11 +28,9 @@ export class StringAutocompleteInputComponent<EntityType extends BaseEntityType<
      *
      * @param input - The input of the user.
      */
-    filterAutocompleteStrings(input: unknown): void {
-        const inputString = input as string;
-        if (inputString) {
-            const filterValue = inputString.toLowerCase();
-            this.filteredAutocompleteStrings = this.autocompleteStrings.filter(s => s.toLowerCase().includes(filterValue));
+    filterAutocompleteStrings(input?: string): void {
+        if (input) {
+            this.filteredAutocompleteStrings = this.autocompleteStrings.filter(s => s.toLowerCase().includes(input.toLowerCase()));
         }
     }
 }

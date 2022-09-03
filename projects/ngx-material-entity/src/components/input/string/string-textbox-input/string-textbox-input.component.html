@@ -2,7 +2,7 @@
     <mat-label>{{metadata.displayName}}</mat-label>
     <textarea
         matInput
-        [(ngModel)]="entity[key]"
+        [(ngModel)]="propertyValue"
         [name]="key.toString()"
         #model="ngModel"
         cdkTextareaAutosize
@@ -11,6 +11,7 @@
         [minlength]="metadata.minLength ?? null"
         [maxlength]="metadata.maxLength ?? null"
         (ngModelChange)="emitChange()"
+        [disabled]="isReadOnly"
     >
     </textarea>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>

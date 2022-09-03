@@ -2,6 +2,44 @@ mat-form-field {
     width: 100%;
 }
 
+::ng-deep {
+    .mat-form-field.mat-form-field-disabled {
+        .mat-form-field-wrapper {
+            .mat-form-field-underline {
+                background-image: none;
+                height: 1px;
+                background-color: rgba(0, 0, 0, .42);
+            }
+        }
+
+        .mat-chip.mat-standard-chip.mat-chip-disabled {
+            opacity: 1;
+
+            button {
+                opacity: 0.2;
+            }
+        }
+
+        .mat-select-disabled .mat-select-value {
+            color: black;
+        }
+
+        .mat-date-range-input-inner:disabled {
+            color: black;
+        }
+    }
+
+    .mat-form-field {
+        .mat-slide-toggle.mat-disabled {
+            opacity: 1;
+        }
+    }
+
+    .mat-input-element:disabled {
+        color: black;
+    }
+}
+
 .entityArray {
     .buttons {
         display: flex;

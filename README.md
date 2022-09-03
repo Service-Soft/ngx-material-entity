@@ -1006,7 +1006,7 @@ The component needs to extend the NgxMatEntityBaseInputComponent:
     styleUrls: ['./custom-input.component.scss']
 })
 export class CustomInputComponent
-    extends NgxMatEntityBaseInputComponent<MyEntity, DecoratorTypes.CUSTOM, MyCustomMetadata>
+    extends NgxMatEntityBaseInputComponent<MyEntity, DecoratorTypes.CUSTOM, string, MyCustomMetadata>
     implements OnInit {
     // Define your logic here.
     // The base class already provides the entity and key values and handles getting the metadata.
@@ -1110,15 +1110,21 @@ export interface BaseData<EntityType extends object> {
     /**
      * Defines whether or not the user can add new entities.
      *
-     * @default true
+     * @default () => true
      */
-    allowCreate?: boolean,
+    allowCreate?: () => boolean,
     /**
-     * Defines whether or not the user can edit entities.
+     * Defines whether or not the user can view this specific entity.
      *
      * @default () => true
      */
-    allowEdit?: (entity: EntityType) => boolean,
+    allowRead?: (entity: EntityType) => boolean,
+    /**
+     * Defines whether or not the user can edit this specific entity.
+     *
+     * @default () => true
+     */
+    allowUpdate?: (entity: EntityType) => boolean,
     /**
      * Whether or not the user can delete this specific entity.
      */

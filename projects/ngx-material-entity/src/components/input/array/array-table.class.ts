@@ -20,13 +20,12 @@ type ArrayTableType = DecoratorTypes.ARRAY | DecoratorTypes.ARRAY_DATE
     selector: 'ngx-mat-entity-array-table',
     template: ''
 })
-export abstract class ArrayTableComponent<T, EntityType extends BaseEntityType<EntityType>, ArrayType extends ArrayTableType>
-    extends NgxMatEntityBaseInputComponent<EntityType, ArrayType> implements OnInit {
+export abstract class ArrayTableComponent<ValueType, EntityType extends BaseEntityType<EntityType>, ArrayType extends ArrayTableType>
+    extends NgxMatEntityBaseInputComponent<EntityType, ArrayType, ValueType[]> implements OnInit {
 
-    arrayValues!: T[];
-    input?: T = undefined;
-    dataSource: MatTableDataSource<T> = new MatTableDataSource();
-    selection: SelectionModel<T> = new SelectionModel<T>(true, []);
+    input?: ValueType = undefined;
+    dataSource: MatTableDataSource<ValueType> = new MatTableDataSource();
+    selection: SelectionModel<ValueType> = new SelectionModel<ValueType>(true, []);
     displayedColumns!: string[];
 
     constructor(private readonly matDialog: MatDialog) {
@@ -35,10 +34,7 @@ export abstract class ArrayTableComponent<T, EntityType extends BaseEntityType<E
 
     override ngOnInit(): void {
         super.ngOnInit();
-        if (this.entity[this.key] == null) {
-            (this.entity[this.key] as T[]) = [];
-        }
-        this.arrayValues = this.entity[this.key] as T[];
+        this.propertyValue = this.propertyValue ?? [];
         const givenDisplayColumns: string[] = this.metadata.displayColumns.map((v) => v.displayName);
         if (givenDisplayColumns.find(s => s === 'select')) {
             throw new Error(
@@ -46,8 +42,8 @@ export abstract class ArrayTableComponent<T, EntityType extends BaseEntityType<E
                 Please choose a different name.`
             );
         }
-        this.displayedColumns = ['select'].concat(givenDisplayColumns);
-        this.dataSource.data = this.arrayValues;
+        this.displayedColumns = this.isReadOnly ? givenDisplayColumns : ['select'].concat(givenDisplayColumns);
+        this.dataSource.data = this.propertyValue;
     }
 
     /**
@@ -82,7 +78,7 @@ export abstract class ArrayTableComponent<T, EntityType extends BaseEntityType<E
         if (this.input != null) {
             if (
                 !this.metadata.allowDuplicates
-                && this.arrayValues.find(
+                && this.propertyValue?.find(
                     async v => await EntityUtilities.isEqual(this.input, v, this.metadata, this.metadata.itemType)
                 ) != null
             ) {
@@ -93,8 +89,8 @@ export abstract class ArrayTableComponent<T, EntityType extends BaseEntityType<E
                 });
                 return;
             }
-            this.arrayValues.push(LodashUtilities.cloneDeep(this.input));
-            this.dataSource.data = this.arrayValues;
+            this.propertyValue?.push(LodashUtilities.cloneDeep(this.input));
+            this.dataSource.data = this.propertyValue ?? [];
             this.resetInput();
             this.emitChange();
         }
@@ -112,9 +108,9 @@ export abstract class ArrayTableComponent<T, EntityType extends BaseEntityType<E
      */
     remove(): void {
         this.selection.selected.forEach(s => {
-            this.arrayValues.splice(this.arrayValues.indexOf(s), 1);
+            this.propertyValue?.splice(this.propertyValue.indexOf(s), 1);
         });
-        this.dataSource.data = this.arrayValues;
+        this.dataSource.data = this.propertyValue ?? [];
         this.selection.clear();
         this.emitChange();
     }

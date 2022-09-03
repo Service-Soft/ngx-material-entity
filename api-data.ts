@@ -39,8 +39,10 @@ const testEntityData: TestEntityWithoutCustomPropertiesInterface = {
     regexAutocompleteStringValue: '12345',
     maxLengthTextboxStringValue: '1234',
     minLengthTextboxStringValue: '12345678',
+    passwordString: '12345678',
     minNumberValue: 42,
     maxNumberValue: 5,
+    numberSliderValue: 12,
     objectValue: {
         id: '1',
         maxLengthStringValue: '1234',

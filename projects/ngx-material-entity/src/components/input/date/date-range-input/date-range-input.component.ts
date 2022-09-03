@@ -1,7 +1,6 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
-import { DateFilterFn } from '@angular/material/datepicker';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
 import { LodashUtilities } from '../../../../capsulation/lodash.utilities';
 import { DateUtilities } from '../../../../classes/date.utilities';
@@ -21,17 +20,17 @@ const EMPTY_DATERANGE: DateRange = {
     styleUrls: ['./date-range-input.component.scss']
 })
 export class DateRangeInputComponent<EntityType extends BaseEntityType<EntityType>>
-    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.DATE_RANGE> implements OnInit {
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.DATE_RANGE, DateRange> implements OnInit {
 
     dateRange!: DateRange;
     dateRangeStart?: Date;
     dateRangeEnd?: Date;
 
-    defaultDateFilter: DateFilterFn<Date | null | undefined> = (): boolean => true;
+    defaultDateFilter = DateUtilities.defaultDateFilter;
 
     override ngOnInit(): void {
         super.ngOnInit();
-        this.dateRange = LodashUtilities.cloneDeep(this.entity[this.key] as DateRange) ?? EMPTY_DATERANGE;
+        this.dateRange = LodashUtilities.cloneDeep(this.propertyValue) ?? EMPTY_DATERANGE;
         this.dateRangeStart = new Date(this.dateRange.start);
         this.dateRangeEnd = new Date(this.dateRange.end);
         this.setDateRangeValues();
@@ -54,7 +53,7 @@ export class DateRangeInputComponent<EntityType extends BaseEntityType<EntityTyp
         else {
             this.dateRange.values = undefined;
         }
-        (this.entity[this.key] as DateRange) = this.dateRange;
+        this.propertyValue = this.dateRange;
         this.emitChange();
     }
 }

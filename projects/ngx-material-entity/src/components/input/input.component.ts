@@ -55,6 +55,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * Whether to hide a value if it is omitted for creation.
      * Is used internally for the object property.
+     *
+     * @default false
      */
     @Input()
     hideOmitForCreate?: boolean;
@@ -62,9 +64,21 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * Whether to hide a value if it is omitted for editing.
      * Is used internally for the object property.
+     *
+     * @default false
      */
     @Input()
     hideOmitForEdit?: boolean;
+
+    /**
+     * Whether or not the input should be readonly.
+     * In that case it is disabled, but most of the default styling is overwritten.
+     *
+     * @default false
+     */
+    @Input()
+    isReadOnly?: boolean;
+    internalIsReadOnly!: boolean;
 
     @Output()
     inputChangeEvent = new EventEmitter<void>();
@@ -126,9 +140,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.internalPropertyKey = this.propertyKey;
 
         this.internalGetValidationErrorMessage = this.getValidationErrorMessage ?? getValidationErrorMessage;
+        this.internalIsReadOnly = this.isReadOnly ?? false;
 
-        this.type = EntityUtilities.getPropertyType(this.entity, this.propertyKey);
-        this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.propertyKey, this.type);
+        this.type = EntityUtilities.getPropertyType(this.internalEntity, this.internalPropertyKey);
+        this.metadata = EntityUtilities.getPropertyMetadata(this.internalEntity, this.internalPropertyKey, this.type);
 
         if (this.type === DecoratorTypes.OBJECT) {
             this.initObjectInput();
@@ -156,7 +171,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 Please choose a different name.`
             );
         }
-        this.displayedColumns = ['select'].concat(givenDisplayColumns);
+        this.displayedColumns = this.internalIsReadOnly ? givenDisplayColumns : ['select'].concat(givenDisplayColumns);
         this.dataSource = new MatTableDataSource();
         this.dataSource.data = this.entityArrayValues;
         this.arrayItem = new this.metadataEntityArray.EntityClass();

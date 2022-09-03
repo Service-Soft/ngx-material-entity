@@ -1,3 +1,4 @@
+import { LodashUtilities } from '../capsulation/lodash.utilities';
 import { FileDataWithFile } from '../decorators/file/file-decorator-internal.data';
 import { FileData } from '../decorators/file/file-decorator.data';
 
@@ -114,7 +115,7 @@ export abstract class FileUtilities {
      * @returns The given value as bytes.
      */
     static transformToMegaBytes(value: number, unit: 'B' | 'KB' | 'GB'): number {
-        const bytes = this.transformToBytes(value, unit);
+        const bytes = this.transformToBytes(LodashUtilities.cloneDeep(value), unit);
         return bytes / 1000000;
     }
 

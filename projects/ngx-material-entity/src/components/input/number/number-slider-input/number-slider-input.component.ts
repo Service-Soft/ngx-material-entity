@@ -6,10 +6,10 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
-    selector: 'string-dropdown-input',
-    templateUrl: './string-dropdown-input.component.html',
-    styleUrls: ['./string-dropdown-input.component.scss']
+    selector: 'number-slider-input',
+    templateUrl: './number-slider-input.component.html',
+    styleUrls: ['./number-slider-input.component.scss']
 })
-export class StringDropdownInputComponent<EntityType extends BaseEntityType<EntityType>>
-    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.STRING_DROPDOWN, string> implements OnInit {
+export class NumberSliderInputComponent<EntityType extends BaseEntityType<EntityType>>
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.NUMBER_SLIDER, number> implements OnInit {
 }

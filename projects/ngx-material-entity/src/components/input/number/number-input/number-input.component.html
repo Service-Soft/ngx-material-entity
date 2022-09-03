@@ -3,13 +3,14 @@
     <input
         matInput
         type="number"
-        [(ngModel)]="entity[key]"
+        [(ngModel)]="propertyValue"
         [name]="key.toString()"
         #model="ngModel"
         [required]="metadata.required"
         [min]="metadata.min ?? null"
         [max]="metadata.max ?? null"
         (ngModelChange)="emitChange()"
-    />
+        [disabled]="isReadOnly"
+    >
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>

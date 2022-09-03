@@ -15,12 +15,14 @@ export class ShowcaseInputsComponent {
         DecoratorTypes.STRING_DROPDOWN,
         DecoratorTypes.STRING_TEXTBOX,
         DecoratorTypes.STRING_AUTOCOMPLETE,
+        DecoratorTypes.STRING_PASSWORD,
         DecoratorTypes.STRING
     ];
 
     private readonly NUMBER_DECORATOR_TYPES = [
         DecoratorTypes.NUMBER,
-        DecoratorTypes.NUMBER_DROPDOWN
+        DecoratorTypes.NUMBER_DROPDOWN,
+        DecoratorTypes.NUMBER_SLIDER
     ];
 
     private readonly ARRAY_DECORATOR_TYPES = [
@@ -57,6 +59,8 @@ export class ShowcaseInputsComponent {
     keys!: (keyof TestEntity)[];
 
     inputValues: boolean = false;
+    isReadOnly: boolean = false;
+    loaded: boolean = true;
 
     EntityUtilities = EntityUtilities;
 
@@ -105,14 +109,19 @@ export class ShowcaseInputsComponent {
         });
     }
 
-    async toggleInputValues(): Promise<void> {
-        if (this.inputValues) {
-            this.testEntity = new TestEntityMockBuilder().testEntityWithoutData;
-        }
-        else {
-            this.testEntity = new TestEntityMockBuilder().testEntity;
-        }
+    toggleInputValues(): void {
+        this.loaded = false;
+
+        this.testEntity = this.inputValues ? new TestEntityMockBuilder().testEntityWithoutData : new TestEntityMockBuilder().testEntity;
         this.inputValues = !this.inputValues;
+
+        setTimeout(() => this.loaded = true, 1);
+    }
+
+    toggleReadOnly(): void {
+        this.loaded = false;
+        this.isReadOnly = !this.isReadOnly;
+        setTimeout(() => this.loaded = true, 1);
     }
 
     private setKeys(types: DecoratorTypes[]): void {

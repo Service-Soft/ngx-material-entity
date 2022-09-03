@@ -11,5 +11,5 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
     styleUrls: ['./number-dropdown-input.component.scss']
 })
 export class NumberDropdownInputComponent<EntityType extends BaseEntityType<EntityType>>
-    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.NUMBER_DROPDOWN> implements OnInit {
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.NUMBER_DROPDOWN, number> implements OnInit {
 }

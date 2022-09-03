@@ -1,7 +1,7 @@
 import { DecoratorType, DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../decorators/base/property-decorator-internal.data';
 import { DateRangeArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
-import { DefaultStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../decorators/string/string-decorator-internal.data';
+import { DefaultStringDecoratorConfigInternal, PasswordStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../decorators/string/string-decorator-internal.data';
 import { DefaultNumberDecoratorConfigInternal } from '../decorators/number/number-decorator-internal.data';
 import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from '../decorators/date/date-decorator-internal.data';
 import { DateRange } from '../decorators/date/date-decorator.data';
@@ -264,9 +264,18 @@ export abstract class EntityUtilities {
                     return false;
                 }
                 break;
+            case DecoratorTypes.STRING_PASSWORD:
+                const entityPassword = entity[key] as string;
+                const passwordMetadata = metadata as PasswordStringDecoratorConfigInternal;
+                const confirmPassword = ReflectUtilities.getMetadata('confirmPassword', entity, key) as string;
+                if (!EntityUtilities.isPasswordValid(entityPassword, passwordMetadata, confirmPassword)) {
+                    return false;
+                }
+                break;
             case DecoratorTypes.NUMBER_DROPDOWN:
                 return true;
             case DecoratorTypes.NUMBER:
+            case DecoratorTypes.NUMBER_SLIDER:
                 const entityNumber = entity[key] as number;
                 const numberMetadata = metadata as DefaultNumberDecoratorConfigInternal;
                 if (!EntityUtilities.isNumberValid(entityNumber, numberMetadata)) {
@@ -360,6 +369,22 @@ export abstract class EntityUtilities {
             return false;
         }
         if (metadata.minLength && value.length < metadata.minLength) {
+            return false;
+        }
+        return true;
+    }
+
+    private static isPasswordValid(value: string, metadata: PasswordStringDecoratorConfigInternal, confirmPassword: string): boolean {
+        if (value !== confirmPassword) {
+            return false;
+        }
+        if (metadata.maxLength && value.length > metadata.maxLength) {
+            return false;
+        }
+        if (metadata.minLength && value.length < metadata.minLength) {
+            return false;
+        }
+        if (metadata.regex && !value.match(metadata.regex)) {
             return false;
         }
         return true;
@@ -481,8 +506,6 @@ export abstract class EntityUtilities {
 
     private static isFileDataValid(value: FileData | FileData[], metadata: DefaultFileDecoratorConfigInternal): boolean {
         const files = metadata.multiple ? value as FileData[] : [value as FileData];
-        const maxSize = metadata.maxSize * 1000000;
-        const maxSizeTotal = metadata.maxSizeTotal * 1000000;
         let fileSizeTotal: number = 0;
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < files.length; i++) {
@@ -492,11 +515,11 @@ export abstract class EntityUtilities {
             if (!FileUtilities.isMimeTypeValid(files[i].type, metadata.allowedMimeTypes)) {
                 return false;
             }
-            if (files[i].size > maxSize) {
+            if (FileUtilities.transformToMegaBytes(files[i].size, 'B') > metadata.maxSize) {
                 return false;
             }
             fileSizeTotal += files[i].size;
-            if (fileSizeTotal > maxSizeTotal) {
+            if (FileUtilities.transformToMegaBytes(fileSizeTotal, 'B') > metadata.maxSizeTotal) {
                 return false;
             }
         }
@@ -510,7 +533,7 @@ export abstract class EntityUtilities {
      * @param entityPriorChanges - The entity before the changes.
      * @returns Whether or not the entity is dirty.
      */
-    static async dirty<EntityType extends BaseEntityType<EntityType>>(
+    static async isDirty<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         entityPriorChanges: EntityType
     ): Promise<boolean> {

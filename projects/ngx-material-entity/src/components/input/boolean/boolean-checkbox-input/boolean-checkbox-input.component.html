@@ -1,12 +1,24 @@
 <mat-form-field class="hideUnderline">
     <mat-label>{{metadata.displayName}}</mat-label>
-    <mat-checkbox (ngModelChange)="emitChange()" (click)="model.control.markAsTouched()" [(ngModel)]="entity[key]" [name]="key.toString()"></mat-checkbox>
+    <mat-checkbox
+        color="primary"
+        (ngModelChange)="emitChange()"
+        (click)="model.control.markAsTouched()"
+        [(ngModel)]="propertyValue"
+        [name]="key.toString()"
+        [disabled]="isReadOnly"
+        [class.disabled]="isReadOnly"
+        [class.mat-checkbox-disabled]="false"
+    >
+    </mat-checkbox>
     <!-- hidden input is needed so that the checkbox can be used inside a mat-form-field -->
     <input matInput hidden
-        [(ngModel)]="entity[key]"
+        [(ngModel)]="propertyValue"
         [name]="key.toString() + 'Helper'"
         #model="ngModel"
         [pattern]="metadata.required ? 'true' : '[\\s\\S]*'"
-        [required]="metadata.required">
+        [required]="metadata.required"
+        [disabled]="isReadOnly"
+    >
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>

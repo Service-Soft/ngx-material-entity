@@ -1,15 +1,33 @@
 <div *ngIf="!metadata.dragAndDrop && !metadata.preview">
-    <file-input (fileDataChangeEvent)="refreshFileData($event)" [entity]="entity" [key]="key" [getValidationErrorMessage]="getValidationErrorMessage"></file-input>
+    <file-input
+        (fileDataChangeEvent)="refreshFileData($event)"
+        [entity]="entity"
+        [key]="key"
+        [getValidationErrorMessage]="getValidationErrorMessage"
+        [isReadOnly]="isReadOnly"
+    >
+    </file-input>
 </div>
 
 <div *ngIf="metadata.dragAndDrop || metadata.preview" class="file-input mat-elevation-z8">
-    <file-input (fileDataChangeEvent)="refreshFileData($event)" [entity]="entity" [key]="key" [getValidationErrorMessage]="getValidationErrorMessage"></file-input>
+    <file-input
+        (fileDataChangeEvent)="refreshFileData($event)"
+        [entity]="entity"
+        [key]="key"
+        [getValidationErrorMessage]="getValidationErrorMessage"
+        [isReadOnly]="isReadOnly"
+    >
+    </file-input>
 
     <div class="image-preview" *ngIf="metadata.preview && metadata.multiple">
         <i (click)="prev()" [class.disabled]="imageIndex === 0" class="prev-button fa-solid fa-angle-left"></i>
         <img *ngIf="multiPreviewImages?.[imageIndex]" class="mat-elevation-z2" [src]="multiPreviewImages?.[imageIndex]">
         <img *ngIf="!multiPreviewImages?.[imageIndex]" class="mat-elevation-z2" [src]="metadata.previewPlaceholderUrl ?? placeHolder">
-        <i (click)="next()" [class.disabled]="!multiPreviewImages || !multiPreviewImages.length || imageIndex === (multiPreviewImages.length - 1)" class="next-button fa-solid fa-angle-right"></i>
+        <i (click)="next()"
+            [class.disabled]="!multiPreviewImages || !multiPreviewImages.length || imageIndex === (multiPreviewImages.length - 1)"
+            class="next-button fa-solid fa-angle-right"
+        >
+        </i>
     </div>
     <div class="preview-nav" *ngIf="metadata.preview && metadata.multiple">
         <button (click)="setIndex(imageIndex-4)" mat-icon-button *ngIf="

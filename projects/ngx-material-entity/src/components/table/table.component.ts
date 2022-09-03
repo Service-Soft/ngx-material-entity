@@ -92,16 +92,17 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
      * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
      */
     editEntity(entity: EntityType): void {
-        if (this.data.baseData.allowEdit(entity)) {
-            if (!this.data.baseData.EntityClass) {
-                throw new Error('No "EntityClass" specified for this table');
-            }
-            if (this.data.baseData.edit) {
-                this.data.baseData.edit(new this.data.baseData.EntityClass(entity));
-            }
-            else {
-                void this.editDefault(new this.data.baseData.EntityClass(entity));
-            }
+        if (!(this.data.baseData.allowUpdate(entity) || this.data.baseData.allowRead(entity))) {
+            return;
+        }
+        if (!this.data.baseData.EntityClass) {
+            throw new Error('No "EntityClass" specified for this table');
+        }
+        if (this.data.baseData.edit) {
+            this.data.baseData.edit(new this.data.baseData.EntityClass(entity));
+        }
+        else {
+            void this.editDefault(new this.data.baseData.EntityClass(entity));
         }
     }
 
@@ -109,6 +110,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         const inputDialogData: EditEntityDialogData<EntityType> = {
             entity: entity,
             EntityServiceClass: this.data.baseData.EntityServiceClass,
+            allowUpdate: this.data.baseData.allowUpdate,
             allowDelete: this.data.baseData.allowDelete,
             editDialogData: this.data.editDialogData
         };
@@ -135,7 +137,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
      * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
      */
     createEntity(): void {
-        if (this.data.baseData.allowCreate) {
+        if (this.data.baseData.allowCreate()) {
             if (!this.data.baseData.EntityClass) {
                 throw new Error('No "EntityClass" specified for this table');
             }

@@ -34,6 +34,9 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
 
+    @Input()
+    isReadOnly!: boolean;
+
     @Output()
     fileDataChangeEvent = new EventEmitter<FileData | FileData[]>();
 
@@ -82,7 +85,7 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
             this.resetFileInputs();
             return;
         }
-        if (files.find(f => f.size > (this.metadata.maxSize * 1000000))) {
+        if (files.find(f => FileUtilities.transformToMegaBytes(f.size, 'B') > this.metadata.maxSize)) {
             this.dialog.open(NgxMatEntityConfirmDialogComponent, {
                 data: this.metadata.maxSizeErrorDialog,
                 autoFocus: false,
@@ -95,7 +98,7 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
         for (const file of files) {
             fileSizeTotal += file.size;
         }
-        if (fileSizeTotal > (this.metadata.maxSizeTotal * 1000000)) {
+        if (FileUtilities.transformToMegaBytes(fileSizeTotal, 'B') > this.metadata.maxSizeTotal) {
             this.dialog.open(NgxMatEntityConfirmDialogComponent, {
                 data: this.metadata.maxSizeTotalErrorDialog,
                 autoFocus: false,

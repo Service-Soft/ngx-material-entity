@@ -1,0 +1,32 @@
+<mat-form-field floatLabel="always" class="hideUnderline">
+    <mat-label>{{metadata.displayName}}</mat-label>
+    <!-- hidden input is needed so that the slider can be used inside a mat-form-field -->
+    <input matInput
+        #hiddenInput
+        type="number"
+        [(ngModel)]="propertyValue"
+        [name]="key.toString() + 'Helper'"
+        #model="ngModel"
+        [required]="metadata.required"
+        [min]="metadata.min ?? null"
+        [max]="metadata.max ?? null"
+        (ngModelChange)="emitChange()"
+        [disabled]="isReadOnly"
+    >
+    <mat-slider
+        id="slider"
+        color="primary"
+        (click)="model.control.markAsTouched()"
+        [(ngModel)]="propertyValue"
+        [name]="key.toString()"
+        [min]="metadata.min ?? null"
+        [max]="metadata.max ?? null"
+        [step]="metadata.step"
+        [thumbLabel]="true"
+        [displayWith]="metadata.formatThumbLabelValue"
+        [tickInterval]="metadata.tickInterval"
+        [disabled]="isReadOnly"
+    >
+    </mat-slider>
+    <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
+</mat-form-field>

@@ -11,5 +11,5 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
     styleUrls: ['./number-input.component.scss']
 })
 export class NumberInputComponent<EntityType extends BaseEntityType<EntityType>>
-    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.NUMBER> implements OnInit {
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.NUMBER, number> implements OnInit {
 }

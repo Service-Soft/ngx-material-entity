@@ -14,7 +14,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
     styleUrls: ['./file-image-input.component.scss']
 })
 export class FileImageInputComponent<EntityType extends BaseEntityType<EntityType>>
-    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.FILE_IMAGE> implements OnInit {
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.FILE_IMAGE, FileData | FileData[]> implements OnInit {
 
     FileUtilities = FileUtilities;
 
@@ -24,10 +24,9 @@ export class FileImageInputComponent<EntityType extends BaseEntityType<EntityTyp
     placeHolder = placeholder;
 
     private async setSinglePreviewImage(): Promise<void> {
-        let singleFileData = this.entity[this.key] as FileData | undefined;
-        if (singleFileData) {
-            singleFileData = await FileUtilities.getFileData(singleFileData);
-            this.singlePreviewImage = await FileUtilities.getDataURLFromFile(singleFileData.file);
+        if (this.propertyValue) {
+            this.propertyValue = await FileUtilities.getFileData(this.propertyValue as FileData);
+            this.singlePreviewImage = await FileUtilities.getDataURLFromFile(this.propertyValue.file);
         }
         else {
             this.singlePreviewImage = undefined;
@@ -35,13 +34,13 @@ export class FileImageInputComponent<EntityType extends BaseEntityType<EntityTyp
     }
 
     private async setMultiPreviewImages(index: number): Promise<void> {
-        const multiFileData = this.entity[this.key] as FileData[] | undefined;
+        const multiFileData = this.propertyValue as FileData[] | undefined;
         const previewImages: string[] = [];
         if (multiFileData?.length) {
             for (let i = 0; i < multiFileData.length; i++) {
                 if (i === index) {
                     multiFileData[index] = await FileUtilities.getFileData(multiFileData[index]);
-                    previewImages.push(await FileUtilities.getDataURLFromFile(multiFileData[index].file as Blob) as string);
+                    previewImages.push(await FileUtilities.getDataURLFromFile(multiFileData[index].file) as string);
                 }
                 else {
                     previewImages.push('empty');
@@ -52,10 +51,11 @@ export class FileImageInputComponent<EntityType extends BaseEntityType<EntityTyp
     }
 
     async refreshFileData(fileData?: FileData | FileData[]): Promise<void> {
-        (this.entity[this.key] as FileData | FileData[] | undefined) = fileData;
+        this.propertyValue = fileData;
         this.emitChange();
         if (this.metadata.multiple) {
-            if (!((fileData as FileData[] | undefined)?.[this.imageIndex])) {
+            fileData = (fileData as FileData[] | undefined);
+            if (!fileData?.[this.imageIndex]) {
                 this.imageIndex = 0;
             }
             await this.setMultiPreviewImages(this.imageIndex);
@@ -66,17 +66,22 @@ export class FileImageInputComponent<EntityType extends BaseEntityType<EntityTyp
     }
 
     async prev(): Promise<void> {
-        if (this.imageIndex > 0) {
-            await this.setMultiPreviewImages(this.imageIndex - 1);
-            this.imageIndex--;
+        if (this.imageIndex <= 0) {
+            return;
         }
+        await this.setMultiPreviewImages(this.imageIndex - 1);
+        this.imageIndex--;
     }
 
     async next(): Promise<void> {
-        if (this.multiPreviewImages?.length && this.imageIndex !== (this.multiPreviewImages.length - 1)) {
-            await this.setMultiPreviewImages(this.imageIndex + 1);
-            this.imageIndex++;
+        if (!this.multiPreviewImages?.length) {
+            return;
         }
+        if (this.imageIndex === (this.multiPreviewImages.length - 1)) {
+            return;
+        }
+        await this.setMultiPreviewImages(this.imageIndex + 1);
+        this.imageIndex++;
     }
 
     async setIndex(index: number): Promise<void> {

@@ -336,7 +336,7 @@ export class BaseDataEntity<EntityType extends BaseEntityType<EntityType>> exten
         displayName: 'Base Data Custom allow edit method',
         displayStyle: 'line'
     })
-    allowEdit?: (entity: EntityType) => boolean;
+    allowUpdate?: (entity: EntityType) => boolean;
 
     @string({
         required: false,

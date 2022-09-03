@@ -13,18 +13,9 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
     styleUrls: ['./array-string-chips-input.component.scss']
 })
 export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<EntityType>>
-    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.ARRAY_STRING_CHIPS> implements OnInit {
-
-    stringChipsArrayValues?: string[];
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.ARRAY_STRING_CHIPS, string[]> implements OnInit {
 
     chipsInput: string = '';
-
-    override ngOnInit(): void {
-        super.ngOnInit();
-        if ((this.entity[this.key] as string[] | undefined)?.length) {
-            this.stringChipsArrayValues = (this.entity[this.key] as string[]);
-        }
-    }
 
     /**
      * Handles adding strings to the chipsArray.
@@ -49,13 +40,8 @@ export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<En
             if (this.metadata.regex  && !value.match(this.metadata.regex)) {
                 return;
             }
-            if (!this.stringChipsArrayValues) {
-                if (this.entity[this.key] == null) {
-                    (this.entity[this.key] as string[]) = [];
-                }
-                this.stringChipsArrayValues = this.entity[this.key] as string[];
-            }
-            this.stringChipsArrayValues.push(value);
+            this.propertyValue = this.propertyValue ?? [];
+            this.propertyValue.push(value);
         }
         event.chipInput?.clear();
     }
@@ -71,11 +57,8 @@ export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<En
      * @param value - The string to remove from the array.
      */
     removeStringChipArrayValue(value: string): void {
-        this.stringChipsArrayValues?.splice(this.stringChipsArrayValues.indexOf(value), 1);
-        if (!this.stringChipsArrayValues?.length) {
-            (this.entity[this.key] as unknown) = undefined;
-            this.stringChipsArrayValues = this.entity[this.key] as undefined;
-        }
+        this.propertyValue?.splice(this.propertyValue.indexOf(value), 1);
+        this.propertyValue = this.propertyValue?.length ? this.propertyValue : undefined;
     }
 
     /**
@@ -95,13 +78,8 @@ export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<En
         if (this.metadata.regex  && !value.match(this.metadata.regex)) {
             return;
         }
-        if (!this.stringChipsArrayValues) {
-            if (this.entity[this.key] == null) {
-                (this.entity[this.key] as string[]) = [];
-            }
-            this.stringChipsArrayValues = this.entity[this.key] as string[];
-        }
-        this.stringChipsArrayValues.push(value);
+        this.propertyValue = this.propertyValue ?? [];
+        this.propertyValue.push(value);
         chipsInput.value = '';
     }
 }

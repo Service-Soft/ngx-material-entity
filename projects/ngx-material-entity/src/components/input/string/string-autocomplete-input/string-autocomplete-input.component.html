@@ -2,17 +2,18 @@
     <mat-label>{{metadata.displayName}}</mat-label>
     <input
         matInput
-        [(ngModel)]="entity[key]"
+        [(ngModel)]="propertyValue"
         [name]="key.toString()"
         #model="ngModel"
         [matAutocomplete]="auto"
-        (keyup)="filterAutocompleteStrings(entity[key])"
+        (keyup)="filterAutocompleteStrings(propertyValue)"
         [required]="metadata.required"
         [minlength]="metadata.minLength ?? null"
         [maxlength]="metadata.maxLength ?? null"
         [pattern]="metadata.regex ?? '[\\s\\S]*'"
         (ngModelChange)="emitChange()"
-    />
+        [disabled]="isReadOnly"
+    >
     <mat-autocomplete #auto="matAutocomplete">
         <mat-option *ngFor="let value of filteredAutocompleteStrings" [value]="value">
             {{value}}

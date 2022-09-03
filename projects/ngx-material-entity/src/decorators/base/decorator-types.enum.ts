@@ -3,9 +3,9 @@ import { CheckboxBooleanDecoratorConfigInternal, DropdownBooleanDecoratorConfigI
 import { CustomDecoratorConfigInternal } from '../custom/custom-decorator-internal.data';
 import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from '../date/date-decorator-internal.data';
 import { DefaultFileDecoratorConfigInternal, ImageFileDecoratorConfigInternal } from '../file/file-decorator-internal.data';
-import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal } from '../number/number-decorator-internal.data';
+import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal, SliderNumberDecoratorConfigInternal } from '../number/number-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../object/object-decorator-internal.data';
-import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../string/string-decorator-internal.data';
+import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal, PasswordStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../string/string-decorator-internal.data';
 
 /**
  * The enum Values for all the different DecoratorTypes.
@@ -15,8 +15,10 @@ export enum DecoratorTypes {
     STRING_DROPDOWN = 'stringDropdown',
     STRING_AUTOCOMPLETE = 'stringAutocomplete',
     STRING_TEXTBOX = 'stringTextbox',
+    STRING_PASSWORD = 'stringPassword',
     NUMBER = 'number',
     NUMBER_DROPDOWN = 'numberDropdown',
+    NUMBER_SLIDER = 'numberSlider',
     BOOLEAN_CHECKBOX = 'boolean',
     BOOLEAN_TOGGLE = 'booleanToggle',
     BOOLEAN_DROPDOWN = 'booleanDropdown',
@@ -43,8 +45,10 @@ export type DecoratorType<T, CustomMetadataType extends Record<string, unknown>>
     : T extends DecoratorTypes.STRING_TEXTBOX ? TextboxStringDecoratorConfigInternal
     : T extends DecoratorTypes.STRING_DROPDOWN ? DropdownStringDecoratorConfigInternal
     : T extends DecoratorTypes.STRING_AUTOCOMPLETE ? AutocompleteStringDecoratorConfigInternal
+    : T extends DecoratorTypes.STRING_PASSWORD ? PasswordStringDecoratorConfigInternal
     : T extends DecoratorTypes.NUMBER ? DefaultNumberDecoratorConfigInternal
     : T extends DecoratorTypes.NUMBER_DROPDOWN ? DropdownNumberDecoratorConfigInternal
+    : T extends DecoratorTypes.NUMBER_SLIDER ? SliderNumberDecoratorConfigInternal
     : T extends DecoratorTypes.BOOLEAN_CHECKBOX ? CheckboxBooleanDecoratorConfigInternal
     : T extends DecoratorTypes.BOOLEAN_TOGGLE ? ToggleBooleanDecoratorConfigInternal
     : T extends DecoratorTypes.BOOLEAN_DROPDOWN ? DropdownBooleanDecoratorConfigInternal
