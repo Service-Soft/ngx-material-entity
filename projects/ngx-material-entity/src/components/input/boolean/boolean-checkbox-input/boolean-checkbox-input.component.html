@@ -4,7 +4,7 @@
         color="primary"
         (ngModelChange)="emitChange()"
         (click)="model.control.markAsTouched()"
-        [(ngModel)]="entity[key]"
+        [(ngModel)]="propertyValue"
         [name]="key.toString()"
         [disabled]="isReadOnly"
         [class.disabled]="isReadOnly"
@@ -13,7 +13,7 @@
     </mat-checkbox>
     <!-- hidden input is needed so that the checkbox can be used inside a mat-form-field -->
     <input matInput hidden
-        [(ngModel)]="entity[key]"
+        [(ngModel)]="propertyValue"
         [name]="key.toString() + 'Helper'"
         #model="ngModel"
         [pattern]="metadata.required ? 'true' : '[\\s\\S]*'"

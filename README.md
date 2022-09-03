@@ -1006,7 +1006,7 @@ The component needs to extend the NgxMatEntityBaseInputComponent:
     styleUrls: ['./custom-input.component.scss']
 })
 export class CustomInputComponent
-    extends NgxMatEntityBaseInputComponent<MyEntity, DecoratorTypes.CUSTOM, MyCustomMetadata>
+    extends NgxMatEntityBaseInputComponent<MyEntity, DecoratorTypes.CUSTOM, string, MyCustomMetadata>
     implements OnInit {
     // Define your logic here.
     // The base class already provides the entity and key values and handles getting the metadata.

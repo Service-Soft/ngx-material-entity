@@ -11,12 +11,10 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
     styleUrls: ['./boolean-checkbox-input.component.scss']
 })
 export class BooleanCheckboxInputComponent<EntityType extends BaseEntityType<EntityType>>
-    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.BOOLEAN_CHECKBOX> implements OnInit {
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.BOOLEAN_CHECKBOX, boolean> implements OnInit {
 
     override ngOnInit(): void {
         super.ngOnInit();
-        if (this.entity[this.key] == null) {
-            (this.entity[this.key] as boolean) = false;
-        }
+        this.propertyValue = this.propertyValue ?? false;
     }
 }

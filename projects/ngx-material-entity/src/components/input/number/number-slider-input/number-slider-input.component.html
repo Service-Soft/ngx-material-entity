@@ -4,7 +4,7 @@
     <input matInput
         #hiddenInput
         type="number"
-        [(ngModel)]="entity[key]"
+        [(ngModel)]="propertyValue"
         [name]="key.toString() + 'Helper'"
         #model="ngModel"
         [required]="metadata.required"
@@ -17,7 +17,7 @@
         id="slider"
         color="primary"
         (click)="model.control.markAsTouched()"
-        [(ngModel)]="entity[key]"
+        [(ngModel)]="propertyValue"
         [name]="key.toString()"
         [min]="metadata.min ?? null"
         [max]="metadata.max ?? null"

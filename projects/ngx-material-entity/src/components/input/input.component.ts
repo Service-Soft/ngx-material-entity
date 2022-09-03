@@ -55,6 +55,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * Whether to hide a value if it is omitted for creation.
      * Is used internally for the object property.
+     *
+     * @default false
      */
     @Input()
     hideOmitForCreate?: boolean;
@@ -62,6 +64,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * Whether to hide a value if it is omitted for editing.
      * Is used internally for the object property.
+     *
+     * @default false
      */
     @Input()
     hideOmitForEdit?: boolean;

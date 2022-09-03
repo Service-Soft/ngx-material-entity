@@ -2,7 +2,7 @@
     <mat-label>{{metadata.displayName}}</mat-label>
     <input
         matInput
-        [(ngModel)]="entity[key]"
+        [(ngModel)]="propertyValue"
         [name]="key.toString()"
         #model="ngModel"
         [required]="metadata.required"

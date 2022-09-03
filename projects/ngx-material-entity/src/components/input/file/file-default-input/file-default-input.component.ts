@@ -13,12 +13,12 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
     styleUrls: ['./file-default-input.component.scss']
 })
 export class FileDefaultInputComponent<EntityType extends BaseEntityType<EntityType>>
-    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.FILE_DEFAULT> implements OnInit {
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.FILE_DEFAULT, FileData | FileData[]> implements OnInit {
 
     FileUtilities = FileUtilities;
 
     async refreshFileData(fileData?: FileData | FileData[]): Promise<void> {
-        (this.entity[this.key] as FileData | FileData[] | undefined) = fileData;
+        this.propertyValue = fileData;
         this.emitChange();
     }
 }

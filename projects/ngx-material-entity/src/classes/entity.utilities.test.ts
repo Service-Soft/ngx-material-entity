@@ -521,37 +521,37 @@ describe('dirty', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(tE);
-        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(false);
         tE.minNumberValue = 1234;
-        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
-        expect(await EntityUtilities.dirty(tE, undefined as never)).toBe(false);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(true);
+        expect(await EntityUtilities.isDirty(tE, undefined as never)).toBe(false);
     });
     test('should tell if date range array is dirty', async () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(tE);
-        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(false);
 
         tE.dateRangeArrayValue[0].start = new Date();
-        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(true);
 
         tE.dateRangeArrayValue[0].start = testEntity.dateRangeArrayValue[0].start;
-        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(false);
 
         tE.dateRangeArrayValue.push({start: new Date(), end: new Date()});
-        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(true);
 
         tE.dateRangeArrayValue = testEntity.dateRangeArrayValue;
-        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(false);
     });
     test('should tell if custom value is dirty', async () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.randomValue = '12345';
-        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(true);
         tE.randomValue = '42';
-        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(false);
     });
 });
 
@@ -582,9 +582,9 @@ describe('resetChangesOnEntity', () => {
         ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
         const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(tE);
         tE.minLengthStringValue = 'changed value';
-        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(true);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(true);
         EntityUtilities.resetChangesOnEntity(tE, tEPriorChanges);
-        expect(await EntityUtilities.dirty(tE, tEPriorChanges)).toBe(false);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(false);
     });
 });
 

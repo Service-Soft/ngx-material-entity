@@ -506,8 +506,6 @@ export abstract class EntityUtilities {
 
     private static isFileDataValid(value: FileData | FileData[], metadata: DefaultFileDecoratorConfigInternal): boolean {
         const files = metadata.multiple ? value as FileData[] : [value as FileData];
-        const maxSize = metadata.maxSize * 1000000;
-        const maxSizeTotal = metadata.maxSizeTotal * 1000000;
         let fileSizeTotal: number = 0;
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < files.length; i++) {
@@ -517,11 +515,11 @@ export abstract class EntityUtilities {
             if (!FileUtilities.isMimeTypeValid(files[i].type, metadata.allowedMimeTypes)) {
                 return false;
             }
-            if (files[i].size > maxSize) {
+            if (FileUtilities.transformToMegaBytes(files[i].size, 'B') > metadata.maxSize) {
                 return false;
             }
             fileSizeTotal += files[i].size;
-            if (fileSizeTotal > maxSizeTotal) {
+            if (FileUtilities.transformToMegaBytes(fileSizeTotal, 'B') > metadata.maxSizeTotal) {
                 return false;
             }
         }
@@ -535,7 +533,7 @@ export abstract class EntityUtilities {
      * @param entityPriorChanges - The entity before the changes.
      * @returns Whether or not the entity is dirty.
      */
-    static async dirty<EntityType extends BaseEntityType<EntityType>>(
+    static async isDirty<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         entityPriorChanges: EntityType
     ): Promise<boolean> {
