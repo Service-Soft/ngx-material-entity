@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { EntityRow, EntityUtilities } from '../../classes/entity.utilities';
+import { EntityTab, EntityUtilities } from '../../classes/entity.utilities';
 import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
 import { getValidationErrorMessage } from '../get-validation-error-message.function';
 import { EntityArrayDecoratorConfigInternal } from '../../decorators/array/array-decorator-internal.data';
@@ -92,13 +92,13 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     metadataDefaultObject!: DefaultObjectDecoratorConfigInternal<EntityType>;
     objectProperty!: EntityType;
-    objectPropertyRows!: EntityRow<EntityType>[];
+    objectPropertyTabs!: EntityTab<EntityType>[];
 
     metadataEntityArray!: EntityArrayDecoratorConfigInternal<EntityType>;
     entityArrayValues!: EntityType[];
     arrayItem!: EntityType;
     private arrayItemPriorChanges!: EntityType;
-    arrayItemInlineRows!: EntityRow<EntityType>[];
+    arrayItemInlineTabs!: EntityTab<EntityType>[];
     dataSource!: MatTableDataSource<EntityType>;
     selection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
     displayedColumns!: string[];
@@ -106,7 +106,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     dialogInputData!: AddArrayItemDialogData<EntityType>;
     dialogData!: AddArrayItemDialogDataInternal<EntityType>;
-    arrayItemDialogRows!: EntityRow<EntityType>[];
+    arrayItemDialogTabs!: EntityTab<EntityType>[];
     isDialogArrayItemValid: boolean = false;
 
     readonly DecoratorTypes = DecoratorTypes;
@@ -175,11 +175,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.dataSource = new MatTableDataSource();
         this.dataSource.data = this.entityArrayValues;
         this.arrayItem = new this.metadataEntityArray.EntityClass();
-        this.arrayItemInlineRows = EntityUtilities.getEntityRows(
-            this.arrayItem,
-            this.hideOmitForCreate ?? true,
-            this.hideOmitForEdit
-        );
+        this.arrayItemInlineTabs = EntityUtilities.getEntityTabs(this.arrayItem, true);
         this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
 
         this.dialogInputData = {
@@ -188,13 +184,13 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             getValidationErrorMessage: this.getValidationErrorMessage
         };
         this.dialogData = new AddArrayItemDialogDataBuilder(this.dialogInputData).getResult();
-        this.arrayItemDialogRows = EntityUtilities.getEntityRows(this.dialogData.entity, true);
+        this.arrayItemDialogTabs = EntityUtilities.getEntityTabs(this.dialogData.entity, true);
     }
 
     private initObjectInput(): void {
         this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfigInternal<EntityType>;
         this.objectProperty = this.internalEntity[this.internalPropertyKey] as EntityType;
-        this.objectPropertyRows = EntityUtilities.getEntityRows(this.objectProperty, this.hideOmitForCreate, this.hideOmitForEdit);
+        this.objectPropertyTabs = EntityUtilities.getEntityTabs(this.objectProperty, this.hideOmitForCreate, this.hideOmitForEdit);
     }
 
     /**

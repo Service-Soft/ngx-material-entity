@@ -1,7 +1,7 @@
 import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EntityService } from '../../../classes/entity.service';
-import { EntityRow, EntityUtilities } from '../../../classes/entity.utilities';
+import { EntityTab, EntityUtilities } from '../../../classes/entity.utilities';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from './create-entity-dialog-data.builder';
@@ -22,7 +22,7 @@ import { BaseEntityType } from '../../../classes/entity.model';
 export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
     EntityUtilities = EntityUtilities;
 
-    entityRows!: EntityRow<EntityType>[];
+    entityTabs!: EntityTab<EntityType>[];
 
     entityService!: EntityService<EntityType>;
 
@@ -41,7 +41,7 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
     ngOnInit(): void {
         this.data = new CreateEntityDialogDataBuilder(this.inputData).getResult();
         this.dialogRef.disableClose = true;
-        this.entityRows = EntityUtilities.getEntityRows(this.data.entity, true);
+        this.entityTabs = EntityUtilities.getEntityTabs(this.data.entity, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
     }
 
