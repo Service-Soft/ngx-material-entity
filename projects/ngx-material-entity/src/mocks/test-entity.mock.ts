@@ -43,6 +43,7 @@ export class TestEntity extends TestEntityWithoutCustomProperties implements Tes
  */
 const testEntityData: TestEntity = {
     id: '1',
+    secondTabValue: 'second tab value',
     omitForCreateValue: 'omitForCreateValue',
     omitForUpdateValue: 'omitForUpdateValue',
     optionalValue: 'optional',
@@ -61,6 +62,7 @@ const testEntityData: TestEntity = {
     objectValue: {
         id: '1',
         maxLengthStringValue: '1234',
+        secondTabStringValue: '12345',
         rowValue1: 'rowValue1',
         rowValue2: 'rowValue2'
     },
@@ -77,21 +79,25 @@ const testEntityData: TestEntity = {
     entityArrayValue: [
         {
             id: '1',
-            stringValue: 'stringValue'
+            stringValue: 'stringValue',
+            secondTabValue: 'stv 1'
         },
         {
             id: '2',
-            stringValue: 'stringValue2'
+            stringValue: 'stringValue2',
+            secondTabValue: 'stv 2'
         }
     ],
     entityArrayValueWithConfig: [
         {
             id: '1',
-            stringValue: 'stringValue'
+            stringValue: 'stringValue',
+            secondTabValue: 'stv 1'
         },
         {
             id: '2',
-            stringValue: 'stringValue2'
+            stringValue: 'stringValue2',
+            secondTabValue: 'stv 2'
         }
     ],
     dateArrayValue: [

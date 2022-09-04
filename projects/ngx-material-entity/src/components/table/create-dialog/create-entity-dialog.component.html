@@ -2,16 +2,34 @@
 
 <mat-dialog-content>
     <form #form="ngForm">
-        <div class="row" *ngFor="let row of entityRows">
-            <ngx-mat-entity-input
-                *ngFor="let key of row.keys"
-                [entity]="data.entity"
-                [propertyKey]="key"
-                [hideOmitForCreate]="true"
-                class="col-lg-{{EntityUtilities.getWidth(data.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(data.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(data.entity, key, 'sm')}}"
-                (inputChangeEvent)="checkIsEntityValid()"
-            >
-            </ngx-mat-entity-input>
+        <mat-tab-group *ngIf="entityTabs.length > 1" preserveContent>
+            <mat-tab *ngFor="let tab of entityTabs" [label]="tab.tabName">
+                <div class="row" *ngFor="let row of tab.rows">
+                    <ngx-mat-entity-input
+                        *ngFor="let key of row.keys"
+                        [entity]="data.entity"
+                        [propertyKey]="key"
+                        [hideOmitForCreate]="true"
+                        class="col-lg-{{EntityUtilities.getWidth(data.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(data.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(data.entity, key, 'sm')}}"
+                        (inputChangeEvent)="checkIsEntityValid()"
+                    >
+                    </ngx-mat-entity-input>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+
+        <div *ngIf="entityTabs.length <= 1">
+            <div class="row" *ngFor="let row of entityTabs[0].rows">
+                <ngx-mat-entity-input
+                    *ngFor="let key of row.keys"
+                    [entity]="data.entity"
+                    [propertyKey]="key"
+                    [hideOmitForCreate]="true"
+                    class="col-lg-{{EntityUtilities.getWidth(data.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(data.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(data.entity, key, 'sm')}}"
+                    (inputChangeEvent)="checkIsEntityValid()"
+                >
+                </ngx-mat-entity-input>
+            </div>
         </div>
     </form>
 </mat-dialog-content>

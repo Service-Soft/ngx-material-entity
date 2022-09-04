@@ -132,6 +132,14 @@ describe('isEntityValid', () => {
         tE.optionalValue = 'optional';
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
+    test('empty string should invalidate', () => {
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
+        tE.maxLengthStringValue = '';
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(false);
+        tE.maxLengthStringValue = '1234';
+        expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    });
 
     // BOOLEAN
     test('BOOLEAN_CHECKBOX BOOLEAN_TOGGLE required', () => {
@@ -588,11 +596,15 @@ describe('resetChangesOnEntity', () => {
     });
 });
 
-describe('getEntityRows', () => {
-    test('should get only one row when nothing is defined', () => {
+describe('getEntityTabs', () => {
+    test('should get two tabs for the entity', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
-        expect(EntityUtilities.getEntityRows(tE)).toHaveLength(2);
+        const tabs = EntityUtilities.getEntityTabs(tE);
+        expect(tabs).toHaveLength(2);
+        expect(tabs[0].rows).toHaveLength(2);
+        expect(tabs[0].tabName).toBe('Tab 1');
+        expect(tabs[1].tabName).toBe('Tab 2');
     });
 });
 
@@ -600,7 +612,7 @@ describe('keysOf', () => {
     test('should get all keys of the entity', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
-        expect(EntityUtilities.keysOf(tE)).toHaveLength(51);
+        expect(EntityUtilities.keysOf(tE)).toHaveLength(52);
     });
     test('should get keys without omitForCreate', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);

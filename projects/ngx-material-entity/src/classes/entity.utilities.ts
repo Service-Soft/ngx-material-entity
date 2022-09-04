@@ -233,8 +233,10 @@ export abstract class EntityUtilities {
         if (metadata.omitForUpdate && omit === 'update') {
             return true;
         }
-        if (metadata.required && entity[key] == null) {
-            return false;
+        if (metadata.required) {
+            if (entity[key] == null || entity[key] === '') {
+                return false;
+            }
         }
         switch (type) {
             case DecoratorTypes.BOOLEAN_DROPDOWN:
@@ -793,48 +795,112 @@ export abstract class EntityUtilities {
      * Gets the rows that are used to display the given entity.
      *
      * @param entity - The entity to get the rows from.
+     * @param tab - The tab number for which the rows should be returned.
      * @param hideOmitForCreate - Whether or not keys with the metadata omitForCreate should be filtered out.
      * @param hideOmitForEdit - Whether or not keys with the metadata omitForUpdate should be filtered out.
      * @returns The sorted Rows containing the row number and the keys to display in that row.
      */
-    static getEntityRows<EntityType extends BaseEntityType<EntityType>>(
+    private static getEntityRows<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
-        hideOmitForCreate: boolean = false,
-        hideOmitForEdit: boolean = false
+        tab: number,
+        hideOmitForCreate: boolean,
+        hideOmitForEdit: boolean
     ): EntityRow<EntityType>[] {
         const res: EntityRow<EntityType>[] = [];
 
         const keys: (keyof EntityType)[] = EntityUtilities.keysOf(entity, hideOmitForCreate, hideOmitForEdit);
-        const numberOfRows: number = EntityUtilities.getNumberOfRows<EntityType>(keys, entity);
+        const numberOfRows: number = EntityUtilities.getNumberOfRows<EntityType>(keys, entity, tab);
         for (let i = 1; i <= numberOfRows; i++) {
             const row: EntityRow<EntityType> = {
                 row: i,
-                keys: EntityUtilities.getKeysForRow<EntityType>(keys, entity, i)
+                keys: EntityUtilities.getKeysForRow<EntityType>(keys, entity, i, tab)
             };
             res.push(row);
         }
-        const lastRow: EntityRow<EntityType> = {
-            row: numberOfRows + 1,
-            keys: EntityUtilities.getKeysForRow<EntityType>(keys, entity, -1)
-        };
-        res.push(lastRow);
+
+        if (EntityUtilities.getKeysForRow<EntityType>(keys, entity, -1, tab).length) {
+            const lastRow: EntityRow<EntityType> = {
+                row: numberOfRows + 1,
+                keys: EntityUtilities.getKeysForRow<EntityType>(keys, entity, -1, tab)
+            };
+            res.push(lastRow);
+        }
+
+        return res;
+    }
+
+    /**
+     * Gets the tabs that are used to display the given entity.
+     *
+     * @param entity - The entity to get the rows from.
+     * @param hideOmitForCreate - Whether or not keys with the metadata omitForCreate should be filtered out.
+     * @param hideOmitForEdit - Whether or not keys with the metadata omitForUpdate should be filtered out.
+     * @returns The sorted Tabs containing the rows and the keys to display in that row.
+     */
+    static getEntityTabs<EntityType extends BaseEntityType<EntityType>>(
+        entity: EntityType,
+        hideOmitForCreate: boolean = false,
+        hideOmitForEdit: boolean = false
+    ): EntityTab<EntityType>[] {
+        const res: EntityTab<EntityType>[] = [];
+        const keys: (keyof EntityType)[] = EntityUtilities.keysOf(entity, hideOmitForCreate, hideOmitForEdit);
+        const numberOfTabs: number = EntityUtilities.getNumberOfTabs<EntityType>(keys, entity);
+
+        if (EntityUtilities.getEntityRows<EntityType>(entity, -1, hideOmitForCreate, hideOmitForEdit).length) {
+            const firstTab: EntityTab<EntityType> = {
+                tabName: 'Tab 1',
+                tab: -1,
+                rows: EntityUtilities.getEntityRows<EntityType>(entity, -1, hideOmitForCreate, hideOmitForEdit)
+            };
+            res.push(firstTab);
+        }
+
+        for (let i = 2; i <= numberOfTabs; i++) {
+            const tab: EntityTab<EntityType> = {
+                tabName: EntityUtilities.getTabName(entity, i),
+                tab: i,
+                rows: EntityUtilities.getEntityRows<EntityType>(entity, i, hideOmitForCreate, hideOmitForEdit)
+            };
+            res.push(tab);
+        }
+
         return res;
     }
 
     private static getKeysForRow<EntityType extends BaseEntityType<EntityType>>(
         keys: (keyof EntityType)[],
         entity: EntityType,
-        i: number
+        row: number,
+        tab: number
     ): (keyof EntityType)[] {
         return keys
-            .filter(k => EntityUtilities.getPropertyMetadata(entity, k).position.row === i)
+            .filter(k => EntityUtilities.getPropertyMetadata(entity, k).position.row === row)
+            .filter(k => EntityUtilities.getPropertyMetadata(entity, k).position.tab === tab)
             .sort((a, b) => EntityUtilities.compareOrder(a, b, entity));
     }
 
-    private static getNumberOfRows<EntityType extends BaseEntityType<EntityType>>(keys: (keyof EntityType)[], entity: EntityType): number {
+    private static getNumberOfRows<EntityType extends BaseEntityType<EntityType>>(
+        keys: (keyof EntityType)[],
+        entity: EntityType,
+        tab: number
+    ): number {
         return keys
+            .filter(k => EntityUtilities.getPropertyMetadata(entity, k).position.tab === tab)
             .map(k => EntityUtilities.getPropertyMetadata(entity, k).position.row)
             .sort((a, b) => (a > b ? -1 : 1))[0];
+    }
+
+    private static getNumberOfTabs<EntityType extends BaseEntityType<EntityType>>(keys: (keyof EntityType)[], entity: EntityType): number {
+        return keys
+            .map(k => EntityUtilities.getPropertyMetadata(entity, k).position.tab)
+            .sort((a, b) => (a > b ? -1 : 1))[0];
+    }
+
+    private static getTabName<EntityType extends BaseEntityType<EntityType>>(entity: EntityType, tab: number): string {
+        const providedTabName = EntityUtilities.keysOf(entity)
+            .map(k => EntityUtilities.getPropertyMetadata(entity, k))
+            .find(m => m.position.tab === tab && m.position.tabName)?.position.tabName;
+        return providedTabName ?? `Tab ${tab}`;
     }
 
     /**
@@ -864,7 +930,7 @@ export abstract class EntityUtilities {
 }
 
 /**
- * A row that contains all the information about how to display an entity.
+ * A row that contains information about how to display an entity.
  */
 export interface EntityRow<EntityType extends BaseEntityType<EntityType>> {
     /**
@@ -875,4 +941,22 @@ export interface EntityRow<EntityType extends BaseEntityType<EntityType>> {
      * The keys of the values that should be displayed in that row.
      */
     keys: (keyof EntityType)[]
+}
+
+/**
+ * A tab that contains all the information about how to display an entity.
+ */
+export interface EntityTab<EntityType extends BaseEntityType<EntityType>> {
+    /**
+     * The tab in which the rows should be displayed.
+     */
+    tab: number,
+    /**
+     * The name to display inside the tab.
+     */
+    tabName: string,
+    /**
+     * The rows that should be displayed inside this tab,.
+     */
+    rows: EntityRow<EntityType>[]
 }

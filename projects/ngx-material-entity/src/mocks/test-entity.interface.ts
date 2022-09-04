@@ -32,6 +32,16 @@ export class TestObjectEntity extends Entity {
 
     @string({
         displayStyle: 'line',
+        displayName: 'Object Second Tab Value',
+        position: {
+            tab: 2,
+            tabName: 'Other properties'
+        }
+    })
+    secondTabStringValue!: string;
+
+    @string({
+        displayStyle: 'line',
         displayName: 'Object Row Value 1',
         position: {
             row: 1
@@ -64,6 +74,15 @@ export class TestObjectArrayEntity extends Entity {
     })
     stringValue!: string;
 
+    @string({
+        displayStyle: 'line',
+        displayName: 'Second Tab Value',
+        position: {
+            tab: 2
+        }
+    })
+    secondTabValue!: string;
+
     constructor(entity?: TestObjectArrayEntity) {
         super();
         EntityUtilities.new(this, entity);
@@ -72,6 +91,7 @@ export class TestObjectArrayEntity extends Entity {
 
 export interface TestEntityWithoutCustomPropertiesInterface {
     id: string,
+    secondTabValue: string,
     omitForCreateValue: string,
     omitForUpdateValue: string,
     optionalValue?: string,
@@ -90,6 +110,7 @@ export interface TestEntityWithoutCustomPropertiesInterface {
     objectValue: {
         id: string,
         maxLengthStringValue: string,
+        secondTabStringValue: string,
         rowValue1: string,
         rowValue2: string
     },
@@ -101,8 +122,8 @@ export interface TestEntityWithoutCustomPropertiesInterface {
     orderValue2: string,
     orderValue3: string,
     rowValue: string,
-    entityArrayValue: { id: string, stringValue: string}[],
-    entityArrayValueWithConfig: { id: string, stringValue: string}[],
+    entityArrayValue: { id: string, stringValue: string, secondTabValue: string }[],
+    entityArrayValueWithConfig: { id: string, stringValue: string, secondTabValue: string }[],
     dateArrayValue: Date[],
     customDateArrayValue: Date[],
     dateTimeArrayValue: Date[],
@@ -150,6 +171,16 @@ export interface TestEntityWithoutCustomPropertiesInterface {
 }
 
 export class TestEntityWithoutCustomProperties extends Entity implements TestEntityWithoutCustomPropertiesInterface {
+
+    @string({
+        displayStyle: 'line',
+        displayName: 'Second Tab Value',
+        position: {
+            tab: 2
+        }
+    })
+    secondTabValue!: string;
+
     @string({
         displayStyle: 'line',
         displayName: 'Order Value 3',
@@ -704,6 +735,7 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
 
 const testEntityData: TestEntityWithoutCustomProperties = {
     id: '1',
+    secondTabValue: 'second tab value',
     omitForCreateValue: 'omitForCreateValue',
     omitForUpdateValue: 'omitForUpdateValue',
     optionalValue: 'optional',
@@ -722,6 +754,7 @@ const testEntityData: TestEntityWithoutCustomProperties = {
     objectValue: {
         id: '1',
         maxLengthStringValue: '1234',
+        secondTabStringValue: '12345',
         rowValue1: 'rowValue1',
         rowValue2: 'rowValue2'
     },
@@ -738,21 +771,25 @@ const testEntityData: TestEntityWithoutCustomProperties = {
     entityArrayValue: [
         {
             id: '1',
-            stringValue: 'stringValue'
+            stringValue: 'stringValue',
+            secondTabValue: 'stv 1'
         },
         {
             id: '2',
-            stringValue: 'stringValue2'
+            stringValue: 'stringValue2',
+            secondTabValue: 'stv 2'
         }
     ],
     entityArrayValueWithConfig: [
         {
             id: '1',
-            stringValue: 'stringValue'
+            stringValue: 'stringValue',
+            secondTabValue: 'stv 1'
         },
         {
             id: '2',
-            stringValue: 'stringValue2'
+            stringValue: 'stringValue2',
+            secondTabValue: 'stv 2'
         }
     ],
     dateArrayValue: [

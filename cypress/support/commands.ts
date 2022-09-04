@@ -32,6 +32,10 @@ Cypress.Commands.add(
 Cypress.Commands.add(
     'inputCreateTestEntity',
     () => {
+        cy.get('.mat-tab-label').contains('Tab 2').eq(0).click();
+        cy.getInputByLabel('Second Tab Value').click().type('secondTabValue');
+        cy.get('.mat-tab-label').contains('Tab 1').eq(0).click();
+
         cy.getInputByLabel('Order Value 1').click().type('orderValue1');
         cy.getInputByLabel('Order Value 2').click().type('orderValue2');
         cy.getInputByLabel('Order Value 3').click().type('orderValue3');
@@ -62,6 +66,9 @@ Cypress.Commands.add(
         cy.getInputByLabel('Object Row Value 2').click().type('objectRowValue2');
         cy.getInputByLabel('Object Max Length Value').click().type('maxLengthObjectValue');
 
+        cy.get('.mat-tab-label').contains('Other properties').click();
+        cy.getInputByLabel('Object Second Tab Value').click().type('objectSecondTabValue');
+
         // eslint-disable-next-line @cspell/spellchecker
         cy.getInputByLabel('String Chips Array Value').click().type('abcd{enter}efgh{enter}');
         cy.getInputByLabel('String Chips Autocomplete Array Value').click().type('123{enter}456{enter}');
@@ -71,10 +78,14 @@ Cypress.Commands.add(
         cy.getInputByLabel('String Chips Autocomplete Array Value With Config').click().type('123{enter}456{enter}');
 
         cy.getInputByLabel('Array Object Value').click().type('arrayObjectValue');
+        cy.get('.mat-tab-label').eq(5).click();
+        cy.getInputByLabel('Second Tab Value').click().type('secondTabValue');
         cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(0).click();
 
         cy.get('button').filter((i, elt) => elt.innerText === 'Custom Add').eq(0).click();
-        cy.getInputByLabel('Array Object Value', 1).click().type('arrayObjectValueWithConfig');
+        cy.getInputByLabel('Array Object Value').click().type('arrayObjectValueWithConfig');
+        cy.get('.mat-tab-label').eq(7).click();
+        cy.getInputByLabel('Second Tab Value', 1).click().type('secondTabValue');
         cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(4).click();
 
         cy.getInputByLabel('Date Array Value').click().type('1/1/2022');

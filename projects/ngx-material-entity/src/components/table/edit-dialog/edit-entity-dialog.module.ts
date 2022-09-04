@@ -6,6 +6,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { NgxMatEntityConfirmDialogModule } from '../../confirm-dialog/confirm-dialog.module';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
     declarations: [ NgxMatEntityEditDialogComponent],
@@ -15,6 +16,7 @@ import { NgxMatEntityConfirmDialogModule } from '../../confirm-dialog/confirm-di
         MatDialogModule,
         FormsModule,
         MatButtonModule,
+        MatTabsModule,
         NgxMatEntityConfirmDialogModule
     ],
     exports: [ NgxMatEntityEditDialogComponent]

@@ -56,6 +56,21 @@ export abstract class PropertyDecoratorConfig {
  */
 export interface Position {
     /**
+     * Specifies a tab in which this property is displayed.
+     * If no property has the tab metadata specified no tabs are displayed.
+     * Ordering is ascending.
+     *
+     * @default -1 (sets this property in the first tab)
+     */
+    tab?: number,
+    /**
+     * Specifies the name of the tab. Can only be set by one property in each tab.
+     * Requires "tab" to be set.
+     *
+     * @default `Tab ${numberOfTheTab}`
+     */
+    tabName?: string,
+    /**
      * Specifies the (bootstrap)-row in which this property is displayed.
      * Ordering is ascending.
      *

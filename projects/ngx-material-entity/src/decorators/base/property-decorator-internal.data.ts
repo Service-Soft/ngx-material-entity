@@ -8,11 +8,17 @@ class PositionInternal implements Position {
     row: number;
     // eslint-disable-next-line jsdoc/require-jsdoc
     order: number;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    tab: number;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    tabName?: string;
 
     constructor(data?: Position) {
         this.validateInput(data);
         this.row = data?.row ?? -1;
         this.order = data?.order ?? -1;
+        this.tab = data?.tab ?? -1;
+        this.tabName = data?.tabName;
     }
 
     private validateInput(data?: Position): void {
@@ -26,6 +32,9 @@ class PositionInternal implements Position {
         }
         if (data?.row != null && data.row < 1) {
             throw new Error('row must be at least 1');
+        }
+        if (data?.tab != null && data.tab < 2) {
+            throw new Error('tab must be at least 2');
         }
     }
 }
