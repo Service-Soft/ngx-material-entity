@@ -127,18 +127,38 @@
     <div *ngSwitchCase="DecoratorTypes.OBJECT">
         <b>{{metadataDefaultObject.displayName}}</b>
         <!-- iterates over the object properties -->
-        <div class="row" *ngFor="let row of objectPropertyRows">
-            <ngx-mat-entity-input *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
-                [entity]="objectProperty"
-                [propertyKey]="key"
-                [getValidationErrorMessage]="internalGetValidationErrorMessage"
-                [hideOmitForCreate]="hideOmitForCreate"
-                [hideOmitForEdit]="hideOmitForEdit"
-                [isReadOnly]="internalIsReadOnly"
-                class="col-lg-{{EntityUtilities.getWidth(objectProperty, key, 'lg')}} col-md-{{EntityUtilities.getWidth(objectProperty, key, 'md')}} col-sm-{{EntityUtilities.getWidth(objectProperty, key, 'sm')}}"
-                (inputChangeEvent)="emitChange()"
-            >
-            </ngx-mat-entity-input>
+        <mat-tab-group *ngIf="objectPropertyTabs.length > 1" preserveContent>
+            <mat-tab *ngFor="let tab of objectPropertyTabs; let tI = index; trackBy: trackByFn" [label]="tab.tabName">
+                <div class="row" *ngFor="let row of tab.rows;">
+                    <ngx-mat-entity-input *ngFor="let key of row.keys; let rI = index; trackBy: trackByFn"
+                        [entity]="objectProperty"
+                        [propertyKey]="key"
+                        [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                        [hideOmitForCreate]="hideOmitForCreate"
+                        [hideOmitForEdit]="hideOmitForEdit"
+                        [isReadOnly]="internalIsReadOnly"
+                        class="col-lg-{{EntityUtilities.getWidth(objectProperty, key, 'lg')}} col-md-{{EntityUtilities.getWidth(objectProperty, key, 'md')}} col-sm-{{EntityUtilities.getWidth(objectProperty, key, 'sm')}}"
+                        (inputChangeEvent)="emitChange()"
+                    >
+                    </ngx-mat-entity-input>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+
+        <div *ngIf="objectPropertyTabs.length <= 1">
+            <div class="row" *ngFor="let row of objectPropertyTabs[0].rows">
+                <ngx-mat-entity-input *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
+                    [entity]="objectProperty"
+                    [propertyKey]="key"
+                    [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                    [hideOmitForCreate]="hideOmitForCreate"
+                    [hideOmitForEdit]="hideOmitForEdit"
+                    [isReadOnly]="internalIsReadOnly"
+                    class="col-lg-{{EntityUtilities.getWidth(objectProperty, key, 'lg')}} col-md-{{EntityUtilities.getWidth(objectProperty, key, 'md')}} col-sm-{{EntityUtilities.getWidth(objectProperty, key, 'sm')}}"
+                    (inputChangeEvent)="emitChange()"
+                >
+                </ngx-mat-entity-input>
+            </div>
         </div>
     </div>
 
@@ -151,17 +171,36 @@
                 <b>{{metadataEntityArray.displayName}}</b>
             </div>
             <div *ngIf="metadataEntityArray.createInline && !internalIsReadOnly">
-                <div class="row" *ngFor="let row of arrayItemInlineRows">
-                    <ngx-mat-entity-input
-                        *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
-                        [entity]="arrayItem"
-                        [propertyKey]="key"
-                        [hideOmitForCreate]="true"
-                        [getValidationErrorMessage]="internalGetValidationErrorMessage"
-                        class="col-lg-{{EntityUtilities.getWidth(arrayItem, key, 'lg')}} col-md-{{EntityUtilities.getWidth(arrayItem, key, 'md')}} col-sm-{{EntityUtilities.getWidth(arrayItem, key, 'sm')}}"
-                        (inputChangeEvent)="checkIsArrayItemValid()"
-                    >
-                    </ngx-mat-entity-input>
+                <mat-tab-group *ngIf="arrayItemInlineTabs.length > 1" preserveContent>
+                    <mat-tab *ngFor="let tab of arrayItemInlineTabs" [label]="tab.tabName">
+                        <div class="row" *ngFor="let row of tab.rows">
+                            <ngx-mat-entity-input
+                                *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
+                                [entity]="arrayItem"
+                                [propertyKey]="key"
+                                [hideOmitForCreate]="true"
+                                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                                class="col-lg-{{EntityUtilities.getWidth(arrayItem, key, 'lg')}} col-md-{{EntityUtilities.getWidth(arrayItem, key, 'md')}} col-sm-{{EntityUtilities.getWidth(arrayItem, key, 'sm')}}"
+                                (inputChangeEvent)="checkIsArrayItemValid()"
+                            >
+                            </ngx-mat-entity-input>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+
+                <div *ngIf="arrayItemInlineTabs.length <= 1">
+                    <div class="row" *ngFor="let row of arrayItemInlineTabs[0].rows">
+                        <ngx-mat-entity-input
+                            *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
+                            [entity]="arrayItem"
+                            [propertyKey]="key"
+                            [hideOmitForCreate]="true"
+                            [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                            class="col-lg-{{EntityUtilities.getWidth(arrayItem, key, 'lg')}} col-md-{{EntityUtilities.getWidth(arrayItem, key, 'md')}} col-sm-{{EntityUtilities.getWidth(arrayItem, key, 'sm')}}"
+                            (inputChangeEvent)="checkIsArrayItemValid()"
+                        >
+                        </ngx-mat-entity-input>
+                    </div>
                 </div>
             </div>
 
@@ -346,17 +385,36 @@
 
     <mat-dialog-content>
         <form #form="ngForm" class="row">
-            <div class="row" *ngFor="let row of arrayItemDialogRows">
-                <ngx-mat-entity-input
-                    *ngFor="let key of row.keys"
-                    [entity]="dialogData.entity"
-                    [propertyKey]="key"
-                    [hideOmitForCreate]="true"
-                    [getValidationErrorMessage]="dialogData.getValidationErrorMessage"
-                    class="col-lg-{{EntityUtilities.getWidth(dialogData.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(dialogData.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(dialogData.entity, key, 'sm')}}"
-                    (inputChangeEvent)="checkIsDialogArrayItemValid()"
-                >
-                </ngx-mat-entity-input>
+            <mat-tab-group *ngIf="arrayItemDialogTabs.length > 1" preserveContent>
+                <mat-tab *ngFor="let tab of arrayItemDialogTabs" [label]="tab.tabName">
+                    <div class="row" *ngFor="let row of tab.rows">
+                        <ngx-mat-entity-input
+                            *ngFor="let key of row.keys"
+                            [entity]="dialogData.entity"
+                            [propertyKey]="key"
+                            [hideOmitForCreate]="true"
+                            [getValidationErrorMessage]="dialogData.getValidationErrorMessage"
+                            class="col-lg-{{EntityUtilities.getWidth(dialogData.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(dialogData.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(dialogData.entity, key, 'sm')}}"
+                            (inputChangeEvent)="checkIsDialogArrayItemValid()"
+                        >
+                        </ngx-mat-entity-input>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+
+            <div *ngIf="arrayItemDialogTabs.length <= 1">
+                <div class="row" *ngFor="let row of arrayItemDialogTabs[0].rows">
+                    <ngx-mat-entity-input
+                        *ngFor="let key of row.keys"
+                        [entity]="dialogData.entity"
+                        [propertyKey]="key"
+                        [hideOmitForCreate]="true"
+                        [getValidationErrorMessage]="dialogData.getValidationErrorMessage"
+                        class="col-lg-{{EntityUtilities.getWidth(dialogData.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(dialogData.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(dialogData.entity, key, 'sm')}}"
+                        (inputChangeEvent)="checkIsDialogArrayItemValid()"
+                    >
+                    </ngx-mat-entity-input>
+                </div>
             </div>
         </form>
     </mat-dialog-content>

@@ -91,4 +91,30 @@ describe('baseProperty', () => {
             }
         ).toThrow('row must be at least 1');
     });
+
+    test('should throw error for incorrect tab metadata', () => {
+        expect(
+            () => {
+                class BasePropertyTestEntity extends Entity {
+                    @string({
+                        displayStyle: 'line',
+                        displayName: 'Wrong Row Value',
+                        position: {
+                            tab: 1
+                        }
+                    })
+                    wrongTabValue!: string;
+
+                    constructor(entity?: BasePropertyTestEntity) {
+                        super();
+                        EntityUtilities.new(this, entity);
+                    }
+                }
+                new BasePropertyTestEntity({
+                    id: '1',
+                    wrongTabValue: '42'
+                });
+            }
+        ).toThrow('tab must be at least 2');
+    });
 });

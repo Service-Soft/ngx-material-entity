@@ -2,7 +2,26 @@ mat-form-field {
     width: 100%;
 }
 
+mat-dialog-actions {
+    justify-content: space-between;
+}
+
 ::ng-deep {
+
+    .mat-tab-body-wrapper {
+        margin-left: -12px;
+        margin-right: -12px;
+    }
+
+    mat-tab-body {
+        padding-top: 10px;
+        .mat-tab-body-content {
+            overflow: initial;
+        }
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
     .mat-form-field.mat-form-field-disabled {
         .mat-form-field-wrapper {
             .mat-form-field-underline {

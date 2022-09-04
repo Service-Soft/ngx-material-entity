@@ -39,6 +39,7 @@ import { CustomInputComponent } from './custom/custom.component';
 import { StringPasswordInputComponent } from './string/string-password-input/string-password-input.component';
 import { NumberSliderInputComponent } from './number/number-slider-input/number-slider-input.component';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
     declarations: [
@@ -83,7 +84,8 @@ import { MatSliderModule } from '@angular/material/slider';
         MatDialogModule,
         MatButtonModule,
         MatDatepickerModule,
-        MatSliderModule
+        MatSliderModule,
+        MatTabsModule
     ],
     exports: [NgxMatEntityInputComponent]
 })
