@@ -19,13 +19,12 @@
             <button class="mat-chip-remove mat-chip-trailing-icon ngx-mat-grey" (click)="downloadFile(name)">
                 <i class="fas fa-download"></i>
             </button>
-            <button matChipRemove>
+            <button matChipRemove (click)="chipList._markAsTouched()">
                 <i class="{{metadata.deleteIcon}}"></i>
             </button>
         </mat-chip>
         <mat-chip class="download-all-button" *ngIf="downloadAllEnabled()" (click)="downloadAll()">
-            <!-- TODO: Make customizable -->
-            Download All
+            {{metadata.downloadAllButtonLabel}}
             <span class="mat-chip-remove mat-chip-trailing-icon ngx-mat-grey">
                 <i class="fas fa-file-zipper"></i>
             </span>

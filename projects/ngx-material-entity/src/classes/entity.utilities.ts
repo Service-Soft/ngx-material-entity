@@ -697,6 +697,14 @@ export abstract class EntityUtilities {
     // TODO: Find a way to use blobs with jest
     /* istanbul ignore next */
     private static async isEqualFile(value: unknown, valuePriorChanges: unknown, multiple: boolean): Promise<boolean> {
+        if (value == null) {
+            if (valuePriorChanges == null) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
         const files = multiple ? (value as FileData[]).sort() : [value as FileData].sort();
         const filesPriorChanges = multiple ? (valuePriorChanges as FileData[]).sort() : [valuePriorChanges as FileData].sort();
         if (files.length !== filesPriorChanges.length) {

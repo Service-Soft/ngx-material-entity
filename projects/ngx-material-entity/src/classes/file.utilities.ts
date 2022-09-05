@@ -1,7 +1,7 @@
 import { LodashUtilities } from '../capsulation/lodash.utilities';
 import { FileDataWithFile } from '../decorators/file/file-decorator-internal.data';
 import { FileData } from '../decorators/file/file-decorator.data';
-import * as JSZip from 'jszip';
+import { JSZipUtilities } from '../capsulation/jszip.utilities';
 
 /**
  * Provides functionality regarding files.
@@ -111,7 +111,7 @@ export abstract class FileUtilities {
      * @param multiFileData - The file data array to put in the zip.
      */
     static async downloadMultipleFiles(name: string, multiFileData: FileData[]): Promise<void> {
-        const zip = new JSZip();
+        const zip = JSZipUtilities.new();
         for (let i = 0; i < multiFileData.length; i++) {
             multiFileData[i] = await FileUtilities.getFileData(multiFileData[i]);
             zip.file(multiFileData[i].name, (multiFileData[i] as FileDataWithFile).file);
