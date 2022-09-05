@@ -16,10 +16,10 @@
     >
         <mat-chip *ngFor="let name of filenames" (removed)="removeFile(name)">
             {{name}}
-            <button class="mat-chip-remove mat-chip-trailing-icon ngx-mat-grey" (click)="downloadFile(name)">
+            <button type="button" class="mat-chip-remove mat-chip-trailing-icon ngx-mat-grey" (click)="downloadFile(name)">
                 <i class="fas fa-download"></i>
             </button>
-            <button matChipRemove (click)="chipList._markAsTouched()">
+            <button type="button" matChipRemove (click)="chipList._markAsTouched()">
                 <i class="{{metadata.deleteIcon}}"></i>
             </button>
         </mat-chip>
@@ -31,14 +31,14 @@
         </mat-chip>
         <input [matChipInputFor]="chipList" [readonly]="true" hidden>
     </mat-chip-list>
-    <button class="ngx-mat-grey" mat-icon-button matSuffix [disabled]="isReadOnly" (click)="fileInput.click()">
+    <button type="button" class="ngx-mat-grey" mat-icon-button matSuffix [disabled]="isReadOnly" (click)="fileInput.click()">
         <i class="fas fa-upload"></i>
     </button>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>
 
 <div *ngIf="metadata.dragAndDrop && !isReadOnly" class="drag-drop" dragDrop (files)="setFile($event)">
-    <button mat-icon-button [disabled]="isReadOnly" (click)="fileInput.click()">
+    <button type="button" mat-icon-button [disabled]="isReadOnly" (click)="fileInput.click()">
         <i class="fas fa-file-arrow-up ngx-mat-grey"></i>
     </button>
 </div>

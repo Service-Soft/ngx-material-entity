@@ -8,7 +8,7 @@
     >
         <mat-chip *ngFor="let value of propertyValue" (removed)="removeStringChipArrayValue(value)">
             {{value}}
-            <button matChipRemove>
+            <button type="button" matChipRemove>
                 <i class="{{metadata.deleteIcon}}"></i>
             </button>
         </mat-chip>

@@ -255,6 +255,9 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * Adds the array item defined in the dialog.
      */
     addArrayItem(): void {
+        if (!this.isDialogArrayItemValid) {
+            return;
+        }
         this.addArrayItemDialogRef.close();
         this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
         this.dataSource.data = this.entityArrayValues;

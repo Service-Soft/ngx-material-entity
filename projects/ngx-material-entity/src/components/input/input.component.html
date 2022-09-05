@@ -205,12 +205,12 @@
             </div>
 
             <div class="buttons" *ngIf="!internalIsReadOnly">
-                <button mat-raised-button
+                <button type="button" mat-raised-button
                     [disabled]="metadataEntityArray.createInline && !isArrayItemValid"
                     (click)="addEntity()">
                     {{metadataEntityArray.addButtonLabel}}
                 </button>
-                <button mat-raised-button
+                <button type="button" mat-raised-button
                     [disabled]="!selection.selected.length"
                     (click)="remove(selection, entityArrayValues, dataSource)">
                     {{metadataEntityArray.removeButtonLabel}}
@@ -383,8 +383,8 @@
 <ng-template #addArrayItemDialog>
     <h2 mat-dialog-title>{{dialogData.createDialogData.title}}</h2>
 
-    <mat-dialog-content>
-        <form #form="ngForm" class="row">
+    <form class="row">
+        <mat-dialog-content>
             <mat-tab-group *ngIf="arrayItemDialogTabs.length > 1" preserveContent>
                 <mat-tab *ngFor="let tab of arrayItemDialogTabs" [label]="tab.tabName">
                     <div class="row" *ngFor="let row of tab.rows">
@@ -401,7 +401,7 @@
                     </div>
                 </mat-tab>
             </mat-tab-group>
-
+    
             <div *ngIf="arrayItemDialogTabs.length <= 1">
                 <div class="row" *ngFor="let row of arrayItemDialogTabs[0].rows">
                     <ngx-mat-entity-input
@@ -416,16 +416,16 @@
                     </ngx-mat-entity-input>
                 </div>
             </div>
-        </form>
-    </mat-dialog-content>
-
-    <mat-dialog-actions>
-        <button mat-raised-button (click)="addArrayItem()" [disabled]="!isDialogArrayItemValid">
-            {{dialogData.createDialogData.createButtonLabel}}
-        </button>
-        <button mat-raised-button (click)="cancelAddArrayItem()" class="cancel-button">
-            {{dialogData.createDialogData.cancelButtonLabel}}
-        </button>
-    </mat-dialog-actions>
+        </mat-dialog-content>
+    
+        <mat-dialog-actions>
+            <button type="submit" mat-raised-button (click)="addArrayItem()" [class.mat-button-disabled]="!isDialogArrayItemValid">
+                {{dialogData.createDialogData.createButtonLabel}}
+            </button>
+            <button type="button" mat-raised-button (click)="cancelAddArrayItem()" class="cancel-button">
+                {{dialogData.createDialogData.cancelButtonLabel}}
+            </button>
+        </mat-dialog-actions>
+    </form>
 
 </ng-template>
