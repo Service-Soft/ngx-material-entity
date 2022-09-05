@@ -32,7 +32,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
     data!: EditEntityDialogDataInternal<EntityType>;
 
     isEntityValid: boolean = true;
-    isEntityDirty: Promise<boolean> = (async () => false).call(this);
+    isEntityDirty: boolean = false;
 
     isReadOnly!: boolean;
 
@@ -46,17 +46,19 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
 
     ngOnInit(): void {
         this.data = new EditEntityDialogDataBuilder(this.inputData).getResult();
+        this.entityPriorChanges = LodashUtilities.cloneDeep(this.data.entity);
         this.isReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
         this.dialogRef.disableClose = true;
         this.entityTabs = EntityUtilities.getEntityTabs(this.data.entity, false, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
-        this.entityPriorChanges = LodashUtilities.cloneDeep(this.data.entity);
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    checkEntity(): void {
+    /**
+     * Checks if the entity has become invalid or dirty.
+     */
+    async checkEntity(): Promise<void> {
         this.isEntityValid = EntityUtilities.isEntityValid(this.data.entity, 'update');
-        this.isEntityDirty = EntityUtilities.isDirty(this.data.entity, this.entityPriorChanges);
+        this.isEntityDirty = await EntityUtilities.isDirty(this.data.entity, this.entityPriorChanges);
     }
 
     /**

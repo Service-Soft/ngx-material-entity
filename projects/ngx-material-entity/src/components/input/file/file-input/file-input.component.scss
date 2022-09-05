@@ -2,24 +2,41 @@ mat-form-field {
     width: 100%;
 }
 
-.readOnly:hover {
-    cursor: default;
-    input:hover {
-        cursor: default;
-    }
+.mat-form-field-disabled .mat-chip.mat-standard-chip.mat-chip-disabled button.ngx-mat-grey {
+    opacity: 1;
+    color: rgba(0, 0, 0, .54);
 }
 
-input:hover,
-mat-form-field:hover {
+.mat-standard-chip.mat-chip-disabled .mat-chip-trailing-icon.ngx-mat-grey:hover {
     cursor: pointer;
 }
 
-.dropdown {
+.mat-chip.mat-standard-chip .mat-chip-remove.ngx-mat-grey {
+    opacity: 1;
+    color: rgba(0, 0, 0, .54);
+}
+
+.ngx-mat-grey {
+    opacity: 1;
+    color: rgba(0, 0, 0, .54);
+}
+
+.download-all-button {
+    i {
+        vertical-align: middle;
+    }
+}
+
+.mat-standard-chip.download-all-button:hover {
+    cursor: pointer;
+}
+
+.drag-drop {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 200px;
-    border: 2px dashed #757575;
+    border: 2px dashed rgba(0, 0, 0, .54);
     border-radius: 15px;
     margin-top: 5px;
     margin-bottom: 5px;
