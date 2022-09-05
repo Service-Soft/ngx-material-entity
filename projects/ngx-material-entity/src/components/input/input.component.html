@@ -166,8 +166,8 @@
     <!-------------------Array-------------------->
     <!-------------------------------------------->
     <div class="entityArray" *ngSwitchCase="DecoratorTypes.ARRAY">
-        <div class="mat-elevation-z8" style="border-radius: 5px;padding: 15px;margin-bottom: 15px;margin-top: 15px;">
-            <div style="padding-bottom: 10px">
+        <div class="mat-elevation-z8 elevation-container">
+            <div class="array-headline">
                 <b>{{metadataEntityArray.displayName}}</b>
             </div>
             <div *ngIf="metadataEntityArray.createInline && !internalIsReadOnly">

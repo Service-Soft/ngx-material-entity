@@ -710,7 +710,8 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
     @file({
         type: 'image',
         multiple: true,
-        displayName: 'Custom Image Values'
+        displayName: 'Custom Image Values',
+        downloadAllButtonLabel: 'Zip Files'
     })
     customImageValues!: FileData[];
 

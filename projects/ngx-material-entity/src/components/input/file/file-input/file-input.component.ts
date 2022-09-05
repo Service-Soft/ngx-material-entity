@@ -1,9 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
-import { EntityUtilities } from '../../../../classes/entity.utilities';
-import { DefaultFileDecoratorConfigInternal } from '../../../../decorators/file/file-decorator-internal.data';
+import { DefaultFileDecoratorConfigInternal, FileDataWithFile, ImageFileDecoratorConfigInternal } from '../../../../decorators/file/file-decorator-internal.data';
 import { FileUtilities } from '../../../../classes/file.utilities';
 import { FileData } from '../../../../decorators/file/file-decorator.data';
 import { LodashUtilities } from '../../../../capsulation/lodash.utilities';
@@ -19,17 +17,15 @@ import { BaseEntityType } from '../../../../classes/entity.model';
 })
 export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
-    singleFileData?: FileData;
-    multiFileData?: FileData[];
     filenames?: string[];
 
     FileUtilities = FileUtilities;
 
     @Input()
-    entity!: EntityType;
+    propertyValue!: FileData | FileData[] | undefined;
 
     @Input()
-    key!: keyof EntityType;
+    metadata!: DefaultFileDecoratorConfigInternal | ImageFileDecoratorConfigInternal;
 
     @Input()
     getValidationErrorMessage!: (model: NgModel) => string;
@@ -40,32 +36,27 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
     @Output()
     fileDataChangeEvent = new EventEmitter<FileData | FileData[]>();
 
-    metadata!: DefaultFileDecoratorConfigInternal;
-
     constructor(private readonly dialog: MatDialog) { }
 
     async ngOnInit(): Promise<void> {
-        this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key, DecoratorTypes.FILE_DEFAULT);
         if (this.metadata.multiple) {
             this.initMultiFile();
         }
         else {
             this.initSingleFile();
         }
-        this.fileDataChangeEvent.emit(this.singleFileData ?? this.multiFileData);
+        this.fileDataChangeEvent.emit(this.propertyValue);
     }
 
     private initMultiFile(): void {
-        this.multiFileData = this.entity[this.key] as FileData[] | undefined;
-        if (this.multiFileData) {
-            this.filenames = this.multiFileData.map(f => f.name);
+        if (this.propertyValue) {
+            this.filenames = (this.propertyValue as FileData[]).map(f => f.name);
         }
     }
 
     private initSingleFile(): void {
-        this.singleFileData = this.entity[this.key] as FileData | undefined;
-        if (this.singleFileData) {
-            this.filenames = LodashUtilities.cloneDeep([this.singleFileData.name]);
+        if (this.propertyValue) {
+            this.filenames = [(this.propertyValue as FileData).name];
         }
     }
 
@@ -113,14 +104,13 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
         else {
             await this.setSingleFile(files[0]);
         }
-        this.fileDataChangeEvent.emit(this.singleFileData ?? this.multiFileData);
+        this.fileDataChangeEvent.emit(this.propertyValue);
     }
 
     private resetFileInputs(): void {
         this.filenames = undefined;
-        this.singleFileData = undefined;
-        this.multiFileData = undefined;
-        this.fileDataChangeEvent.emit();
+        this.propertyValue = undefined;
+        this.fileDataChangeEvent.emit(this.propertyValue);
     }
 
     private async setMultiFile(files: File[]): Promise<void> {
@@ -134,18 +124,18 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
             };
             data.push(fileData);
         }
-        this.multiFileData = LodashUtilities.cloneDeep(data);
-        this.filenames = this.multiFileData.map(f => f.name);
+        this.propertyValue = LodashUtilities.cloneDeep(data);
+        this.filenames = this.propertyValue.map(f => f.name);
     }
 
     private async setSingleFile(file: File): Promise<void> {
-        this.singleFileData = {
+        this.propertyValue = {
             file: file,
             name: file.name,
             type: file.type,
             size: file.size
         };
-        this.filenames = LodashUtilities.cloneDeep([this.singleFileData.name]);
+        this.filenames = [this.propertyValue.name];
     }
 
     removeFile(name: string): void {
@@ -154,16 +144,50 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
             if (!this.filenames?.length) {
                 this.filenames = undefined;
             }
-            const fileDataToRemove = this.multiFileData?.find(f => f.name === name) as FileData;
-            this.multiFileData?.splice(this.multiFileData.indexOf(fileDataToRemove), 1);
-            if (!this.multiFileData?.length) {
-                this.multiFileData = undefined;
+            const fileDataToRemove = (this.propertyValue as FileData[]).find(f => f.name === name) as FileData;
+            (this.propertyValue as FileData[]).splice((this.propertyValue as FileData[]).indexOf(fileDataToRemove), 1);
+            if (!(this.propertyValue as FileData[]).length) {
+                this.propertyValue = undefined;
             }
         }
         else {
             this.filenames = undefined;
-            this.singleFileData = undefined;
+            this.propertyValue = undefined;
         }
-        this.fileDataChangeEvent.emit(this.singleFileData ?? this.multiFileData);
+        this.fileDataChangeEvent.emit(this.propertyValue);
+    }
+
+    async downloadFile(name: string): Promise<void> {
+        if (this.metadata.multiple && (this.propertyValue as FileData[]).length) {
+            const foundFileData = (this.propertyValue as FileData[]).find(f => f.name === name) as FileData;
+            // the index need to be saved in a constant because we edit foundFileData
+            // => .indexOf() returns undefined.
+            const index = (this.propertyValue as FileData[]).indexOf(foundFileData);
+            (this.propertyValue as FileData[])[index] = await FileUtilities.getFileData(foundFileData);
+            FileUtilities.downloadSingleFile((this.propertyValue as FileData[])[index] as FileDataWithFile);
+        }
+        else if (this.propertyValue) {
+            this.propertyValue = await FileUtilities.getFileData(this.propertyValue as FileData);
+            FileUtilities.downloadSingleFile(this.propertyValue);
+        }
+    }
+
+    downloadAllEnabled(): boolean {
+        if (!this.metadata.multiple) {
+            return false;
+        }
+        if (!this.propertyValue) {
+            return false;
+        }
+        if ((this.propertyValue as FileData[]).length < 2) {
+            return false;
+        }
+        return true;
+    }
+
+    async downloadAll(): Promise<void> {
+        if ((this.propertyValue as FileData[]).length) {
+            void FileUtilities.downloadMultipleFiles(this.metadata.displayName, (this.propertyValue as FileData[]));
+        }
     }
 }

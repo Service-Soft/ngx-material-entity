@@ -73,10 +73,19 @@ abstract class FileDecoratorConfig extends PropertyDecoratorConfig {
     /**
      * Defines whether or not a dropdown box is displayed.
      *
-     * @default true // when multiple is set to true.
+     * @default
+     * true // when multiple is set to true.
      * false // when multiple is set to false.
      */
     dragAndDrop?: boolean;
+
+    /**
+     * The label of the button to download all files.
+     * Is only shown when the property contains multiple files.
+     *
+     * @default 'Download All'
+     */
+    downloadAllButtonLabel?: string;
 }
 
 /**

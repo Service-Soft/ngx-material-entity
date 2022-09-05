@@ -1,6 +1,7 @@
 import { LodashUtilities } from '../capsulation/lodash.utilities';
 import { FileDataWithFile } from '../decorators/file/file-decorator-internal.data';
 import { FileData } from '../decorators/file/file-decorator.data';
+import { JSZipUtilities } from '../capsulation/jszip.utilities';
 
 /**
  * Provides functionality regarding files.
@@ -83,6 +84,46 @@ export abstract class FileUtilities {
                 size: data.size
             };
         }
+    }
+
+    // TODO: Find a way to use blobs with jest
+    /* istanbul ignore next */
+    /**
+     * Downloads a single file from the given File Data.
+     *
+     * @param fileData - The file data. Needs to contain a blob.
+     */
+    static downloadSingleFile(fileData: FileDataWithFile): void {
+        const a = document.createElement('a');
+        const objectUrl = URL.createObjectURL(fileData.file);
+        a.href = objectUrl;
+        a.download = fileData.name;
+        a.click();
+        URL.revokeObjectURL(objectUrl);
+    }
+
+    // TODO: Find a way to use blobs with jest
+    /* istanbul ignore next */
+    /**
+     * Downloads multiple files as a zip with the given name.
+     *
+     * @param name - The name of the zip file to generate.
+     * @param multiFileData - The file data array to put in the zip.
+     */
+    static async downloadMultipleFiles(name: string, multiFileData: FileData[]): Promise<void> {
+        const zip = JSZipUtilities.new();
+        for (let i = 0; i < multiFileData.length; i++) {
+            multiFileData[i] = await FileUtilities.getFileData(multiFileData[i]);
+            zip.file(multiFileData[i].name, (multiFileData[i] as FileDataWithFile).file);
+        }
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const fileData: FileDataWithFile = {
+            name: name,
+            file: zipBlob,
+            type: 'application/zip',
+            size: zipBlob.size
+        };
+        FileUtilities.downloadSingleFile(fileData);
     }
 
     /**
