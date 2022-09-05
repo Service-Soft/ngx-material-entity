@@ -14,12 +14,12 @@
         [class.col-sm-6]="data.baseData.allowCreate()"
         [class.col-sm-12]="!data.baseData.allowCreate()"
     >
-        <button class="actions-button" [matMenuTriggerFor]="menu" mat-raised-button>
+        <button type="button" class="actions-button" [matMenuTriggerFor]="menu" mat-raised-button>
             {{data.baseData.multiSelectLabel}}
         </button>
     </div>
     <mat-menu #menu="matMenu">
-        <button *ngFor="let action of data.baseData.multiSelectActions" [disabled]="multiActionDisabled(action)" (click)="runMultiAction(action)" mat-menu-item>
+        <button type="button" *ngFor="let action of data.baseData.multiSelectActions" [disabled]="multiActionDisabled(action)" (click)="runMultiAction(action)" mat-menu-item>
             {{action.displayName}}
         </button>
     </mat-menu>
@@ -33,7 +33,7 @@
         [class.col-sm-6]="data.baseData.multiSelectActions.length"
         [class.col-sm-12]="!data.baseData.multiSelectActions.length"
     >
-        <button class="create-button" (click)="createEntity()" mat-raised-button>
+        <button type="button" class="create-button" (click)="createEntity()" mat-raised-button>
             {{data.baseData.createButtonLabel}}
         </button>
     </div>

@@ -22,12 +22,12 @@
         </mat-form-field>
         
         <div class="buttons">
-            <button mat-raised-button
+            <button type="button" mat-raised-button
                 [disabled]="model.errors"
                 (click)="add()">
                 {{metadata.addButtonLabel}}
             </button>
-            <button mat-raised-button
+            <button type="button" mat-raised-button
                 [disabled]="!selection.selected.length"
                 (click)="remove()">
                 {{metadata.removeButtonLabel}}

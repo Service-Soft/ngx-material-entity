@@ -57,6 +57,9 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
      * Also handles the confirmation if required.
      */
     create(): void {
+        if (!this.isEntityValid) {
+            return;
+        }
         if (!this.data.createDialogData.createRequiresConfirmDialog) {
             this.confirmCreate();
             return;

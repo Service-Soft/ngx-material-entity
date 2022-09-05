@@ -9,7 +9,7 @@
         (ngModelChange)="emitChange()"
         [disabled]="isReadOnly"
     >
-    <button (click)="randomInput()" mat-icon-button matSuffix [disabled]="isReadOnly">
+    <button type="button" (click)="randomInput()" mat-icon-button matSuffix [disabled]="isReadOnly">
         <i class="fas fa-dice"></i>
     </button>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
