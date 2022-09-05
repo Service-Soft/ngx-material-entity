@@ -9,7 +9,7 @@
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-chip-list #chipList
         [(ngModel)]="filenames"
-        [name]="key.toString()"
+        name="file"
         #model="ngModel"
         [required]="metadata.required"
         [disabled]="isReadOnly"

@@ -42,7 +42,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button mat-raised-button (click)="edit()" [disabled]="isReadOnly || !isEntityValid || (isEntityDirty | async) === false">
+    <button mat-raised-button (click)="edit()" [disabled]="isReadOnly || !isEntityValid || !isEntityDirty">
         {{data.editDialogData.confirmButtonLabel}}
     </button>
     <button mat-raised-button (click)="cancel()" class="cancel-button">

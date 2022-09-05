@@ -1,8 +1,8 @@
 <div *ngIf="!metadata.dragAndDrop && !metadata.preview">
     <file-input
         (fileDataChangeEvent)="refreshFileData($event)"
-        [entity]="entity"
-        [key]="key"
+        [propertyValue]="propertyValue"
+        [metadata]="metadata"
         [getValidationErrorMessage]="getValidationErrorMessage"
         [isReadOnly]="isReadOnly"
     >
@@ -12,8 +12,8 @@
 <div *ngIf="metadata.dragAndDrop || metadata.preview" class="file-input mat-elevation-z8">
     <file-input
         (fileDataChangeEvent)="refreshFileData($event)"
-        [entity]="entity"
-        [key]="key"
+        [propertyValue]="propertyValue"
+        [metadata]="metadata"
         [getValidationErrorMessage]="getValidationErrorMessage"
         [isReadOnly]="isReadOnly"
     >

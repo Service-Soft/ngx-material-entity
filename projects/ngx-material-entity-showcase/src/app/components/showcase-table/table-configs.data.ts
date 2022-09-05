@@ -44,6 +44,7 @@ export const customTableData: TableData<TestEntity> = {
         searchLabel: 'Custom Search Label',
         createButtonLabel: 'Custom Create Button Label',
         searchString: () => 'x',
+        allowRead: () => false,
         allowUpdate: () => false,
         allowDelete: () => false,
         multiSelectActions: [
@@ -81,7 +82,6 @@ export const customTableDataReadOnly: TableData<TestEntity> = {
         searchLabel: 'Custom Search Label',
         createButtonLabel: 'Custom Create Button Label',
         searchString: () => 'x',
-        // allowRead: () => false,
         allowUpdate: () => false,
         allowDelete: () => false,
         multiSelectActions: [

@@ -553,7 +553,7 @@ export abstract class EntityUtilities {
         entityPriorChanges: EntityType
     ): Promise<Difference<EntityType>[]> {
         const res: Difference<EntityType>[] = [];
-        for (const key in entity) {
+        for (const key of ReflectUtilities.ownKeys(entity)) {
             const metadata = EntityUtilities.getPropertyMetadata(entity, key);
             const type = EntityUtilities.getPropertyType(entity, key);
             if (!(await EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type))) {
@@ -562,6 +562,10 @@ export abstract class EntityUtilities {
                     before: entityPriorChanges[key],
                     after: entity[key]
                 });
+            }
+            else {
+                // This is needed to set blob file data so that it is only requested once.
+                entityPriorChanges[key] = LodashUtilities.cloneDeep(entity[key]);
             }
         }
         return res;
@@ -700,15 +704,17 @@ export abstract class EntityUtilities {
         }
         for (let i = 0; i < files.length; i++) {
             // checks this before actually getting any files due to performance reasons.
-            if (
-                !LodashUtilities.isEqual(files[i]?.name, filesPriorChanges[i]?.name)
-                || !LodashUtilities.isEqual(files[i]?.url, filesPriorChanges[i]?.url)
-            ) {
+            if (!LodashUtilities.isEqual(LodashUtilities.omit(files[i], 'file'), LodashUtilities.omit(filesPriorChanges[i], 'file'))) {
                 return false;
             }
-            files[i] = filesPriorChanges[i].file && !files[i].file ? await FileUtilities.getFileData(files[i]) : files[i];
-            // eslint-disable-next-line max-len
-            filesPriorChanges[i] = files[i].file && !filesPriorChanges[i].file ? await FileUtilities.getFileData(filesPriorChanges[i]) : filesPriorChanges[i];
+            if (filesPriorChanges[i].file && !files[i].file) {
+                files[i] = await FileUtilities.getFileData(files[i]);
+                value = files[i];
+            }
+            if (files[i].file && !filesPriorChanges[i].file) {
+                filesPriorChanges[i] = await FileUtilities.getFileData(filesPriorChanges[i]);
+                valuePriorChanges = filesPriorChanges[i];
+            }
             if (!LodashUtilities.isEqual(await files[i].file?.text(), await filesPriorChanges[i].file?.text())) {
                 return false;
             }
@@ -791,15 +797,6 @@ export abstract class EntityUtilities {
         }
     }
 
-    /**
-     * Gets the rows that are used to display the given entity.
-     *
-     * @param entity - The entity to get the rows from.
-     * @param tab - The tab number for which the rows should be returned.
-     * @param hideOmitForCreate - Whether or not keys with the metadata omitForCreate should be filtered out.
-     * @param hideOmitForEdit - Whether or not keys with the metadata omitForUpdate should be filtered out.
-     * @returns The sorted Rows containing the row number and the keys to display in that row.
-     */
     private static getEntityRows<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         tab: number,

@@ -86,6 +86,8 @@ export abstract class FileUtilities {
         }
     }
 
+    // TODO: Find a way to use blobs with jest
+    /* istanbul ignore next */
     /**
      * Downloads a single file from the given File Data.
      *
@@ -100,6 +102,8 @@ export abstract class FileUtilities {
         URL.revokeObjectURL(objectUrl);
     }
 
+    // TODO: Find a way to use blobs with jest
+    /* istanbul ignore next */
     /**
      * Downloads multiple files as a zip with the given name.
      *
@@ -107,7 +111,6 @@ export abstract class FileUtilities {
      * @param multiFileData - The file data array to put in the zip.
      */
     static async downloadMultipleFiles(name: string, multiFileData: FileData[]): Promise<void> {
-        console.log('Starts zipping', JSZip.name);
         const zip = new JSZip();
         for (let i = 0; i < multiFileData.length; i++) {
             multiFileData[i] = await FileUtilities.getFileData(multiFileData[i]);
