@@ -66,6 +66,9 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      * Also handles the confirmation if required.
      */
     edit(): void {
+        if (this.isReadOnly || !this.isEntityValid || !this.isEntityDirty) {
+            return;
+        }
         if (!this.data.editDialogData.editRequiresConfirmDialog) {
             this.confirmEdit();
             return;

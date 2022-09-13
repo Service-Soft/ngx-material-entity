@@ -30,7 +30,7 @@
         </i>
     </div>
     <div class="preview-nav" *ngIf="metadata.preview && metadata.multiple">
-        <button (click)="setIndex(imageIndex-4)" mat-icon-button *ngIf="
+        <button type="button" (click)="setIndex(imageIndex-4)" mat-icon-button *ngIf="
             this.multiPreviewImages
             && multiPreviewImages[imageIndex-4]
             && imageIndex === (this.multiPreviewImages.length - 1)"
@@ -39,7 +39,7 @@
             <span class="image-index">{{imageIndex - 3}}</span>
         </button>
         <!-- eslint-disable-next-line @angular-eslint/template/conditional-complexity -->
-        <button (click)="setIndex(imageIndex-3)" mat-icon-button *ngIf="this.multiPreviewImages
+        <button type="button" (click)="setIndex(imageIndex-3)" mat-icon-button *ngIf="this.multiPreviewImages
             && multiPreviewImages[imageIndex-3]
             && (
                 imageIndex === (this.multiPreviewImages.length - 2)
@@ -49,31 +49,31 @@
             <span class="dot"></span>
             <span class="image-index">{{imageIndex - 2}}</span>
         </button>
-        <button (click)="setIndex(imageIndex-2)" mat-icon-button *ngIf="multiPreviewImages?.[imageIndex-2]">
+        <button type="button" (click)="setIndex(imageIndex-2)" mat-icon-button *ngIf="multiPreviewImages?.[imageIndex-2]">
             <span class="dot"></span>
             <span class="image-index">{{imageIndex - 1}}</span>
         </button>
-        <button (click)="setIndex(imageIndex-1)" mat-icon-button *ngIf="multiPreviewImages?.[imageIndex-1]">
+        <button type="button" (click)="setIndex(imageIndex-1)" mat-icon-button *ngIf="multiPreviewImages?.[imageIndex-1]">
             <i class="dot"></i>
             <span class="image-index">{{imageIndex}}</span>
         </button>
-        <button mat-icon-button disabled>
+        <button type="button" mat-icon-button disabled>
             <i class="dot selected"></i>
             <span class="image-index">{{imageIndex + 1}}</span>
         </button>
-        <button (click)="setIndex(imageIndex+1)" mat-icon-button *ngIf="multiPreviewImages?.[imageIndex+1]">
+        <button type="button" (click)="setIndex(imageIndex+1)" mat-icon-button *ngIf="multiPreviewImages?.[imageIndex+1]">
             <span class="dot"></span>
             <span class="image-index">{{imageIndex + 2}}</span>
         </button>
-        <button (click)="setIndex(imageIndex+2)" mat-icon-button *ngIf="multiPreviewImages?.[imageIndex+2]">
+        <button type="button" (click)="setIndex(imageIndex+2)" mat-icon-button *ngIf="multiPreviewImages?.[imageIndex+2]">
             <span class="dot"></span>
             <span class="image-index">{{imageIndex + 3}}</span>
         </button>
-        <button (click)="setIndex(imageIndex+3)" mat-icon-button *ngIf="multiPreviewImages?.[imageIndex+3] && imageIndex <= 1">
+        <button type="button" (click)="setIndex(imageIndex+3)" mat-icon-button *ngIf="multiPreviewImages?.[imageIndex+3] && imageIndex <= 1">
             <span class="dot"></span>
             <span class="image-index">{{imageIndex + 4}}</span>
         </button>
-        <button (click)="setIndex(imageIndex+4)" mat-icon-button *ngIf="multiPreviewImages?.[imageIndex+4] && imageIndex === 0">
+        <button type="button" (click)="setIndex(imageIndex+4)" mat-icon-button *ngIf="multiPreviewImages?.[imageIndex+4] && imageIndex === 0">
             <span class="dot"></span>
             <span class="image-index">{{imageIndex + 5}}</span>
         </button>
@@ -85,7 +85,7 @@
         <i class="next-button disabled fa-solid fa-angle-right"></i>
     </div>
     <div class="preview-nav" *ngIf="metadata.preview && !metadata.multiple">
-        <button disabled mat-icon-button>
+        <button type="button" disabled mat-icon-button>
             <span class="dot selected"></span>
             <span class="image-index">1</span>
         </button>
