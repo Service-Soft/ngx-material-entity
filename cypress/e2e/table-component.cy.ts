@@ -108,8 +108,8 @@ describe('custom table', () => {
 
     let spy: Cypress.Agent<sinon.SinonSpy<unknown[], unknown>>;
     Cypress.on('window:before:load', (win) => {
-        spy = cy.spy(win.console, 'log')
-    })
+        spy = cy.spy(win.console, 'log');
+    });
     it('should run multi actions', () => {
         cy.get('button').contains('Custom Multi Select Label').click();
         cy.get('button').contains('Multi Action').should('be.disabled');
@@ -118,7 +118,7 @@ describe('custom table', () => {
         cy.get('button').contains('Custom Multi Select Label').click();
         cy.get('button').contains('Multi Action').should('not.be.disabled');
         cy.get('button').contains('Multi Action').click();
-        // eslint-disable-next-line no-unused-expressions
+        // eslint-disable-next-line no-unused-expressions, @typescript-eslint/no-unused-expressions
         expect(spy).to.be.calledOnce;
     });
 

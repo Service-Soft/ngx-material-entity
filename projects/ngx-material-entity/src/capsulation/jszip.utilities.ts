@@ -14,7 +14,6 @@ export abstract class JSZipUtilities {
      * @returns A new JSZip object.
      */
     static new(): JSZipType {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         return new JSZip() as JSZipType;
     }
 }
