@@ -1,4 +1,10 @@
+import { InjectionToken } from '@angular/core';
 import { NgModel } from '@angular/forms';
+
+export const NGX_GET_VALIDATION_ERROR_MESSAGE = new InjectionToken('Provider for the default getValidationErrorMessage.', {
+    providedIn: 'root',
+    factory: () => getValidationErrorMessage,
+});
 
 /**
  * Generates a default error message for most validation errors.
@@ -6,7 +12,7 @@ import { NgModel } from '@angular/forms';
  * @param model - The ngModel to get the error from.
  * @returns The Validation Error Message to display.
  */
-export function getValidationErrorMessage(model: NgModel): string {
+function getValidationErrorMessage(model: NgModel): string {
     if (model.hasError('matDatepickerParse')) {
         return 'not a valid date';
     }
