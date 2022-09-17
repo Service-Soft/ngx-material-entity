@@ -1,8 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { EntityTab, EntityUtilities } from '../../classes/entity.utilities';
 import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
-import { getValidationErrorMessage } from '../get-validation-error-message.function';
 import { EntityArrayDecoratorConfigInternal } from '../../decorators/array/array-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../../decorators/object/object-decorator-internal.data';
 import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
@@ -15,6 +14,7 @@ import { DateUtilities } from '../../classes/date.utilities';
 import { LodashUtilities } from '../../capsulation/lodash.utilities';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { BaseEntityType } from '../../classes/entity.model';
+import { NGX_GET_VALIDATION_ERROR_MESSAGE } from '../get-validation-error-message.function';
 
 /**
  * The default input component. It gets the metadata of the property from the given @Input "entity" and @Input "propertyKey"
@@ -115,7 +115,9 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     DateUtilities = DateUtilities;
 
     constructor(
-        private readonly dialog: MatDialog
+        private readonly dialog: MatDialog,
+        @Inject(NGX_GET_VALIDATION_ERROR_MESSAGE)
+        protected readonly defaultGetValidationErrorMessage: (model: NgModel) => string,
     ) {}
 
     /**
@@ -139,7 +141,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         }
         this.internalPropertyKey = this.propertyKey;
 
-        this.internalGetValidationErrorMessage = this.getValidationErrorMessage ?? getValidationErrorMessage;
+        this.internalGetValidationErrorMessage = this.getValidationErrorMessage ?? this.defaultGetValidationErrorMessage;
         this.internalIsReadOnly = this.isReadOnly ?? false;
 
         this.type = EntityUtilities.getPropertyType(this.internalEntity, this.internalPropertyKey);
@@ -183,7 +185,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             createDialogData: this.metadataEntityArray.createDialogData,
             getValidationErrorMessage: this.getValidationErrorMessage
         };
-        this.dialogData = new AddArrayItemDialogDataBuilder(this.dialogInputData).getResult();
+        this.dialogData = new AddArrayItemDialogDataBuilder(this.dialogInputData, this.defaultGetValidationErrorMessage).getResult();
         this.arrayItemDialogTabs = EntityUtilities.getEntityTabs(this.dialogData.entity, true);
     }
 

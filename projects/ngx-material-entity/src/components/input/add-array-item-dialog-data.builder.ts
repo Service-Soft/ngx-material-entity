@@ -1,7 +1,8 @@
+import { Inject } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { BaseBuilder } from '../../classes/base.builder';
 import { BaseEntityType } from '../../classes/entity.model';
-import { getValidationErrorMessage as defaultGetValidationErrorMessage } from '../get-validation-error-message.function';
+import { NGX_GET_VALIDATION_ERROR_MESSAGE } from '../get-validation-error-message.function';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from '../table/create-dialog/create-dialog-data.builder';
 import { AddArrayItemDialogData } from './add-array-item-dialog-data';
 
@@ -33,7 +34,11 @@ export class AddArrayItemDialogDataInternal<EntityType extends BaseEntityType<En
 export class AddArrayItemDialogDataBuilder<EntityType extends BaseEntityType<EntityType>>
     extends BaseBuilder<AddArrayItemDialogDataInternal<EntityType>, AddArrayItemDialogData<EntityType>> {
 
-    constructor(data: AddArrayItemDialogData<EntityType>) {
+    constructor(
+        data: AddArrayItemDialogData<EntityType>,
+        @Inject(NGX_GET_VALIDATION_ERROR_MESSAGE)
+        protected readonly defaultGetValidationErrorMessage: (model: NgModel) => string,
+    ) {
         super(data);
     }
 
@@ -46,7 +51,7 @@ export class AddArrayItemDialogDataBuilder<EntityType extends BaseEntityType<Ent
         return new AddArrayItemDialogDataInternal(
             data.entity,
             createDialogData,
-            data.getValidationErrorMessage ?? defaultGetValidationErrorMessage,
+            data.getValidationErrorMessage ?? this.defaultGetValidationErrorMessage,
         );
     }
 }
