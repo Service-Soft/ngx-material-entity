@@ -3,6 +3,7 @@ import { EntityUtilities } from '../../classes/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { string } from './string.decorator';
 import { expect } from '@jest/globals';
+import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal } from './string-decorator-internal.data';
 
 class TestEntity extends Entity {
     @string({
@@ -41,17 +42,21 @@ const testEntityData: TestEntity = {
     nameDropdown: 'johnSmith',
     nameAutocomplete: 'Mr.'
 };
-const testEntity = new TestEntity(testEntityData);
+const testEntity: TestEntity = new TestEntity(testEntityData);
 
 test('name should have string Metadata', () => {
-    const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'name', DecoratorTypes.STRING);
+    const metadata: DefaultStringDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity, 'name', DecoratorTypes.STRING);
     expect(metadata).toBeDefined();
     expect(metadata.displayStyle).toBe('line');
     expect(metadata.minLength).toBe(5);
     expect(metadata.maxLength).toBe(100);
 });
 test('nameDropdown should have stringDropdown Metadata', () => {
-    const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'nameDropdown', DecoratorTypes.STRING_DROPDOWN);
+    const metadata: DropdownStringDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(
+        testEntity,
+        'nameDropdown',
+        DecoratorTypes.STRING_DROPDOWN
+    );
     expect(metadata).toBeDefined();
     expect(metadata.displayStyle).toBe('dropdown');
     expect(metadata.dropdownValues).toEqual([
@@ -60,7 +65,7 @@ test('nameDropdown should have stringDropdown Metadata', () => {
     ]);
 });
 test('should have stringAutocomplete Metadata', () => {
-    const metadata = EntityUtilities.getPropertyMetadata(
+    const metadata: AutocompleteStringDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(
         testEntity,
         'nameAutocomplete',
         DecoratorTypes.STRING_AUTOCOMPLETE

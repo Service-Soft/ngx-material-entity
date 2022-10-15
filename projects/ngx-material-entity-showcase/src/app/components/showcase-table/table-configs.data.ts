@@ -16,7 +16,7 @@ export const defaultTableData: TableData<TestEntity> = {
             }
         ],
         EntityClass: TestEntity,
-        EntityServiceClass: TestEntityService,
+        EntityServiceClass: TestEntityService
     },
     createDialogData: {
         title: 'Create Test Entity'

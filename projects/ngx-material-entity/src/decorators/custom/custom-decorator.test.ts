@@ -1,11 +1,11 @@
 import { expect } from '@jest/globals';
-import { LodashUtilities } from '../../capsulation/lodash.utilities';
+import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { EntityUtilities } from '../../classes/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
+import { CustomDecoratorConfigInternal } from './custom-decorator-internal.data';
 import { custom } from './custom.decorator';
 
 export class RandomInputTestEntity {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     @custom<string, RandomMetadata, RandomInputTestEntity>({
         customMetadata: {
             random: () => (Math.random() + 1).toString(36).substring(7)
@@ -25,10 +25,12 @@ interface RandomMetadata {
     random: () => string
 }
 
-const randomTe = new RandomInputTestEntity({ randomValue: '42' });
+const randomTe: RandomInputTestEntity = new RandomInputTestEntity({ randomValue: '42' });
 
 test('should have custom Metadata', () => {
-    const metadata = EntityUtilities.getPropertyMetadata(randomTe, 'randomValue', DecoratorTypes.CUSTOM);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const metadata: CustomDecoratorConfigInternal<any, unknown, Record<string, unknown>, any>
+        = EntityUtilities.getPropertyMetadata(randomTe, 'randomValue', DecoratorTypes.CUSTOM);
     expect(JSON.stringify(metadata.customMetadata)).toEqual(JSON.stringify({
         random: () => (Math.random() + 1).toString(36).substring(7)
     }));

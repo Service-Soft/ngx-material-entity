@@ -69,7 +69,7 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
             .withDefault('confirmButtonLabel', 'Create')
             .withDefault('title', 'Create')
             .getResult();
-        const dialogRef = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false

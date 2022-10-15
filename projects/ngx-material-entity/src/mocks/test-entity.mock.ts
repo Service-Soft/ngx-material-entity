@@ -18,17 +18,12 @@ export interface RandomMetadata {
  */
 export class TestEntity extends TestEntityWithoutCustomProperties implements TestEntityInterface {
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     @custom<string, RandomMetadata, TestEntity>({
         customMetadata: {
             random: () => (Math.random() + 1).toString(36).substring(7)
         },
         displayName: 'Random Value',
-        // this conversion is not needed under real life conditions.
-        // The problem is that this file uses the library BEFORE it is compiled,
-        // while the imported "TestRandomInputComponent" uses the library AFTER it was compiled.
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-        component: TestRandomInputComponent as any
+        component: TestRandomInputComponent
     })
     declare randomValue: string;
 
@@ -102,19 +97,19 @@ const testEntityData: TestEntity = {
     ],
     dateArrayValue: [
         new Date(2022, 0, 1),
-        new Date(2022, 0, 20),
+        new Date(2022, 0, 20)
     ],
     customDateArrayValue: [
         new Date(2022, 0, 2),
-        new Date(2022, 0, 20),
+        new Date(2022, 0, 20)
     ],
     dateTimeArrayValue: [
         new Date(2022, 0, 1, 0, 30),
-        new Date(2022, 0, 20, 16, 0),
+        new Date(2022, 0, 20, 16, 0)
     ],
     customDateTimeArrayValue: [
         new Date(2022, 0, 2, 8, 30),
-        new Date(2022, 0, 20, 16, 0),
+        new Date(2022, 0, 20, 16, 0)
     ],
     dateRangeArrayValue: [
         {
@@ -126,7 +121,7 @@ const testEntityData: TestEntity = {
             start: new Date(2022, 0, 25, 0, 0, 0, 0),
             end: new Date(2022, 0, 30, 0, 0, 0, 0),
             values: getDatesBetween(new Date(2022, 0, 25, 0, 0, 0, 0), new Date(2022, 0, 30, 0, 0, 0, 0))
-        },
+        }
     ],
     customDateRangeArrayValue: [
         {
@@ -138,7 +133,7 @@ const testEntityData: TestEntity = {
             start: new Date(2022, 0, 25, 0, 0, 0, 0),
             end: new Date(2022, 0, 30, 0, 0, 0, 0),
             values: getDatesBetween(new Date(2022, 0, 25, 0, 0, 0, 0), new Date(2022, 0, 30, 0, 0, 0, 0))
-        },
+        }
     ],
     numberDropdownValue: 42,
     stringDropdownValue: 'String Dropdown #1',
@@ -155,7 +150,7 @@ const testEntityData: TestEntity = {
         start: new Date(2022, 0, 2, 0, 0, 0, 0),
         end: new Date(2022, 0, 20, 0, 0, 0, 0),
         // eslint-disable-next-line max-len
-        values: getDatesBetween(new Date(2022, 0, 2, 0, 0, 0, 0), new Date(2022, 0, 20, 0, 0, 0, 0), (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1,)
+        values: getDatesBetween(new Date(2022, 0, 2, 0, 0, 0, 0), new Date(2022, 0, 20, 0, 0, 0, 0), (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1)
     },
     dateTimeValue: new Date(2022, 0, 1, 8, 30, 0, 0),
     customDateTimeValue: new Date(2022, 0, 2, 16, 30, 0, 0),

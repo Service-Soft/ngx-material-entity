@@ -29,20 +29,8 @@ export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<En
      * @param event - The event that fires when a new chip is completed.
      */
     addStringChipArrayValue(event: MatChipInputEvent): void {
-        const value = (event.value || '').trim();
-        if (value) {
-            if (this.metadata.minLength && value.length < this.metadata.minLength) {
-                return;
-            }
-            if (this.metadata.maxLength && value.length > this.metadata.maxLength) {
-                return;
-            }
-            if (this.metadata.regex  && !value.match(this.metadata.regex)) {
-                return;
-            }
-            this.propertyValue = this.propertyValue ?? [];
-            this.propertyValue.push(value);
-        }
+        const value: string = (event.value || '').trim();
+        this.validateAndSetPropertyValue(value);
         event.chipInput?.clear();
     }
 
@@ -68,18 +56,24 @@ export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<En
      * @param chipsInput - The element where the user typed the value.
      */
     selected(event: MatAutocompleteSelectedEvent, chipsInput: HTMLInputElement): void {
-        const value = (event.option.viewValue || '').trim();
-        if (this.metadata.minLength && value.length < this.metadata.minLength) {
-            return;
-        }
-        if (this.metadata.maxLength && value.length > this.metadata.maxLength) {
-            return;
-        }
-        if (this.metadata.regex  && !value.match(this.metadata.regex)) {
-            return;
-        }
-        this.propertyValue = this.propertyValue ?? [];
-        this.propertyValue.push(value);
+        const value: string = (event.option.viewValue || '').trim();
+        this.validateAndSetPropertyValue(value);
         chipsInput.value = '';
+    }
+
+    private validateAndSetPropertyValue(value: string): void {
+        if (value) {
+            if (this.metadata.minLength && value.length < this.metadata.minLength) {
+                return;
+            }
+            if (this.metadata.maxLength && value.length > this.metadata.maxLength) {
+                return;
+            }
+            if (this.metadata.regex && !value.match(this.metadata.regex)) {
+                return;
+            }
+            this.propertyValue = this.propertyValue ?? [];
+            this.propertyValue.push(value);
+        }
     }
 }

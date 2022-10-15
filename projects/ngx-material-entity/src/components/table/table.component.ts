@@ -5,7 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { EntityService } from '../../classes/entity.service';
 import { firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NgxMatEntityCreateDialogComponent } from './create-dialog/create-entity-dialog.component';
 import { NgxMatEntityEditDialogComponent } from './edit-dialog/edit-entity-dialog.component';
 import { EditEntityDialogData } from './edit-dialog/edit-entity-dialog-data';
@@ -16,6 +16,7 @@ import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from '.
 import { TableDataBuilder, TableDataInternal } from './table-data.builder';
 import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from '../table/edit-dialog/edit-entity-dialog.builder';
 import { BaseEntityType } from '../../classes/entity.model';
+import { SelectionUtilities } from '../../classes/selection.utilities';
 
 /**
  * Generates a fully functional table for displaying, creating, updating and deleting entities
@@ -47,6 +48,8 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     dataSource: MatTableDataSource<EntityType> = new MatTableDataSource();
     selection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
 
+    SelectionUtilities = SelectionUtilities;
+
     constructor(private readonly dialog: MatDialog, private readonly injector: Injector) {}
 
     /**
@@ -57,7 +60,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
 
         this.entityService = this.injector.get(this.data.baseData.EntityServiceClass) as EntityService<EntityType>;
 
-        const givenDisplayColumns = this.data.baseData.displayColumns.map((v) => v.displayName);
+        const givenDisplayColumns: string[] = this.data.baseData.displayColumns.map((v) => v.displayName);
         if (this.data.baseData.multiSelectActions.length) {
             this.displayedColumns = ['select'].concat(givenDisplayColumns);
         }
@@ -70,9 +73,9 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         };
         this.dataSource.sort = this.sort;
         this.dataSource.filterPredicate = (entity: EntityType, filter: string) => {
-            const searchStr = this.data.baseData.searchString(entity) ;
-            const formattedSearchString = searchStr.toLowerCase();
-            const formattedFilterString = filter.toLowerCase();
+            const searchStr: string = this.data.baseData.searchString(entity);
+            const formattedSearchString: string = searchStr.toLowerCase();
+            const formattedFilterString: string = filter.toLowerCase();
             return formattedSearchString.includes(formattedFilterString);
         };
         this.dataSource.filter = this.filter;
@@ -124,7 +127,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
             }).afterClosed()
         ) as number;
         if (res === 0) {
-            const data = this.dataSource.data;
+            const data: EntityType[] = this.dataSource.data;
             data[this.dataSource.data.findIndex((e) => e[this.entityService.idKey] === entity[this.entityService.idKey])] = entity;
             this.dataSource.data = data;
             this.selection.clear();
@@ -181,7 +184,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
             .withDefault('text', [`Do you really want to run this action on ${this.selection.selected.length} entries?`])
             .withDefault('title', action.displayName)
             .getResult();
-        const dialogRef = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false
@@ -213,30 +216,6 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         return false;
     }
 
-    /**
-     * Toggles all entries in the table.
-     */
-    masterToggle(): void {
-        if (this.isAllSelected()) {
-            this.selection.clear();
-        }
-        else {
-            this.dataSource.data.forEach(row => this.selection.select(row));
-        }
-    }
-
-    /**
-     * Checks if all entries in the table have been selected.
-     * This is needed to display the "masterToggle"-checkbox correctly.
-     *
-     * @returns Whether or not all entries in the table have been selected.
-     */
-    isAllSelected(): boolean {
-        const numSelected = this.selection.selected.length;
-        const numRows = this.dataSource.data.length;
-        return numSelected === numRows;
-    }
-
     ngOnDestroy(): void {
         this.onDestroy.next(undefined);
         this.onDestroy.complete();
@@ -248,7 +227,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
      * @param event - The keyup-event which contains the search-string of the user.
      */
     applyFilter(event: Event): void {
-        const filterValue = (event.target as HTMLInputElement).value;
+        const filterValue: string = (event.target as HTMLInputElement).value;
         this.dataSource.filter = filterValue.trim().toLowerCase();
     }
 }

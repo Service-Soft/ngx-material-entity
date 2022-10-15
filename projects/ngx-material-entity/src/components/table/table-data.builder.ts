@@ -111,7 +111,7 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         multiSelectLabel: string,
         EntityClass?: EntityClassNewable<EntityType>,
         edit?: (entity: EntityType) => unknown,
-        create?: (entity: EntityType) => unknown,
+        create?: (entity: EntityType) => unknown
     ) {
         this.title = title;
         this.displayColumns = displayColumns;
@@ -208,7 +208,7 @@ export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
  * @returns The generated string of the given entity used for comparison with the search input.
  */
 function defaultSearchFunction<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): string {
-    const searchString = Object.keys(entity)
+    const searchString: string = Object.keys(entity)
         .reduce((currentTerm: string, key: string) => {
             return `${currentTerm}${(entity as Record<string, unknown>)[key]}◬`;
         }, '')

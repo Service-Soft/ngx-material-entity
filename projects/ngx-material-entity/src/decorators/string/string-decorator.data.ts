@@ -21,7 +21,6 @@ export interface DropdownStringDecoratorConfig extends StringDecoratorConfig {
      * The values of the dropdown, consisting of a name to display and the actual value
      * Can also receive a function to determine the values.
      */
-    // eslint-disable-next-line jsdoc/require-jsdoc
     dropdownValues: DropdownValue<string>[]
 }
 

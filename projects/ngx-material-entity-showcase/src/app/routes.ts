@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable jsdoc/require-jsdoc */
 import { Routes } from '@angular/router';
 import { NavUtilities, NavbarRow } from 'ngx-material-navigation';
 
@@ -90,7 +88,7 @@ export const navbarRows: NavbarRow[] = [
                         type: 'internalLink',
                         name: '@custom',
                         route: 'inputs/custom'
-                    },
+                    }
                 ],
                 position: 'center',
                 collapse: 'md'
