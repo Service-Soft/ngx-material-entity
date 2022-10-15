@@ -4,7 +4,7 @@ import { NgModel } from '@angular/forms';
 import { DefaultFileDecoratorConfigInternal, FileDataWithFile, ImageFileDecoratorConfigInternal } from '../../../../decorators/file/file-decorator-internal.data';
 import { FileUtilities } from '../../../../classes/file.utilities';
 import { FileData } from '../../../../decorators/file/file-decorator.data';
-import { LodashUtilities } from '../../../../capsulation/lodash.utilities';
+import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxMatEntityConfirmDialogComponent } from '../../../confirm-dialog/confirm-dialog.component';
 import { BaseEntityType } from '../../../../classes/entity.model';
@@ -61,7 +61,7 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
     }
 
     async setFileFromInput(event: Event): Promise<void> {
-        const files = (event.target as HTMLInputElement).files ?? [];
+        const files: FileList | [] = (event.target as HTMLInputElement).files ?? [];
         await this.setFile(Array.from(files));
     }
 
@@ -85,7 +85,7 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
             this.resetFileInputs();
             return;
         }
-        let fileSizeTotal = 0;
+        let fileSizeTotal: number = 0;
         for (const file of files) {
             fileSizeTotal += file.size;
         }
@@ -144,7 +144,7 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
             if (!this.filenames?.length) {
                 this.filenames = undefined;
             }
-            const fileDataToRemove = (this.propertyValue as FileData[]).find(f => f.name === name) as FileData;
+            const fileDataToRemove: FileData = (this.propertyValue as FileData[]).find(f => f.name === name) as FileData;
             (this.propertyValue as FileData[]).splice((this.propertyValue as FileData[]).indexOf(fileDataToRemove), 1);
             if (!(this.propertyValue as FileData[]).length) {
                 this.propertyValue = undefined;
@@ -159,10 +159,10 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
 
     async downloadFile(name: string): Promise<void> {
         if (this.metadata.multiple && (this.propertyValue as FileData[]).length) {
-            const foundFileData = (this.propertyValue as FileData[]).find(f => f.name === name) as FileData;
+            const foundFileData: FileData = (this.propertyValue as FileData[]).find(f => f.name === name) as FileData;
             // the index need to be saved in a constant because we edit foundFileData
             // => .indexOf() returns undefined.
-            const index = (this.propertyValue as FileData[]).indexOf(foundFileData);
+            const index: number = (this.propertyValue as FileData[]).indexOf(foundFileData);
             (this.propertyValue as FileData[])[index] = await FileUtilities.getFileData(foundFileData);
             FileUtilities.downloadSingleFile((this.propertyValue as FileData[])[index] as FileDataWithFile);
         }

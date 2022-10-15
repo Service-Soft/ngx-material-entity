@@ -11,10 +11,11 @@ import { AddArrayItemDialogDataBuilder, AddArrayItemDialogDataInternal } from '.
 import { AddArrayItemDialogData } from './add-array-item-dialog-data';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DateUtilities } from '../../classes/date.utilities';
-import { LodashUtilities } from '../../capsulation/lodash.utilities';
+import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { BaseEntityType } from '../../classes/entity.model';
 import { NGX_GET_VALIDATION_ERROR_MESSAGE } from '../get-validation-error-message.function';
+import { SelectionUtilities } from '../../classes/selection.utilities';
 
 /**
  * The default input component. It gets the metadata of the property from the given @Input "entity" and @Input "propertyKey"
@@ -113,11 +114,12 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     EntityUtilities = EntityUtilities;
     DateUtilities = DateUtilities;
+    SelectionUtilities = SelectionUtilities;
 
     constructor(
         private readonly dialog: MatDialog,
         @Inject(NGX_GET_VALIDATION_ERROR_MESSAGE)
-        protected readonly defaultGetValidationErrorMessage: (model: NgModel) => string,
+        protected readonly defaultGetValidationErrorMessage: (model: NgModel) => string
     ) {}
 
     /**
@@ -279,49 +281,9 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     /**
      * Removes all selected entries from the entity array.
-     *
-     * @param selection - The selection containing the items to remove.
-     * @param values - The values of the dataSource.
-     * @param dataSource - The dataSource.
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    remove(selection: SelectionModel<any>, values: any[], dataSource: MatTableDataSource<any>): void {
-        selection.selected.forEach(s => {
-            values.splice(values.indexOf(s), 1);
-        });
-        dataSource.data = values;
-        selection.clear();
+    remove(): void {
+        SelectionUtilities.remove(this.selection, this.entityArrayValues, this.dataSource);
         this.emitChange();
-    }
-
-    /**
-     * Toggles all array-items in the table.
-     *
-     * @param selection - The selection to toggle.
-     * @param dataSource - The dataSource of the selection.
-     */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    masterToggle(selection: SelectionModel<any>, dataSource: MatTableDataSource<any>): void {
-        if (this.isAllSelected(selection, dataSource)) {
-            selection.clear();
-        }
-        else {
-            dataSource.data.forEach(row => selection.select(row));
-        }
-    }
-
-    /**
-     * Checks if all array-items in the table have been selected.
-     * This is needed to display the "masterToggle"-checkbox correctly.
-     *
-     * @param selection - The selection to check.
-     * @param dataSource - The dataSource of the selection.
-     * @returns Whether or not all array-items in the table have been selected.
-     */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    isAllSelected(selection: SelectionModel<any>, dataSource: MatTableDataSource<any>): boolean {
-        const numSelected = selection.selected.length;
-        const numRows = dataSource.data.length;
-        return numSelected === numRows;
     }
 }

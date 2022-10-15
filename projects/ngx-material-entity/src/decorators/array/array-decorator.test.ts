@@ -1,14 +1,18 @@
+/* eslint-disable max-len */
 import { array } from './array.decorator';
 import { expect } from '@jest/globals';
 import { Entity } from '../../classes/entity.model';
 import { EntityUtilities } from '../../classes/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../../mocks/test-entity.interface';
+import { EntityArrayDecoratorConfigInternal } from './array-decorator-internal.data';
+import { DefaultStringDecoratorConfigInternal } from '../string/string-decorator-internal.data';
 
 const testEntity: TestEntityWithoutCustomProperties = new TestEntityWithoutCustomPropertiesMockBuilder().testEntity;
 
 test('should have array Metadata', () => {
-    const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'entityArrayValue', DecoratorTypes.ARRAY);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const metadata: EntityArrayDecoratorConfigInternal<any> = EntityUtilities.getPropertyMetadata(testEntity, 'entityArrayValue', DecoratorTypes.ARRAY);
     expect(metadata).toBeDefined();
     expect(metadata.EntityClass).toBeDefined();
     expect(metadata.itemType).toEqual(DecoratorTypes.OBJECT);
@@ -16,17 +20,18 @@ test('should have array Metadata', () => {
     expect(metadata.createInline).toEqual(true);
     expect(metadata.missingErrorMessage).toEqual('Needs to contain at least one value');
 
-    const customMetadata = EntityUtilities.getPropertyMetadata(testEntity, 'entityArrayValueWithConfig', DecoratorTypes.ARRAY);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const customMetadata: EntityArrayDecoratorConfigInternal<any> = EntityUtilities.getPropertyMetadata(testEntity, 'entityArrayValueWithConfig', DecoratorTypes.ARRAY);
     expect(customMetadata).toBeDefined();
     expect(customMetadata.missingErrorMessage).toEqual('custom missing error message');
     expect(customMetadata.createInline).toEqual(false);
 });
 test('should have metadata on array items', () => {
-    const idMetadata1 = EntityUtilities.getPropertyMetadata(testEntity.entityArrayValue[0], 'id', DecoratorTypes.STRING);
-    const stringMetadata1 = EntityUtilities.getPropertyMetadata(testEntity.entityArrayValue[0], 'stringValue', DecoratorTypes.STRING);
+    const idMetadata1: DefaultStringDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity.entityArrayValue[0], 'id', DecoratorTypes.STRING);
+    const stringMetadata1: DefaultStringDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity.entityArrayValue[0], 'stringValue', DecoratorTypes.STRING);
 
-    const idMetadata2 = EntityUtilities.getPropertyMetadata(testEntity.entityArrayValue[1], 'id', DecoratorTypes.STRING);
-    const stringMetadata2 = EntityUtilities.getPropertyMetadata(testEntity.entityArrayValue[1], 'stringValue', DecoratorTypes.STRING);
+    const idMetadata2: DefaultStringDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity.entityArrayValue[1], 'id', DecoratorTypes.STRING);
+    const stringMetadata2: DefaultStringDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity.entityArrayValue[1], 'stringValue', DecoratorTypes.STRING);
 
     expect(idMetadata1).toBeDefined();
     expect(stringMetadata1).toBeDefined();

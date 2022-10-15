@@ -1,14 +1,16 @@
+/* eslint-disable max-len */
 import { expect } from '@jest/globals';
 import { EntityUtilities } from '../../classes/entity.utilities';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../../mocks/test-entity.interface';
 import { DecoratorTypes } from '../base/decorator-types.enum';
+import { DefaultFileDecoratorConfigInternal, ImageFileDecoratorConfigInternal } from './file-decorator-internal.data';
 import { DefaultFileDecoratorConfig } from './file-decorator.data';
 import { file } from './file.decorator';
 
 const testEntity: TestEntityWithoutCustomProperties = new TestEntityWithoutCustomPropertiesMockBuilder().testEntity;
 
 test('should have default file metadata', () => {
-    const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'fileValue', DecoratorTypes.FILE_DEFAULT);
+    const metadata: DefaultFileDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity, 'fileValue', DecoratorTypes.FILE_DEFAULT);
     expect(metadata).toBeDefined();
     expect(metadata.maxSize).toBe(10);
     expect(metadata.maxSizeTotal).toBe(100);
@@ -18,7 +20,7 @@ test('should have default file metadata', () => {
 });
 
 test('should have drag drop file metadata', () => {
-    const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'dragDropFileValue', DecoratorTypes.FILE_DEFAULT);
+    const metadata: DefaultFileDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity, 'dragDropFileValue', DecoratorTypes.FILE_DEFAULT);
     expect(metadata).toBeDefined();
     expect(metadata.maxSize).toBe(10);
     expect(metadata.maxSizeTotal).toBe(100);
@@ -28,7 +30,7 @@ test('should have drag drop file metadata', () => {
 });
 
 test('should have custom files metadata', () => {
-    const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'customFileValues', DecoratorTypes.FILE_DEFAULT);
+    const metadata: DefaultFileDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity, 'customFileValues', DecoratorTypes.FILE_DEFAULT);
     expect(metadata).toBeDefined();
     expect(metadata.maxSize).toBe(0.003);
     expect(metadata.maxSizeTotal).toBe(0.005);
@@ -38,7 +40,7 @@ test('should have custom files metadata', () => {
 });
 
 test('should have default image metadata', () => {
-    const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'imageValue', DecoratorTypes.FILE_IMAGE);
+    const metadata: ImageFileDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity, 'imageValue', DecoratorTypes.FILE_IMAGE);
     expect(metadata).toBeDefined();
     expect(metadata.allowedMimeTypes).toEqual(['image/*']);
     expect(metadata.preview).toBe(false);
@@ -46,7 +48,7 @@ test('should have default image metadata', () => {
 });
 
 test('should have drag drop image metadata', () => {
-    const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'imageDragDropValue', DecoratorTypes.FILE_IMAGE);
+    const metadata: ImageFileDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity, 'imageDragDropValue', DecoratorTypes.FILE_IMAGE);
     expect(metadata).toBeDefined();
     expect(metadata.allowedMimeTypes).toEqual(['image/*']);
     expect(metadata.preview).toBe(true);
@@ -55,7 +57,7 @@ test('should have drag drop image metadata', () => {
 });
 
 test('should have custom images metadata', () => {
-    const metadata = EntityUtilities.getPropertyMetadata(testEntity, 'customImageValues', DecoratorTypes.FILE_IMAGE);
+    const metadata: ImageFileDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity, 'customImageValues', DecoratorTypes.FILE_IMAGE);
     expect(metadata).toBeDefined();
     expect(metadata.allowedMimeTypes).toEqual(['image/*']);
     expect(metadata.preview).toBe(true);
@@ -63,5 +65,5 @@ test('should have custom images metadata', () => {
 });
 
 test('should throw error when type is unknown', () => {
-    expect(() => file({type: 'wrong type' as 'other' | 'image'} as DefaultFileDecoratorConfig)).toThrow('Unknown metadata type wrong type');
+    expect(() => file({ type: 'wrong type' as 'other' | 'image' } as DefaultFileDecoratorConfig)).toThrow('Unknown metadata type wrong type');
 });

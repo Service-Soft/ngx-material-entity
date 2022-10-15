@@ -212,7 +212,7 @@
                 </button>
                 <button type="button" mat-raised-button
                     [disabled]="!selection.selected.length"
-                    (click)="remove(selection, entityArrayValues, dataSource)">
+                    (click)="remove()">
                     {{metadataEntityArray.removeButtonLabel}}
                 </button>
             </div>
@@ -222,9 +222,9 @@
                 <ng-container matColumnDef="select" *ngIf="!internalIsReadOnly">
                     <mat-header-cell *matHeaderCellDef>
                         <mat-checkbox
-                            [disabled]="!dataSource.data.length" (change)="$event ? masterToggle(selection, dataSource) : null"
-                            [checked]="selection.hasValue() && isAllSelected(selection, dataSource)"
-                            [indeterminate]="selection.hasValue() && !isAllSelected(selection, dataSource)">
+                            [disabled]="!dataSource.data.length" (change)="$event ? SelectionUtilities.masterToggle(selection, dataSource) : null"
+                            [checked]="selection.hasValue() && SelectionUtilities.isAllSelected(selection, dataSource)"
+                            [indeterminate]="selection.hasValue() && !SelectionUtilities.isAllSelected(selection, dataSource)">
                         </mat-checkbox>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let module">

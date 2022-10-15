@@ -1,7 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
-import { LodashUtilities } from '../../../../capsulation/lodash.utilities';
+import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 

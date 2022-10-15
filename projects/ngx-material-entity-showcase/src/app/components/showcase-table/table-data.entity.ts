@@ -7,7 +7,7 @@ class ConfirmDialogDataEntity extends Entity {
         required: false,
         displayName: 'Text Paragraphs',
         displayStyle: 'chips',
-        itemType: DecoratorTypes.STRING,
+        itemType: DecoratorTypes.STRING
     })
     text?: string[];
 
@@ -389,7 +389,7 @@ export class TableDataEntity<EntityType extends BaseEntityType<EntityType>> exte
         displayName: 'Create Dialog Data',
         displayStyle: 'inline',
         EntityClass: CreateDialogDataEntity,
-        defaultWidths: [12, 12, 12],
+        defaultWidths: [12, 12, 12]
     })
     createDialogData?: CreateDialogDataEntity;
 

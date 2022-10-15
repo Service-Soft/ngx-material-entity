@@ -17,7 +17,7 @@ import { FileData } from '../decorators/file/file-decorator.data';
 import { DateFilterFn } from '@angular/material/datepicker';
 import { custom } from '../decorators/custom/custom.decorator';
 import { RandomMetadata } from './test-entity.mock';
-import { ReflectUtilities } from '../capsulation/reflect.utilities';
+import { ReflectUtilities } from '../encapsulation/reflect.utilities';
 
 /**
  * An Entity used to Test the @object decorator on the TestEntity class.
@@ -122,14 +122,30 @@ export interface TestEntityWithoutCustomPropertiesInterface {
     orderValue2: string,
     orderValue3: string,
     rowValue: string,
-    entityArrayValue: { id: string, stringValue: string, secondTabValue: string }[],
-    entityArrayValueWithConfig: { id: string, stringValue: string, secondTabValue: string }[],
+    entityArrayValue: {
+        id: string,
+        stringValue: string,
+        secondTabValue: string
+    }[],
+    entityArrayValueWithConfig: {
+        id: string,
+        stringValue: string,
+        secondTabValue: string
+    }[],
     dateArrayValue: Date[],
     customDateArrayValue: Date[],
     dateTimeArrayValue: Date[],
     customDateTimeArrayValue: Date[],
-    dateRangeArrayValue: { start: Date, end: Date, values?: Date[] }[],
-    customDateRangeArrayValue: { start: Date, end: Date, values?: Date[] }[],
+    dateRangeArrayValue: {
+        start: Date,
+        end: Date,
+        values?: Date[]
+    }[],
+    customDateRangeArrayValue: {
+        start: Date,
+        end: Date,
+        values?: Date[]
+    }[],
     numberDropdownValue: number,
     stringDropdownValue: string,
     booleanDropdownValue: boolean,
@@ -153,7 +169,12 @@ export interface TestEntityWithoutCustomPropertiesInterface {
         size: number,
         type: string
     },
-    customFileValues: { url?: string, name: string, size: number, type: string }[],
+    customFileValues: {
+        url?: string,
+        name: string,
+        size: number,
+        type: string
+    }[],
     imageValue: {
         url?: string,
         name: string,
@@ -166,7 +187,12 @@ export interface TestEntityWithoutCustomPropertiesInterface {
         size: number,
         type: string
     },
-    customImageValues: { url?: string, name: string, size: number, type: string }[],
+    customImageValues: {
+        url?: string,
+        name: string,
+        size: number,
+        type: string
+    }[],
     randomValue: string
 }
 
@@ -795,19 +821,19 @@ const testEntityData: TestEntityWithoutCustomProperties = {
     ],
     dateArrayValue: [
         new Date(2022, 0, 1),
-        new Date(2022, 0, 20),
+        new Date(2022, 0, 20)
     ],
     customDateArrayValue: [
         new Date(2022, 0, 2),
-        new Date(2022, 0, 20),
+        new Date(2022, 0, 20)
     ],
     dateTimeArrayValue: [
         new Date(2022, 0, 1, 0, 30),
-        new Date(2022, 0, 20, 16, 0),
+        new Date(2022, 0, 20, 16, 0)
     ],
     customDateTimeArrayValue: [
         new Date(2022, 0, 2, 8, 30),
-        new Date(2022, 0, 20, 16, 0),
+        new Date(2022, 0, 20, 16, 0)
     ],
     dateRangeArrayValue: [
         {
@@ -819,7 +845,7 @@ const testEntityData: TestEntityWithoutCustomProperties = {
             start: new Date(2022, 0, 25, 0, 0, 0, 0),
             end: new Date(2022, 0, 30, 0, 0, 0, 0),
             values: getDatesBetween(new Date(2022, 0, 25, 0, 0, 0, 0), new Date(2022, 0, 30, 0, 0, 0, 0))
-        },
+        }
     ],
     customDateRangeArrayValue: [
         {
@@ -831,7 +857,7 @@ const testEntityData: TestEntityWithoutCustomProperties = {
             start: new Date(2022, 0, 25, 0, 0, 0, 0),
             end: new Date(2022, 0, 30, 0, 0, 0, 0),
             values: getDatesBetween(new Date(2022, 0, 25, 0, 0, 0, 0), new Date(2022, 0, 30, 0, 0, 0, 0))
-        },
+        }
     ],
     numberDropdownValue: 42,
     stringDropdownValue: 'String Dropdown #1',
@@ -848,7 +874,7 @@ const testEntityData: TestEntityWithoutCustomProperties = {
         start: new Date(2022, 0, 2, 0, 0, 0, 0),
         end: new Date(2022, 0, 20, 0, 0, 0, 0),
         // eslint-disable-next-line max-len
-        values: getDatesBetween(new Date(2022, 0, 2, 0, 0, 0, 0), new Date(2022, 0, 20, 0, 0, 0, 0), (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1,)
+        values: getDatesBetween(new Date(2022, 0, 2, 0, 0, 0, 0), new Date(2022, 0, 20, 0, 0, 0, 0), (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1)
     },
     dateTimeValue: new Date(2022, 0, 1, 8, 30, 0, 0),
     customDateTimeValue: new Date(2022, 0, 2, 16, 30, 0, 0),
@@ -936,13 +962,21 @@ export class TestEntityWithoutCustomPropertiesMockBuilder {
     }
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+/**
+ * Gets the date objects between the given start and end date.
+ * You can additionally provide a filter function to that result.
+ *
+ * @param startDate - The start date. Is included in the result.
+ * @param endDate - The end date. Is included in the result.
+ * @param filter - An optional filter function used to further filter the result.
+ * @returns The dates.
+ */
 export function getDatesBetween(
     startDate: Date,
     endDate: Date,
     filter?: DateFilterFn<Date>
 ): Date[] {
-    const DAY_IN_MS = 1000 * 60 * 60 * 24;
+    const DAY_IN_MS: number = 1000 * 60 * 60 * 24;
     const res: Date[] = [];
     while (
         startDate.getFullYear() < endDate.getFullYear()

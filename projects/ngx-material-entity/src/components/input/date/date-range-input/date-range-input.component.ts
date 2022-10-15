@@ -2,7 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
-import { LodashUtilities } from '../../../../capsulation/lodash.utilities';
+import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 import { DateUtilities } from '../../../../classes/date.utilities';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';

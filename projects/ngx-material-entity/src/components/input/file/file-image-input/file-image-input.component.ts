@@ -34,10 +34,10 @@ export class FileImageInputComponent<EntityType extends BaseEntityType<EntityTyp
     }
 
     private async setMultiPreviewImages(index: number): Promise<void> {
-        const multiFileData = this.propertyValue as FileData[] | undefined;
+        const multiFileData: FileData[] | undefined = this.propertyValue as FileData[] | undefined;
         const previewImages: string[] = [];
         if (multiFileData?.length) {
-            for (let i = 0; i < multiFileData.length; i++) {
+            for (let i: number = 0; i < multiFileData.length; i++) {
                 if (i === index) {
                     multiFileData[index] = await FileUtilities.getFileData(multiFileData[index]);
                     previewImages.push(await FileUtilities.getDataURLFromFile(multiFileData[index].file) as string);

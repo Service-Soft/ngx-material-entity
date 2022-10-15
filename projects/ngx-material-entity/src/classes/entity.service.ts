@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { EntityUtilities } from './entity.utilities';
-import { LodashUtilities } from '../capsulation/lodash.utilities';
+import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { FileData } from '../decorators/file/file-decorator.data';
 import { FileUtilities } from './file.utilities';
@@ -86,7 +86,7 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
         filePropertyKeys: (keyof EntityType)[],
         entity: EntityType
     ): Promise<EntityType> {
-        const formData = new FormData();
+        const formData: FormData = new FormData();
         formData.append('body', JSON.stringify(LodashUtilities.omit(body, filePropertyKeys)));
         for (const key of filePropertyKeys) {
             if (EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT).multiple) {
@@ -100,7 +100,14 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
                 formData.append(key as string, (await FileUtilities.getFileData(fileData)).file, fileData.name);
             }
         }
-        const e = await firstValueFrom(this.http.post<EntityType>(this.baseUrl, formData));
+        const e: EntityType | undefined = await firstValueFrom(this.http.post<EntityType | undefined>(this.baseUrl, formData));
+        if (!e) {
+            throw new Error(`
+                The created entity was not returned in the response.
+                If you want to provide a logic that allows that
+                you need to override the create methods of this class.
+            `);
+        }
         this.entities.push(e);
         this.entitiesSubject.next(this.entities);
         return e;
@@ -113,7 +120,14 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
      * @returns The created entity from the server.
      */
     protected async createWithJson(body: Partial<EntityType>): Promise<EntityType> {
-        const e = await firstValueFrom(this.http.post<EntityType>(this.baseUrl, body));
+        const e: EntityType | undefined = await firstValueFrom(this.http.post<EntityType | undefined>(this.baseUrl, body));
+        if (!e) {
+            throw new Error(`
+                The created entity was not returned in the response.
+                If you want to provide a logic that allows that
+                you need to override the create methods of this class.
+            `);
+        }
         this.entities.push(e);
         this.entitiesSubject.next(this.entities);
         return e;
@@ -125,7 +139,7 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
      * @returns A Promise of all received Entities.
      */
     async read(): Promise<EntityType[]> {
-        const e = await firstValueFrom(this.http.get<EntityType[]>(this.baseUrl));
+        const e: EntityType[] = await firstValueFrom(this.http.get<EntityType[]>(this.baseUrl));
         this.entitiesSubject.next(e);
         return e;
     }
@@ -143,7 +157,7 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
             await EntityUtilities.difference(entity, entityPriorChanges),
             EntityUtilities.getOmitForUpdate(entity)
         ) as unknown as Partial<EntityType>;
-        const filePropertyKeys = EntityUtilities.getFileProperties(entityPriorChanges);
+        const filePropertyKeys: (keyof EntityType)[] = EntityUtilities.getFileProperties(entityPriorChanges);
         if (!filePropertyKeys.length) {
             await this.updateWithJson(body, entityPriorChanges[this.idKey]);
         }
@@ -170,25 +184,33 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
         entity: EntityType,
         id: EntityType[keyof EntityType]
     ): Promise<void> {
-        const formData = new FormData();
+        const formData: FormData = new FormData();
         formData.append('body', JSON.stringify(LodashUtilities.omitBy(body, LodashUtilities.isNil)));
         for (const key of filePropertyKeys) {
             if (EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT).multiple) {
-                // eslint-disable-next-line max-len
-                const fileDataValues = body[key] as FileData[];
+                const fileDataValues: FileData[] = body[key] as FileData[];
                 for (const value of fileDataValues) {
                     formData.append(key as string, (await FileUtilities.getFileData(value)).file, value.name);
                 }
             }
             else {
-                // eslint-disable-next-line max-len
-                const fileData = body[key] as FileData;
+                const fileData: FileData = body[key] as FileData;
                 formData.append(key as string, (await FileUtilities.getFileData(fileData)).file, fileData.name);
             }
         }
-        const updatedEntity = await firstValueFrom(
-            this.http.patch<EntityType>(`${this.baseUrl}/${id}`, formData)
+        const updatedEntity: EntityType | undefined = await firstValueFrom(
+            this.http.patch<EntityType | undefined>(`${this.baseUrl}/${id}`, formData)
         );
+        if (!updatedEntity) {
+            // eslint-disable-next-line no-console
+            console.warn('The updated entity was not returned in the response. Applying the changes from the request body.');
+            for (const key in body) {
+                this.entities[this.entities.findIndex(e => e[this.idKey] === id)][key]
+                    = body[key] as EntityType[Extract<keyof EntityType, string>];
+            }
+            this.entitiesSubject.next(this.entities);
+            return;
+        }
         this.entities[this.entities.findIndex(e => e[this.idKey] === id)] = updatedEntity;
         this.entitiesSubject.next(this.entities);
     }
@@ -200,12 +222,23 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
      * @param id - The id of the entity to update.
      */
     protected async updateWithJson(body: Partial<EntityType>, id: EntityType[keyof EntityType]): Promise<void> {
-        const updatedEntity = await firstValueFrom(
-            this.http.patch<EntityType>(
+        const updatedEntity: EntityType | undefined = await firstValueFrom(
+            this.http.patch<EntityType | undefined>(
                 `${this.baseUrl}/${id}`,
                 LodashUtilities.omitBy(body, LodashUtilities.isNil)
             )
         );
+        if (!updatedEntity) {
+            // eslint-disable-next-line no-console
+            console.warn('The updated entity was not returned in the response. Applying the changes from the request body.');
+            const foundEntity: EntityType = this.entities[this.entities.findIndex(e => e[this.idKey] === id)];
+            for (const key in body) {
+                foundEntity[key]
+                    = body[key] as EntityType[Extract<keyof EntityType, string>];
+            }
+            this.entitiesSubject.next(this.entities);
+            return;
+        }
         this.entities[this.entities.findIndex(e => e[this.idKey] === id)] = updatedEntity;
         this.entitiesSubject.next(this.entities);
     }

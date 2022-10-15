@@ -27,7 +27,7 @@ import { NgxMatEntityEditDialogModule } from './edit-dialog/edit-entity-dialog.m
         MatMenuModule,
         MatDialogModule,
         NgxMatEntityCreateDialogModule,
-        NgxMatEntityEditDialogModule,
+        NgxMatEntityEditDialogModule
     ],
     exports: [NgxMatEntityTableComponent]
 })

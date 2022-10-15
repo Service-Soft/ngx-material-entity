@@ -1,12 +1,12 @@
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
-import { EntityUtilities } from './entity.utilities';
+import { EntityTab, EntityUtilities } from './entity.utilities';
 import { expect } from '@jest/globals';
-import { ReflectUtilities } from '../capsulation/reflect.utilities';
-import { LodashUtilities } from '../capsulation/lodash.utilities';
+import { ReflectUtilities } from '../encapsulation/reflect.utilities';
+import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { Entity } from '../classes/entity.model';
 import { getDatesBetween, TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../mocks/test-entity.interface';
 
-const builder = new TestEntityWithoutCustomPropertiesMockBuilder();
+const builder: TestEntityWithoutCustomPropertiesMockBuilder = new TestEntityWithoutCustomPropertiesMockBuilder();
 const testEntity: TestEntityWithoutCustomProperties = builder.testEntity;
 const testEntityWithoutData: TestEntityWithoutCustomProperties = builder.testEntityWithoutData;
 const testEntityWithoutMetadata: TestEntityWithoutCustomProperties = builder.testEntityData;
@@ -489,13 +489,13 @@ describe('isEntityValid', () => {
     test('FILE multi size invalid', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
-        for (let i = 0; i < 10; i++) {
+        for (let i: number = 0; i < 10; i++) {
             tE.customImageValues.push(
                 {
                     url: 'http://localhost:3000/file/',
                     name: '6qW2XkuI_400x400.png',
                     type: 'image/jpg',
-                    size: 10000000,
+                    size: 10000000
                 }
             );
         }
@@ -546,7 +546,7 @@ describe('dirty', () => {
         tE.dateRangeArrayValue[0].start = testEntity.dateRangeArrayValue[0].start;
         expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(false);
 
-        tE.dateRangeArrayValue.push({start: new Date(), end: new Date()});
+        tE.dateRangeArrayValue.push({ start: new Date(), end: new Date() });
         expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(true);
 
         tE.dateRangeArrayValue = testEntity.dateRangeArrayValue;
@@ -600,7 +600,7 @@ describe('getEntityTabs', () => {
     test('should get two tabs for the entity', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
-        const tabs = EntityUtilities.getEntityTabs(tE);
+        const tabs: EntityTab<TestEntityWithoutCustomProperties>[] = EntityUtilities.getEntityTabs(tE);
         expect(tabs).toHaveLength(2);
         expect(tabs[0].rows).toHaveLength(2);
         expect(tabs[0].tabName).toBe('Tab 1');
@@ -617,14 +617,14 @@ describe('keysOf', () => {
     test('should get keys without omitForCreate', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
-        const keysWithoutCreate = EntityUtilities.keysOf(tE, true);
+        const keysWithoutCreate: (keyof TestEntityWithoutCustomProperties)[] = EntityUtilities.keysOf(tE, true);
         expect(keysWithoutCreate.includes('omitForCreateValue')).toBe(false);
         expect(keysWithoutCreate.includes('omitForUpdateValue')).toBe(true);
     });
     test('should get keys without omitForUpdate', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
-        const keysWithoutUpdate = EntityUtilities.keysOf(tE, false, true);
+        const keysWithoutUpdate: (keyof TestEntityWithoutCustomProperties)[] = EntityUtilities.keysOf(tE, false, true);
         expect(keysWithoutUpdate.includes('omitForUpdateValue')).toBe(false);
         expect(keysWithoutUpdate.includes('omitForCreateValue')).toBe(true);
     });

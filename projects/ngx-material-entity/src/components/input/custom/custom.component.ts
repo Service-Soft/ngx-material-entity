@@ -15,7 +15,7 @@ export class CustomInputComponent<
     MetadataType extends BaseEntityType<MetadataType>,
     ValueType,
     ComponentType extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.CUSTOM, ValueType, MetadataType>
-> extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.CUSTOM, ValueType> implements OnInit {
+> extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.CUSTOM, ValueType, MetadataType> implements OnInit {
 
     component!: ComponentRef<ComponentType>;
 

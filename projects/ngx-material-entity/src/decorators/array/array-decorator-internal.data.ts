@@ -280,7 +280,6 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
 function getDefaultDuplicateErrorDialogData(data: ArrayDecoratorConfig): ConfirmDialogData {
     return {
         type: data.duplicatesErrorDialog?.type ?? 'info-only',
-        // eslint-disable-next-line max-len
         text: data.duplicatesErrorDialog?.text ?? ['Adding duplicate entries to the array is not allowed.'],
         title: data.duplicatesErrorDialog?.title ?? 'Error adding duplicate item',
         confirmButtonLabel: data.duplicatesErrorDialog?.confirmButtonLabel,

@@ -1,9 +1,9 @@
 import { Time } from '@angular/common';
 import { DateFilterFn } from '@angular/material/datepicker';
-import { LodashUtilities } from '../capsulation/lodash.utilities';
+import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { DropdownValue } from '../decorators/base/dropdown-value.interface';
 
-const DAY_IN_MS = 1000 * 60 * 60 * 24;
+const DAY_IN_MS: number = 1000 * 60 * 60 * 24;
 
 /**
  * Valid steps from one time value to the next. Needs to be able to divide 60 minutes without remainder.
@@ -38,9 +38,9 @@ export abstract class DateUtilities {
      * @returns Times in the 24 hour format from 0:00 until 23:30 in 30 minute steps.
      */
     static getDefaultTimes(format: 12 | 24 = 24, minuteSteps: MinuteSteps = 30): DropdownValue<Time>[] {
-        const res: DropdownValue<Time>[] = [{ displayName: '-', value: undefined as unknown as Time}];
-        for (let hour = 0; hour < 24; hour++) {
-            for (let minute = 0; minute < 60; minute += minuteSteps) {
+        const res: DropdownValue<Time>[] = [{ displayName: '-', value: undefined as unknown as Time }];
+        for (let hour: number = 0; hour < 24; hour++) {
+            for (let minute: number = 0; minute < 60; minute += minuteSteps) {
                 res.push(DateUtilities.getTimeDropdownValue(format, hour, minute));
             }
         }
@@ -67,7 +67,7 @@ export abstract class DateUtilities {
     }
 
     private static getFormattedMinute(format: 12 | 24, hour: number, minute: number): string {
-        let res = `${minute}`;
+        let res: string = `${minute}`;
         if (format === 12) {
             if (hour > 12) {
                 res = `${minute} PM`;

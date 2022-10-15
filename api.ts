@@ -1,7 +1,7 @@
 import { apiData } from './api-data';
 import * as jsonServer from 'json-server';
 import { Request, Response, NextFunction } from 'express';
-import { LodashUtilities } from './projects/ngx-material-entity/src/capsulation/lodash.utilities';
+import { LodashUtilities } from './projects/ngx-material-entity/src/encapsulation/lodash.utilities';
 
 const data = LodashUtilities.cloneDeep(apiData);
 

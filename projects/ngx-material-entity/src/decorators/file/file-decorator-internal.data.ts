@@ -203,7 +203,6 @@ function getDefaultMaxSizeErrorDialogData(data: DefaultFileDecoratorConfig | Ima
 function getDefaultMaxSizeTotalErrorDialogData(data: DefaultFileDecoratorConfig | ImageFileDecoratorConfig): ConfirmDialogData {
     return {
         type: data.mimeTypeErrorDialog?.type ?? 'info-only',
-        // eslint-disable-next-line max-len
         text: data.mimeTypeErrorDialog?.text ?? ['The size of all files combined is too big'],
         title: data.mimeTypeErrorDialog?.title ?? (data.multiple ? 'Error adding files' : 'Error adding file'),
         confirmButtonLabel: data.mimeTypeErrorDialog?.confirmButtonLabel,

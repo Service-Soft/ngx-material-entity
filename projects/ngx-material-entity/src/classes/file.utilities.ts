@@ -1,7 +1,8 @@
-import { LodashUtilities } from '../capsulation/lodash.utilities';
+import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { FileDataWithFile } from '../decorators/file/file-decorator-internal.data';
 import { FileData } from '../decorators/file/file-decorator.data';
-import { JSZipUtilities } from '../capsulation/jszip.utilities';
+import { JSZipUtilities } from '../encapsulation/jszip.utilities';
+import JSZip from 'jszip';
 
 /**
  * Provides functionality regarding files.
@@ -33,7 +34,7 @@ export abstract class FileUtilities {
             return undefined;
         }
         return new Promise<string>((resolve, reject) => {
-            const reader = new FileReader();
+            const reader: FileReader = new FileReader();
             reader.onload = e => resolve(e.target?.result as string);
             reader.onerror = e => reject(e);
             reader.readAsDataURL(file);
@@ -49,7 +50,7 @@ export abstract class FileUtilities {
      * @returns A promise of the File.
      */
     private static async getFileFromUrl(url: string): Promise<Blob> {
-        const res = await fetch(url);
+        const res: Response = await fetch(url);
         if (!res.ok) {
             // TODO make error more robust
             throw new Error(`Error fetching the file from the url ${url}`);
@@ -94,8 +95,8 @@ export abstract class FileUtilities {
      * @param fileData - The file data. Needs to contain a blob.
      */
     static downloadSingleFile(fileData: FileDataWithFile): void {
-        const a = document.createElement('a');
-        const objectUrl = URL.createObjectURL(fileData.file);
+        const a: HTMLAnchorElement = document.createElement('a');
+        const objectUrl: string = URL.createObjectURL(fileData.file);
         a.href = objectUrl;
         a.download = fileData.name;
         a.click();
@@ -111,12 +112,12 @@ export abstract class FileUtilities {
      * @param multiFileData - The file data array to put in the zip.
      */
     static async downloadMultipleFiles(name: string, multiFileData: FileData[]): Promise<void> {
-        const zip = JSZipUtilities.new();
-        for (let i = 0; i < multiFileData.length; i++) {
+        const zip: JSZip = JSZipUtilities.new();
+        for (let i: number = 0; i < multiFileData.length; i++) {
             multiFileData[i] = await FileUtilities.getFileData(multiFileData[i]);
             zip.file(multiFileData[i].name, (multiFileData[i] as FileDataWithFile).file);
         }
-        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const zipBlob: Blob = await zip.generateAsync({ type: 'blob' });
         const fileData: FileDataWithFile = {
             name: name,
             file: zipBlob,
@@ -156,7 +157,7 @@ export abstract class FileUtilities {
      * @returns The given value as bytes.
      */
     static transformToMegaBytes(value: number, unit: 'B' | 'KB' | 'GB'): number {
-        const bytes = this.transformToBytes(LodashUtilities.cloneDeep(value), unit);
+        const bytes: number = this.transformToBytes(LodashUtilities.cloneDeep(value), unit);
         return bytes / 1000000;
     }
 
