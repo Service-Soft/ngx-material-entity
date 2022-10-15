@@ -23,7 +23,6 @@ import { EntityUtilities } from '../../classes/entity.utilities';
     selector: 'ngx-mat-entity-base-input',
     template: ''
 })
-// eslint-disable-next-line max-len
 export abstract class NgxMatEntityBaseInputComponent<
     EntityType extends BaseEntityType<EntityType>,
     Type extends DecoratorTypes,

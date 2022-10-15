@@ -1,7 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { HttpClient } from '@angular/common/http';
 import { Component, Injectable } from '@angular/core';
-import {array, DecoratorTypes, Entity, EntityService, EntityUtilities, string, TableData } from 'ngx-material-entity';
+import { array, DecoratorTypes, Entity, EntityService, EntityUtilities, string, TableData } from 'ngx-material-entity';
 import { environment } from '../../../environments/environment';
 
 class Address {

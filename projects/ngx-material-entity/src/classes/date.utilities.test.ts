@@ -5,10 +5,10 @@ import { EntityUtilities } from './entity.utilities';
 import { DateTimeDateDecoratorConfigInternal } from '../decorators/date/date-decorator-internal.data';
 import { Time } from '@angular/common';
 import { DropdownValue } from '../decorators/base/dropdown-value.interface';
-import { LodashUtilities } from '../capsulation/lodash.utilities';
+import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../mocks/test-entity.interface';
 
-const builder = new TestEntityWithoutCustomPropertiesMockBuilder();
+const builder: TestEntityWithoutCustomPropertiesMockBuilder = new TestEntityWithoutCustomPropertiesMockBuilder();
 const testEntity: TestEntityWithoutCustomProperties = builder.testEntity;
 
 describe('defaultDateFilter', () => {
@@ -21,7 +21,7 @@ describe('defaultDateFilter', () => {
 
 describe('getTimeFromDate', () => {
     test('with correct Date (hours: 0, minutes: 0)', () => {
-        expect(DateUtilities.getTimeFromDate(new Date(2022, 0, 1, 0, 0))).toEqual({hours: 0, minutes: 0});
+        expect(DateUtilities.getTimeFromDate(new Date(2022, 0, 1, 0, 0))).toEqual({ hours: 0, minutes: 0 });
     });
     test('with no Date', () => {
         expect(DateUtilities.getTimeFromDate(DateUtilities.asDate(undefined))).toEqual(undefined);

@@ -6,7 +6,7 @@ import { EditEntityDialogData } from './edit-entity-dialog-data';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from './edit-entity-dialog.builder';
-import { LodashUtilities } from '../../../capsulation/lodash.utilities';
+import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
 import { BaseEntityType } from '../../../classes/entity.model';
 
 /**
@@ -78,7 +78,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
             .withDefault('confirmButtonLabel', 'Save')
             .withDefault('title', 'Edit')
             .getResult();
-        const dialogRef = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false
@@ -109,7 +109,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
             .withDefault('confirmButtonLabel', 'Delete')
             .withDefault('title', 'Delete')
             .getResult();
-        const dialogRef = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false

@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
-import { ReflectUtilities } from '../../../../capsulation/reflect.utilities';
-import { LodashUtilities } from '../../../../capsulation/lodash.utilities';
+import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
+import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector

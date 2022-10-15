@@ -51,7 +51,7 @@
         <!-- select Column -->
         <ng-container matColumnDef="select">
             <mat-header-cell *matHeaderCellDef>
-                <mat-checkbox [disabled]="!dataSource.data.length" (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()" [indeterminate]="selection.hasValue() && !isAllSelected()"></mat-checkbox>
+                <mat-checkbox [disabled]="!dataSource.data.length" (change)="$event ? SelectionUtilities.masterToggle(selection, dataSource) : null" [checked]="selection.hasValue() && SelectionUtilities.isAllSelected(selection, dataSource)" [indeterminate]="selection.hasValue() && !SelectionUtilities.isAllSelected(selection, dataSource)"></mat-checkbox>
             </mat-header-cell>
             <mat-cell *matCellDef="let module">
                 <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(module) : null" [checked]="selection.isSelected(module)"></mat-checkbox>

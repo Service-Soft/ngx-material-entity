@@ -10,8 +10,8 @@ import { Type } from '@angular/core';
 export interface CustomDecoratorConfig<
     EntityType extends BaseEntityType<EntityType>,
     ValueType,
-    MetadataType extends BaseEntityType<MetadataType>,
-    ComponentType extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.CUSTOM, MetadataType>
+    CustomMetadataType extends BaseEntityType<CustomMetadataType>,
+    ComponentType extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.CUSTOM, ValueType, CustomMetadataType>
 > extends PropertyDecoratorConfig {
     /**
      * The component to use for this input.
@@ -36,9 +36,9 @@ export interface CustomDecoratorConfig<
      * @default (value: ValueType, valuePriorChanges: ValueType) => LodashUtilities.isEqual(value, valuePriorChanges)
      */
     // eslint-disable-next-line max-len
-    isEqual?: (value: ValueType, valuePriorChanges: ValueType, metadata: CustomDecoratorConfig<EntityType, ValueType, MetadataType, ComponentType>) => boolean,
+    isEqual?: (value: ValueType, valuePriorChanges: ValueType, metadata: CustomDecoratorConfig<EntityType, ValueType, CustomMetadataType, ComponentType>) => boolean,
     /**
      * Any custom metadata you want to add to the property.
      */
-    customMetadata: MetadataType
+    customMetadata: CustomMetadataType
 }

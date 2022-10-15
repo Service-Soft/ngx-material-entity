@@ -36,7 +36,6 @@ export interface DropdownNumberDecoratorConfig extends NumberDecoratorConfig {
     /**
      * The values of the dropdown, consisting of a name to display and the actual value.
      */
-    // eslint-disable-next-line jsdoc/require-jsdoc
     dropdownValues: DropdownValue<number>[]
 }
 

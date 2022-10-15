@@ -37,21 +37,21 @@ export class AddArrayItemDialogDataBuilder<EntityType extends BaseEntityType<Ent
     constructor(
         data: AddArrayItemDialogData<EntityType>,
         @Inject(NGX_GET_VALIDATION_ERROR_MESSAGE)
-        protected readonly defaultGetValidationErrorMessage: (model: NgModel) => string,
+        protected readonly defaultGetValidationErrorMessage: (model: NgModel) => string
     ) {
         super(data);
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected generateBaseData(data: AddArrayItemDialogData<EntityType>): AddArrayItemDialogDataInternal<EntityType> {
-        const createDialogData = new CreateDialogDataBuilder(data.createDialogData)
+        const createDialogData: CreateDialogDataInternal = new CreateDialogDataBuilder(data.createDialogData)
             .withDefault('createButtonLabel', 'Add')
             .withDefault('title', 'Add to array')
             .getResult();
         return new AddArrayItemDialogDataInternal(
             data.entity,
             createDialogData,
-            data.getValidationErrorMessage ?? this.defaultGetValidationErrorMessage,
+            data.getValidationErrorMessage ?? this.defaultGetValidationErrorMessage
         );
     }
 }

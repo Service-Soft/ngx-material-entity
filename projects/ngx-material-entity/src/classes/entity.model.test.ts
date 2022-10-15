@@ -43,17 +43,17 @@ class TestEntityBuild extends Entity {
 }
 
 test('Should create a new entity', () => {
-    const testEntity = new TestEntity({ id: '1', name: 'John Smith' });
+    const testEntity: TestEntity = new TestEntity({ id: '1', name: 'John Smith' });
     expect(testEntity.id).toBe('1');
     expect(testEntity.name).toBe('John Smith');
 });
 test('All creation methods should have the same outcome', () => {
-    const testEntityNew = new TestEntity({ id: '1', name: 'John Smith' });
-    const testEntityConstruct = new TestEntityConstruct({
+    const testEntityNew: TestEntity = new TestEntity({ id: '1', name: 'John Smith' });
+    const testEntityConstruct: TestEntityConstruct = new TestEntityConstruct({
         id: '1',
         name: 'John Smith'
     });
-    const testEntityBuild = new TestEntityBuild({
+    const testEntityBuild: TestEntityBuild = new TestEntityBuild({
         id: '1',
         name: 'John Smith'
     });

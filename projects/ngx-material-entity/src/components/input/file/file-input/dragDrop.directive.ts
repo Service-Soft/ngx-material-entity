@@ -4,7 +4,6 @@ import { Directive, EventEmitter, HostListener, Output } from '@angular/core';
  * Adds drag and drop functionality to an element.
  */
 @Directive({
-    // eslint-disable-next-line @angular-eslint/directive-selector
     selector: '[dragDrop]'
 })
 export class DragDropDirective {

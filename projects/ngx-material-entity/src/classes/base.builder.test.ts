@@ -27,8 +27,8 @@ class MockBuilder extends BaseBuilder<DataInternal, Data> {
 }
 
 test('Should create the internal data from the input data', () => {
-    expect(new MockBuilder({x: '42', y: '43'}).getResult()).toEqual({ x: '42', y: '43' });
-    expect(new MockBuilder({x: '42'}).getResult()).toEqual({ x: '42', y: 'default y' });
-    expect(new MockBuilder({x: '42'}).withDefault('y', 'different default y').getResult()).toEqual({ x: '42', y: 'different default y' });
-    expect(new MockBuilder({x: '42', y: '43'}).withDefault('y', 'different default y').getResult()).toEqual({ x: '42', y: '43' });
+    expect(new MockBuilder({ x: '42', y: '43' }).getResult()).toEqual({ x: '42', y: '43' });
+    expect(new MockBuilder({ x: '42' }).getResult()).toEqual({ x: '42', y: 'default y' });
+    expect(new MockBuilder({ x: '42' }).withDefault('y', 'different default y').getResult()).toEqual({ x: '42', y: 'different default y' });
+    expect(new MockBuilder({ x: '42', y: '43' }).withDefault('y', 'different default y').getResult()).toEqual({ x: '42', y: '43' });
 });

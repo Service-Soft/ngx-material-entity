@@ -1,5 +1,5 @@
 import { Type } from '@angular/core';
-import { LodashUtilities } from '../../capsulation/lodash.utilities';
+import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { BaseEntityType } from '../../classes/entity.model';
 import { NgxMatEntityBaseInputComponent } from '../../components/input/base-input.component';
 import { DecoratorTypes } from '../base/decorator-types.enum';
@@ -25,7 +25,7 @@ export class CustomDecoratorConfigInternal<
     EntityType extends BaseEntityType<EntityType>,
     ValueType,
     MetadataType extends BaseEntityType<MetadataType>,
-    ComponentType extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.CUSTOM, MetadataType>
+    ComponentType extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.CUSTOM, ValueType, MetadataType>
 > extends PropertyDecoratorConfigInternal implements CustomDecoratorConfig<EntityType, ValueType, MetadataType, ComponentType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     component: Type<ComponentType>;

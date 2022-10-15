@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { BaseEntityType } from '../../../../classes/entity.model';
-import { LodashUtilities } from '../../../../capsulation/lodash.utilities';
+import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
@@ -37,20 +37,8 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntity
      * @param event - The event that fires when a new chip is completed.
      */
     addStringChipArrayValue(event: MatChipInputEvent): void {
-        const value = (event.value || '').trim();
-        if (value) {
-            if (this.metadata.minLength && value.length < this.metadata.minLength) {
-                return;
-            }
-            if (this.metadata.maxLength && value.length > this.metadata.maxLength) {
-                return;
-            }
-            if (this.metadata.regex  && !value.match(this.metadata.regex)) {
-                return;
-            }
-            this.propertyValue = this.propertyValue ?? [];
-            this.propertyValue.push(value);
-        }
+        const value: string = (event.value || '').trim();
+        this.validateAndSetPropertyValue(value);
         event.chipInput?.clear();
     }
 
@@ -76,18 +64,8 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntity
      * @param chipsInput - The element where the user typed the value.
      */
     selected(event: MatAutocompleteSelectedEvent, chipsInput: HTMLInputElement): void {
-        const value = (event.option.viewValue || '').trim();
-        if (this.metadata.minLength && value.length < this.metadata.minLength) {
-            return;
-        }
-        if (this.metadata.maxLength && value.length > this.metadata.maxLength) {
-            return;
-        }
-        if (this.metadata.regex  && !value.match(this.metadata.regex)) {
-            return;
-        }
-        this.propertyValue = this.propertyValue ?? [];
-        this.propertyValue.push(value);
+        const value: string = (event.option.viewValue || '').trim();
+        this.validateAndSetPropertyValue(value);
         chipsInput.value = '';
     }
 
@@ -98,8 +76,24 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntity
      */
     filterAutocompleteStrings(input: unknown): void {
         if (input != null) {
-            const filterValue = (input as string).toLowerCase();
+            const filterValue: string = (input as string).toLowerCase();
             this.filteredAutocompleteStrings = this.metadata.autocompleteValues.filter(s => s.toLowerCase().includes(filterValue));
+        }
+    }
+
+    private validateAndSetPropertyValue(value: string): void {
+        if (value) {
+            if (this.metadata.minLength && value.length < this.metadata.minLength) {
+                return;
+            }
+            if (this.metadata.maxLength && value.length > this.metadata.maxLength) {
+                return;
+            }
+            if (this.metadata.regex && !value.match(this.metadata.regex)) {
+                return;
+            }
+            this.propertyValue = this.propertyValue ?? [];
+            this.propertyValue.push(value);
         }
     }
 }

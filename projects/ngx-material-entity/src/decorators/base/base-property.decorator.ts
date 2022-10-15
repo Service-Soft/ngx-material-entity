@@ -1,4 +1,4 @@
-import { ReflectUtilities } from '../../capsulation/reflect.utilities';
+import { ReflectUtilities } from '../../encapsulation/reflect.utilities';
 import { DecoratorType, DecoratorTypes } from './decorator-types.enum';
 
 /**
