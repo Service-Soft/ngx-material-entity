@@ -1,23 +1,25 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { DateFilterFn } from '@angular/material/datepicker';
+import { DateUtilities } from '../classes/date.utilities';
 import { Entity } from '../classes/entity.model';
 import { EntityUtilities } from '../classes/entity.utilities';
-import { DateRange } from '../decorators/date/date-decorator.data';
-import { Time } from '@angular/common';
-import { string } from '../decorators/string/string.decorator';
-import { number } from '../decorators/number/number.decorator';
-import { object } from '../decorators/object/object.decorator';
+import { FileUtilities } from '../classes/file.utilities';
 import { array } from '../decorators/array/array.decorator';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { boolean } from '../decorators/boolean/boolean.decorator';
-import { date } from '../decorators/date/date.decorator';
-import { DateUtilities } from '../classes/date.utilities';
-import { FileUtilities } from '../classes/file.utilities';
-import { file } from '../decorators/file/file.decorator';
-import { FileData } from '../decorators/file/file-decorator.data';
-import { DateFilterFn } from '@angular/material/datepicker';
 import { custom } from '../decorators/custom/custom.decorator';
-import { RandomMetadata } from './test-entity.mock';
+import { DateRange } from '../decorators/date/date-decorator.data';
+import { date } from '../decorators/date/date.decorator';
+import { FileData } from '../decorators/file/file-decorator.data';
+import { file } from '../decorators/file/file.decorator';
+import { number } from '../decorators/number/number.decorator';
+import { object } from '../decorators/object/object.decorator';
+import { referencesMany } from '../decorators/references-many/references-many.decorator';
+import { string } from '../decorators/string/string.decorator';
 import { ReflectUtilities } from '../encapsulation/reflect.utilities';
+import { DropdownValue } from '../decorators/base/dropdown-value.interface';
+import { RandomMetadata } from './test-entity.mock';
+import { firstValueFrom, of } from 'rxjs';
 
 /**
  * An Entity used to Test the @object decorator on the TestEntity class.
@@ -84,6 +86,19 @@ export class TestObjectArrayEntity extends Entity {
     secondTabValue!: string;
 
     constructor(entity?: TestObjectArrayEntity) {
+        super();
+        EntityUtilities.new(this, entity);
+    }
+}
+
+export class ReferencedEntity extends Entity {
+    @string({
+        displayStyle: 'line',
+        displayName: 'Example Value'
+    })
+    stringValue!: string;
+
+    constructor(entity?: ReferencedEntity) {
         super();
         EntityUtilities.new(this, entity);
     }
@@ -193,7 +208,8 @@ export interface TestEntityWithoutCustomPropertiesInterface {
         size: number,
         type: string
     }[],
-    randomValue: string
+    randomValue: string,
+    referencesManyIds: string[]
 }
 
 export class TestEntityWithoutCustomProperties extends Entity implements TestEntityWithoutCustomPropertiesInterface {
@@ -508,7 +524,7 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
                 minutes: 30
             };
         },
-        filterTime: (time: Time) => time.hours !== 12,
+        filterTime: time => time.hours !== 12,
         timeDisplayName: 'Custom Time Display Name',
         times: DateUtilities.getDefaultTimes(12, 15),
         missingErrorMessage: 'custom missing error message',
@@ -683,7 +699,7 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
                 minutes: 30
             };
         },
-        filterTime: (time: Time) => time.hours !== 12,
+        filterTime: time => time.hours !== 12,
         timeDisplayName: 'Custom Time Display Name',
         times: DateUtilities.getDefaultTimes(12, 15)
     })
@@ -741,6 +757,19 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
     })
     customImageValues!: FileData[];
 
+    @referencesMany({
+        displayName: 'Referenced Entities',
+        getReferencedEntities: getReferencedEntities,
+        getDropdownValues: getDropdownValues,
+        displayColumns: [
+            {
+                displayName: 'Referenced Entity',
+                value: (entity: ReferencedEntity) => `#${entity?.id}: ${entity?.stringValue}`
+            }
+        ]
+    })
+    referencesManyIds!: string[];
+
     @custom<string, RandomMetadata, TestEntityWithoutCustomProperties>({
         customMetadata: {
             random: () => (Math.random() + 1).toString(36).substring(7)
@@ -758,6 +787,19 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         super();
         EntityUtilities.new(this, entity);
     }
+}
+
+async function getReferencedEntities(): Promise<ReferencedEntity[]> {
+    return firstValueFrom(of([{ id: '1', stringValue: 'String Value' }]));
+}
+
+function getDropdownValues(entities: ReferencedEntity[]): DropdownValue<string>[] {
+    return entities.map(e => {
+        return {
+            displayName: `#${e?.id}: ${e?.stringValue}`,
+            value: e.id
+        };
+    });
 }
 
 const testEntityData: TestEntityWithoutCustomProperties = {
@@ -930,6 +972,7 @@ const testEntityData: TestEntityWithoutCustomProperties = {
             type: 'image/jpg'
         }
     ],
+    referencesManyIds: ['1'],
     randomValue: '42'
 };
 

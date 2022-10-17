@@ -339,6 +339,8 @@ export abstract class EntityUtilities {
                     return false;
                 }
                 break;
+            case DecoratorTypes.REFERENCES_MANY:
+                break;
             case DecoratorTypes.CUSTOM:
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any, max-len
                 const customMetadata: CustomDecoratorConfigInternal<EntityType, any, any, any> = metadata as CustomDecoratorConfigInternal<EntityType, any, any, any>;

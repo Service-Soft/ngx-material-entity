@@ -21,8 +21,8 @@ declare global {
 Cypress.Commands.add(
     'getInputByLabel',
     (label: string, index: number = 0, parents: number = 6) => {
-        let res = cy.get('mat-label').filter((i, elt) => label === elt.innerText).eq(index);
-        for (let i = 0; i < parents; i++) {
+        let res: Cypress.Chainable<JQuery<HTMLElement>> = cy.get('mat-label').filter((i, elt) => label === elt.innerText).eq(index);
+        for (let i: number = 0; i < parents; i++) {
             res = res.parent();
         }
         return res;
@@ -87,7 +87,7 @@ Cypress.Commands.add(
         cy.getInputByLabel('Array Object Value', 1).click().type('arrayObjectValueWithConfig');
         cy.get('.mat-tab-label').eq(7).click();
         cy.getInputByLabel('Second Tab Value', 2).click().type('secondTabValue');
-        cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(4).click();
+        cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(5).click();
 
         cy.getInputByLabel('Date Array Value').click().type('1/1/2022');
         cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(1).click();
@@ -139,9 +139,13 @@ Cypress.Commands.add(
         cy.get('mat-option').contains('8:30').click();
 
         cy.fixture('test.jpg').as('testImage');
-        for (let i = 0; i < 5; i++) {
+        for (let i: number = 0; i < 5; i++) {
             cy.get('input[type=file]').eq(i).selectFile('@testImage', { force: true });
         }
+
+        cy.getInputByLabel('Select').click();
+        cy.get('mat-option').contains('#1: String Value').click();
+        cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(4).click();
 
         cy.get('.fa-dice').click();
     }

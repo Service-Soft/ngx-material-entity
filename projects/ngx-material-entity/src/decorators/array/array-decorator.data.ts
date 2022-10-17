@@ -1,4 +1,4 @@
-import { CreateDialogData } from '../../components/table/table-data';
+import { CreateDialogData, DisplayColumn } from '../../components/table/table-data';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
@@ -7,20 +7,6 @@ import { Time } from '@angular/common';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { DateRange } from '../date/date-decorator.data';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
-
-/**
- * The configuration options for an array property displayed as a table.
- */
-export interface ArrayTableDisplayColumn<EntityType extends BaseEntityType<EntityType>> {
-    /**
-     * The name inside the header.
-     */
-    displayName: string,
-    /**
-     * A method to get the value inside an row.
-     */
-    value: (entity: EntityType) => string
-}
 
 /**
  * Interface definition for the @array metadata.
@@ -60,7 +46,7 @@ export interface EntityArrayDecoratorConfig<EntityType extends BaseEntityType<En
      * The definition of the columns to display. Consists of the displayName to show in the header of the row
      * and the value, which is a function that generates the value to display inside a column.
      */
-    displayColumns: ArrayTableDisplayColumn<EntityType>[],
+    displayColumns: DisplayColumn<EntityType>[],
 
     /**
      * The data for the add-item-dialog.
@@ -107,7 +93,7 @@ export interface DateArrayDecoratorConfig extends ArrayDecoratorConfig {
      * The definition of the columns to display. Consists of the displayName to show in the header of the row
      * and the value, which is a function that generates the value to display inside a column.
      */
-    displayColumns: ArrayTableDisplayColumn<Date>[],
+    displayColumns: DisplayColumn<Date>[],
 
     /**
      * The label for the add button.
@@ -155,7 +141,7 @@ export interface DateTimeArrayDecoratorConfig extends ArrayDecoratorConfig {
      * The definition of the columns to display. Consists of the displayName to show in the header of the row
      * and the value, which is a function that generates the value to display inside a column.
      */
-    displayColumns: ArrayTableDisplayColumn<Date>[],
+    displayColumns: DisplayColumn<Date>[],
 
     /**
      * The label for the add button.
@@ -230,7 +216,7 @@ export interface DateRangeArrayDecoratorConfig extends ArrayDecoratorConfig {
      * The definition of the columns to display. Consists of the displayName to show in the header of the row
      * and the value, which is a function that generates the value to display inside a column.
      */
-    displayColumns: ArrayTableDisplayColumn<DateRange>[],
+    displayColumns: DisplayColumn<DateRange>[],
 
     /**
      * The label for the add button.

@@ -361,6 +361,20 @@
     </div>
 
     <!-------------------------------------------->
+    <!-------------- references many ------------->
+    <!-------------------------------------------->
+    <div *ngSwitchCase="DecoratorTypes.REFERENCES_MANY">
+        <references-many-input
+            (inputChangeEvent)="emitChange()"
+            [entity]="internalEntity"
+            [key]="internalPropertyKey"
+            [getValidationErrorMessage]="internalGetValidationErrorMessage"
+            [isReadOnly]="internalIsReadOnly"
+        >
+        </references-many-input>
+    </div>
+
+    <!-------------------------------------------->
     <!-------------------Custom------------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.CUSTOM">

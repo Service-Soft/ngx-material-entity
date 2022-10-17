@@ -1,10 +1,19 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { HttpClient } from '@angular/common/http';
-import { Component, Injectable } from '@angular/core';
-import { array, DecoratorTypes, Entity, EntityService, EntityUtilities, string, TableData } from 'ngx-material-entity';
+import { Component, inject, Injectable } from '@angular/core';
+import { DropdownValue, Entity, EntityService, EntityUtilities, referencesMany, string, TableData } from 'ngx-material-entity';
 import { environment } from '../../../environments/environment';
 
 class Address {
+    @string({
+        displayName: 'ID',
+        displayStyle: 'line',
+        required: true,
+        omitForCreate: true,
+        omitForUpdate: true
+    })
+    id!: string;
+
     @string({
         displayName: 'Street',
         displayStyle: 'line'
@@ -37,6 +46,17 @@ class Address {
     }
 }
 
+@Injectable({
+    providedIn: 'root'
+})
+export class AddressService extends EntityService<Address> {
+    baseUrl: string = `${environment.apiUrl}/addresses`;
+
+    constructor(private readonly httpClient: HttpClient) {
+        super(httpClient);
+    }
+}
+
 class Person extends Entity {
 
     @string({
@@ -51,23 +71,37 @@ class Person extends Entity {
     })
     lastName!: string;
 
-    @array({
+    @referencesMany({
         displayName: 'Addresses',
-        itemType: DecoratorTypes.OBJECT,
-        EntityClass: Address,
+        getReferencedEntities: getReferencedEntities,
+        getDropdownValues: getDropdownValues,
         displayColumns: [
             {
                 displayName: 'Address',
-                value: (address: Address) => `${address.street} ${address.number}, ${address.postcode} ${address.city}`
+                value: (address: Address) => `${address?.street} ${address?.number}, ${address?.postcode} ${address?.city}`
             }
         ]
     })
-    addresses!: Address[];
+    addressIds!: string[];
 
     constructor(entity?: Person) {
         super();
         EntityUtilities.new(this, entity);
     }
+}
+
+async function getReferencedEntities(): Promise<Address[]> {
+    const addressService: AddressService = inject(AddressService);
+    return addressService.read();
+}
+
+function getDropdownValues(entities: Address[]): DropdownValue<string>[] {
+    return entities.map(e => {
+        return {
+            displayName: `${e.street} ${e.number}, ${e.postcode} ${e.city}`,
+            value: e.id
+        };
+    });
 }
 
 @Injectable({

@@ -562,7 +562,7 @@ export interface EntityArrayDecoratorConfig<EntityType extends object> extends A
      * The definition of the columns to display. Consists of the displayName to show in the header of the row
      * and the value, which is a function that generates the value to display inside a column.
      */
-    displayColumns: ArrayTableDisplayColumn<EntityType>[],
+    displayColumns: DisplayColumn<EntityType>[],
 
     /**
      * The data for the add-item-dialog.
@@ -675,7 +675,7 @@ export interface DateArrayDecoratorConfig extends ArrayDecoratorConfig {
      * The definition of the columns to display. Consists of the displayName to show in the header of the row
      * and the value, which is a function that generates the value to display inside a column.
      */
-    displayColumns: ArrayTableDisplayColumn<Date>[],
+    displayColumns: DisplayColumn<Date>[],
 
     /**
      * The label for the add button.
@@ -725,7 +725,7 @@ export interface DateTimeArrayDecoratorConfig extends ArrayDecoratorConfig {
      * The definition of the columns to display. Consists of the displayName to show in the header of the row
      * and the value, which is a function that generates the value to display inside a column.
      */
-    displayColumns: ArrayTableDisplayColumn<Date>[],
+    displayColumns: DisplayColumn<Date>[],
 
     /**
      * The label for the add button.
@@ -802,7 +802,7 @@ export interface DateRangeArrayDecoratorConfig extends ArrayDecoratorConfig {
      * The definition of the columns to display. Consists of the displayName to show in the header of the row
      * and the value, which is a function that generates the value to display inside a column.
      */
-    displayColumns: ArrayTableDisplayColumn<DateRange>[],
+    displayColumns: DisplayColumn<DateRange>[],
 
     /**
      * The label for the add button.

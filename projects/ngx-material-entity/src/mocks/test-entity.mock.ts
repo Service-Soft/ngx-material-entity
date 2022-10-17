@@ -1,7 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { TestRandomInputComponent } from '../../../ngx-material-entity-showcase/src/app/components/custom-input-component/custom-input.component';
 import { EntityUtilities } from '../classes/entity.utilities';
 import { custom } from '../decorators/custom/custom.decorator';
-import { TestRandomInputComponent } from '../../../ngx-material-entity-showcase/src/app/components/custom-input-component/custom-input.component';
 import { getDatesBetween, TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesInterface } from './test-entity.interface';
 
 export interface TestEntityInterface extends TestEntityWithoutCustomPropertiesInterface {
@@ -206,7 +206,8 @@ const testEntityData: TestEntity = {
             type: 'image/jpg'
         }
     ],
-    randomValue: '42'
+    randomValue: '42',
+    referencesManyIds: ['1']
 };
 
 /**

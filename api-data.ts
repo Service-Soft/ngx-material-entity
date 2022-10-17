@@ -1,14 +1,14 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { DateFilterFn } from '@angular/material/datepicker';
-import { TestEntityWithoutCustomPropertiesInterface } from './projects/ngx-material-entity/src/mocks/test-entity.interface';
 import 'reflect-metadata';
+import { TestEntityWithoutCustomPropertiesInterface } from './projects/ngx-material-entity/src/mocks/test-entity.interface';
 
 function getDatesBetween(
     startDate: Date,
     endDate: Date,
     filter?: DateFilterFn<Date>
 ): Date[] {
-    const DAY_IN_MS = 1000 * 60 * 60 * 24;
+    const DAY_IN_MS: number = 1000 * 60 * 60 * 24;
     const res: Date[] = [];
     while (
         startDate.getFullYear() < endDate.getFullYear()
@@ -87,19 +87,19 @@ const testEntityData: TestEntityWithoutCustomPropertiesInterface = {
     ],
     dateArrayValue: [
         new Date(2022, 0, 1),
-        new Date(2022, 0, 20),
+        new Date(2022, 0, 20)
     ],
     customDateArrayValue: [
         new Date(2022, 0, 2),
-        new Date(2022, 0, 20),
+        new Date(2022, 0, 20)
     ],
     dateTimeArrayValue: [
         new Date(2022, 0, 1, 0, 30),
-        new Date(2022, 0, 20, 16, 0),
+        new Date(2022, 0, 20, 16, 0)
     ],
     customDateTimeArrayValue: [
         new Date(2022, 0, 2, 8, 30),
-        new Date(2022, 0, 20, 16, 0),
+        new Date(2022, 0, 20, 16, 0)
     ],
     dateRangeArrayValue: [
         {
@@ -111,7 +111,7 @@ const testEntityData: TestEntityWithoutCustomPropertiesInterface = {
             start: new Date(2022, 0, 25, 0, 0, 0, 0),
             end: new Date(2022, 0, 30, 0, 0, 0, 0),
             values: getDatesBetween(new Date(2022, 0, 25, 0, 0, 0, 0), new Date(2022, 0, 30, 0, 0, 0, 0))
-        },
+        }
     ],
     customDateRangeArrayValue: [
         {
@@ -123,7 +123,7 @@ const testEntityData: TestEntityWithoutCustomPropertiesInterface = {
             start: new Date(2022, 0, 25, 0, 0, 0, 0),
             end: new Date(2022, 0, 30, 0, 0, 0, 0),
             values: getDatesBetween(new Date(2022, 0, 25, 0, 0, 0, 0), new Date(2022, 0, 30, 0, 0, 0, 0))
-        },
+        }
     ],
     numberDropdownValue: 42,
     stringDropdownValue: 'String Dropdown #1',
@@ -140,7 +140,7 @@ const testEntityData: TestEntityWithoutCustomPropertiesInterface = {
         start: new Date(2022, 0, 2, 0, 0, 0, 0),
         end: new Date(2022, 0, 20, 0, 0, 0, 0),
         // eslint-disable-next-line max-len
-        values: getDatesBetween(new Date(2022, 0, 2, 0, 0, 0, 0), new Date(2022, 0, 20, 0, 0, 0, 0), (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1,)
+        values: getDatesBetween(new Date(2022, 0, 2, 0, 0, 0, 0), new Date(2022, 0, 20, 0, 0, 0, 0), (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1)
     },
     dateTimeValue: new Date(2022, 0, 1, 8, 30, 0, 0),
     customDateTimeValue: new Date(2022, 0, 2, 16, 30, 0, 0),
@@ -196,10 +196,12 @@ const testEntityData: TestEntityWithoutCustomPropertiesInterface = {
             type: 'image/jpg'
         }
     ],
+    referencesManyIds: ['1'],
     randomValue: '42'
 };
 
 interface Address {
+    id: string,
     street: string,
     number: string,
     postcode: string,
@@ -210,26 +212,28 @@ interface Person {
     id: string,
     firstName: string,
     lastName: string,
-    addresses: Address[]
+    addressIds: string[]
 }
 
 const personData: Person = {
     id: '1',
     firstName: 'John',
     lastName: 'Smith',
-    addresses: [
-        {
-            street: 'Example Street',
-            number: '42b',
-            postcode: '12345',
-            city: 'Example Town'
-        }
-    ]
+    addressIds: ['1']
+};
+
+const addressData: Address = {
+    id: '1',
+    street: 'Example Street',
+    number: '42',
+    postcode: '12345',
+    city: 'Example City'
 };
 
 interface ApiData {
     testEntities: TestEntityWithoutCustomPropertiesInterface[],
-    persons: Person[]
+    persons: Person[],
+    addresses: Address[]
 }
 export const apiData: ApiData = {
     testEntities: [
@@ -237,5 +241,8 @@ export const apiData: ApiData = {
     ],
     persons: [
         personData
+    ],
+    addresses: [
+        addressData
     ]
 };
