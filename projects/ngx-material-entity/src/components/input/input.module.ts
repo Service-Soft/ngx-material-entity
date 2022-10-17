@@ -40,6 +40,7 @@ import { StringPasswordInputComponent } from './string/string-password-input/str
 import { NumberSliderInputComponent } from './number/number-slider-input/number-slider-input.component';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ReferencesManyInputComponent } from './relations/references-many-input/references-many-input.component';
 
 @NgModule({
     declarations: [
@@ -66,6 +67,7 @@ import { MatTabsModule } from '@angular/material/tabs';
         FileImageInputComponent,
         FileDefaultInputComponent,
         DragDropDirective,
+        ReferencesManyInputComponent,
         CustomInputComponent,
         NgxMatEntityInputComponent
     ],

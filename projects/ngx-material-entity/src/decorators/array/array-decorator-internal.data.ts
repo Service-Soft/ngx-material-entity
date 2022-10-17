@@ -1,14 +1,14 @@
-import { CreateDialogData } from '../../components/table/table-data';
-import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
-import { DecoratorTypes } from '../base/decorator-types.enum';
-import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
-import { ArrayDecoratorConfig, ArrayTableDisplayColumn, AutocompleteStringChipsArrayDecoratorConfig, DateArrayDecoratorConfig, DateRangeArrayDecoratorConfig, DateTimeArrayDecoratorConfig, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from './array-decorator.data';
-import { DateFilterFn } from '@angular/material/datepicker';
 import { Time } from '@angular/common';
-import { DropdownValue } from '../base/dropdown-value.interface';
+import { DateFilterFn } from '@angular/material/datepicker';
 import { DateUtilities } from '../../classes/date.utilities';
-import { DateRange } from '../date/date-decorator.data';
+import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
+import { CreateDialogData, DisplayColumn } from '../../components/table/table-data';
+import { DecoratorTypes } from '../base/decorator-types.enum';
+import { DropdownValue } from '../base/dropdown-value.interface';
+import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
+import { DateRange } from '../date/date-decorator.data';
+import { ArrayDecoratorConfig, AutocompleteStringChipsArrayDecoratorConfig, DateArrayDecoratorConfig, DateRangeArrayDecoratorConfig, DateTimeArrayDecoratorConfig, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from './array-decorator.data';
 
 /**
  * The internal EntityArrayDecoratorConfig. Sets default values.
@@ -25,7 +25,7 @@ export class EntityArrayDecoratorConfigInternal<EntityType extends BaseEntityTyp
     // eslint-disable-next-line jsdoc/require-jsdoc
     EntityClass: EntityClassNewable<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    displayColumns: ArrayTableDisplayColumn<EntityType>[];
+    displayColumns: DisplayColumn<EntityType>[];
     // eslint-disable-next-line jsdoc/require-jsdoc
     createDialogData?: CreateDialogData;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -64,7 +64,7 @@ export class DateArrayDecoratorConfigInternal extends PropertyDecoratorConfigInt
     // eslint-disable-next-line jsdoc/require-jsdoc
     duplicatesErrorDialog: ConfirmDialogData;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    displayColumns: ArrayTableDisplayColumn<Date>[];
+    displayColumns: DisplayColumn<Date>[];
     // eslint-disable-next-line jsdoc/require-jsdoc
     addButtonLabel: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -105,7 +105,7 @@ export class DateTimeArrayDecoratorConfigInternal extends PropertyDecoratorConfi
     // eslint-disable-next-line jsdoc/require-jsdoc
     duplicatesErrorDialog: ConfirmDialogData;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    displayColumns: ArrayTableDisplayColumn<Date>[];
+    displayColumns: DisplayColumn<Date>[];
     // eslint-disable-next-line jsdoc/require-jsdoc
     addButtonLabel: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -161,7 +161,7 @@ export class DateRangeArrayDecoratorConfigInternal extends PropertyDecoratorConf
     // eslint-disable-next-line jsdoc/require-jsdoc
     duplicatesErrorDialog: ConfirmDialogData;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    displayColumns: ArrayTableDisplayColumn<DateRange>[];
+    displayColumns: DisplayColumn<DateRange>[];
     // eslint-disable-next-line jsdoc/require-jsdoc
     addButtonLabel: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
