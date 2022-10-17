@@ -5,6 +5,7 @@ import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigIntern
 import { DefaultFileDecoratorConfigInternal, ImageFileDecoratorConfigInternal } from '../file/file-decorator-internal.data';
 import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal, SliderNumberDecoratorConfigInternal } from '../number/number-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../object/object-decorator-internal.data';
+import { ReferencesManyDecoratorConfigInternal } from '../references-many/references-many-decorator-internal.data';
 import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal, PasswordStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../string/string-decorator-internal.data';
 
 /**
@@ -34,6 +35,7 @@ export enum DecoratorTypes {
     DATE_TIME = 'dateTime',
     FILE_DEFAULT = 'fileDefault',
     FILE_IMAGE = 'fileImage',
+    REFERENCES_MANY = 'referencesMany',
     CUSTOM = 'custom'
 }
 
@@ -66,6 +68,8 @@ export type DecoratorType<T, CustomMetadataType extends Record<string, unknown>>
     : T extends DecoratorTypes.DATE_TIME ? DateTimeDateDecoratorConfigInternal
     : T extends DecoratorTypes.FILE_DEFAULT ? DefaultFileDecoratorConfigInternal
     : T extends DecoratorTypes.FILE_IMAGE ? ImageFileDecoratorConfigInternal
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    : T extends DecoratorTypes.REFERENCES_MANY ? ReferencesManyDecoratorConfigInternal<any>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     : T extends DecoratorTypes.CUSTOM ? CustomDecoratorConfigInternal<any, any, CustomMetadataType, any>
     : never;

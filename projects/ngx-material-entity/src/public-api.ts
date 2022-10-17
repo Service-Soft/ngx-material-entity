@@ -57,6 +57,9 @@ export * from './decorators/object/object-decorator.data';
 export * from './decorators/string/string.decorator';
 export * from './decorators/string/string-decorator.data';
 
+export * from './decorators/references-many/references-many.decorator';
+export * from './decorators/references-many/references-many-decorator.data';
+
 export * from './decorators/file/file.decorator';
 export * from './decorators/file/file-decorator.data';
 

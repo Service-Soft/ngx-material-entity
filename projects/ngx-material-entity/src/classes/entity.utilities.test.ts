@@ -504,6 +504,12 @@ describe('isEntityValid', () => {
         expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
     });
 
+    // REFERENCES_MANY
+    // test('REFERENCES_MANY single size invalid', () => {
+    //     const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+    //     expect(EntityUtilities.isEntityValid(tE, 'create')).toBe(true);
+    // });
+
     // CUSTOM
     test('CUSTOM isValid', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
@@ -612,7 +618,7 @@ describe('keysOf', () => {
     test('should get all keys of the entity', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
-        expect(EntityUtilities.keysOf(tE)).toHaveLength(52);
+        expect(EntityUtilities.keysOf(tE)).toHaveLength(53);
     });
     test('should get keys without omitForCreate', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
