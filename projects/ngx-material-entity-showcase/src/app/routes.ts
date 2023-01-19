@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { NavUtilities, NavbarRow } from 'ngx-material-navigation';
+import { NavbarRow, NavUtilities } from 'ngx-material-navigation';
 
 export const navbarRows: NavbarRow[] = [
     {
@@ -18,6 +18,7 @@ export const navbarRows: NavbarRow[] = [
                 name: 'Home',
                 icon: 'fas fa-home',
                 route: {
+                    title: 'Home',
                     path: 'home',
                     loadChildren: () => import('./components/home/home.module').then(m => m.HomeModule)
                 },
@@ -28,6 +29,7 @@ export const navbarRows: NavbarRow[] = [
                 name: 'Sandbox',
                 icon: 'fas fa-umbrella-beach',
                 route: {
+                    title: 'Sandbox',
                     path: 'sandbox',
                     loadChildren: () => import('./components/sandbox/sandbox.module').then(m => m.SandboxModule)
                 },
@@ -38,6 +40,7 @@ export const navbarRows: NavbarRow[] = [
                 name: 'Table',
                 icon: 'fas fa-table',
                 route: {
+                    title: 'Table',
                     path: 'table',
                     loadChildren: () => import('./components/showcase-table/showcase-table.module').then(m => m.ShowcaseTableModule)
                 },

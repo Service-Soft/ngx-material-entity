@@ -1,10 +1,10 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
-import { BaseEntityType } from '../../../../classes/entity.model';
 import { DateUtilities } from '../../../../classes/date.utilities';
+import { BaseEntityType } from '../../../../classes/entity.model';
+import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
 import { ArrayTableComponent } from '../array-table.class';
-import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector

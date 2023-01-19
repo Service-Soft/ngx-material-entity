@@ -139,6 +139,9 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
     }
 
     removeFile(name: string): void {
+        if (this.isReadOnly) {
+            return;
+        }
         if (this.metadata.multiple) {
             this.filenames?.splice(this.filenames.indexOf(name), 1);
             if (!this.filenames?.length) {
@@ -187,7 +190,8 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
 
     async downloadAll(): Promise<void> {
         if ((this.propertyValue as FileData[]).length) {
-            void FileUtilities.downloadMultipleFiles(this.metadata.displayName, (this.propertyValue as FileData[]));
+            // eslint-disable-next-line max-len
+            void FileUtilities.downloadMultipleFiles(this.metadata.displayName, LodashUtilities.cloneDeep(this.propertyValue as FileData[]));
         }
     }
 }
