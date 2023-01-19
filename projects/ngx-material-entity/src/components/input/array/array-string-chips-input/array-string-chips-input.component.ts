@@ -1,9 +1,8 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
-import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { BaseEntityType } from '../../../../classes/entity.model';
+import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({
@@ -32,6 +31,9 @@ export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<En
         const value: string = (event.value || '').trim();
         this.validateAndSetPropertyValue(value);
         event.chipInput?.clear();
+        this.chipsInput = '';
+
+        this.emitChange();
     }
 
     /**
@@ -47,21 +49,11 @@ export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<En
     removeStringChipArrayValue(value: string): void {
         this.propertyValue?.splice(this.propertyValue.indexOf(value), 1);
         this.propertyValue = this.propertyValue?.length ? this.propertyValue : undefined;
+
+        this.emitChange();
     }
 
-    /**
-     * Handles adding a string to the array when an autocomplete value has been selected.
-     *
-     * @param event - The autocomplete selected event.
-     * @param chipsInput - The element where the user typed the value.
-     */
-    selected(event: MatAutocompleteSelectedEvent, chipsInput: HTMLInputElement): void {
-        const value: string = (event.option.viewValue || '').trim();
-        this.validateAndSetPropertyValue(value);
-        chipsInput.value = '';
-    }
-
-    private validateAndSetPropertyValue(value: string): void {
+    protected validateAndSetPropertyValue(value: string): void {
         if (value) {
             if (this.metadata.minLength && value.length < this.metadata.minLength) {
                 return;

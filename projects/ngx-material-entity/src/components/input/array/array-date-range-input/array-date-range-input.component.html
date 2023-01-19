@@ -3,7 +3,7 @@
         <b>{{metadata.displayName}}</b>
     </div>
     <div *ngIf="!isReadOnly">
-        <mat-form-field appearance="standard">
+        <mat-form-field>
             <mat-label>{{metadata.displayName}}</mat-label>
             
             <mat-date-range-input [rangePicker]="picker" [required]="metadata.required" [dateFilter]="metadata.filter ? metadata.filter : DateUtilities.defaultDateFilter">

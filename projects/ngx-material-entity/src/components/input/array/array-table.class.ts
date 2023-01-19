@@ -1,15 +1,15 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { SelectionModel } from '@angular/cdk/collections';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
-import { EntityUtilities } from '../../../classes/entity.utilities';
-import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { BaseEntityType } from '../../../classes/entity.model';
-import { NgxMatEntityBaseInputComponent } from '../base-input.component';
-import { DecoratorTypes } from '../../../decorators/base/decorator-types.enum';
-import { Component, OnInit } from '@angular/core';
+import { EntityUtilities } from '../../../classes/entity.utilities';
 import { SelectionUtilities } from '../../../classes/selection.utilities';
+import { DecoratorTypes } from '../../../decorators/base/decorator-types.enum';
+import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
+import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
+import { NgxMatEntityBaseInputComponent } from '../base-input.component';
 
 type ArrayTableType = DecoratorTypes.ARRAY | DecoratorTypes.ARRAY_DATE
     | DecoratorTypes.ARRAY_DATE_RANGE | DecoratorTypes.ARRAY_DATE_TIME;

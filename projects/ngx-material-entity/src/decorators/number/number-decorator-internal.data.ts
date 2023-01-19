@@ -50,9 +50,9 @@ export class SliderNumberDecoratorConfigInternal extends PropertyDecoratorConfig
     // eslint-disable-next-line jsdoc/require-jsdoc
     step?: number;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    formatThumbLabelValue: (value: number) => string | number;
+    formatThumbLabelValue: (value: number) => string;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    tickInterval?: number | 'auto';
+    showTickMarks?: boolean;
 
     constructor(data: SliderNumberDecoratorConfig) {
         super(data);
@@ -61,7 +61,7 @@ export class SliderNumberDecoratorConfigInternal extends PropertyDecoratorConfig
         this.min = data.min;
         this.step = data.step;
         this.formatThumbLabelValue = data.formatThumbLabelValue ?? defaultFormatThumbLabelValue;
-        this.tickInterval = data.tickInterval;
+        this.showTickMarks = data.showTickMarks;
     }
 }
 
@@ -71,6 +71,6 @@ export class SliderNumberDecoratorConfigInternal extends PropertyDecoratorConfig
  * @param value - The value of the slider.
  * @returns Just the value without any formatting done.
  */
-export function defaultFormatThumbLabelValue(value: number): number {
-    return value;
+export function defaultFormatThumbLabelValue(value: number): string {
+    return value.toString();
 }

@@ -78,14 +78,6 @@ abstract class FileDecoratorConfig extends PropertyDecoratorConfig {
      * false // when multiple is set to false.
      */
     dragAndDrop?: boolean;
-
-    /**
-     * The label of the button to download all files.
-     * Is only shown when the property contains multiple files.
-     *
-     * @default 'Download All'
-     */
-    downloadAllButtonLabel?: string;
 }
 
 /**

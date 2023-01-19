@@ -20,7 +20,7 @@ declare global {
 
 Cypress.Commands.add(
     'getInputByLabel',
-    (label: string, index: number = 0, parents: number = 6) => {
+    (label: string, index: number = 0, parents: number = 5) => {
         let res: Cypress.Chainable<JQuery<HTMLElement>> = cy.get('mat-label').filter((i, elt) => label === elt.innerText).eq(index);
         for (let i: number = 0; i < parents; i++) {
             res = res.parent();
@@ -34,9 +34,9 @@ Cypress.Commands.add(
     () => {
         cy.getInputByLabel('Order Value 1').click().type('orderValue1');
 
-        cy.get('.mat-tab-label').contains('Tab 2').eq(0).click();
+        cy.get('.mdc-tab__text-label').contains('Tab 2').eq(0).click({ force: true });
         cy.getInputByLabel('Second Tab Value').click().type('secondTabValue');
-        cy.get('.mat-tab-label').contains('Tab 1').eq(0).click();
+        cy.get('.mdc-tab__text-label').contains('Tab 1').eq(0).click({ force: true });
 
         cy.getInputByLabel('Order Value 2').click().type('orderValue2');
         cy.getInputByLabel('Order Value 3').click().type('orderValue3');
@@ -60,14 +60,14 @@ Cypress.Commands.add(
         cy.getInputByLabel('Confirm Password').click().type('12345678');
 
         cy.getInputByLabel('Min Number Value').click().type('42');
-        cy.get('.mat-slider-thumb-label').click().type('{rightArrow}');
+        cy.get('.mdc-slider__input').click({ force: true });
         cy.getInputByLabel('Max Number Value').click().type('8');
 
         cy.getInputByLabel('Object Row Value 1').click().type('objectRowValue1');
         cy.getInputByLabel('Object Row Value 2').click().type('objectRowValue2');
         cy.getInputByLabel('Object Max Length Value').click().type('maxLengthObjectValue');
 
-        cy.get('.mat-tab-label').contains('Other properties').click();
+        cy.get('.mdc-tab__text-label').contains('Other properties').click({ force: true });
         cy.getInputByLabel('Object Second Tab Value').click().type('objectSecondTabValue');
 
         // eslint-disable-next-line @cspell/spellchecker
@@ -79,13 +79,13 @@ Cypress.Commands.add(
         cy.getInputByLabel('String Chips Autocomplete Array Value With Config').click().type('123{enter}456{enter}');
 
         cy.getInputByLabel('Array Object Value').click().type('arrayObjectValue');
-        cy.get('.mat-tab-label').eq(5).click();
+        cy.get('.mdc-tab__text-label').eq(5).click({ force: true });
         cy.getInputByLabel('Second Tab Value').click().type('secondTabValue');
         cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(0).click();
 
         cy.get('button').filter((i, elt) => elt.innerText === 'Custom Add').eq(0).click();
         cy.getInputByLabel('Array Object Value', 1).click().type('arrayObjectValueWithConfig');
-        cy.get('.mat-tab-label').eq(7).click();
+        cy.get('.mdc-tab__text-label').eq(7).click({ force: true });
         cy.getInputByLabel('Second Tab Value', 2).click().type('secondTabValue');
         cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(5).click();
 
@@ -147,6 +147,6 @@ Cypress.Commands.add(
         cy.get('mat-option').contains('#1: String Value').click();
         cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(4).click();
 
-        cy.get('.fa-dice').click();
+        cy.get('.fa-dice').click({ force: true });
     }
 );

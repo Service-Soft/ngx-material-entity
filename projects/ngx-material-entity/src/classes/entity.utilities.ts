@@ -1,22 +1,22 @@
+import { Time } from '@angular/common';
+import { DateFilterFn } from '@angular/material/datepicker';
+import { DateRangeArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
 import { DecoratorType, DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../decorators/base/property-decorator-internal.data';
-import { DateRangeArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
-import { DefaultStringDecoratorConfigInternal, PasswordStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../decorators/string/string-decorator-internal.data';
-import { DefaultNumberDecoratorConfigInternal } from '../decorators/number/number-decorator-internal.data';
+import { ToggleBooleanDecoratorConfigInternal } from '../decorators/boolean/boolean-decorator-internal.data';
+import { CustomDecoratorConfigInternal } from '../decorators/custom/custom-decorator-internal.data';
 import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from '../decorators/date/date-decorator-internal.data';
 import { DateRange } from '../decorators/date/date-decorator.data';
-import { Time } from '@angular/common';
-import { DateUtilities } from './date.utilities';
-import { ReflectUtilities } from '../encapsulation/reflect.utilities';
-import { LodashUtilities } from '../encapsulation/lodash.utilities';
-import { ToggleBooleanDecoratorConfigInternal } from '../decorators/boolean/boolean-decorator-internal.data';
-import { DateFilterFn } from '@angular/material/datepicker';
-import { FileData } from '../decorators/file/file-decorator.data';
 import { DefaultFileDecoratorConfigInternal } from '../decorators/file/file-decorator-internal.data';
-import { FileUtilities } from './file.utilities';
-import { BaseEntityType } from './entity.model';
-import { CustomDecoratorConfigInternal } from '../decorators/custom/custom-decorator-internal.data';
+import { FileData } from '../decorators/file/file-decorator.data';
+import { DefaultNumberDecoratorConfigInternal } from '../decorators/number/number-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../decorators/object/object-decorator-internal.data';
+import { DefaultStringDecoratorConfigInternal, PasswordStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../decorators/string/string-decorator-internal.data';
+import { LodashUtilities } from '../encapsulation/lodash.utilities';
+import { ReflectUtilities } from '../encapsulation/reflect.utilities';
+import { DateUtilities } from './date.utilities';
+import { BaseEntityType } from './entity.model';
+import { FileUtilities } from './file.utilities';
 
 /**
  * Shows information about differences between two entities.
@@ -636,6 +636,9 @@ export abstract class EntityUtilities {
                     valuePriorChanges,
                     (metadata as DateRangeArrayDecoratorConfigInternal).filter
                 );
+            case DecoratorTypes.ARRAY_STRING_CHIPS:
+            case DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS:
+                return EntityUtilities.isEqualArrayString(value, valuePriorChanges);
             case DecoratorTypes.FILE_IMAGE:
             case DecoratorTypes.FILE_DEFAULT:
                 return EntityUtilities.isEqualFile(value, valuePriorChanges, (metadata as DefaultFileDecoratorConfigInternal).multiple);
@@ -645,6 +648,12 @@ export abstract class EntityUtilities {
             default:
                 return LodashUtilities.isEqual(value, valuePriorChanges);
         }
+    }
+
+    private static isEqualArrayString(value: unknown, valuePriorChanges: unknown): boolean | PromiseLike<boolean> {
+        const stringArray: string[] = LodashUtilities.cloneDeep(value as string[]).sort();
+        const stringArrayPriorChanges: string[] = LodashUtilities.cloneDeep(valuePriorChanges as string[]).sort();
+        return LodashUtilities.isEqual(stringArray, stringArrayPriorChanges);
     }
 
     private static isEqualArrayDate(value: unknown, valuePriorChanges: unknown): boolean {
