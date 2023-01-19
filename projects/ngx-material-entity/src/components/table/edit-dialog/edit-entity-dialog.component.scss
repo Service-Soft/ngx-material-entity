@@ -1,6 +1,14 @@
+.mat-dialog-title {
+    padding-top: 12px;
+    display: flex;
+    button {
+        display: block;
+        margin-left: auto;
+    }
+}
+
 mat-dialog-actions {
     justify-content: space-between;
-}
-.delete-button {
-    float: right;
+    padding-left: 24px;
+    padding-right: 24px;
 }

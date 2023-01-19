@@ -84,8 +84,6 @@ export class DefaultFileDecoratorConfigInternal extends PropertyDecoratorConfigI
     maxSizeTotalErrorDialog: ConfirmDialogData;
     // eslint-disable-next-line jsdoc/require-jsdoc
     dragAndDrop: boolean;
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    downloadAllButtonLabel: string;
 
     constructor(data: DefaultFileDecoratorConfig) {
         super(data);
@@ -100,7 +98,6 @@ export class DefaultFileDecoratorConfigInternal extends PropertyDecoratorConfigI
         this.maxSizeErrorDialog = data.maxSizeErrorDialog ?? getDefaultMaxSizeErrorDialogData(data);
         this.maxSizeTotalErrorDialog = data.maxSizeTotalErrorDialog ?? getDefaultMaxSizeTotalErrorDialogData(data);
         this.dragAndDrop = data.dragAndDrop ?? data.multiple;
-        this.downloadAllButtonLabel = data.downloadAllButtonLabel ?? 'Download All';
     }
 }
 
@@ -132,8 +129,6 @@ export class ImageFileDecoratorConfigInternal extends PropertyDecoratorConfigInt
     maxSizeTotalErrorDialog: ConfirmDialogData;
     // eslint-disable-next-line jsdoc/require-jsdoc
     dragAndDrop: boolean;
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    downloadAllButtonLabel: string;
 
     constructor(data: ImageFileDecoratorConfig) {
         super(data);
@@ -149,7 +144,6 @@ export class ImageFileDecoratorConfigInternal extends PropertyDecoratorConfigInt
         this.maxSizeTotalErrorDialog = data.maxSizeTotalErrorDialog ?? getDefaultMaxSizeTotalErrorDialogData(data);
         this.previewPlaceholderUrl = data.previewPlaceholderUrl;
         this.dragAndDrop = data.dragAndDrop ?? data.multiple;
-        this.downloadAllButtonLabel = data.downloadAllButtonLabel ?? 'Download All';
     }
 }
 

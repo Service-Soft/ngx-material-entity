@@ -60,9 +60,9 @@ export interface SliderNumberDecoratorConfig extends NumberDecoratorConfig {
     /**
      * Function that transforms the value to display inside the thumb label.
      */
-    formatThumbLabelValue?: (value: number) => string | number,
+    formatThumbLabelValue?: (value: number) => string,
     /**
-     * How often ticks should be displayed.
+     * Whether or not ticks should be displayed.
      */
-    tickInterval?: 'auto' | number
+    showTickMarks?: boolean
 }

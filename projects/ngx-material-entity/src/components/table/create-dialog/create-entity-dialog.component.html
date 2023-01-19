@@ -34,7 +34,7 @@
     </mat-dialog-content>
     
     <mat-dialog-actions>
-        <button type="submit" (click)="create()" mat-raised-button [class.mat-button-disabled]="!isEntityValid">
+        <button type="submit" (click)="create()" mat-raised-button [disabled]="!isEntityValid">
             {{data.createDialogData.createButtonLabel}}
         </button>
         <button type="button" mat-raised-button (click)="cancel()" class="cancel-button">

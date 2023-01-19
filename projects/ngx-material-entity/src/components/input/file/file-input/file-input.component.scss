@@ -2,33 +2,9 @@ mat-form-field {
     width: 100%;
 }
 
-.mat-form-field-disabled .mat-chip.mat-standard-chip.mat-chip-disabled button.ngx-mat-grey {
-    opacity: 1;
-    color: rgba(0, 0, 0, .54);
-}
-
-.mat-standard-chip.mat-chip-disabled .mat-chip-trailing-icon.ngx-mat-grey:hover {
-    cursor: pointer;
-}
-
-.mat-chip.mat-standard-chip .mat-chip-remove.ngx-mat-grey {
-    opacity: 1;
-    color: rgba(0, 0, 0, .54);
-}
-
 .ngx-mat-grey {
     opacity: 1;
     color: rgba(0, 0, 0, .54);
-}
-
-.download-all-button {
-    i {
-        vertical-align: middle;
-    }
-}
-
-.mat-standard-chip.download-all-button:hover {
-    cursor: pointer;
 }
 
 .drag-drop {

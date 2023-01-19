@@ -7,30 +7,24 @@
 
 <mat-form-field floatLabel="always">
     <mat-label>{{metadata.displayName}}</mat-label>
-    <mat-chip-list #chipList
-        [(ngModel)]="filenames"
-        name="file"
-        #model="ngModel"
+    <mat-chip-grid #chipGrid
+        [(ngModel)]="filenames" name="file" #model="ngModel"
         [required]="metadata.required"
-        [disabled]="isReadOnly"
     >
-        <mat-chip *ngFor="let name of filenames" (removed)="removeFile(name)">
+        <mat-chip-row *ngFor="let name of filenames" (removed)="removeFile(name)">
             {{name}}
-            <button type="button" class="mat-chip-remove mat-chip-trailing-icon ngx-mat-grey" (click)="downloadFile(name)">
+            <span class="mat-mdc-chip-remove mat-mdc-chip-trailing-icon ngx-mat-grey" (click)="downloadFile(name)">
                 <i class="fas fa-download"></i>
-            </button>
-            <button type="button" matChipRemove (click)="chipList._markAsTouched()">
+            </span>
+            <button *ngIf="!isReadOnly" type="button" matChipRemove>
                 <i class="{{metadata.deleteIcon}}"></i>
             </button>
-        </mat-chip>
-        <mat-chip class="download-all-button" *ngIf="downloadAllEnabled()" (click)="downloadAll()">
-            {{metadata.downloadAllButtonLabel}}
-            <span class="mat-chip-remove mat-chip-trailing-icon ngx-mat-grey">
-                <i class="fas fa-file-zipper"></i>
-            </span>
-        </mat-chip>
-        <input [matChipInputFor]="chipList" [readonly]="true" hidden>
-    </mat-chip-list>
+        </mat-chip-row>
+        <input [matChipInputFor]="chipGrid" [readonly]="true" hidden>
+    </mat-chip-grid>
+    <button *ngIf="downloadAllEnabled()" type="button" class="ngx-mat-grey" mat-icon-button matSuffix (click)="downloadAll()">
+        <i class="fas fa-file-zipper"></i>
+    </button>
     <button type="button" class="ngx-mat-grey" mat-icon-button matSuffix [disabled]="isReadOnly" (click)="fileInput.click()">
         <i class="fas fa-upload"></i>
     </button>

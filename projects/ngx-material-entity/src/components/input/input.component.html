@@ -395,9 +395,9 @@
 <!--------------------Add Array Item Dialog---------------->
 <!--------------------------------------------------------->
 <ng-template #addArrayItemDialog>
-    <h2 mat-dialog-title>{{dialogData.createDialogData.title}}</h2>
+    <div class="mat-dialog-title" mat-dialog-title>{{dialogData.createDialogData.title}}</div>
 
-    <form class="row">
+    <form>
         <mat-dialog-content>
             <mat-tab-group *ngIf="arrayItemDialogTabs.length > 1" preserveContent>
                 <mat-tab *ngFor="let tab of arrayItemDialogTabs" [label]="tab.tabName">
