@@ -32,7 +32,7 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
 
     selection: SelectionModel<string> = new SelectionModel<string>(true, []);
 
-    SelectionUtilities = SelectionUtilities;
+    SelectionUtilities: typeof SelectionUtilities = SelectionUtilities;
 
     constructor(private readonly injector: EnvironmentInjector) {
         super();

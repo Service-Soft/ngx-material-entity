@@ -29,7 +29,7 @@ export abstract class ArrayTableComponent<ValueType, EntityType extends BaseEnti
     selection: SelectionModel<ValueType> = new SelectionModel<ValueType>(true, []);
     displayedColumns!: string[];
 
-    SelectionUtilities = SelectionUtilities;
+    SelectionUtilities: typeof SelectionUtilities = SelectionUtilities;
 
     constructor(private readonly matDialog: MatDialog) {
         super();

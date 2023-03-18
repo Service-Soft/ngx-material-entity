@@ -1,9 +1,9 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
+import { BaseEntityType } from '../../../../classes/entity.model';
 import { FileUtilities } from '../../../../classes/file.utilities';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { FileData } from '../../../../decorators/file/file-decorator.data';
-import { BaseEntityType } from '../../../../classes/entity.model';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({
@@ -15,7 +15,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 export class FileDefaultInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.FILE_DEFAULT, FileData | FileData[]> implements OnInit {
 
-    FileUtilities = FileUtilities;
+    FileUtilities: typeof FileUtilities = FileUtilities;
 
     async refreshFileData(fileData?: FileData | FileData[]): Promise<void> {
         this.propertyValue = fileData;

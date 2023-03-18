@@ -194,9 +194,9 @@ export abstract class EntityUtilities {
             ReflectUtilities.set(target, key, value);
         }
     }
-    // eslint-disable-next-line @typescript-eslint/member-ordering, jsdoc/require-jsdoc
+    // eslint-disable-next-line @typescript-eslint/member-ordering, jsdoc/require-jsdoc, @typescript-eslint/typedef
     static construct = EntityUtilities.new;
-    // eslint-disable-next-line @typescript-eslint/member-ordering, jsdoc/require-jsdoc
+    // eslint-disable-next-line @typescript-eslint/member-ordering, jsdoc/require-jsdoc, @typescript-eslint/typedef
     static build = EntityUtilities.new;
 
     /**

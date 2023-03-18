@@ -19,7 +19,7 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
 
     filenames?: string[];
 
-    FileUtilities = FileUtilities;
+    FileUtilities: typeof FileUtilities = FileUtilities;
 
     @Input()
     propertyValue!: FileData | FileData[] | undefined;
@@ -34,7 +34,7 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
     isReadOnly!: boolean;
 
     @Output()
-    fileDataChangeEvent = new EventEmitter<FileData | FileData[]>();
+    fileDataChangeEvent: EventEmitter<FileData | FileData[]> = new EventEmitter<FileData | FileData[]>();
 
     constructor(private readonly dialog: MatDialog) { }
 

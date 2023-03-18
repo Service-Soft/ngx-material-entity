@@ -55,7 +55,7 @@ export abstract class NgxMatEntityBaseInputComponent<
     isReadOnly!: boolean;
 
     @Output()
-    inputChangeEvent = new EventEmitter<void>();
+    inputChangeEvent: EventEmitter<void> = new EventEmitter<void>();
 
     // eslint-disable-next-line jsdoc/require-returns
     /**

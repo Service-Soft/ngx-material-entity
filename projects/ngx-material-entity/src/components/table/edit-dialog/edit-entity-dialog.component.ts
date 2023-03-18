@@ -21,7 +21,7 @@ import { BaseEntityType } from '../../../classes/entity.model';
     styleUrls: ['./edit-entity-dialog.component.scss']
 })
 export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
-    EntityUtilities = EntityUtilities;
+    EntityUtilities: typeof EntityUtilities = EntityUtilities;
 
     entityTabs!: EntityTab<EntityType>[];
 

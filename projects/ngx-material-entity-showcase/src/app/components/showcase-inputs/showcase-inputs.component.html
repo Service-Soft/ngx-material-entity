@@ -1,31 +1,35 @@
-<form class="row" *ngIf="loaded">
-    <ngx-mat-entity-input
-        *ngFor="let key of keys"
-        [entity]="testEntity"
-        [propertyKey]="key"
-        [hideOmitForCreate]="true"
-        [isReadOnly]="isReadOnly"
-        class="col-lg-{{EntityUtilities.getWidth(testEntity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(testEntity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(testEntity, key, 'sm')}}"
-    >
-    </ngx-mat-entity-input>
-    <hr style="margin-top: 10px;">
-    <button type="submit" mat-raised-button>dirty</button>
-    <button type="button" mat-raised-button (click)="toggleInputValues()">Toggle Input Values</button>
-    <button type="button" mat-raised-button (click)="toggleReadOnly()">Toggle Read Only</button>
-</form>
-
-<form class="row" *ngIf="!loaded">
-    <ngx-mat-entity-input
-        *ngFor="let key of keys"
-        [entity]="testEntity"
-        [propertyKey]="key"
-        [hideOmitForCreate]="true"
-        [isReadOnly]="isReadOnly"
-        class="col-lg-{{EntityUtilities.getWidth(testEntity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(testEntity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(testEntity, key, 'sm')}}"
-    >
-    </ngx-mat-entity-input>
-    <hr style="margin-top: 10px;">
-    <button type="submit" mat-raised-button>dirty</button>
-    <button type="button" mat-raised-button (click)="toggleInputValues()">Toggle Input Values</button>
-    <button type="button" mat-raised-button (click)="toggleReadOnly()">Toggle Read Only</button>
-</form>
+<div class="container">
+    <br>
+    <form class="row" *ngIf="loaded">
+        <ngx-mat-entity-input
+            *ngFor="let key of keys"
+            [entity]="testEntity"
+            [propertyKey]="key"
+            [hideOmitForCreate]="true"
+            [isReadOnly]="isReadOnly"
+            class="col-lg-{{EntityUtilities.getWidth(testEntity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(testEntity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(testEntity, key, 'sm')}}"
+        >
+        </ngx-mat-entity-input>
+        <hr style="margin-top: 10px;">
+        <button type="submit" mat-raised-button>dirty</button>
+        <button type="button" mat-raised-button (click)="toggleInputValues()">Toggle Input Values</button>
+        <button type="button" mat-raised-button (click)="toggleReadOnly()">Toggle Read Only</button>
+    </form>
+    
+    <form class="row" *ngIf="!loaded">
+        <ngx-mat-entity-input
+            *ngFor="let key of keys"
+            [entity]="testEntity"
+            [propertyKey]="key"
+            [hideOmitForCreate]="true"
+            [isReadOnly]="isReadOnly"
+            class="col-lg-{{EntityUtilities.getWidth(testEntity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(testEntity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(testEntity, key, 'sm')}}"
+        >
+        </ngx-mat-entity-input>
+        <hr style="margin-top: 10px;">
+        <button type="submit" mat-raised-button>dirty</button>
+        <button type="button" mat-raised-button (click)="toggleInputValues()">Toggle Input Values</button>
+        <button type="button" mat-raised-button (click)="toggleReadOnly()">Toggle Read Only</button>
+    </form>
+    <br>
+</div>

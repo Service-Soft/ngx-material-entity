@@ -1,10 +1,10 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
+import { BaseEntityType } from '../../../../classes/entity.model';
 import { FileUtilities } from '../../../../classes/file.utilities';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { FileData } from '../../../../decorators/file/file-decorator.data';
 import { placeholder } from '../../../../mocks/placeholder-data.png';
-import { BaseEntityType } from '../../../../classes/entity.model';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({
@@ -16,12 +16,12 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 export class FileImageInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.FILE_IMAGE, FileData | FileData[]> implements OnInit {
 
-    FileUtilities = FileUtilities;
+    FileUtilities: typeof FileUtilities = FileUtilities;
 
     singlePreviewImage?: string;
     multiPreviewImages?: string[];
     imageIndex: number = 0;
-    placeHolder = placeholder;
+    placeHolder: string = placeholder;
 
     private async setSinglePreviewImage(): Promise<void> {
         if (this.propertyValue) {
