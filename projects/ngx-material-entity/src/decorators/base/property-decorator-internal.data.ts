@@ -33,8 +33,8 @@ class PositionInternal implements Position {
         if (data?.row != null && data.row < 1) {
             throw new Error('row must be at least 1');
         }
-        if (data?.tab != null && data.tab < 2) {
-            throw new Error('tab must be at least 2');
+        if (data?.tab != null && data.tab != -1 && data.tab < 2) {
+            throw new Error('tab must be either -1 for the first tab or at least 2');
         }
     }
 }
