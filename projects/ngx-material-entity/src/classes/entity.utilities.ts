@@ -869,7 +869,7 @@ export abstract class EntityUtilities {
 
         if (EntityUtilities.getEntityRows<EntityType>(entity, -1, hideOmitForCreate, hideOmitForEdit).length) {
             const firstTab: EntityTab<EntityType> = {
-                tabName: 'Tab 1',
+                tabName: EntityUtilities.getFirstTabName(entity),
                 tab: -1,
                 rows: EntityUtilities.getEntityRows<EntityType>(entity, -1, hideOmitForCreate, hideOmitForEdit)
             };
@@ -922,6 +922,13 @@ export abstract class EntityUtilities {
             .map(k => EntityUtilities.getPropertyMetadata(entity, k))
             .find(m => m.position.tab === tab && m.position.tabName)?.position.tabName;
         return providedTabName ?? `Tab ${tab}`;
+    }
+
+    private static getFirstTabName<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): string {
+        const providedTabName: string | undefined = EntityUtilities.keysOf(entity)
+            .map(k => EntityUtilities.getPropertyMetadata(entity, k))
+            .find(m => m.position.tabName && m.position.tab === -1)?.position.tabName;
+        return providedTabName ?? 'Tab 1';
     }
 
     /**

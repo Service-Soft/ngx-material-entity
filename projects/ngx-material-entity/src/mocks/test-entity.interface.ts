@@ -28,7 +28,10 @@ export class TestObjectEntity extends Entity {
     @string({
         displayStyle: 'line',
         displayName: 'Object Max Length Value',
-        maxLength: 4
+        maxLength: 4,
+        position: {
+            tabName: 'Object First Tab Values'
+        }
     })
     maxLengthStringValue!: string;
 

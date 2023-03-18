@@ -99,7 +99,7 @@ describe('baseProperty', () => {
                 class BasePropertyTestEntity extends Entity {
                     @string({
                         displayStyle: 'line',
-                        displayName: 'Wrong Row Value',
+                        displayName: 'Wrong Tab Value',
                         position: {
                             tab: 1
                         }
@@ -116,6 +116,6 @@ describe('baseProperty', () => {
                     wrongTabValue: '42'
                 });
             }
-        ).toThrow('tab must be at least 2');
+        ).toThrow('tab must be either -1 for the first tab or at least 2');
     });
 });
