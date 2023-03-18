@@ -40,7 +40,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     data!: TableDataInternal<EntityType>;
 
     private entityService!: EntityService<EntityType>;
-    private readonly onDestroy = new Subject<void>();
+    private readonly onDestroy: Subject<void> = new Subject<void>();
     @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort!: MatSort;
     @ViewChild('filter', { static: true }) filter!: string;
@@ -48,7 +48,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     dataSource: MatTableDataSource<EntityType> = new MatTableDataSource();
     selection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
 
-    SelectionUtilities = SelectionUtilities;
+    SelectionUtilities: typeof SelectionUtilities = SelectionUtilities;
 
     constructor(private readonly dialog: MatDialog, private readonly injector: Injector) {}
 

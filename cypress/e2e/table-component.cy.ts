@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 describe('default table', () => {
     before('Reset Api', () => {
         cy.request('POST', 'http://localhost:3000/reset/');
@@ -119,7 +118,7 @@ describe('custom table', () => {
         cy.get('button').contains('Custom Multi Select Label').click();
         cy.get('button').contains('Multi Action').parent().should('not.be.disabled');
         cy.get('button').contains('Multi Action').click();
-        // eslint-disable-next-line no-unused-expressions, @typescript-eslint/no-unused-expressions
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         expect(spy).to.be.calledOnce;
     });
 

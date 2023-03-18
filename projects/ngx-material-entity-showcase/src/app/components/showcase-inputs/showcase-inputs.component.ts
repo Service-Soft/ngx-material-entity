@@ -11,7 +11,7 @@ import { TestEntity, TestEntityMockBuilder } from '../../../../../ngx-material-e
 })
 export class ShowcaseInputsComponent {
 
-    private readonly STRING_DECORATOR_TYPES = [
+    private readonly STRING_DECORATOR_TYPES: DecoratorTypes[] = [
         DecoratorTypes.STRING_DROPDOWN,
         DecoratorTypes.STRING_TEXTBOX,
         DecoratorTypes.STRING_AUTOCOMPLETE,
@@ -19,13 +19,13 @@ export class ShowcaseInputsComponent {
         DecoratorTypes.STRING
     ];
 
-    private readonly NUMBER_DECORATOR_TYPES = [
+    private readonly NUMBER_DECORATOR_TYPES: DecoratorTypes[] = [
         DecoratorTypes.NUMBER,
         DecoratorTypes.NUMBER_DROPDOWN,
         DecoratorTypes.NUMBER_SLIDER
     ];
 
-    private readonly ARRAY_DECORATOR_TYPES = [
+    private readonly ARRAY_DECORATOR_TYPES: DecoratorTypes[] = [
         DecoratorTypes.ARRAY,
         DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS,
         DecoratorTypes.ARRAY_STRING_CHIPS,
@@ -34,35 +34,35 @@ export class ShowcaseInputsComponent {
         DecoratorTypes.ARRAY_DATE_RANGE
     ];
 
-    private readonly BOOLEAN_DECORATOR_TYPES = [
+    private readonly BOOLEAN_DECORATOR_TYPES: DecoratorTypes[] = [
         DecoratorTypes.BOOLEAN_CHECKBOX,
         DecoratorTypes.BOOLEAN_DROPDOWN,
         DecoratorTypes.BOOLEAN_TOGGLE
     ];
 
-    private readonly OBJECT_DECORATOR_TYPES = [
+    private readonly OBJECT_DECORATOR_TYPES: DecoratorTypes[] = [
         DecoratorTypes.OBJECT
     ];
 
-    private readonly DATE_DECORATOR_TYPES = [
+    private readonly DATE_DECORATOR_TYPES: DecoratorTypes[] = [
         DecoratorTypes.DATE,
         DecoratorTypes.DATE_TIME,
         DecoratorTypes.DATE_RANGE
     ];
 
-    private readonly FILE_DECORATOR_TYPES = [
+    private readonly FILE_DECORATOR_TYPES: DecoratorTypes[] = [
         DecoratorTypes.FILE_DEFAULT,
         DecoratorTypes.FILE_IMAGE
     ];
 
-    testEntity = new TestEntityMockBuilder().testEntityWithoutData;
+    testEntity: TestEntity = new TestEntityMockBuilder().testEntityWithoutData;
     keys!: (keyof TestEntity)[];
 
     inputValues: boolean = false;
     isReadOnly: boolean = false;
     loaded: boolean = true;
 
-    EntityUtilities = EntityUtilities;
+    EntityUtilities: typeof EntityUtilities = EntityUtilities;
 
     constructor(
         private readonly route: ActivatedRoute,

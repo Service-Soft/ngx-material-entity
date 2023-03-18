@@ -1,11 +1,11 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, OnInit } from '@angular/core';
-import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
-import { DateFilterFn } from '@angular/material/datepicker';
 import { Time } from '@angular/common';
-import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
+import { Component, OnInit } from '@angular/core';
+import { DateFilterFn } from '@angular/material/datepicker';
 import { DateUtilities } from '../../../../classes/date.utilities';
 import { BaseEntityType } from '../../../../classes/entity.model';
+import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
+import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({
@@ -17,7 +17,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.DATE_TIME, Date> implements OnInit {
 
-    DateUtilities = DateUtilities;
+    DateUtilities: typeof DateUtilities = DateUtilities;
 
     time?: Time;
     timeDropdownValues!: DropdownValue<Time>[];

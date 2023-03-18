@@ -1,10 +1,11 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
+import { DateFilterFn } from '@angular/material/datepicker';
+import { DateUtilities } from '../../../../classes/date.utilities';
+import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
-import { DateUtilities } from '../../../../classes/date.utilities';
-import { BaseEntityType } from '../../../../classes/entity.model';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 const EMPTY_DATERANGE: DateRange = {
@@ -26,7 +27,7 @@ export class DateRangeInputComponent<EntityType extends BaseEntityType<EntityTyp
     dateRangeStart?: Date;
     dateRangeEnd?: Date;
 
-    defaultDateFilter = DateUtilities.defaultDateFilter;
+    defaultDateFilter: DateFilterFn<Date | null | undefined> = DateUtilities.defaultDateFilter;
 
     override ngOnInit(): void {
         super.ngOnInit();

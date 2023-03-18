@@ -230,7 +230,7 @@ const addressData: Address = {
     city: 'Example City'
 };
 
-interface ApiData {
+export interface ApiData {
     testEntities: TestEntityWithoutCustomPropertiesInterface[],
     persons: Person[],
     addresses: Address[]

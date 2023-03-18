@@ -1,11 +1,11 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { Time } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { DateUtilities } from '../../../../classes/date.utilities';
-import { ArrayTableComponent } from '../array-table.class';
-import { Time } from '@angular/common';
-import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
+import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
+import { ArrayTableComponent } from '../array-table.class';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -16,7 +16,7 @@ import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum
 export class ArrayDateTimeInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends ArrayTableComponent<Date, EntityType, DecoratorTypes.ARRAY_DATE_TIME> implements OnInit {
 
-    DateUtilities = DateUtilities;
+    DateUtilities: typeof DateUtilities = DateUtilities;
 
     dateTime?: Date;
     time?: Time;

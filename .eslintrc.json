@@ -126,6 +126,14 @@
         },
         {
             "files": [
+                "*.cy.ts"
+            ],
+            "rules": {
+                "max-len": "off"
+            }
+        },
+        {
+            "files": [
                 "*.html"
             ],
             "rules": {
