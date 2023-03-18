@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { NavbarRow, NavUtilities } from 'ngx-material-navigation';
+import { NavbarRow, NavUtilities, NavElementTypes } from 'ngx-material-navigation';
 
 export const navbarRows: NavbarRow[] = [
     {
         elements: [
             {
-                type: 'titleWithInternalLink',
+                type: NavElementTypes.TITLE_WITH_INTERNAL_LINK,
                 title: 'Showcase Project',
                 icon: 'fa-brands fa-angular',
                 link: {
@@ -14,7 +14,7 @@ export const navbarRows: NavbarRow[] = [
                 collapse: 'never'
             },
             {
-                type: 'internalLink',
+                type: NavElementTypes.INTERNAL_LINK,
                 name: 'Home',
                 icon: 'fas fa-home',
                 route: {
@@ -25,7 +25,7 @@ export const navbarRows: NavbarRow[] = [
                 collapse: 'md'
             },
             {
-                type: 'internalLink',
+                type: NavElementTypes.INTERNAL_LINK,
                 name: 'Sandbox',
                 icon: 'fas fa-umbrella-beach',
                 route: {
@@ -36,7 +36,7 @@ export const navbarRows: NavbarRow[] = [
                 collapse: 'md'
             },
             {
-                type: 'internalLink',
+                type: NavElementTypes.INTERNAL_LINK,
                 name: 'Table',
                 icon: 'fas fa-table',
                 route: {
@@ -48,47 +48,47 @@ export const navbarRows: NavbarRow[] = [
                 collapse: 'md'
             },
             {
-                type: 'menu',
+                type: NavElementTypes.MENU,
                 name: 'Inputs',
                 icon: 'fas fa-keyboard',
                 elements: [
                     {
-                        type: 'internalLink',
+                        type: NavElementTypes.INTERNAL_LINK,
                         name: '@string',
                         route: 'inputs/string'
                     },
                     {
-                        type: 'internalLink',
+                        type: NavElementTypes.INTERNAL_LINK,
                         name: '@number',
                         route: 'inputs/number'
                     },
                     {
-                        type: 'internalLink',
+                        type: NavElementTypes.INTERNAL_LINK,
                         name: '@boolean',
                         route: 'inputs/boolean'
                     },
                     {
-                        type: 'internalLink',
+                        type: NavElementTypes.INTERNAL_LINK,
                         name: '@array',
                         route: 'inputs/array'
                     },
                     {
-                        type: 'internalLink',
+                        type: NavElementTypes.INTERNAL_LINK,
                         name: '@object',
                         route: 'inputs/object'
                     },
                     {
-                        type: 'internalLink',
+                        type: NavElementTypes.INTERNAL_LINK,
                         name: '@date',
                         route: 'inputs/date'
                     },
                     {
-                        type: 'internalLink',
+                        type: NavElementTypes.INTERNAL_LINK,
                         name: '@file',
                         route: 'inputs/file'
                     },
                     {
-                        type: 'internalLink',
+                        type: NavElementTypes.INTERNAL_LINK,
                         name: '@custom',
                         route: 'inputs/custom'
                     }
@@ -97,7 +97,7 @@ export const navbarRows: NavbarRow[] = [
                 collapse: 'md'
             },
             {
-                type: 'menu',
+                type: NavElementTypes.MENU,
                 name: 'Dialogs',
                 icon: 'fas fa-circle-exclamation',
                 elements: [],
@@ -105,7 +105,7 @@ export const navbarRows: NavbarRow[] = [
                 collapse: 'md'
             },
             {
-                type: 'button',
+                type: NavElementTypes.BUTTON,
                 name: 'Reset Data',
                 icon: 'fas fa-rotate-right',
                 action: () => fetch('http://localhost:3000/reset/', { method: 'POST' }).then(() => location.reload()),
@@ -123,4 +123,4 @@ export const additionalRoutes: Routes = [
     }
 ];
 
-export const routes: Routes = NavUtilities.getAngularRoutes(navbarRows, additionalRoutes);
+export const routes: Routes = NavUtilities.getAngularRoutes(navbarRows, [], additionalRoutes);

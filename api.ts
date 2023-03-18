@@ -1,13 +1,13 @@
-import { apiData } from './api-data';
+import { Application, NextFunction, Request, Response, RequestHandler } from 'express';
 import * as jsonServer from 'json-server';
-import { Request, Response, NextFunction } from 'express';
+import { ApiData, apiData } from './api-data';
 import { LodashUtilities } from './projects/ngx-material-entity/src/encapsulation/lodash.utilities';
 
-const data = LodashUtilities.cloneDeep(apiData);
+const data: ApiData = LodashUtilities.cloneDeep(apiData);
 
-const server = jsonServer.create();
-const router = jsonServer.router(data);
-const reset = (req: Request, res: Response, next: NextFunction): void => {
+const server: Application = jsonServer.create();
+const router: jsonServer.JsonServerRouter<ApiData> = jsonServer.router(data);
+const reset: RequestHandler = (req: Request, res: Response, next: NextFunction): void => {
     if (req.method === 'POST' && req.url.endsWith('/reset/')) {
         router.db.setState(LodashUtilities.cloneDeep(apiData));
         res.sendStatus(201);
@@ -16,17 +16,17 @@ const reset = (req: Request, res: Response, next: NextFunction): void => {
         next();
     }
 };
-const getFile = (req: Request, res: Response, next: NextFunction): void => {
+const getFile: RequestHandler = (req: Request, res: Response, next: NextFunction): void => {
     if (req.method === 'GET' && req.url.endsWith('/file/')) {
-        res.sendFile('./projects/ngx-material-entity/src/mocks/test.jpg', {root: __dirname});
+        res.sendFile('./projects/ngx-material-entity/src/mocks/test.jpg', { root: __dirname });
     }
     else {
         next();
     }
 };
-const middlewares = jsonServer.defaults().concat(reset, getFile);
+const middlewares: RequestHandler[] = jsonServer.defaults().concat(reset, getFile);
 
-const port = 3000;
+const port: number = 3000;
 
 server.use(middlewares);
 server.use(router);

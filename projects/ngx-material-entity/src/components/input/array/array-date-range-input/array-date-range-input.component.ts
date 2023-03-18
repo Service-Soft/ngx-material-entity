@@ -15,7 +15,7 @@ import { ArrayTableComponent } from '../array-table.class';
 export class ArrayDateRangeInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends ArrayTableComponent<DateRange, EntityType, DecoratorTypes.ARRAY_DATE_RANGE> implements OnInit {
 
-    DateUtilities = DateUtilities;
+    DateUtilities: typeof DateUtilities = DateUtilities;
 
     dateRangeStart?: Date;
     dateRangeEnd?: Date;

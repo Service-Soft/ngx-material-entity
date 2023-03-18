@@ -15,7 +15,7 @@ import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from './confirm-d
 })
 export class NgxMatEntityConfirmDialogComponent implements OnInit {
 
-    confirm = false;
+    confirm: boolean = false;
 
     data!: ConfirmDialogDataInternal;
 

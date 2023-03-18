@@ -9,8 +9,8 @@
 import { ChildProcess, exec, execSync } from 'child_process';
 
 exec('nodemon ./api.ts');
-exec('ng serve ngx-material-entity-showcase');
-execSync('wait-on http://localhost:4200');
+exec('ng serve --host 0.0.0.0 ngx-material-entity-showcase');
+execSync('wait-on http://0.0.0.0:4200');
 const cypress: ChildProcess = exec('cypress run --browser chrome');
 
 cypress.on('close', (code: number) => {

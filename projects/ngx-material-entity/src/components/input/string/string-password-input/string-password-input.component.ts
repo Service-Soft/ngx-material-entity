@@ -15,8 +15,8 @@ import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 export class StringPasswordInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.STRING_PASSWORD, string> implements OnInit {
 
-    hide = true;
-    hideConfirm = true;
+    hide: boolean = true;
+    hideConfirm: boolean = true;
 
     confirmRequired!: boolean;
     confirmPassword?: string;

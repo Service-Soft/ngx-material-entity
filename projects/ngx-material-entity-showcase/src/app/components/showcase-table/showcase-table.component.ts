@@ -11,7 +11,7 @@ import { customTableData, customTableDataReadOnly, defaultTableData } from './ta
 })
 export class ShowcaseTableComponent {
 
-    EntityUtilities = EntityUtilities;
+    EntityUtilities: typeof EntityUtilities = EntityUtilities;
 
     tableDataPresets: string[] = ['Default', 'Custom', 'Read Only'];
     selectedTableDataPreset: string = 'Default';
