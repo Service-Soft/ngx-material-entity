@@ -4,7 +4,7 @@ import { expect } from '@jest/globals';
 import { ReflectUtilities } from '../encapsulation/reflect.utilities';
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { Entity } from '../classes/entity.model';
-import { getDatesBetween, TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../mocks/test-entity.interface';
+import { getDatesBetween, TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder, TestObjectEntity } from '../mocks/test-entity.interface';
 
 const builder: TestEntityWithoutCustomPropertiesMockBuilder = new TestEntityWithoutCustomPropertiesMockBuilder();
 const testEntity: TestEntityWithoutCustomProperties = builder.testEntity;
@@ -611,6 +611,14 @@ describe('getEntityTabs', () => {
         expect(tabs[0].rows).toHaveLength(2);
         expect(tabs[0].tabName).toBe('Tab 1');
         expect(tabs[1].tabName).toBe('Tab 2');
+    });
+    test('should get custom tab names on object', () => {
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        ReflectUtilities.defineMetadata('confirmPassword', tE.passwordString, tE, 'passwordString');
+        const tabs: EntityTab<TestObjectEntity>[] = EntityUtilities.getEntityTabs(tE.objectValue);
+        expect(tabs).toHaveLength(2);
+        expect(tabs[0].tabName).toBe('Object First Tab Values');
+        expect(tabs[1].tabName).toBe('Other properties');
     });
 });
 
