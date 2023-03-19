@@ -1,11 +1,13 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { DateFilterFn } from '@angular/material/datepicker';
+import { firstValueFrom, of } from 'rxjs';
 import { DateUtilities } from '../classes/date.utilities';
 import { Entity } from '../classes/entity.model';
 import { EntityUtilities } from '../classes/entity.utilities';
 import { FileUtilities } from '../classes/file.utilities';
 import { array } from '../decorators/array/array.decorator';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
+import { DropdownValue } from '../decorators/base/dropdown-value.interface';
 import { boolean } from '../decorators/boolean/boolean.decorator';
 import { custom } from '../decorators/custom/custom.decorator';
 import { DateRange } from '../decorators/date/date-decorator.data';
@@ -17,9 +19,7 @@ import { object } from '../decorators/object/object.decorator';
 import { referencesMany } from '../decorators/references-many/references-many.decorator';
 import { string } from '../decorators/string/string.decorator';
 import { ReflectUtilities } from '../encapsulation/reflect.utilities';
-import { DropdownValue } from '../decorators/base/dropdown-value.interface';
 import { RandomMetadata } from './test-entity.mock';
-import { firstValueFrom, of } from 'rxjs';
 
 /**
  * An Entity used to Test the @object decorator on the TestEntity class.
@@ -1001,9 +1001,69 @@ export class TestEntityWithoutCustomPropertiesMockBuilder {
         this.testEntityData = data;
         this.testEntity = new TestEntityWithoutCustomProperties(data);
         this.testEntityWithoutData = new TestEntityWithoutCustomProperties();
-        ReflectUtilities.defineMetadata('confirmPassword', this.testEntity.passwordString, this.testEntity, 'passwordString');
-        // eslint-disable-next-line max-len
-        ReflectUtilities.defineMetadata('confirmPassword', this.testEntityWithoutData.passwordString, this.testEntityWithoutData, 'passwordString');
+        TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(this.testEntity, this.testEntityWithoutData);
+    }
+
+    static setupMetadata(testEntity: TestEntityWithoutCustomProperties, testEntityWithoutData?: TestEntityWithoutCustomProperties): void {
+        this.setMetadata(
+            EntityUtilities.CONFIRM_PASSWORD_KEY,
+            testEntity,
+            'passwordString',
+            testEntityWithoutData
+        );
+
+        this.setMetadata(
+            EntityUtilities.TIME_KEY,
+            testEntity,
+            'dateTimeValue',
+            testEntityWithoutData,
+            DateUtilities.getTimeFromDate(testEntity.customDateTimeValue)
+        );
+        this.setMetadata(
+            EntityUtilities.TIME_KEY,
+            testEntity,
+            'customDateTimeValue',
+            testEntityWithoutData,
+            DateUtilities.getTimeFromDate(testEntity.customDateTimeValue)
+        );
+
+        this.setDateRangeMetadata('dateRangeValue', testEntity, testEntityWithoutData);
+        this.setDateRangeMetadata('customDateRangeValue', testEntity, testEntityWithoutData);
+    }
+
+    private static setMetadata(
+        metadataKey: string,
+        testEntity: TestEntityWithoutCustomProperties,
+        propertyKey: keyof TestEntityWithoutCustomProperties,
+        testEntityWithoutData?: TestEntityWithoutCustomProperties,
+        value?: unknown
+    ): void {
+        ReflectUtilities.defineMetadata(metadataKey, value ?? testEntity[propertyKey], testEntity, propertyKey);
+        if (testEntityWithoutData != null) {
+            ReflectUtilities.defineMetadata(metadataKey, undefined, testEntityWithoutData, propertyKey);
+        }
+    }
+
+    private static setDateRangeMetadata(
+        propertyKey: keyof TestEntityWithoutCustomProperties,
+        testEntity: TestEntityWithoutCustomProperties,
+        testEntityWithoutData?: TestEntityWithoutCustomProperties
+    ): void {
+        this.setMetadata(
+            EntityUtilities.DATE_RANGE_END_KEY,
+            testEntity,
+            propertyKey,
+            testEntityWithoutData,
+            new Date((testEntity[propertyKey] as DateRange).end)
+        );
+        this.setMetadata(EntityUtilities.DATE_RANGE_KEY, testEntity, propertyKey, testEntityWithoutData);
+        this.setMetadata(
+            EntityUtilities.DATE_RANGE_START_KEY,
+            testEntity,
+            propertyKey,
+            testEntityWithoutData,
+            new Date((testEntity[propertyKey] as DateRange).start)
+        );
     }
 }
 

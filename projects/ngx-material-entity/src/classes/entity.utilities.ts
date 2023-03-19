@@ -319,7 +319,7 @@ export abstract class EntityUtilities {
             case DecoratorTypes.STRING_PASSWORD:
                 const entityPassword: string = entity[key] as string;
                 const passwordMetadata: PasswordStringDecoratorConfigInternal = metadata as PasswordStringDecoratorConfigInternal;
-                const confirmPassword: string = ReflectUtilities.getMetadata('confirmPassword', entity, key) as string;
+                const confirmPassword: string = ReflectUtilities.getMetadata(this.CONFIRM_PASSWORD_KEY, entity, key) as string;
                 if (!EntityUtilities.isPasswordValid(entityPassword, passwordMetadata, confirmPassword)) {
                     return false;
                 }
@@ -372,7 +372,8 @@ export abstract class EntityUtilities {
             case DecoratorTypes.DATE_TIME:
                 const entityDateTime: Date = new Date(entity[key] as Date);
                 const dateTimeMetadata: DateTimeDateDecoratorConfigInternal = metadata as DateTimeDateDecoratorConfigInternal;
-                if (!EntityUtilities.isDateTimeValid(entityDateTime, dateTimeMetadata)) {
+                const hasTime: boolean = ReflectUtilities.hasMetadata(this.TIME_KEY, entity, key);
+                if (!EntityUtilities.isDateTimeValid(entityDateTime, dateTimeMetadata, hasTime)) {
                     return false;
                 }
                 break;
@@ -509,7 +510,10 @@ export abstract class EntityUtilities {
         return true;
     }
 
-    private static isDateTimeValid(value: Date, metadata: DateTimeDateDecoratorConfigInternal): boolean {
+    private static isDateTimeValid(value: Date, metadata: DateTimeDateDecoratorConfigInternal, hasTime: boolean): boolean {
+        if (!hasTime) {
+            return false;
+        }
         if (metadata.minDate && value.getTime() < metadata.minDate(value).getTime()) {
             return false;
         }
