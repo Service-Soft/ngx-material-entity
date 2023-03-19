@@ -1,16 +1,15 @@
 <mat-form-field>
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-select
-        (ngModelChange)="emitChange()"
         [(ngModel)]="propertyValue"
         [name]="key.toString()"
         #model="ngModel"
         [required]="metadata.required"
         [disabled]="isReadOnly"
     >
-        <mat-option [value]="undefined">-</mat-option>
-        <mat-option [value]="true">{{metadata.dropdownTrue}}</mat-option>
-        <mat-option [value]="false">{{metadata.dropdownFalse}}</mat-option>
+        <mat-option [value]="undefined" (click)="emitChange()">-</mat-option>
+        <mat-option [value]="true" (click)="emitChange()">{{metadata.dropdownTrue}}</mat-option>
+        <mat-option [value]="false" (click)="emitChange()">{{metadata.dropdownFalse}}</mat-option>
     </mat-select>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>

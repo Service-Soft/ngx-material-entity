@@ -36,7 +36,7 @@ export interface DropdownNumberDecoratorConfig extends NumberDecoratorConfig {
     /**
      * The values of the dropdown, consisting of a name to display and the actual value.
      */
-    dropdownValues: DropdownValue<number>[]
+    dropdownValues: DropdownValue<number | undefined>[]
 }
 
 /**

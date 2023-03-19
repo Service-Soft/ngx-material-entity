@@ -141,16 +141,16 @@ export abstract class DateUtilities {
      * @returns All valid dropdown values for the datetime property.
      */
     static getValidTimesForDropdown(
-        times: DropdownValue<Time>[],
+        times: DropdownValue<Time | undefined>[],
         date?: Date,
         min?: (date?: Date) => Time,
         max?: (date?: Date) => Time,
         filter?: ((time: Time) => boolean) | (() => boolean)
-    ): DropdownValue<Time>[] {
+    ): DropdownValue<Time | undefined>[] {
         if (min) {
             const minTime: Time = min(date);
             times = times.filter(t =>
-                !(t.value as Time | undefined)
+                !t.value
                 || t.value.hours > minTime.hours
                 || (
                     t.value.hours === minTime.hours
@@ -161,7 +161,7 @@ export abstract class DateUtilities {
         if (max) {
             const maxTime: Time = max(date);
             times = times.filter(t =>
-                !(t.value as Time | undefined)
+                !t.value
                 || t.value.hours < maxTime.hours
                 || (
                     t.value.hours === maxTime.hours
@@ -170,7 +170,7 @@ export abstract class DateUtilities {
             );
         }
         if (filter) {
-            times = times.filter(t => !(t.value as Time | undefined) || filter(t.value));
+            times = times.filter(t => !t.value || filter(t.value));
         }
 
         return times;

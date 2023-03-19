@@ -21,7 +21,7 @@ export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType
 
     DateUtilities: typeof DateUtilities = DateUtilities;
 
-    timeDropdownValues!: DropdownValue<Time>[];
+    timeDropdownValues!: DropdownValue<Time | undefined>[];
 
     get time(): Time | undefined {
         return ReflectUtilities.getMetadata(EntityUtilities.TIME_KEY, this.entity, this.key) as Time | undefined;

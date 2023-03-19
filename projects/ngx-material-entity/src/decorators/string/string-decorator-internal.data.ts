@@ -9,7 +9,7 @@ export class DropdownStringDecoratorConfigInternal extends PropertyDecoratorConf
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown';
     // eslint-disable-next-line jsdoc/require-jsdoc
-    dropdownValues: DropdownValue<string>[];
+    dropdownValues: DropdownValue<string | undefined>[];
 
     constructor(data: DropdownStringDecoratorConfig) {
         super(data);
