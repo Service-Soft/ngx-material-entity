@@ -5,6 +5,7 @@ import { BaseEntityType } from '../../../../classes/entity.model';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
+import { EntityUtilities } from '../../../../classes/entity.utilities';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -19,18 +20,23 @@ export class StringPasswordInputComponent<EntityType extends BaseEntityType<Enti
     hideConfirm: boolean = true;
 
     confirmRequired!: boolean;
-    confirmPassword?: string;
+
+    get confirmPassword(): string | undefined {
+        return ReflectUtilities.getMetadata(EntityUtilities.CONFIRM_PASSWORD_KEY, this.entity, this.key) as string | undefined;
+    }
+
+    set confirmPassword(value: string | undefined) {
+        ReflectUtilities.defineMetadata(EntityUtilities.CONFIRM_PASSWORD_KEY, value, this.entity, this.key);
+    }
 
     override ngOnInit(): void {
         super.ngOnInit();
         this.confirmRequired = this.metadata.required;
         this.confirmPassword = LodashUtilities.cloneDeep(this.propertyValue);
-        ReflectUtilities.defineMetadata('confirmPassword', this.confirmPassword, this.entity, this.key);
     }
 
     passwordInput(): void {
         this.confirmRequired = Boolean(this.propertyValue);
-        ReflectUtilities.defineMetadata('confirmPassword', this.confirmPassword, this.entity, this.key);
         this.emitChange();
     }
 }

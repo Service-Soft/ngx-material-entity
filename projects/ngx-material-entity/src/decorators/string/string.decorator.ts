@@ -1,3 +1,4 @@
+import { EntityUtilities } from '../../classes/entity.utilities';
 import { baseProperty } from '../base/base-property.decorator';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal, PasswordStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from './string-decorator-internal.data';
@@ -21,7 +22,11 @@ export function string(
         case 'textbox':
             return baseProperty(new TextboxStringDecoratorConfigInternal(metadata), DecoratorTypes.STRING_TEXTBOX);
         case 'password':
-            return baseProperty(new PasswordStringDecoratorConfigInternal(metadata), DecoratorTypes.STRING_PASSWORD);
+            return baseProperty(
+                new PasswordStringDecoratorConfigInternal(metadata),
+                DecoratorTypes.STRING_PASSWORD,
+                [EntityUtilities.CONFIRM_PASSWORD_KEY]
+            );
         default:
             return baseProperty(new DefaultStringDecoratorConfigInternal(metadata), DecoratorTypes.STRING);
     }

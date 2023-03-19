@@ -1,3 +1,4 @@
+import { EntityUtilities } from '../../classes/entity.utilities';
 import { baseProperty } from '../base/base-property.decorator';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DefaultFileDecoratorConfigInternal, ImageFileDecoratorConfigInternal } from './file-decorator-internal.data';
@@ -13,9 +14,17 @@ import { DefaultFileDecoratorConfig, ImageFileDecoratorConfig } from './file-dec
 export function file(metadata: DefaultFileDecoratorConfig | ImageFileDecoratorConfig): (target: object, propertyKey: string) => void {
     switch (metadata.type) {
         case 'other':
-            return baseProperty(new DefaultFileDecoratorConfigInternal(metadata), DecoratorTypes.FILE_DEFAULT);
+            return baseProperty(
+                new DefaultFileDecoratorConfigInternal(metadata),
+                DecoratorTypes.FILE_DEFAULT,
+                [EntityUtilities.FILENAMES_KEY]
+            );
         case 'image':
-            return baseProperty(new ImageFileDecoratorConfigInternal(metadata), DecoratorTypes.FILE_IMAGE);
+            return baseProperty(
+                new ImageFileDecoratorConfigInternal(metadata),
+                DecoratorTypes.FILE_IMAGE,
+                [EntityUtilities.FILENAMES_KEY, EntityUtilities.MULTI_PREVIEW_IMAGES_KEY, EntityUtilities.SINGLE_PREVIEW_IMAGE_KEY]
+            );
         default:
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
             throw new Error(`Unknown metadata type ${(metadata as any).type}`);

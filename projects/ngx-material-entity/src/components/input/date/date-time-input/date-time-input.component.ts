@@ -2,7 +2,9 @@
 import { Time } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { DateFilterFn } from '@angular/material/datepicker';
+import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
 import { DateUtilities } from '../../../../classes/date.utilities';
+import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
@@ -19,8 +21,15 @@ export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType
 
     DateUtilities: typeof DateUtilities = DateUtilities;
 
-    time?: Time;
     timeDropdownValues!: DropdownValue<Time>[];
+
+    get time(): Time | undefined {
+        return ReflectUtilities.getMetadata(EntityUtilities.TIME_KEY, this.entity, this.key) as Time | undefined;
+    }
+
+    set time(value: Time | undefined) {
+        ReflectUtilities.defineMetadata(EntityUtilities.TIME_KEY, value, this.entity, this.key);
+    }
 
     defaultDateFilter: DateFilterFn<Date | null | undefined> = (): boolean => true;
 
