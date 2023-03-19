@@ -8,6 +8,8 @@ import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxMatEntityConfirmDialogComponent } from '../../../confirm-dialog/confirm-dialog.component';
 import { BaseEntityType } from '../../../../classes/entity.model';
+import { EntityUtilities } from '../../../../classes/entity.utilities';
+import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
@@ -17,12 +19,23 @@ import { BaseEntityType } from '../../../../classes/entity.model';
 })
 export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
-    filenames?: string[];
+    get filenames(): string[] | undefined {
+        return ReflectUtilities.getMetadata(EntityUtilities.FILENAMES_KEY, this.entity, this.key) as string[] | undefined;
+    }
+    set filenames(value: string[] | undefined) {
+        ReflectUtilities.defineMetadata(EntityUtilities.FILENAMES_KEY, value, this.entity, this.key);
+    }
 
     FileUtilities: typeof FileUtilities = FileUtilities;
 
     @Input()
     propertyValue!: FileData | FileData[] | undefined;
+
+    @Input()
+    entity!: EntityType;
+
+    @Input()
+    key!: keyof EntityType;
 
     @Input()
     metadata!: DefaultFileDecoratorConfigInternal | ImageFileDecoratorConfigInternal;

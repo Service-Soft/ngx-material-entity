@@ -42,6 +42,51 @@ interface Difference<EntityType extends BaseEntityType<EntityType>> {
 export abstract class EntityUtilities {
 
     /**
+     * The key for all keys of metadata that should be set to undefined when the entity gets reset.
+     */
+    static readonly METADATA_KEYS_TO_RESET_KEY: string = 'metadataKeysToReset';
+
+    /**
+     * The key for the metadata that saves the single preview image value on image properties.
+     */
+    static readonly SINGLE_PREVIEW_IMAGE_KEY: string = 'singlePreviewImage';
+
+    /**
+     * The key for the metadata that saves the multi preview images value on image properties.
+     */
+    static readonly MULTI_PREVIEW_IMAGES_KEY: string = 'multiPreviewImages';
+
+    /**
+     * The key for the metadata that saves the filenames value on file properties.
+     */
+    static readonly FILENAMES_KEY: string = 'fileNames';
+
+    /**
+     * The key for the metadata that saves the confirm password value on password properties.
+     */
+    static readonly CONFIRM_PASSWORD_KEY: string = 'confirmPassword';
+
+    /**
+     * The key for the metadata that saves the time value on date time properties.
+     */
+    static readonly TIME_KEY: string = 'time';
+
+    /**
+     * The key for the metadata that saves the date range value on date range properties.
+     */
+    static readonly DATE_RANGE_KEY: string = 'dateRange';
+
+    /**
+     * The key for the metadata that saves the date range start value on date range properties.
+     */
+    static readonly DATE_RANGE_START_KEY: string = 'dateRangeStart';
+
+    /**
+     * The key for the metadata that saves the date range end value on date range properties.
+     */
+    static readonly DATE_RANGE_END_KEY: string = 'dateRangeEnd';
+
+    /**
      * Gets the properties to omit when updating the entity.
      *
      * @param entity - The entity to get the properties which should be left out for updating from.
@@ -818,6 +863,13 @@ export abstract class EntityUtilities {
     static resetChangesOnEntity<EntityType extends BaseEntityType<EntityType>>(entity: EntityType, entityPriorChanges: EntityType): void {
         for (const key in entityPriorChanges) {
             ReflectUtilities.set(entity, key, ReflectUtilities.get(entityPriorChanges, key));
+            if (ReflectUtilities.hasMetadata(this.METADATA_KEYS_TO_RESET_KEY, entity, key)) {
+                for (const k of (ReflectUtilities.getMetadata(this.METADATA_KEYS_TO_RESET_KEY, entity, key) as string[])) {
+                    if (ReflectUtilities.hasMetadata(k, entity, key)) {
+                        ReflectUtilities.defineMetadata(k, undefined, entity, key);
+                    }
+                }
+            }
         }
     }
 
