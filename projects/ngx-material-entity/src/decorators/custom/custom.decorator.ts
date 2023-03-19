@@ -8,6 +8,7 @@ import { CustomDecoratorConfig } from './custom-decorator.data';
  * Decorator for setting and getting custom property metadata.
  *
  * @param metadata - The metadata of the custom property.
+ * @param metadataKeysToReset - Any metadata keys which values should be set to undefined on reset.
  * @returns The method that defines the metadata.
  */
 export function custom<
@@ -21,7 +22,12 @@ export function custom<
         CustomMetadataType,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         any
-    >
+    >,
+    metadataKeysToReset?: string[]
 ): (target: object, propertyKey: string) => void {
-    return baseProperty<DecoratorTypes.CUSTOM, CustomMetadataType>(new CustomDecoratorConfigInternal(metadata), DecoratorTypes.CUSTOM);
+    return baseProperty<DecoratorTypes.CUSTOM, CustomMetadataType>(
+        new CustomDecoratorConfigInternal(metadata),
+        DecoratorTypes.CUSTOM,
+        metadataKeysToReset
+    );
 }

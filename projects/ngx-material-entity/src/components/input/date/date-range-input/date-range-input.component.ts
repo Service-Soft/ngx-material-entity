@@ -3,9 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { DateFilterFn } from '@angular/material/datepicker';
 import { DateUtilities } from '../../../../classes/date.utilities';
 import { BaseEntityType } from '../../../../classes/entity.model';
+import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
+import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 const EMPTY_DATERANGE: DateRange = {
@@ -23,9 +25,26 @@ const EMPTY_DATERANGE: DateRange = {
 export class DateRangeInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.DATE_RANGE, DateRange> implements OnInit {
 
-    dateRange!: DateRange;
-    dateRangeStart?: Date;
-    dateRangeEnd?: Date;
+    get dateRange(): DateRange {
+        return ReflectUtilities.getMetadata(EntityUtilities.DATE_RANGE_KEY, this.entity, this.key) as DateRange;
+    }
+    set dateRange(value: DateRange) {
+        ReflectUtilities.defineMetadata(EntityUtilities.DATE_RANGE_KEY, value, this.entity, this.key);
+    }
+
+    get dateRangeStart(): Date | undefined {
+        return ReflectUtilities.getMetadata(EntityUtilities.DATE_RANGE_START_KEY, this.entity, this.key) as Date | undefined;
+    }
+    set dateRangeStart(value: Date | undefined) {
+        ReflectUtilities.defineMetadata(EntityUtilities.DATE_RANGE_START_KEY, value, this.entity, this.key);
+    }
+
+    get dateRangeEnd(): Date | undefined {
+        return ReflectUtilities.getMetadata(EntityUtilities.DATE_RANGE_END_KEY, this.entity, this.key) as Date | undefined;
+    }
+    set dateRangeEnd(value: Date | undefined) {
+        ReflectUtilities.defineMetadata(EntityUtilities.DATE_RANGE_END_KEY, value, this.entity, this.key);
+    }
 
     defaultDateFilter: DateFilterFn<Date | null | undefined> = DateUtilities.defaultDateFilter;
 

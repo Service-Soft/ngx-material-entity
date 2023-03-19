@@ -61,6 +61,18 @@ export abstract class ReflectUtilities {
     }
 
     /**
+     * Checks if the targets key entry has a metadata value for the given metadata key.
+     *
+     * @returns Whether the metadata is null or not.
+     * @param metadataKey - The key of the metadata on the property.
+     * @param target - Object that contains the property on itself or in its prototype chain.
+     * @param propertyKey - The key of the target.
+     */
+    static hasMetadata<T extends object>(metadataKey: string, target: T, propertyKey: keyof T): boolean {
+        return this.getMetadata(metadataKey, target, propertyKey) != null;
+    }
+
+    /**
      * Define a unique metadata entry on the target.
      *
      * @param metadataKey - A key used to store and retrieve metadata.
