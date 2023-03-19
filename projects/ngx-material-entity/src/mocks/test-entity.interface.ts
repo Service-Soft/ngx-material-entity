@@ -166,6 +166,7 @@ export interface TestEntityWithoutCustomPropertiesInterface {
     }[],
     numberDropdownValue: number,
     stringDropdownValue: string,
+    customBooleanDropdownValue: boolean,
     booleanDropdownValue: boolean,
     booleanCheckboxValue: boolean,
     booleanToggleValue: boolean,
@@ -624,11 +625,17 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
 
     @boolean({
         displayName: 'Boolean Dropdown Value',
-        displayStyle: 'dropdown',
-        dropdownTrue: 'Yes',
-        dropdownFalse: 'No'
+        displayStyle: 'dropdown'
     })
     booleanDropdownValue!: boolean;
+
+    @boolean({
+        displayName: 'Custom Boolean Dropdown Value',
+        displayStyle: 'dropdown',
+        dropdownTrue: 'True',
+        dropdownFalse: 'False'
+    })
+    customBooleanDropdownValue!: boolean;
 
     @boolean({
         displayName: 'Boolean Checkbox Value',
@@ -906,6 +913,7 @@ const testEntityData: TestEntityWithoutCustomProperties = {
     numberDropdownValue: 42,
     stringDropdownValue: 'String Dropdown #1',
     booleanDropdownValue: true,
+    customBooleanDropdownValue: true,
     booleanCheckboxValue: true,
     booleanToggleValue: true,
     dateValue: new Date(),

@@ -33,7 +33,7 @@ describe('getValidTimesForDropdown', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         // eslint-disable-next-line max-len
         const metadata: DateTimeDateDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(tE, 'customDateTimeValue', DecoratorTypes.DATE_TIME);
-        const result: DropdownValue<Time>[] = DateUtilities.getValidTimesForDropdown(
+        const result: DropdownValue<Time | undefined>[] = DateUtilities.getValidTimesForDropdown(
             metadata.times,
             tE.customDateTimeValue,
             metadata.minTime,
