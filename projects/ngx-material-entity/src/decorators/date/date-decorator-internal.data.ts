@@ -68,7 +68,7 @@ export class DateTimeDateDecoratorConfigInternal extends PropertyDecoratorConfig
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'datetime';
     // eslint-disable-next-line jsdoc/require-jsdoc
-    times: DropdownValue<Time>[];
+    times: DropdownValue<Time | undefined>[];
     // eslint-disable-next-line jsdoc/require-jsdoc
     timeDisplayName: string;
     // eslint-disable-next-line jsdoc/require-jsdoc

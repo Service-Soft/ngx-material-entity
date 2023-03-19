@@ -15,8 +15,8 @@ export class DropdownBooleanDecoratorConfigInternal extends PropertyDecoratorCon
     constructor(data: DropdownBooleanDecoratorConfig) {
         super(data);
         this.displayStyle = data.displayStyle;
-        this.dropdownTrue = data.dropdownTrue;
-        this.dropdownFalse = data.dropdownFalse;
+        this.dropdownTrue = data.dropdownTrue ?? 'Yes';
+        this.dropdownFalse = data.dropdownFalse ?? 'No';
     }
 }
 
