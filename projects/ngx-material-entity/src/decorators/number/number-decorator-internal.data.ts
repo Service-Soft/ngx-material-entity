@@ -28,7 +28,7 @@ export class DropdownNumberDecoratorConfigInternal extends PropertyDecoratorConf
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown';
     // eslint-disable-next-line jsdoc/require-jsdoc
-    dropdownValues: DropdownValue<number>[];
+    dropdownValues: DropdownValue<number | undefined>[];
 
     constructor(data: DropdownNumberDecoratorConfig) {
         super(data);

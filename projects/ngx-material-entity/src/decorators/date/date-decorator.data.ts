@@ -102,7 +102,7 @@ export interface DateTimeDateDecoratorConfig extends DateDecoratorConfig {
     /**
      * The selectable times.
      */
-    times?: DropdownValue<Time>[],
+    times?: DropdownValue<Time | undefined>[],
     /**
      * The name to use as a label for the time form field.
      *
