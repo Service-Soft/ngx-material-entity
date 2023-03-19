@@ -1,5 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
+import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
+import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { FileUtilities } from '../../../../classes/file.utilities';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
@@ -18,8 +20,20 @@ export class FileImageInputComponent<EntityType extends BaseEntityType<EntityTyp
 
     FileUtilities: typeof FileUtilities = FileUtilities;
 
-    singlePreviewImage?: string;
-    multiPreviewImages?: string[];
+    get multiPreviewImages(): string[] | undefined {
+        return ReflectUtilities.getMetadata(EntityUtilities.MULTI_PREVIEW_IMAGES_KEY, this.entity, this.key) as string[] | undefined;
+    }
+    set multiPreviewImages(value: string[] | undefined) {
+        ReflectUtilities.defineMetadata(EntityUtilities.MULTI_PREVIEW_IMAGES_KEY, value, this.entity, this.key);
+    }
+
+    get singlePreviewImage(): string | undefined {
+        return ReflectUtilities.getMetadata(EntityUtilities.SINGLE_PREVIEW_IMAGE_KEY, this.entity, this.key) as string | undefined;
+    }
+    set singlePreviewImage(value: string | undefined) {
+        ReflectUtilities.defineMetadata(EntityUtilities.SINGLE_PREVIEW_IMAGE_KEY, value, this.entity, this.key);
+    }
+
     imageIndex: number = 0;
     placeHolder: string = placeholder;
 
