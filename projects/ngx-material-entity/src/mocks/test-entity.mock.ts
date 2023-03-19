@@ -138,6 +138,7 @@ const testEntityData: TestEntity = {
     numberDropdownValue: 42,
     stringDropdownValue: 'String Dropdown #1',
     booleanDropdownValue: true,
+    customBooleanDropdownValue: true,
     booleanCheckboxValue: true,
     booleanToggleValue: true,
     dateValue: new Date(),

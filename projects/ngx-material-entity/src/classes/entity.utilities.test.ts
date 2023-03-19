@@ -634,7 +634,7 @@ describe('keysOf', () => {
     test('should get all keys of the entity', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
-        expect(EntityUtilities.keysOf(tE)).toHaveLength(53);
+        expect(EntityUtilities.keysOf(tE)).toHaveLength(54);
     });
     test('should get keys without omitForCreate', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
