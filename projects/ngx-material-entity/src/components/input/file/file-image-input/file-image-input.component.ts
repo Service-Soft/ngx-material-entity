@@ -1,12 +1,12 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
-import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
-import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { BaseEntityType } from '../../../../classes/entity.model';
-import { FileUtilities } from '../../../../classes/file.utilities';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { FileData } from '../../../../decorators/file/file-decorator.data';
+import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
 import { placeholder } from '../../../../mocks/placeholder-data.png';
+import { EntityUtilities } from '../../../../utilities/entity.utilities';
+import { FileUtilities } from '../../../../utilities/file.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({

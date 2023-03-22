@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { BaseEntityType } from '../../../classes/entity.model';
-import { EntityService } from '../../../classes/entity.service';
-import { EditDialogData } from '../table-data';
+import { EntityService } from '../../../services/entity.service';
+import { EditData } from '../table-data';
 
 /**
- * The Definition of the Edit Entity Dialog Data.
+ * The Definition of the Edit Entity Dialog or page Data.
  */
-export interface EditEntityDialogData<EntityType extends BaseEntityType<EntityType>> {
+export interface EditEntityData<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The entity to edit.
      */
@@ -18,7 +18,7 @@ export interface EditEntityDialogData<EntityType extends BaseEntityType<EntityTy
     /**
      * The info of the generic edit-dialog.
      */
-    editDialogData?: EditDialogData<EntityType>,
+    editData?: EditData<EntityType>,
     /**
      * Whether or not the user can delete this specific entity.
      */

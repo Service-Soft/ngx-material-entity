@@ -1,15 +1,15 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { BaseEntityType } from '../../../../classes/entity.model';
 import { DefaultFileDecoratorConfigInternal, FileDataWithFile, ImageFileDecoratorConfigInternal } from '../../../../decorators/file/file-decorator-internal.data';
-import { FileUtilities } from '../../../../classes/file.utilities';
 import { FileData } from '../../../../decorators/file/file-decorator.data';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
-import { MatDialog } from '@angular/material/dialog';
-import { NgxMatEntityConfirmDialogComponent } from '../../../confirm-dialog/confirm-dialog.component';
-import { BaseEntityType } from '../../../../classes/entity.model';
-import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
+import { EntityUtilities } from '../../../../utilities/entity.utilities';
+import { FileUtilities } from '../../../../utilities/file.utilities';
+import { NgxMatEntityConfirmDialogComponent } from '../../../confirm-dialog/confirm-dialog.component';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { EntityService } from '../../classes/entity.service';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
+import { EntityService } from '../../services/entity.service';
 import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
 
 /**
@@ -78,6 +78,10 @@ export interface BaseData<EntityType extends BaseEntityType<EntityType>> {
      */
     createButtonLabel?: string,
     /**
+     * Whether editing happens in a dialog or a separate page.
+     */
+    defaultEdit?: 'dialog' | 'page',
+    /**
      * Takes a custom edit method which runs when you click on a entity.
      * If you don't need any special editing of entries you can also omit this.
      * In that case a default edit dialog is generated.
@@ -125,7 +129,13 @@ export interface BaseData<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The Label for the button that opens all multi-actions.
      */
-    multiSelectLabel?: string
+    multiSelectLabel?: string,
+    /**
+     * Whether or not to display a loading spinner while the entities of the table are loaded.
+     *
+     * @default true
+     */
+    displayLoadingSpinner?: boolean
 }
 
 /**
@@ -155,23 +165,23 @@ export interface CreateDialogData {
 }
 
 /**
- * The data of the default edit-dialog.
+ * The data of the default edit-dialog or page.
  */
-export interface EditDialogData<EntityType extends BaseEntityType<EntityType>> {
+export interface EditData<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The title of the default edit-dialog.
      */
     title?: (entity: EntityType) => string,
     /**
-     * The label on the confirm-button of the default edit-dialog. Defaults to "Save".
+     * The label on the confirm-button of the default edit-dialog or page. Defaults to "Save".
      */
     confirmButtonLabel?: string,
     /**
-     * The label on the delete-button of the default edit-dialog. Defaults to "Delete".
+     * The label on the delete-button of the default edit-dialog or page. Defaults to "Delete".
      */
     deleteButtonLabel?: string,
     /**
-     * The label on the cancel-button for the default edit-dialog. Defaults to "Cancel".
+     * The label on the cancel-button for the default edit-dialog or page. Defaults to "Cancel".
      */
     cancelButtonLabel?: string,
     /**
@@ -189,7 +199,7 @@ export interface EditDialogData<EntityType extends BaseEntityType<EntityType>> {
     confirmDeleteDialogData?: ConfirmDialogData,
 
     /**
-     * The data used to generate a confirmation dialog for the delete action.
+     * The data used to generate a confirmation dialog for the edit action.
      */
     confirmEditDialogData?: ConfirmDialogData
 }
@@ -212,5 +222,5 @@ export interface TableData<EntityType extends BaseEntityType<EntityType>> {
      * The data for the default edit-dialog.
      * Can be omitted when specifying a custom "edit" method inside the baseData.
      */
-    editDialogData?: EditDialogData<EntityType>
+    editData?: EditData<EntityType>
 }

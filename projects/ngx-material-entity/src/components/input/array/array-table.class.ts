@@ -4,10 +4,10 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { BaseEntityType } from '../../../classes/entity.model';
-import { EntityUtilities } from '../../../classes/entity.utilities';
-import { SelectionUtilities } from '../../../classes/selection.utilities';
 import { DecoratorTypes } from '../../../decorators/base/decorator-types.enum';
 import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
+import { EntityUtilities } from '../../../utilities/entity.utilities';
+import { SelectionUtilities } from '../../../utilities/selection.utilities';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { NgxMatEntityBaseInputComponent } from '../base-input.component';
 

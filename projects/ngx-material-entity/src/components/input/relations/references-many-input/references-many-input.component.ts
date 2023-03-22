@@ -3,10 +3,10 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EnvironmentInjector, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { BaseEntityType } from '../../../../classes/entity.model';
-import { SelectionUtilities } from '../../../../classes/selection.utilities';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
+import { SelectionUtilities } from '../../../../utilities/selection.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({

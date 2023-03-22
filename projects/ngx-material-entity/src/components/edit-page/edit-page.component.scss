@@ -1,0 +1,17 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+
+    div {
+        display: flex;
+        column-gap: 10px;
+    }
+}
+
+h1 {
+    text-align: center;
+}
+
+.unsavedChanges {
+    background-color: #ffe48d;
+}

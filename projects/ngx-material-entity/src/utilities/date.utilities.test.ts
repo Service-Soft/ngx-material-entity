@@ -1,12 +1,12 @@
+import { Time } from '@angular/common';
 import { expect } from '@jest/globals';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
-import { DateUtilities } from './date.utilities';
-import { EntityUtilities } from './entity.utilities';
-import { DateTimeDateDecoratorConfigInternal } from '../decorators/date/date-decorator-internal.data';
-import { Time } from '@angular/common';
 import { DropdownValue } from '../decorators/base/dropdown-value.interface';
+import { DateTimeDateDecoratorConfigInternal } from '../decorators/date/date-decorator-internal.data';
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../mocks/test-entity.interface';
+import { DateUtilities } from './date.utilities';
+import { EntityUtilities } from './entity.utilities';
 
 const builder: TestEntityWithoutCustomPropertiesMockBuilder = new TestEntityWithoutCustomPropertiesMockBuilder();
 const testEntity: TestEntityWithoutCustomProperties = builder.testEntity;

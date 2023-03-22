@@ -1,5 +1,8 @@
-import { Routes } from '@angular/router';
-import { NavbarRow, NavUtilities, NavElementTypes } from 'ngx-material-navigation';
+import { Route, Routes } from '@angular/router';
+import { defaultEditDataRoute, EditDataRoute, NGX_EDIT_DATA, NGX_EDIT_DATA_ENTITY, NGX_EDIT_DATA_ENTITY_SERVICE, PageEditData, UnsavedChangesGuard } from 'ngx-material-entity';
+import { NavbarRow, NavElementTypes, NavUtilities } from 'ngx-material-navigation';
+import { TestEntity } from '../../../ngx-material-entity/src/mocks/test-entity.mock';
+import { TestEntityService } from '../services/test-entity.service';
 
 export const navbarRows: NavbarRow[] = [
     {
@@ -116,11 +119,35 @@ export const navbarRows: NavbarRow[] = [
     }
 ];
 
-export const additionalRoutes: Routes = [
-    {
-        path: 'inputs/:type',
-        loadChildren: () => import('./components/showcase-inputs/showcase-inputs.module').then(m => m.ShowcaseInputsModule)
-    }
-];
+const inputRoute: Route = {
+    path: 'inputs/:type',
+    loadChildren: () => import('./components/showcase-inputs/showcase-inputs.module').then(m => m.ShowcaseInputsModule)
+};
 
-export const routes: Routes = NavUtilities.getAngularRoutes(navbarRows, [], additionalRoutes);
+const editTestEntityData: PageEditData<TestEntity> = {
+    editData: {
+        title: (entity: TestEntity) => `Test Entity #${entity.id}`
+    }
+};
+
+const editTestEntityRoute: EditDataRoute = {
+    ...defaultEditDataRoute,
+    path: 'test-entities/:id',
+    providers: [
+        {
+            provide: NGX_EDIT_DATA_ENTITY_SERVICE,
+            useExisting: TestEntityService
+        },
+        {
+            provide: NGX_EDIT_DATA_ENTITY,
+            useValue: TestEntity
+        },
+        {
+            provide: NGX_EDIT_DATA,
+            useValue: editTestEntityData
+        }
+    ],
+    canDeactivate: [UnsavedChangesGuard]
+};
+
+export const routes: Routes = NavUtilities.getAngularRoutes(navbarRows, [], [inputRoute, editTestEntityRoute]);

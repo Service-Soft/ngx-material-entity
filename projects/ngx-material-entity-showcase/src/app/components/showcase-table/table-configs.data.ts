@@ -1,8 +1,30 @@
 import { TableData } from 'ngx-material-entity';
-import { TestEntityService } from '../../../services/test-entity.service';
 import { TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';
+import { TestEntityService } from '../../../services/test-entity.service';
 
 export const defaultTableData: TableData<TestEntity> = {
+    baseData: {
+        title: 'Default Test Entities',
+        displayColumns: [
+            {
+                displayName: 'Max and Min Strings',
+                value: (entity: TestEntity) => `${entity.maxLengthStringValue} ${entity.minLengthStringValue}`
+            },
+            {
+                displayName: 'Object',
+                value: (entity: TestEntity) => `#${entity.objectValue.id} ${entity.objectValue.maxLengthStringValue}`
+            }
+        ],
+        EntityClass: TestEntity,
+        EntityServiceClass: TestEntityService,
+        defaultEdit: 'page'
+    },
+    createDialogData: {
+        title: 'Create Test Entity'
+    }
+};
+
+export const defaultTableDataDialog: TableData<TestEntity> = {
     baseData: {
         title: 'Default Test Entities',
         displayColumns: [
@@ -20,9 +42,6 @@ export const defaultTableData: TableData<TestEntity> = {
     },
     createDialogData: {
         title: 'Create Test Entity'
-    },
-    editDialogData: {
-        title: (entity: TestEntity) => `Test Entity #${entity.id}`
     }
 };
 
@@ -59,7 +78,7 @@ export const customTableData: TableData<TestEntity> = {
     createDialogData: {
         title: 'Create Test Entity'
     },
-    editDialogData: {
+    editData: {
         title: (entity: TestEntity) => `Test Entity #${entity.id}`
     }
 };
@@ -96,7 +115,7 @@ export const customTableDataReadOnly: TableData<TestEntity> = {
     createDialogData: {
         title: 'Create Test Entity'
     },
-    editDialogData: {
+    editData: {
         title: (entity: TestEntity) => `Test Entity #${entity.id}`
     }
 };

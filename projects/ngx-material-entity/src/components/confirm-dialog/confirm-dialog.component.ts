@@ -31,16 +31,16 @@ export class NgxMatEntityConfirmDialogComponent implements OnInit {
     }
 
     /**
-     * Closes the dialog with value 1 to signal that the action should be run.
+     * Closes the dialog with true to signal that the action should be run.
      */
     confirmAction(): void {
-        this.dialogRef.close(1);
+        this.dialogRef.close(true);
     }
 
     /**
      * Closes the dialog.
      */
     cancel(): void {
-        this.dialogRef.close();
+        this.dialogRef.close(false);
     }
 }
