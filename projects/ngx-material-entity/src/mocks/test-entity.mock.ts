@@ -1,7 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { TestRandomInputComponent } from '../../../ngx-material-entity-showcase/src/app/components/custom-input-component/custom-input.component';
-import { EntityUtilities } from '../classes/entity.utilities';
 import { custom } from '../decorators/custom/custom.decorator';
+import { EntityUtilities } from '../utilities/entity.utilities';
 import { getDatesBetween, TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesInterface } from './test-entity.interface';
 
 export interface TestEntityInterface extends TestEntityWithoutCustomPropertiesInterface {

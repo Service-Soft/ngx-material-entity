@@ -1,10 +1,10 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Time } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { DateUtilities } from '../../../../classes/date.utilities';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
+import { DateUtilities } from '../../../../utilities/date.utilities';
 import { ArrayTableComponent } from '../array-table.class';
 
 @Component({

@@ -61,7 +61,8 @@ describe('default table', () => {
     it('should edit an entity and revert the changes', () => {
         cy.get('.mat-mdc-row > .cdk-column-Max-and-Min-Strings').click();
         cy.getInputByLabel('Max Length Value', 0, 3).click().clear().type('1234');
-        cy.get('button').contains('Cancel').click();
+        cy.get('button').contains('Back').click();
+        cy.get('button').contains('Leave').click();
         cy.get('.mat-mdc-row > .cdk-column-Max-and-Min-Strings').should('contain', 'chan 12345678');
     });
     it('should filter with the default method', () => {

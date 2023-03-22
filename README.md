@@ -57,6 +57,11 @@ NgxMaterialEntity aims to have a fast way to get started with a lot of default o
 - [NgxMatEntityTable Configuration](#ngxmatentitytable-configuration)
   - [Display Columns](#display-columns)
   - [Multiselect Actions](#multiselect-actions)
+  - [Edit in seperate page](#edit-in-seperate-page)
+    - [1. In the base data entry of your table config add `defaultEdit: 'page'`](#1-in-the-base-data-entry-of-your-table-config-add-defaultedit-page)
+    - [2. Add the route on which the entity should be edited:](#2-add-the-route-on-which-the-entity-should-be-edited)
+    - [3. Use a custom route (optional)](#3-use-a-custom-route-optional)
+    - [4. Require confirmation before leaving page with unsaved changes (optional)](#4-require-confirmation-before-leaving-page-with-unsaved-changes-optional)
 
 # Requirements
 This package relies on the [angular material library](https://material.angular.io/guide/getting-started) to render its components.
@@ -1273,4 +1278,99 @@ export interface MultiSelectAction<EntityType extends object> {
      */
     confirmDialogData?: ConfirmDialogData
 }
+```
+## Edit in seperate page
+When handling entities that have a lot of properties, you might don't want to edit everything inside a dialog but in a separate page.
+
+For that case, this library has a generic edit page. It works flawlessly with the table component, but you need to adjust some things:
+
+### 1. In the base data entry of your table config add `defaultEdit: 'page'`
+### 2. Add the route on which the entity should be edited:
+```typescript
+import { defaultEditDataRoute, EditDataRoute, NGX_EDIT_DATA_ENTITY, NGX_EDIT_DATA_ENTITY_SERVICE, PageEditData } from 'ngx-material-entity';
+
+//...
+
+const editMyEntityData: PageEditData<MyEntity> = {
+    editData: {
+        title: (entity: MyEntity) => `My Entity #${entity.id}`
+    }
+};
+
+const editDataRoute: EditDataRoute = {
+    ...defaultEditDataRoute,
+    providers: [
+        {
+            provide: NGX_EDIT_DATA_ENTITY_SERVICE,
+            useExisting: MyEntityService
+        },
+        {
+            provide: NGX_EDIT_DATA_ENTITY,
+            useValue: MyEntity
+        },
+        {
+            provide: NGX_EDIT_DATA,
+            useValue: editMyEntityData
+        }
+    ]
+};
+```
+The `defaultEditDataRoute` just provides values for things like path, title or loadComponent out of the box.
+
+The providers array is needed for the route to access the relevant entity service, entity class and the configuration data.
+### 3. Use a custom route (optional)
+By default, the configuration above will open any entities on the path `entities/:id`.
+
+At some point you probably want to open them on different paths, eg. `my-entities/:id` for the example above.
+
+In order to do that you need to add the custom path at two different places:
+<br>
+- In the relevant EntityService:
+`override readonly editBaseRoute: string = 'my-entities';`
+<br>
+- And in the route:
+```typescript
+import { defaultEditDataRoute, EditDataRoute, NGX_EDIT_DATA_ENTITY, NGX_EDIT_DATA_ENTITY_SERVICE, PageEditData } from 'ngx-material-entity';
+
+//...
+
+const editDataRoute: EditDataRoute = {
+    ...defaultEditDataRoute,
+    path: 'my-entities/:id',
+    providers: [
+        {
+            provide: NGX_EDIT_DATA_ENTITY_SERVICE,
+            useExisting: MyEntityService
+        },
+        {
+            provide: NGX_EDIT_DATA_ENTITY,
+            useValue: MyEntity
+        }
+    ]
+};
+```
+
+### 4. Require confirmation before leaving page with unsaved changes (optional)
+If you want the user to confim abandoning their changes you can simply add the `UnsavedChangesGuard` to your route:
+
+```typescript
+import { defaultEditDataRoute, EditDataRoute, NGX_EDIT_DATA_ENTITY, NGX_EDIT_DATA_ENTITY_SERVICE, PageEditData, UnsavedChangesGuard } from 'ngx-material-entity';
+
+//...
+
+const editDataRoute: EditDataRoute = {
+    ...defaultEditDataRoute,
+    path: 'my-entities/:id',
+    providers: [
+        {
+            provide: NGX_EDIT_DATA_ENTITY_SERVICE,
+            useExisting: MyEntityService
+        },
+        {
+            provide: NGX_EDIT_DATA_ENTITY,
+            useValue: MyEntity
+        }
+    ],
+    canDeactivate: [UnsavedChangesGuard]
+};
 ```

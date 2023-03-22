@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
-import { array } from './array.decorator';
 import { expect } from '@jest/globals';
 import { Entity } from '../../classes/entity.model';
-import { EntityUtilities } from '../../classes/entity.utilities';
-import { DecoratorTypes } from '../base/decorator-types.enum';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../../mocks/test-entity.interface';
-import { EntityArrayDecoratorConfigInternal } from './array-decorator-internal.data';
+import { EntityUtilities } from '../../utilities/entity.utilities';
+import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DefaultStringDecoratorConfigInternal } from '../string/string-decorator-internal.data';
+import { EntityArrayDecoratorConfigInternal } from './array-decorator-internal.data';
+import { array } from './array.decorator';
 
 const testEntity: TestEntityWithoutCustomProperties = new TestEntityWithoutCustomPropertiesMockBuilder().testEntity;
 

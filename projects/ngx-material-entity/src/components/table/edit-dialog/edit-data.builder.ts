@@ -1,13 +1,13 @@
-import { BaseEntityType } from '../../../classes/entity.model';
 import { BaseBuilder } from '../../../classes/base.builder';
+import { BaseEntityType } from '../../../classes/entity.model';
 import { ConfirmDialogData } from '../../confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
-import { EditDialogData } from '../table-data';
+import { EditData } from '../table-data';
 
 /**
- * The internal EditDialogData. Requires all default values the user can leave out.
+ * The internal EditData. Requires all default values the user can leave out.
  */
-export class EditDialogDataInternal<EntityType extends BaseEntityType<EntityType>> implements EditDialogData<EntityType> {
+export class EditDataInternal<EntityType extends BaseEntityType<EntityType>> implements EditData<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     title: (entity: EntityType) => string;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -50,14 +50,14 @@ export class EditDialogDataInternal<EntityType extends BaseEntityType<EntityType
  * The Builder for the EditDialogData. Sets default values.
  */
 export class EditDialogDataBuilder<EntityType extends BaseEntityType<EntityType>>
-    extends BaseBuilder<EditDialogDataInternal<EntityType>, EditDialogData<EntityType>> {
+    extends BaseBuilder<EditDataInternal<EntityType>, EditData<EntityType>> {
 
-    constructor(data?: EditDialogData<EntityType>) {
+    constructor(data?: EditData<EntityType>) {
         super(data);
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
-    protected generateBaseData(data?: EditDialogData<EntityType>): EditDialogDataInternal<EntityType> {
+    protected generateBaseData(data?: EditData<EntityType>): EditDataInternal<EntityType> {
         const confirmEditDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(data?.confirmEditDialogData)
             .withDefault('confirmButtonLabel', 'Save')
             .withDefault('text', ['Do you really want to save all changes?'])
@@ -71,7 +71,7 @@ export class EditDialogDataBuilder<EntityType extends BaseEntityType<EntityType>
             .withDefault('title', 'Delete')
             .getResult();
 
-        return new EditDialogDataInternal(
+        return new EditDataInternal(
             data?.title ?? (() => 'Edit'),
             data?.confirmButtonLabel ?? 'Save',
             data?.deleteButtonLabel ?? 'Delete',

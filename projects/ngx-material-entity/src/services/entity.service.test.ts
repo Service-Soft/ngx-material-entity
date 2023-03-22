@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { EntityService } from './entity.service';
-import { TestEntity as SimpleTestEntity } from './entity.model.test';
-import { HttpClientErrorMock, HttpClientMock } from '../mocks/http-client.mock';
 import { expect } from '@jest/globals';
+import { HttpClientErrorMock, HttpClientMock } from '../mocks/http-client.mock';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../mocks/test-entity.interface';
 import { TestEntity } from '../mocks/test-entity.mock';
+import { EntityService } from './entity.service';
+import { TestEntity as SimpleTestEntity } from '../classes/entity.model.test';
 
 
 export class SimpleTestEntityService extends EntityService<SimpleTestEntity> {
@@ -58,6 +58,16 @@ test('should request TestEntities', async () => {
     await service.create(new SimpleTestEntity({ id: '2', name: 'Jane Smith' }));
     const entitiesFoundByRead: SimpleTestEntity[] = await service.read();
     expect(entitiesFoundByRead.length).toBe(2);
+    // findById
+    const findByIdService: SimpleTestEntityService = new SimpleTestEntityService(new HttpClientMock([]) as unknown as HttpClient);
+    await findByIdService.create(new SimpleTestEntity({ id: '1', name: 'John Smith' }));
+    expect(await findByIdService.findById('1')).toEqual({ id: '1', name: 'John Smith' });
+    expect(await findByIdService.read()).toEqual([{ id: '1', name: 'John Smith' }]);
+    expect(await findByIdService.findById('1')).toEqual({ id: '1', name: 'John Smith' });
+    // eslint-disable-next-line max-len
+    const cleanFindByIdService: SimpleTestEntityService = new SimpleTestEntityService(new HttpClientMock([{ id: '1', name: 'John Smith' }]) as unknown as HttpClient);
+    cleanFindByIdService.lastRead = new Date();
+    expect(await cleanFindByIdService.findById('1')).toEqual({ id: '1', name: 'John Smith' });
 });
 
 test('should create with form data when required', async () => {

@@ -1,6 +1,6 @@
 import { expect } from '@jest/globals';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
-import { EntityUtilities } from '../../classes/entity.utilities';
+import { EntityUtilities } from '../../utilities/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { CustomDecoratorConfigInternal } from './custom-decorator-internal.data';
 import { custom } from './custom.decorator';

@@ -1,9 +1,9 @@
 import { Time } from '@angular/common';
 import { DateFilterFn } from '@angular/material/datepicker';
-import { DateUtilities } from '../../classes/date.utilities';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
 import { CreateDialogData, DisplayColumn } from '../../components/table/table-data';
+import { DateUtilities } from '../../utilities/date.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';

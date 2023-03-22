@@ -1,8 +1,8 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
-import { DateUtilities } from '../../../../classes/date.utilities';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
+import { DateUtilities } from '../../../../utilities/date.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({

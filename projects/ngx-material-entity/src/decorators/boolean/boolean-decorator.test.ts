@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
-import { Entity } from '../../classes/entity.model';
-import { EntityUtilities } from '../../classes/entity.utilities';
-import { DecoratorTypes } from '../base/decorator-types.enum';
-import { boolean } from './boolean.decorator';
 import { expect } from '@jest/globals';
+import { Entity } from '../../classes/entity.model';
+import { EntityUtilities } from '../../utilities/entity.utilities';
+import { DecoratorTypes } from '../base/decorator-types.enum';
 import { CheckboxBooleanDecoratorConfigInternal, DropdownBooleanDecoratorConfigInternal, ToggleBooleanDecoratorConfigInternal } from './boolean-decorator-internal.data';
+import { boolean } from './boolean.decorator';
 
 class BooleanTestEntity extends Entity {
     @boolean({

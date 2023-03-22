@@ -1,10 +1,10 @@
-import { EntityService } from '../../classes/entity.service';
-import { CreateDialogDataBuilder, CreateDialogDataInternal } from './create-dialog/create-dialog-data.builder';
-import { EditDialogDataBuilder, EditDialogDataInternal } from './edit-dialog/edit-dialog-data.builder';
-import { BaseData, DisplayColumn, MultiSelectAction, TableData } from './table-data';
 import { HttpClient } from '@angular/common/http';
 import { BaseBuilder } from '../../classes/base.builder';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
+import { EntityService } from '../../services/entity.service';
+import { CreateDialogDataBuilder, CreateDialogDataInternal } from './create-dialog/create-dialog-data.builder';
+import { EditDataInternal, EditDialogDataBuilder } from './edit-dialog/edit-data.builder';
+import { BaseData, DisplayColumn, MultiSelectAction, TableData } from './table-data';
 
 /**
  * The internal TableData. Requires all default values the user can leave out.
@@ -15,16 +15,16 @@ export class TableDataInternal<EntityType extends BaseEntityType<EntityType>> im
     // eslint-disable-next-line jsdoc/require-jsdoc
     createDialogData: CreateDialogDataInternal;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    editDialogData: EditDialogDataInternal<EntityType>;
+    editData: EditDataInternal<EntityType>;
 
     constructor(
         baseData: BaseDataInternal<EntityType>,
         createDialogData: CreateDialogDataInternal,
-        editDialogData: EditDialogDataInternal<EntityType>
+        editDialogData: EditDataInternal<EntityType>
     ) {
         this.baseData = baseData;
         this.createDialogData = createDialogData;
-        this.editDialogData = editDialogData;
+        this.editData = editDialogData;
     }
 }
 
@@ -46,6 +46,7 @@ export class BaseDataBuilder<EntityType extends BaseEntityType<EntityType>>
             data.EntityServiceClass,
             data.searchLabel ?? 'Search',
             data.createButtonLabel ?? 'Create',
+            data.defaultEdit ?? 'dialog',
             data.searchString ?? defaultSearchFunction,
             data.allowCreate ?? (() => true),
             data.allowRead ?? (() => true),
@@ -53,6 +54,7 @@ export class BaseDataBuilder<EntityType extends BaseEntityType<EntityType>>
             data.allowDelete ?? (() => true),
             data.multiSelectActions ?? [],
             data.multiSelectLabel ?? 'Actions',
+            data.displayLoadingSpinner ?? true,
             data.EntityClass,
             data.edit,
             data.create
@@ -75,6 +77,8 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
     // eslint-disable-next-line jsdoc/require-jsdoc
     createButtonLabel: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
+    defaultEdit: 'dialog' | 'page';
+    // eslint-disable-next-line jsdoc/require-jsdoc
     searchString: (entity: EntityType) => string;
     // eslint-disable-next-line jsdoc/require-jsdoc
     allowCreate: () => boolean;
@@ -88,6 +92,8 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
     multiSelectActions: MultiSelectAction<EntityType>[];
     // eslint-disable-next-line jsdoc/require-jsdoc
     multiSelectLabel: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    displayLoadingSpinner: boolean;
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     EntityClass?: EntityClassNewable<EntityType>;
@@ -102,6 +108,7 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
         searchLabel: string,
         createButtonLabel: string,
+        defaultEdit: 'dialog' | 'page',
         searchString: (entity: EntityType) => string,
         allowCreate: () => boolean,
         allowRead: (entity: EntityType) => boolean,
@@ -109,6 +116,7 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         allowDelete: (entity: EntityType) => boolean,
         multiSelectActions: MultiSelectAction<EntityType>[],
         multiSelectLabel: string,
+        displayLoadingSpinner: boolean,
         EntityClass?: EntityClassNewable<EntityType>,
         edit?: (entity: EntityType) => unknown,
         create?: (entity: EntityType) => unknown
@@ -119,6 +127,7 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         this.EntityClass = EntityClass;
         this.searchLabel = searchLabel;
         this.createButtonLabel = createButtonLabel;
+        this.defaultEdit = defaultEdit;
         this.searchString = searchString;
         this.allowCreate = allowCreate;
         this.allowRead = allowRead;
@@ -126,6 +135,7 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         this.allowDelete = allowDelete;
         this.multiSelectActions = multiSelectActions;
         this.multiSelectLabel = multiSelectLabel;
+        this.displayLoadingSpinner = displayLoadingSpinner;
         this.edit = edit;
         this.create = create;
     }
@@ -144,7 +154,7 @@ export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected generateBaseData(data: TableData<EntityType>): TableDataInternal<EntityType> {
         const createDialogData: CreateDialogDataInternal = new CreateDialogDataBuilder(data.createDialogData).getResult();
-        const editDialogData: EditDialogDataInternal<EntityType> = new EditDialogDataBuilder(data.editDialogData).getResult();
+        const editDialogData: EditDataInternal<EntityType> = new EditDialogDataBuilder(data.editData).getResult();
         const baseData: BaseDataInternal<EntityType> = new BaseDataBuilder(data.baseData).getResult();
         return new TableDataInternal<EntityType>(
             baseData,
@@ -188,7 +198,8 @@ export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
                 || data.baseData.allowDelete !== (() => false)
             )
             && !data.baseData.edit
-            && !data.editDialogData
+            && data.baseData.defaultEdit == 'dialog'
+            && !data.editData
         ) {
             throw new Error(
                 `Missing required Input data "editDialogData".

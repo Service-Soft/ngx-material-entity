@@ -1,13 +1,13 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
 import { DateFilterFn } from '@angular/material/datepicker';
-import { DateUtilities } from '../../../../classes/date.utilities';
 import { BaseEntityType } from '../../../../classes/entity.model';
-import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
+import { DateUtilities } from '../../../../utilities/date.utilities';
+import { EntityUtilities } from '../../../../utilities/entity.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 const EMPTY_DATERANGE: DateRange = {
