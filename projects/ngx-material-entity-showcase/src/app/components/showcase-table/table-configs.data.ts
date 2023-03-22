@@ -1,6 +1,6 @@
 import { TableData } from 'ngx-material-entity';
-import { TestEntityService } from '../../../services/test-entity.service';
 import { TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';
+import { TestEntityService } from '../../../services/test-entity.service';
 
 export const defaultTableData: TableData<TestEntity> = {
     baseData: {
@@ -18,6 +18,27 @@ export const defaultTableData: TableData<TestEntity> = {
         EntityClass: TestEntity,
         EntityServiceClass: TestEntityService,
         defaultEdit: 'page'
+    },
+    createDialogData: {
+        title: 'Create Test Entity'
+    }
+};
+
+export const defaultTableDataDialog: TableData<TestEntity> = {
+    baseData: {
+        title: 'Default Test Entities',
+        displayColumns: [
+            {
+                displayName: 'Max and Min Strings',
+                value: (entity: TestEntity) => `${entity.maxLengthStringValue} ${entity.minLengthStringValue}`
+            },
+            {
+                displayName: 'Object',
+                value: (entity: TestEntity) => `#${entity.objectValue.id} ${entity.objectValue.maxLengthStringValue}`
+            }
+        ],
+        EntityClass: TestEntity,
+        EntityServiceClass: TestEntityService
     },
     createDialogData: {
         title: 'Create Test Entity'

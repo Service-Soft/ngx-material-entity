@@ -2,7 +2,7 @@
 import { Component } from '@angular/core';
 import { EntityUtilities, TableData } from 'ngx-material-entity';
 import { TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';
-import { customTableData, customTableDataReadOnly, defaultTableData } from './table-configs.data';
+import { customTableData, customTableDataReadOnly, defaultTableData, defaultTableDataDialog } from './table-configs.data';
 
 @Component({
     selector: 'app-showcase-table',
@@ -13,7 +13,7 @@ export class ShowcaseTableComponent {
 
     EntityUtilities: typeof EntityUtilities = EntityUtilities;
 
-    tableDataPresets: string[] = ['Default', 'Custom', 'Read Only'];
+    tableDataPresets: string[] = ['Default', 'Default Dialog', 'Custom', 'Read Only'];
     selectedTableDataPreset: string = 'Default';
     tableData: TableData<TestEntity> = defaultTableData;
     // tableConfig: TableDataEntity<TestEntity> = new TableDataEntity(defaultTableData as TableDataEntity<TestEntity>);
@@ -32,6 +32,8 @@ export class ShowcaseTableComponent {
                 return customTableData;
             case 'Read Only':
                 return customTableDataReadOnly;
+            case 'Default Dialog':
+                return defaultTableDataDialog;
             default:
                 return defaultTableData;
         }
