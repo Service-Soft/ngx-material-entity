@@ -13,6 +13,9 @@ exec('ng serve --host 0.0.0.0 ngx-material-entity-showcase');
 execSync('wait-on http://0.0.0.0:4200');
 const cypress: ChildProcess = exec('cypress run --browser chrome');
 
+cypress.stdout?.on('data', (data) => {
+    console.log(data);
+});
 cypress.on('close', (code: number) => {
     console.log('Cypress closed. Code:', code);
     process.exit(code);
