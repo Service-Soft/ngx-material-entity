@@ -2,12 +2,12 @@
 import { Time } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { DateFilterFn } from '@angular/material/datepicker';
-import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
-import { DateUtilities } from '../../../../classes/date.utilities';
-import { EntityUtilities } from '../../../../classes/entity.utilities';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
+import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
+import { DateUtilities } from '../../../../utilities/date.utilities';
+import { EntityUtilities } from '../../../../utilities/entity.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({

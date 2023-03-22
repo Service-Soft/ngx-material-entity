@@ -1,22 +1,23 @@
+import { SelectionModel } from '@angular/cdk/collections';
 import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { EntityService } from '../../classes/entity.service';
+import { Router } from '@angular/router';
 import { firstValueFrom, Subject, takeUntil } from 'rxjs';
-import { SelectionModel } from '@angular/cdk/collections';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { NgxMatEntityCreateDialogComponent } from './create-dialog/create-entity-dialog.component';
-import { NgxMatEntityEditDialogComponent } from './edit-dialog/edit-entity-dialog.component';
-import { EditEntityDialogData } from './edit-dialog/edit-entity-dialog-data';
-import { MultiSelectAction, TableData } from './table-data';
-import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { BaseEntityType, Entity } from '../../classes/entity.model';
+import { EntityService } from '../../services/entity.service';
+import { SelectionUtilities } from '../../utilities/selection.utilities';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
+import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from './create-dialog/create-entity-dialog-data.builder';
+import { NgxMatEntityCreateDialogComponent } from './create-dialog/create-entity-dialog.component';
+import { EditEntityData } from './edit-dialog/edit-entity-data';
+import { NgxMatEntityEditDialogComponent } from './edit-dialog/edit-entity-dialog.component';
+import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-dialog/edit-entity.builder';
+import { MultiSelectAction, TableData } from './table-data';
 import { TableDataBuilder, TableDataInternal } from './table-data.builder';
-import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from '../table/edit-dialog/edit-entity-dialog.builder';
-import { BaseEntityType } from '../../classes/entity.model';
-import { SelectionUtilities } from '../../classes/selection.utilities';
 
 /**
  * Generates a fully functional table for displaying, creating, updating and deleting entities
@@ -29,7 +30,7 @@ import { SelectionUtilities } from '../../classes/selection.utilities';
     templateUrl: './table.component.html',
     styleUrls: ['./table.component.scss']
 })
-export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit, OnDestroy {
+export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity>> implements OnInit, OnDestroy {
 
     /**
      * The configuration for the component.
@@ -38,6 +39,8 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     tableData!: TableData<EntityType>;
 
     data!: TableDataInternal<EntityType>;
+
+    isLoading: boolean = true;
 
     private entityService!: EntityService<EntityType>;
     private readonly onDestroy: Subject<void> = new Subject<void>();
@@ -50,7 +53,11 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
 
     SelectionUtilities: typeof SelectionUtilities = SelectionUtilities;
 
-    constructor(private readonly dialog: MatDialog, private readonly injector: Injector) {}
+    constructor(
+        private readonly dialog: MatDialog,
+        private readonly injector: Injector,
+        private readonly router: Router
+    ) {}
 
     /**
      * Sets up all the configuration for the table and the EntityService.
@@ -85,7 +92,9 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
             this.dataSource.data = entities;
             this.selection.clear();
         });
-        void this.entityService.read();
+        void this.entityService.read().then(() => {
+            this.isLoading = false;
+        });
     }
 
     /**
@@ -103,21 +112,28 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         }
         if (this.data.baseData.edit) {
             this.data.baseData.edit(new this.data.baseData.EntityClass(entity));
+            return;
         }
-        else {
-            void this.editDefault(new this.data.baseData.EntityClass(entity));
+        if (this.data.baseData.defaultEdit == 'page') {
+            this.editDefaultPage(new this.data.baseData.EntityClass(entity));
+            return;
         }
+        void this.editDefaultDialog(new this.data.baseData.EntityClass(entity));
     }
 
-    private async editDefault(entity: EntityType): Promise<void> {
-        const inputDialogData: EditEntityDialogData<EntityType> = {
+    private editDefaultPage(entity: EntityType): void {
+        void this.router.navigate(['', this.entityService.editBaseRoute, entity.id]);
+    }
+
+    private async editDefaultDialog(entity: EntityType): Promise<void> {
+        const inputDialogData: EditEntityData<EntityType> = {
             entity: entity,
             EntityServiceClass: this.data.baseData.EntityServiceClass,
             allowUpdate: this.data.baseData.allowUpdate,
             allowDelete: this.data.baseData.allowDelete,
-            editDialogData: this.data.editDialogData
+            editData: this.data.editData
         };
-        const dialogData: EditEntityDialogDataInternal<EntityType> = new EditEntityDialogDataBuilder(inputDialogData).getResult();
+        const dialogData: EditEntityDataInternal<EntityType> = new EditEntityDataBuilder(inputDialogData).getResult();
         const res: number = await firstValueFrom(
             this.dialog.open(NgxMatEntityEditDialogComponent, {
                 data: dialogData,
@@ -184,13 +200,13 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
             .withDefault('text', [`Do you really want to run this action on ${this.selection.selected.length} entries?`])
             .withDefault('title', action.displayName)
             .getResult();
-        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false
         });
-        dialogRef.afterClosed().subscribe((res: number) => {
-            if (res === 1) {
+        dialogRef.afterClosed().subscribe(res => {
+            if (res == true) {
                 this.confirmRunMultiAction(action);
             }
         });

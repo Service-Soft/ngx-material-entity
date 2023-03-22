@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { BaseEntityType } from '../../../classes/entity.model';
-import { EntityService } from '../../../classes/entity.service';
+import { EntityService } from '../../../services/entity.service';
 import { CreateDialogData } from '../table-data';
 
 /**

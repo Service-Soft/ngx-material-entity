@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
-import { Entity } from '../../classes/entity.model';
-import { EntityUtilities } from '../../classes/entity.utilities';
-import { DecoratorTypes } from '../base/decorator-types.enum';
-import { object } from './object.decorator';
-import { string } from '../string/string.decorator';
 import { expect } from '@jest/globals';
-import { DefaultObjectDecoratorConfigInternal } from './object-decorator-internal.data';
+import { Entity } from '../../classes/entity.model';
+import { EntityUtilities } from '../../utilities/entity.utilities';
+import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DefaultStringDecoratorConfigInternal } from '../string/string-decorator-internal.data';
+import { string } from '../string/string.decorator';
+import { DefaultObjectDecoratorConfigInternal } from './object-decorator-internal.data';
+import { object } from './object.decorator';
 
 class Address extends Entity {
     @string({

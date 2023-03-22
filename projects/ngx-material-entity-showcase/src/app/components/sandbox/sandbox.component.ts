@@ -141,7 +141,7 @@ export class SandboxComponent {
         createDialogData: {
             title: 'Create Person'
         },
-        editDialogData: {
+        editData: {
             title: (entity: Person) => `${entity.firstName} ${entity.lastName}`
         }
     };

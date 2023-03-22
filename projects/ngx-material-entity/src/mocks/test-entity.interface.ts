@@ -1,10 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { DateFilterFn } from '@angular/material/datepicker';
 import { firstValueFrom, of } from 'rxjs';
-import { DateUtilities } from '../classes/date.utilities';
 import { Entity } from '../classes/entity.model';
-import { EntityUtilities } from '../classes/entity.utilities';
-import { FileUtilities } from '../classes/file.utilities';
 import { array } from '../decorators/array/array.decorator';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { DropdownValue } from '../decorators/base/dropdown-value.interface';
@@ -19,6 +16,9 @@ import { object } from '../decorators/object/object.decorator';
 import { referencesMany } from '../decorators/references-many/references-many.decorator';
 import { string } from '../decorators/string/string.decorator';
 import { ReflectUtilities } from '../encapsulation/reflect.utilities';
+import { DateUtilities } from '../utilities/date.utilities';
+import { EntityUtilities } from '../utilities/entity.utilities';
+import { FileUtilities } from '../utilities/file.utilities';
 import { RandomMetadata } from './test-entity.mock';
 
 /**

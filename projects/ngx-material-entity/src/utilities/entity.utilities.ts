@@ -1,5 +1,6 @@
 import { Time } from '@angular/common';
 import { DateFilterFn } from '@angular/material/datepicker';
+import { BaseEntityType } from '../classes/entity.model';
 import { DateRangeArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
 import { DecoratorType, DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../decorators/base/property-decorator-internal.data';
@@ -15,7 +16,6 @@ import { DefaultStringDecoratorConfigInternal, PasswordStringDecoratorConfigInte
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../encapsulation/reflect.utilities';
 import { DateUtilities } from './date.utilities';
-import { BaseEntityType } from './entity.model';
 import { FileUtilities } from './file.utilities';
 
 /**

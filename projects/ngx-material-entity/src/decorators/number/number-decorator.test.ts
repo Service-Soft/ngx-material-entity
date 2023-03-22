@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
-import { Entity } from '../../classes/entity.model';
-import { EntityUtilities } from '../../classes/entity.utilities';
-import { DecoratorTypes } from '../base/decorator-types.enum';
-import { number } from './number.decorator';
 import { expect } from '@jest/globals';
+import { Entity } from '../../classes/entity.model';
+import { EntityUtilities } from '../../utilities/entity.utilities';
+import { DecoratorTypes } from '../base/decorator-types.enum';
 import { defaultFormatThumbLabelValue, DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal, SliderNumberDecoratorConfigInternal } from './number-decorator-internal.data';
+import { number } from './number.decorator';
 
 class TestEntity extends Entity {
     @number({

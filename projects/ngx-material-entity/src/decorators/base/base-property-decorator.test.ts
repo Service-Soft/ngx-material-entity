@@ -1,10 +1,10 @@
-import { EntityUtilities } from '../../classes/entity.utilities';
-import { string } from '../string/string.decorator';
+import { expect } from '@jest/globals';
 import { Entity } from '../../classes/entity.model';
 import { TestEntityWithoutCustomPropertiesMockBuilder } from '../../mocks/test-entity.interface';
-import { DecoratorTypes } from './decorator-types.enum';
-import { expect } from '@jest/globals';
+import { EntityUtilities } from '../../utilities/entity.utilities';
 import { DefaultStringDecoratorConfigInternal } from '../string/string-decorator-internal.data';
+import { string } from '../string/string.decorator';
+import { DecoratorTypes } from './decorator-types.enum';
 
 describe('baseProperty', () => {
     test('id should have base Metadata', () => {

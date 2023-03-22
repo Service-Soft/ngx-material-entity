@@ -1,5 +1,5 @@
 import { string } from '../decorators/string/string.decorator';
-import { EntityUtilities } from './entity.utilities';
+import { EntityUtilities } from '../utilities/entity.utilities';
 
 /**
  * The newable type used whenever an entity class is passed to create an entity and initialize its metadata.

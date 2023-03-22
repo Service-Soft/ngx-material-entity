@@ -16,13 +16,11 @@ export const defaultTableData: TableData<TestEntity> = {
             }
         ],
         EntityClass: TestEntity,
-        EntityServiceClass: TestEntityService
+        EntityServiceClass: TestEntityService,
+        defaultEdit: 'page'
     },
     createDialogData: {
         title: 'Create Test Entity'
-    },
-    editDialogData: {
-        title: (entity: TestEntity) => `Test Entity #${entity.id}`
     }
 };
 
@@ -59,7 +57,7 @@ export const customTableData: TableData<TestEntity> = {
     createDialogData: {
         title: 'Create Test Entity'
     },
-    editDialogData: {
+    editData: {
         title: (entity: TestEntity) => `Test Entity #${entity.id}`
     }
 };
@@ -96,7 +94,7 @@ export const customTableDataReadOnly: TableData<TestEntity> = {
     createDialogData: {
         title: 'Create Test Entity'
     },
-    editDialogData: {
+    editData: {
         title: (entity: TestEntity) => `Test Entity #${entity.id}`
     }
 };
