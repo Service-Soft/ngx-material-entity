@@ -57,18 +57,30 @@ describe('default table', () => {
         cy.get('button').contains('Save').click();
         cy.get('.mat-mdc-row > .cdk-column-Max-and-Min-Strings').should('contain', 'chan 12345678');
     });
-    // Testing of the correct content of the dialog / display of error messages etc. is done separately
-    it('should edit an entity and revert the changes', () => {
-        cy.get('.mat-mdc-row > .cdk-column-Max-and-Min-Strings').click();
-        cy.getInputByLabel('Max Length Value', 0, 3).click().clear().type('1234');
-        cy.get('button').contains('Cancel').click();
-        cy.get('.mat-mdc-row > .cdk-column-Max-and-Min-Strings').should('contain', 'chan 12345678');
-    });
     it('should filter with the default method', () => {
         cy.getInputByLabel('Search', 0, 3).click().type('X');
         cy.get('app-showcase-table').find('ngx-mat-entity-table').find('.mat-mdc-row').should('have.length', 0);
         cy.getInputByLabel('Search', 0, 3).click().clear().type('123');
         cy.get('app-showcase-table').find('ngx-mat-entity-table').find('.mat-mdc-row').should('have.length', 1);
+    });
+});
+
+describe('default dialog table', () => {
+    before('Reset Api', () => {
+        cy.request('POST', 'http://localhost:3000/reset/');
+    });
+
+    beforeEach('', () => {
+        cy.visit('http://localhost:4200/table');
+        cy.getInputByLabel('Table Configuration').click();
+        cy.get('mat-option').contains('Default Dialog').click();
+    });
+    // Testing of the correct content of the dialog / display of error messages etc. is done separately
+    it('should edit an entity and revert the changes', () => {
+        cy.get('.mat-mdc-row > .cdk-column-Max-and-Min-Strings').click();
+        cy.getInputByLabel('Max Length Value', 0, 3).click().clear().type('chan');
+        cy.get('button').contains('Cancel').click();
+        cy.get('.mat-mdc-row > .cdk-column-Max-and-Min-Strings').should('contain', '1234 12345678');
     });
 });
 

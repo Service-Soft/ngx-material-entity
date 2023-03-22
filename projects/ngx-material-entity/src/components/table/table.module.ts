@@ -12,6 +12,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NgxMatEntityCreateDialogModule } from './create-dialog/create-entity-dialog.module';
 import { NgxMatEntityEditDialogModule } from './edit-dialog/edit-entity-dialog.module';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
     declarations: [NgxMatEntityTableComponent],
@@ -26,6 +27,7 @@ import { NgxMatEntityEditDialogModule } from './edit-dialog/edit-entity-dialog.m
         MatButtonModule,
         MatMenuModule,
         MatDialogModule,
+        MatProgressSpinnerModule,
         NgxMatEntityCreateDialogModule,
         NgxMatEntityEditDialogModule
     ],

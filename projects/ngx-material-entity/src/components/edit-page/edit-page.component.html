@@ -1,0 +1,73 @@
+<div *ngIf="!entityTabs && data.displayLoadingSpinner" class="container">
+    <br>
+    <mat-spinner style="margin-left: auto; margin-right: auto;"></mat-spinner>
+    <br>
+</div>
+
+<div *ngIf="entityTabs" class="container">
+    <br>
+
+    <!------------>
+    <!-- Header -->
+    <!------------>
+    <div class="header">
+        <div>
+            <button type="button" [class.unsavedChanges]="hasUnsavedChanges" mat-raised-button (click)="navigateBack()" class="back-button" tabindex="-1">
+                <i class="fas fa-chevron-left"></i>
+                {{data.editData.cancelButtonLabel}}
+                <i class="fas fa-warning" style="color: orange;" *ngIf="hasUnsavedChanges"></i>
+            </button>
+            <button (click)="edit()" mat-raised-button [disabled]="isReadOnly || !isEntityValid || !isEntityDirty">
+                {{data.editData.confirmButtonLabel}}
+            </button>
+        </div>
+        <button type="button" *ngIf="data.allowDelete(entity)" mat-raised-button (click)="delete()" color="warn" class="delete-button" tabindex="-1">
+            {{data.editData.deleteButtonLabel}}
+        </button>
+    </div>
+
+    <h1>{{data.editData.title(entityPriorChanges)}}</h1>
+
+    <!----------->
+    <!-- Input -->
+    <!----------->
+    <form>
+        <mat-tab-group *ngIf="entityTabs.length > 1" preserveContent>
+            <mat-tab *ngFor="let tab of entityTabs" [label]="tab.tabName">
+                <div class="row" *ngFor="let row of tab.rows">
+                    <ngx-mat-entity-input
+                        *ngFor="let key of row.keys"
+                        [entity]="entity"
+                        [propertyKey]="key"
+                        [hideOmitForEdit]="true"
+                        class="col-lg-{{EntityUtilities.getWidth(entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(entity, key, 'sm')}}"
+                        (inputChangeEvent)="checkEntity()"
+                        [isReadOnly]="isReadOnly"
+                    >
+                    </ngx-mat-entity-input>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    
+        <div *ngIf="entityTabs.length <= 1">
+            <div class="row" *ngFor="let row of entityTabs[0].rows">
+                <ngx-mat-entity-input
+                    *ngFor="let key of row.keys"
+                    [entity]="entity"
+                    [propertyKey]="key"
+                    [hideOmitForEdit]="true"
+                    class="col-lg-{{EntityUtilities.getWidth(entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(entity, key, 'sm')}}"
+                    (inputChangeEvent)="checkEntity()"
+                    [isReadOnly]="isReadOnly"
+                >
+                </ngx-mat-entity-input>
+            </div>
+        </div>
+
+        <button type="submit" (click)="edit()" mat-raised-button [disabled]="isReadOnly || !isEntityValid || !isEntityDirty">
+            {{data.editData.confirmButtonLabel}}
+        </button>
+    </form>
+
+    <br>
+</div>

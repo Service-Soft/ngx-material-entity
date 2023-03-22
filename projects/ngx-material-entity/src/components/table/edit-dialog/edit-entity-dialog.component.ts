@@ -1,13 +1,13 @@
 import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { EntityService } from '../../../classes/entity.service';
-import { EntityTab, EntityUtilities } from '../../../classes/entity.utilities';
-import { EditEntityDialogData } from './edit-entity-dialog-data';
-import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
-import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
-import { EditEntityDialogDataBuilder, EditEntityDialogDataInternal } from './edit-entity-dialog.builder';
-import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
 import { BaseEntityType } from '../../../classes/entity.model';
+import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
+import { EntityService } from '../../../services/entity.service';
+import { EntityTab, EntityUtilities } from '../../../utilities/entity.utilities';
+import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
+import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
+import { EditEntityData } from './edit-entity-data';
+import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-entity.builder';
 
 /**
  * The default dialog used to edit an existing entity based on the configuration passed in the MAT_DIALOG_DATA "inputData".
@@ -29,7 +29,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
 
     entityPriorChanges!: EntityType;
 
-    data!: EditEntityDialogDataInternal<EntityType>;
+    data!: EditEntityDataInternal<EntityType>;
 
     isEntityValid: boolean = true;
     isEntityDirty: boolean = false;
@@ -38,14 +38,14 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
 
     constructor(
         @Inject(MAT_DIALOG_DATA)
-        private readonly inputData: EditEntityDialogData<EntityType>,
+        private readonly inputData: EditEntityData<EntityType>,
         public dialogRef: MatDialogRef<NgxMatEntityEditDialogComponent<EntityType>>,
         private readonly injector: Injector,
         private readonly dialog: MatDialog
     ) {}
 
     ngOnInit(): void {
-        this.data = new EditEntityDialogDataBuilder(this.inputData).getResult();
+        this.data = new EditEntityDataBuilder(this.inputData).getResult();
         this.entityPriorChanges = LodashUtilities.cloneDeep(this.data.entity);
         this.isReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
         this.dialogRef.disableClose = true;
@@ -69,22 +69,22 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
         if (this.isReadOnly || !this.isEntityValid || !this.isEntityDirty) {
             return;
         }
-        if (!this.data.editDialogData.editRequiresConfirmDialog) {
+        if (!this.data.editData.editRequiresConfirmDialog) {
             this.confirmEdit();
             return;
         }
-        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.editDialogData.confirmEditDialogData)
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.editData.confirmEditDialogData)
             .withDefault('text', ['Do you really want to save all changes?'])
             .withDefault('confirmButtonLabel', 'Save')
             .withDefault('title', 'Edit')
             .getResult();
-        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false
         });
-        dialogRef.afterClosed().subscribe((res: number) => {
-            if (res === 1) {
+        dialogRef.afterClosed().subscribe(res => {
+            if (res == true) {
                 this.confirmEdit();
             }
         });
@@ -99,23 +99,23 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      * Also handles the confirmation if required.
      */
     delete(): void {
-        if (!this.data.editDialogData.deleteRequiresConfirmDialog) {
+        if (!this.data.editData.deleteRequiresConfirmDialog) {
             this.confirmDelete();
             return;
         }
-        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.editDialogData.confirmDeleteDialogData)
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.editData.confirmDeleteDialogData)
             .withDefault('text', ['Do you really want to delete this entity?'])
             .withDefault('type', 'delete')
             .withDefault('confirmButtonLabel', 'Delete')
             .withDefault('title', 'Delete')
             .getResult();
-        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false
         });
-        dialogRef.afterClosed().subscribe((res: number) => {
-            if (res === 1) {
+        dialogRef.afterClosed().subscribe(res => {
+            if (res == true) {
                 this.confirmDelete();
             }
         });

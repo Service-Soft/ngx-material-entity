@@ -1,5 +1,5 @@
-import { EntityUtilities } from '../../classes/entity.utilities';
 import { ReflectUtilities } from '../../encapsulation/reflect.utilities';
+import { EntityUtilities } from '../../utilities/entity.utilities';
 import { DecoratorType, DecoratorTypes } from './decorator-types.enum';
 
 /**

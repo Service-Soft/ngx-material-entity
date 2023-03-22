@@ -20,6 +20,9 @@ export class HttpClientMock {
         return of(body);
     }
     get(url: string): Observable<any> {
+        if (url.charAt(url.length - 2) == '/') {
+            return of(this.exampleData[0]);
+        }
         return of(this.exampleData);
     }
     patch(url: string, body: any): Observable<any> {

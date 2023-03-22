@@ -1,7 +1,7 @@
 import { expect } from '@jest/globals';
 import { firstValueFrom, of } from 'rxjs';
 import { BaseEntityType } from '../../classes/entity.model';
-import { EntityUtilities } from '../../classes/entity.utilities';
+import { EntityUtilities } from '../../utilities/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { string } from '../string/string.decorator';

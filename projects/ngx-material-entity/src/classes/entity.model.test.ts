@@ -1,7 +1,7 @@
-import { Entity } from './entity.model';
-import { EntityUtilities } from './entity.utilities';
-import { string } from '../decorators/string/string.decorator';
 import { expect } from '@jest/globals';
+import { string } from '../decorators/string/string.decorator';
+import { EntityUtilities } from '../utilities/entity.utilities';
+import { Entity } from './entity.model';
 
 export class TestEntity extends Entity {
     @string({

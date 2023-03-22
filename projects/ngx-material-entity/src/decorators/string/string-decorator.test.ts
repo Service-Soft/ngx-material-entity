@@ -1,9 +1,9 @@
-import { Entity } from '../../classes/entity.model';
-import { EntityUtilities } from '../../classes/entity.utilities';
-import { DecoratorTypes } from '../base/decorator-types.enum';
-import { string } from './string.decorator';
 import { expect } from '@jest/globals';
+import { Entity } from '../../classes/entity.model';
+import { EntityUtilities } from '../../utilities/entity.utilities';
+import { DecoratorTypes } from '../base/decorator-types.enum';
 import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal } from './string-decorator-internal.data';
+import { string } from './string.decorator';
 
 class TestEntity extends Entity {
     @string({

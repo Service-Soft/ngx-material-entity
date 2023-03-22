@@ -1,9 +1,9 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
-import { DateUtilities } from '../../../../classes/date.utilities';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
+import { DateUtilities } from '../../../../utilities/date.utilities';
 import { ArrayTableComponent } from '../array-table.class';
 
 @Component({

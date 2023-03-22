@@ -1,11 +1,11 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
-import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { BaseEntityType } from '../../../../classes/entity.model';
-import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
-import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
+import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
-import { EntityUtilities } from '../../../../classes/entity.utilities';
+import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
+import { EntityUtilities } from '../../../../utilities/entity.utilities';
+import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector

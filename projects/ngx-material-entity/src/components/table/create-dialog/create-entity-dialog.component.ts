@@ -1,12 +1,12 @@
 import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { EntityService } from '../../../classes/entity.service';
-import { EntityTab, EntityUtilities } from '../../../classes/entity.utilities';
-import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
-import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
-import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from './create-entity-dialog-data.builder';
-import { CreateEntityDialogData } from './create-entity-dialog-data';
 import { BaseEntityType } from '../../../classes/entity.model';
+import { EntityService } from '../../../services/entity.service';
+import { EntityTab, EntityUtilities } from '../../../utilities/entity.utilities';
+import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
+import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
+import { CreateEntityDialogData } from './create-entity-dialog-data';
+import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from './create-entity-dialog-data.builder';
 
 /**
  * The default dialog used to create new entities based on the configuration passed in the MAT_DIALOG_DATA "inputData".
@@ -69,13 +69,13 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
             .withDefault('confirmButtonLabel', 'Create')
             .withDefault('title', 'Create')
             .getResult();
-        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
             autoFocus: false,
             restoreFocus: false
         });
-        dialogRef.afterClosed().subscribe((res: number) => {
-            if (res === 1) {
+        dialogRef.afterClosed().subscribe(res => {
+            if (res == true) {
                 this.confirmCreate();
             }
         });

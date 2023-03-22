@@ -3,15 +3,15 @@ import { Component, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, Vi
 import { NgModel } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { DateUtilities } from '../../classes/date.utilities';
 import { BaseEntityType } from '../../classes/entity.model';
-import { EntityTab, EntityUtilities } from '../../classes/entity.utilities';
-import { SelectionUtilities } from '../../classes/selection.utilities';
 import { EntityArrayDecoratorConfigInternal } from '../../decorators/array/array-decorator-internal.data';
 import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../../decorators/object/object-decorator-internal.data';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
+import { DateUtilities } from '../../utilities/date.utilities';
+import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
+import { SelectionUtilities } from '../../utilities/selection.utilities';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { NGX_GET_VALIDATION_ERROR_MESSAGE } from '../get-validation-error-message.function';
 import { AddArrayItemDialogData } from './add-array-item-dialog-data';

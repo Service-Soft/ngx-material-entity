@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
-import { EntityUtilities } from './entity.utilities';
-import { LodashUtilities } from '../encapsulation/lodash.utilities';
+import { BaseEntityType } from '../classes/entity.model';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { FileData } from '../decorators/file/file-decorator.data';
-import { FileUtilities } from './file.utilities';
-import { BaseEntityType } from './entity.model';
+import { LodashUtilities } from '../encapsulation/lodash.utilities';
+import { EntityUtilities } from '../utilities/entity.utilities';
+import { FileUtilities } from '../utilities/file.utilities';
 
 /**
  * A generic EntityService class.
@@ -27,6 +27,12 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
      * Delete Sends a DEL-Request to baseUrl/{id}.
      */
     abstract readonly baseUrl: string;
+
+    /**
+     * The route segment that comes before the id when editing an entity in a separate page.
+     */
+    readonly editBaseRoute: string = 'entities';
+
     /**
      * The key which holds the id value.
      *
@@ -40,6 +46,13 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
      */
     readonly entitiesSubject: BehaviorSubject<EntityType[]> = new BehaviorSubject<EntityType[]>([]);
 
+
+    /**
+     * A subject of all the entity values.
+     * Can be subscribed to when you want to do a specific thing whenever the entities change.
+     */
+    protected readonly READ_EXPIRATION_IN_MS: number = 900000;
+
     /**
      * Gets the entities in an array from the internal entitiesSubject.
      *
@@ -48,6 +61,8 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
     get entities(): EntityType[] {
         return this.entitiesSubject.value;
     }
+
+    lastRead?: Date;
 
     constructor(private readonly http: HttpClient) {}
 
@@ -141,7 +156,24 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
     async read(): Promise<EntityType[]> {
         const e: EntityType[] = await firstValueFrom(this.http.get<EntityType[]>(this.baseUrl));
         this.entitiesSubject.next(e);
+        this.lastRead = new Date();
         return e;
+    }
+
+    /**
+     * Tries to find an entity with the given id.
+     *
+     * @param id - The id of the entity to find.
+     * @returns The found entity.
+     */
+    async findById(id: EntityType[keyof EntityType]): Promise<EntityType> {
+        if (
+            this.lastRead == null
+            || (new Date().getTime() - this.lastRead.getTime()) > this.READ_EXPIRATION_IN_MS
+        ) {
+            return firstValueFrom(this.http.get<EntityType>(`${this.baseUrl}/${id}`));
+        }
+        return this.entities.find(e => e[this.idKey] === id) ?? firstValueFrom(this.http.get<EntityType>(`${this.baseUrl}/${id}`));
     }
 
     /**

@@ -1,20 +1,20 @@
-import { EntityService } from '../../../classes/entity.service';
 import { HttpClient } from '@angular/common/http';
-import { EditEntityDialogData } from './edit-entity-dialog-data';
-import { EditDialogDataBuilder, EditDialogDataInternal } from './edit-dialog-data.builder';
 import { BaseBuilder } from '../../../classes/base.builder';
 import { BaseEntityType } from '../../../classes/entity.model';
+import { EntityService } from '../../../services/entity.service';
+import { EditDataInternal, EditDialogDataBuilder } from './edit-data.builder';
+import { EditEntityData } from './edit-entity-data';
 
 /**
- * The internal EditEntityDialogData. Requires all default values the user can leave out.
+ * The internal EditEntityData. Requires all default values the user can leave out.
  */
-export class EditEntityDialogDataInternal<EntityType extends BaseEntityType<EntityType>> implements EditEntityDialogData<EntityType> {
+export class EditEntityDataInternal<EntityType extends BaseEntityType<EntityType>> implements EditEntityData<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     entity: EntityType;
     // eslint-disable-next-line jsdoc/require-jsdoc
     EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    editDialogData: EditDialogDataInternal<EntityType>;
+    editData: EditDataInternal<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
     allowUpdate: (entity: EntityType) => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -23,32 +23,32 @@ export class EditEntityDialogDataInternal<EntityType extends BaseEntityType<Enti
     constructor(
         entity: EntityType,
         EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
-        editDialogData: EditDialogDataInternal<EntityType>,
+        editData: EditDataInternal<EntityType>,
         allowUpdate: (entity: EntityType) => boolean,
         allowDelete: (entity: EntityType) => boolean
     ) {
         this.entity = entity;
         this.EntityServiceClass = EntityServiceClass;
-        this.editDialogData = editDialogData;
+        this.editData = editData;
         this.allowDelete = allowDelete;
         this.allowUpdate = allowUpdate;
     }
 }
 
 /**
- * The Builder for the EditEntityDialogData. Sets default values.
+ * The Builder for the EditEntityData. Sets default values.
  */
-export class EditEntityDialogDataBuilder<EntityType extends BaseEntityType<EntityType>>
-    extends BaseBuilder<EditEntityDialogDataInternal<EntityType>, EditEntityDialogData<EntityType>> {
+export class EditEntityDataBuilder<EntityType extends BaseEntityType<EntityType>>
+    extends BaseBuilder<EditEntityDataInternal<EntityType>, EditEntityData<EntityType>> {
 
-    constructor(data: EditEntityDialogData<EntityType>) {
+    constructor(data: EditEntityData<EntityType>) {
         super(data);
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
-    protected generateBaseData(data: EditEntityDialogData<EntityType>): EditEntityDialogDataInternal<EntityType> {
-        const editDialogData: EditDialogDataInternal<EntityType> = new EditDialogDataBuilder(data.editDialogData).getResult();
-        return new EditEntityDialogDataInternal<EntityType>(
+    protected generateBaseData(data: EditEntityData<EntityType>): EditEntityDataInternal<EntityType> {
+        const editDialogData: EditDataInternal<EntityType> = new EditDialogDataBuilder(data.editData).getResult();
+        return new EditEntityDataInternal<EntityType>(
             data.entity,
             data.EntityServiceClass,
             editDialogData,
