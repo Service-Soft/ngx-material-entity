@@ -1,6 +1,6 @@
 {
     "name": "ngx-material-entity",
-    "version": "15.1.4",
+    "version": "15.1.5",
     "license": "MIT",
     "keywords": [
         "angular",
@@ -17,7 +17,8 @@
         "@angular/material": "15",
         "lodash": "4",
         "reflect-metadata": "^0.1.13",
-        "jszip": "^3.10.1"
+        "jszip": "^3.10.1",
+        "js2xmlparser": "^5.0.0"
     },
     "dependencies": {
         "tslib": "^2.4.0"

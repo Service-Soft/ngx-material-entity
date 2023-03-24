@@ -1,8 +1,7 @@
-import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { FileDataWithFile } from '../decorators/file/file-decorator-internal.data';
 import { FileData } from '../decorators/file/file-decorator.data';
-import { JSZipUtilities } from '../encapsulation/jszip.utilities';
-import JSZip from 'jszip';
+import { JSZipUtilities, Zip } from '../encapsulation/jszip.utilities';
+import { LodashUtilities } from '../encapsulation/lodash.utilities';
 
 /**
  * Provides functionality regarding files.
@@ -95,10 +94,24 @@ export abstract class FileUtilities {
      * @param fileData - The file data. Needs to contain a blob.
      */
     static downloadSingleFile(fileData: FileDataWithFile): void {
+        this.downLoadBlob(fileData.file, fileData.name);
+    }
+
+    // TODO: Find a way to use blobs with jest
+    /* istanbul ignore next */
+    /**
+     * Downloads a blob.
+     *
+     * @param blob - The blob to download.
+     * @param name - The name of the downloaded file.
+     */
+    static downLoadBlob(blob: Blob, name?: string): void {
         const a: HTMLAnchorElement = document.createElement('a');
-        const objectUrl: string = URL.createObjectURL(fileData.file);
+        const objectUrl: string = URL.createObjectURL(blob);
         a.href = objectUrl;
-        a.download = fileData.name;
+        if (name) {
+            a.download = name;
+        }
         a.click();
         URL.revokeObjectURL(objectUrl);
     }
@@ -112,7 +125,7 @@ export abstract class FileUtilities {
      * @param multiFileData - The file data array to put in the zip.
      */
     static async downloadMultipleFiles(name: string, multiFileData: FileData[]): Promise<void> {
-        const zip: JSZip = JSZipUtilities.new();
+        const zip: Zip = JSZipUtilities.new();
         for (let i: number = 0; i < multiFileData.length; i++) {
             multiFileData[i] = await FileUtilities.getFileData(multiFileData[i]);
             zip.file(multiFileData[i].name, (multiFileData[i] as FileDataWithFile).file);

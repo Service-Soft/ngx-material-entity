@@ -23,6 +23,7 @@ export * from './components/table/edit-dialog/edit-entity-dialog.module';
 export * from './components/table/table-data';
 export * from './components/table/table.component';
 export * from './components/table/table.module';
+export * from './components/table/default.actions';
 // decorators
 export * from './decorators/array/array-decorator.data';
 export * from './decorators/array/array.decorator';

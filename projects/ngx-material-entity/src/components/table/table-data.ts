@@ -135,7 +135,18 @@ export interface BaseData<EntityType extends BaseEntityType<EntityType>> {
      *
      * @default true
      */
-    displayLoadingSpinner?: boolean
+    displayLoadingSpinner?: boolean,
+    /**
+     * Whether or not JSON imports are allowed.
+     * This adds an multi select action.
+     *
+     * @default false
+     */
+    allowJsonImport?: boolean,
+    /**
+     * Data to customize the json import action.
+     */
+    importActionData?: Omit<MultiSelectAction<EntityType>, 'action' | 'requireConfirmDialog'>
 }
 
 /**

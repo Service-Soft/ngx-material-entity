@@ -78,4 +78,17 @@ export abstract class LodashUtilities {
     static isArray(value?: unknown): value is unknown[] {
         return isArray(value);
     }
+
+    /* istanbul ignore next */
+    /**
+     * Checks if value is classified as an object that is not an array.
+     *
+     * @param value - The value to check.
+     * @returns Returns true if value is correctly classified, else false.
+     */
+    static isObject(value?: unknown): value is object {
+        return value !== null
+            && typeof value === 'object'
+            && !LodashUtilities.isArray(value);
+    }
 }
