@@ -87,6 +87,23 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
     // TODO: Find a way to use blobs with jest
     /* istanbul ignore next */
     /**
+     * Imports everything from the provided json file.
+     *
+     * @param file - The json file to import from.
+     * @returns All entities that have been imported.
+     */
+    async import(file: File): Promise<EntityType[]> {
+        const formData: FormData = new FormData();
+        formData.append('import', file);
+        const result: EntityType[] = await firstValueFrom(this.http.post<EntityType[]>(`${this.baseUrl}/import`, formData));
+        this.entities.push(...result);
+        this.entitiesSubject.next(this.entities);
+        return result;
+    }
+
+    // TODO: Find a way to use blobs with jest
+    /* istanbul ignore next */
+    /**
      * Creates the entity with form data when the entity contains files in contrast to creating it with a normal json body.
      * All file values are stored inside their respective property key and their name.
      * Form data is able to handle setting multiple files to the same key.

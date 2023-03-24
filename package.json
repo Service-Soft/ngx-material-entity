@@ -38,6 +38,7 @@
         "@angular/platform-browser-dynamic": "~15.2.3",
         "@angular/router": "~15.2.3",
         "bootstrap": "^5.2.3",
+        "js2xmlparser": "^5.0.0",
         "jszip": "^3.10.1",
         "lodash": "^4.17.21",
         "reflect-metadata": "^0.1.13",

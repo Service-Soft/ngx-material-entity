@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { BaseBuilder } from '../../classes/base.builder';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { EntityService } from '../../services/entity.service';
+import { ConfirmDialogDataBuilder } from '../confirm-dialog/confirm-dialog-data.builder';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from './create-dialog/create-dialog-data.builder';
 import { EditDataInternal, EditDialogDataBuilder } from './edit-dialog/edit-data.builder';
 import { BaseData, DisplayColumn, MultiSelectAction, TableData } from './table-data';
@@ -55,6 +56,13 @@ export class BaseDataBuilder<EntityType extends BaseEntityType<EntityType>>
             data.multiSelectActions ?? [],
             data.multiSelectLabel ?? 'Actions',
             data.displayLoadingSpinner ?? true,
+            data.allowJsonImport ?? false,
+            data.importActionData ?? {
+                displayName: 'Import (JSON)',
+                confirmDialogData: new ConfirmDialogDataBuilder()
+                    .withDefault('text', ['Do you really want to import entities from the provided file?'])
+                    .getResult()
+            },
             data.EntityClass,
             data.edit,
             data.create
@@ -94,6 +102,10 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
     multiSelectLabel: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayLoadingSpinner: boolean;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    allowJsonImport: boolean;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    importActionData: Omit<MultiSelectAction<EntityType>, 'action' | 'requireConfirmDialog'>;
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     EntityClass?: EntityClassNewable<EntityType>;
@@ -117,6 +129,8 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         multiSelectActions: MultiSelectAction<EntityType>[],
         multiSelectLabel: string,
         displayLoadingSpinner: boolean,
+        allowJsonImport: boolean,
+        importActionData: Omit<MultiSelectAction<EntityType>, 'action' | 'requireConfirmDialog'>,
         EntityClass?: EntityClassNewable<EntityType>,
         edit?: (entity: EntityType) => unknown,
         create?: (entity: EntityType) => unknown
@@ -136,6 +150,8 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         this.multiSelectActions = multiSelectActions;
         this.multiSelectLabel = multiSelectLabel;
         this.displayLoadingSpinner = displayLoadingSpinner;
+        this.allowJsonImport = allowJsonImport;
+        this.importActionData = importActionData;
         this.edit = edit;
         this.create = create;
     }
