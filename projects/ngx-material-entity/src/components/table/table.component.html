@@ -19,6 +19,9 @@
         </button>
     </div>
     <mat-menu #menu="matMenu">
+        <button *ngIf="data.baseData.allowJsonImport" type="button" [disabled]="importAction.enabled?.(this.selection.selected) === false" (click)="runMultiAction(importAction)" mat-menu-item>
+            {{importAction.displayName}}
+        </button>
         <button type="button" *ngFor="let action of data.baseData.multiSelectActions" [disabled]="multiActionDisabled(action)" (click)="runMultiAction(action)" mat-menu-item>
             {{action.displayName}}
         </button>

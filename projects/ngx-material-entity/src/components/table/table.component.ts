@@ -53,6 +53,8 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
 
     SelectionUtilities: typeof SelectionUtilities = SelectionUtilities;
 
+    importAction!: Omit<MultiSelectAction<EntityType>, 'confirmationDialog'>;
+
     constructor(
         private readonly dialog: MatDialog,
         private readonly injector: Injector,
@@ -64,6 +66,11 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
      */
     ngOnInit(): void {
         this.data = new TableDataBuilder(this.tableData).getResult();
+
+        this.importAction = {
+            ...this.data.baseData.importActionData,
+            action: () => this.startImportJson()
+        };
 
         this.entityService = this.injector.get(this.data.baseData.EntityServiceClass) as EntityService<EntityType>;
 
@@ -94,6 +101,35 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         });
         void this.entityService.read().then(() => {
             this.isLoading = false;
+        });
+    }
+
+    private startImportJson(): void {
+        const input: HTMLInputElement = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json';
+        input.onchange = async () => {
+            if (input.files) {
+                this.importJson(input.files[0]);
+            }
+        };
+        input.click();
+    }
+
+    private importJson(file: File): void {
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.importAction.confirmDialogData)
+            .withDefault('text', this.data.baseData.importActionData.confirmDialogData?.text as string[])
+            .withDefault('title', this.importAction.displayName)
+            .getResult();
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+            data: dialogData,
+            autoFocus: false,
+            restoreFocus: false
+        });
+        dialogRef.afterClosed().subscribe(res => {
+            if (res == true) {
+                void this.entityService.import(file);
+            }
         });
     }
 

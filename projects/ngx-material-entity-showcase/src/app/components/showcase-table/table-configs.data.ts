@@ -1,4 +1,4 @@
-import { TableData } from 'ngx-material-entity';
+import { exportAsJsonMultiAction, exportAsCsvMultiAction, TableData, exportAsXmlMultiAction } from 'ngx-material-entity';
 import { TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';
 import { TestEntityService } from '../../../services/test-entity.service';
 
@@ -71,9 +71,22 @@ export const customTableData: TableData<TestEntity> = {
                 displayName: 'Multi Action',
                 // eslint-disable-next-line no-console
                 action: () => console.log('ran multi action')
+            },
+            {
+                displayName: 'Export (JSON)',
+                action: exportAsJsonMultiAction
+            },
+            {
+                displayName: 'Export (Xml)',
+                action: exportAsXmlMultiAction
+            },
+            {
+                displayName: 'Export (CSV)',
+                action: exportAsCsvMultiAction
             }
         ],
-        multiSelectLabel: 'Custom Multi Select Label'
+        multiSelectLabel: 'Custom Multi Select Label',
+        allowJsonImport: true
     },
     createDialogData: {
         title: 'Create Test Entity'

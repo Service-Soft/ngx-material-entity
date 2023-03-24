@@ -1,6 +1,7 @@
 import JSZip from 'jszip';
-// eslint-disable-next-line no-duplicate-imports
-import * as JSZipType from 'jszip'; // <-- This is needed to provide type safety.
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type Zip = JSZip;
 
 // TODO: Find a way to use blobs with jest
 /* istanbul ignore next */
@@ -13,7 +14,7 @@ export abstract class JSZipUtilities {
      *
      * @returns A new JSZip object.
      */
-    static new(): JSZipType {
-        return new JSZip() as JSZipType;
+    static new(): Zip {
+        return new JSZip();
     }
 }
