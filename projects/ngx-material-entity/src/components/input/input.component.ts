@@ -4,7 +4,7 @@ import { NgModel } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { BaseEntityType } from '../../classes/entity.model';
-import { EntityArrayDecoratorConfigInternal } from '../../decorators/array/array-decorator-internal.data';
+import { EditArrayItemDialogDataInternal, EntityArrayDecoratorConfigInternal } from '../../decorators/array/array-decorator-internal.data';
 import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../../decorators/object/object-decorator-internal.data';
@@ -14,8 +14,7 @@ import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
 import { SelectionUtilities } from '../../utilities/selection.utilities';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { NGX_GET_VALIDATION_ERROR_MESSAGE } from '../get-validation-error-message.function';
-import { AddArrayItemDialogData } from './add-array-item-dialog-data';
-import { AddArrayItemDialogDataBuilder, AddArrayItemDialogDataInternal } from './add-array-item-dialog-data.builder';
+import { CreateDialogDataBuilder, CreateDialogDataInternal } from '../table/create-dialog/create-dialog-data.builder';
 
 /**
  * The default input component. It gets the metadata of the property from the given @Input "entity" and @Input "propertyKey"
@@ -88,6 +87,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     addArrayItemDialog!: TemplateRef<unknown>;
     addArrayItemDialogRef!: MatDialogRef<unknown>;
 
+    @ViewChild('editArrayItemDialog')
+    editArrayItemDialog!: TemplateRef<unknown>;
+    editArrayItemDialogRef!: MatDialogRef<unknown>;
+
     type!: DecoratorTypes;
     metadata!: PropertyDecoratorConfigInternal;
 
@@ -98,17 +101,19 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     metadataEntityArray!: EntityArrayDecoratorConfigInternal<EntityType>;
     entityArrayValues!: EntityType[];
     arrayItem!: EntityType;
-    private arrayItemPriorChanges!: EntityType;
+    arrayItemPriorChanges!: EntityType;
     arrayItemInlineTabs!: EntityTab<EntityType>[];
     dataSource!: MatTableDataSource<EntityType>;
     selection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
     displayedColumns!: string[];
     isArrayItemValid: boolean = false;
+    isArrayItemDirty: boolean = false;
+    indexOfEditedArrayItem!: number;
 
-    dialogInputData!: AddArrayItemDialogData<EntityType>;
-    dialogData!: AddArrayItemDialogDataInternal<EntityType>;
+    addArrayItemDialogData!: CreateDialogDataInternal;
     arrayItemDialogTabs!: EntityTab<EntityType>[];
-    isDialogArrayItemValid: boolean = false;
+
+    editArrayItemDialogData!: EditArrayItemDialogDataInternal<EntityType>;
 
     readonly DecoratorTypes: typeof DecoratorTypes = DecoratorTypes;
 
@@ -180,15 +185,14 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.dataSource.data = this.entityArrayValues;
         this.arrayItem = new this.metadataEntityArray.EntityClass();
         this.arrayItemInlineTabs = EntityUtilities.getEntityTabs(this.arrayItem, true);
-        this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
 
-        this.dialogInputData = {
-            entity: this.arrayItem,
-            createDialogData: this.metadataEntityArray.createDialogData,
-            getValidationErrorMessage: this.getValidationErrorMessage
-        };
-        this.dialogData = new AddArrayItemDialogDataBuilder(this.dialogInputData, this.defaultGetValidationErrorMessage).getResult();
-        this.arrayItemDialogTabs = EntityUtilities.getEntityTabs(this.dialogData.entity, true);
+        this.addArrayItemDialogData = new CreateDialogDataBuilder(this.metadataEntityArray.createDialogData)
+            .withDefault('createButtonLabel', 'Add')
+            .withDefault('title', 'Add to array')
+            .getResult();
+        this.arrayItemDialogTabs = EntityUtilities.getEntityTabs(this.arrayItem, true);
+
+        this.editArrayItemDialogData = this.metadataEntityArray.editDialogData;
     }
 
     private initObjectInput(): void {
@@ -198,17 +202,25 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     }
 
     /**
+     * Checks whether the array item is valid and if the array item is dirty.
+     */
+    checkArrayItem(): void {
+        this.checkIsArrayItemValid();
+        void this.checkIsArrayItemDirty();
+    }
+
+    /**
+     * Checks if the array item is dirty.
+     */
+    async checkIsArrayItemDirty(): Promise<void> {
+        this.isArrayItemDirty = await EntityUtilities.isDirty(this.arrayItem, this.arrayItemPriorChanges);
+    }
+
+    /**
      * Checks if the arrayItem is valid.
      */
     checkIsArrayItemValid(): void {
         this.isArrayItemValid = EntityUtilities.isEntityValid(this.arrayItem, 'create');
-    }
-
-    /**
-     * Checks if the arrayItem inside the dialog is valid.
-     */
-    checkIsDialogArrayItemValid(): void {
-        this.isDialogArrayItemValid = EntityUtilities.isEntityValid(this.dialogData.entity, 'create');
     }
 
     /**
@@ -239,7 +251,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             }
             this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
             this.dataSource.data = this.entityArrayValues;
-            EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
+            this.arrayItem = new this.metadataEntityArray.EntityClass();
             this.checkIsArrayItemValid();
             this.emitChange();
         }
@@ -247,7 +259,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             this.addArrayItemDialogRef = this.dialog.open(
                 this.addArrayItemDialog,
                 {
-                    data: this.dialogData,
+                    minWidth: '60%',
                     autoFocus: false,
                     restoreFocus: false
                 }
@@ -259,23 +271,65 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * Adds the array item defined in the dialog.
      */
     addArrayItem(): void {
-        if (!this.isDialogArrayItemValid) {
+        if (!this.isArrayItemValid) {
             return;
         }
-        this.addArrayItemDialogRef.close();
         this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
         this.dataSource.data = this.entityArrayValues;
-        EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
-        this.checkIsArrayItemValid();
-        this.emitChange();
+
+        this.closeAddArrayItemDialog();
     }
 
     /**
      * Cancels adding the array item defined in the dialog.
      */
-    cancelAddArrayItem(): void {
+    closeAddArrayItemDialog(): void {
         this.addArrayItemDialogRef.close();
-        EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
+        this.arrayItem = new this.metadataEntityArray.EntityClass();
+        this.checkIsArrayItemValid();
+        this.emitChange();
+    }
+
+    /**
+     * Edits an entity array item.
+     *
+     * @param entity - The entity that has been clicked.
+     */
+    editArrayItem(entity: EntityType): void {
+        this.indexOfEditedArrayItem = this.entityArrayValues.indexOf(entity);
+        this.arrayItem = new this.metadataEntityArray.EntityClass(entity);
+        this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
+
+        this.checkArrayItem();
+
+        this.editArrayItemDialogRef = this.dialog.open(
+            this.editArrayItemDialog,
+            {
+                minWidth: '60%',
+                autoFocus: false,
+                restoreFocus: false
+            }
+        );
+    }
+
+    /**
+     * Saves changes on the array item in the dialog.
+     */
+    saveArrayItem(): void {
+        this.entityArrayValues[this.indexOfEditedArrayItem] = LodashUtilities.cloneDeep(this.arrayItem);
+        this.dataSource.data = this.entityArrayValues;
+
+        this.closeEditArrayItemDialog();
+    }
+
+    /**
+     * Closes the edit array item dialog and resets changes.
+     */
+    closeEditArrayItemDialog(): void {
+        this.editArrayItemDialogRef.close();
+        this.arrayItem = new this.metadataEntityArray.EntityClass();
+        this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
+        this.checkArrayItem();
         this.emitChange();
     }
 

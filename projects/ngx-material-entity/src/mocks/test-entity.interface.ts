@@ -451,7 +451,14 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         addButtonLabel: 'Custom Add',
         removeButtonLabel: 'Custom Remove',
         defaultWidths: [6, 6, 6],
-        allowDuplicates: true
+        allowDuplicates: true,
+        editDialogData: {
+            confirmButtonLabel: 'Custom Confirm',
+            cancelButtonLabel: 'Custom Cancel',
+            title(entity) {
+                return `Edit array item #${entity.id}`;
+            }
+        }
     })
     entityArrayValueWithConfig!: TestObjectArrayEntity[];
 

@@ -236,7 +236,7 @@
                     <mat-header-cell *matHeaderCellDef>
                         {{dCol.displayName}}
                     </mat-header-cell>
-                    <mat-cell class="entity" *matCellDef="let entity">
+                    <mat-cell (click)="editArrayItem(entity)" class="entity" *matCellDef="let entity">
                         {{dCol.value(entity)}}
                     </mat-cell>
                 </ng-container>
@@ -395,7 +395,9 @@
 <!--------------------Add Array Item Dialog---------------->
 <!--------------------------------------------------------->
 <ng-template #addArrayItemDialog>
-    <div class="mat-dialog-title" mat-dialog-title>{{dialogData.createDialogData.title}}</div>
+    <div class="mat-dialog-title">
+        <div>{{addArrayItemDialogData.title}}</div>
+    </div>
 
     <form>
         <mat-dialog-content>
@@ -404,12 +406,12 @@
                     <div class="row" *ngFor="let row of tab.rows">
                         <ngx-mat-entity-input
                             *ngFor="let key of row.keys"
-                            [entity]="dialogData.entity"
+                            [entity]="arrayItem"
                             [propertyKey]="key"
                             [hideOmitForCreate]="true"
-                            [getValidationErrorMessage]="dialogData.getValidationErrorMessage"
-                            class="col-lg-{{EntityUtilities.getWidth(dialogData.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(dialogData.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(dialogData.entity, key, 'sm')}}"
-                            (inputChangeEvent)="checkIsDialogArrayItemValid()"
+                            [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                            class="col-lg-{{EntityUtilities.getWidth(arrayItem, key, 'lg')}} col-md-{{EntityUtilities.getWidth(arrayItem, key, 'md')}} col-sm-{{EntityUtilities.getWidth(arrayItem, key, 'sm')}}"
+                            (inputChangeEvent)="checkIsArrayItemValid()"
                         >
                         </ngx-mat-entity-input>
                     </div>
@@ -420,12 +422,12 @@
                 <div class="row" *ngFor="let row of arrayItemDialogTabs[0].rows">
                     <ngx-mat-entity-input
                         *ngFor="let key of row.keys"
-                        [entity]="dialogData.entity"
+                        [entity]="arrayItem"
                         [propertyKey]="key"
                         [hideOmitForCreate]="true"
-                        [getValidationErrorMessage]="dialogData.getValidationErrorMessage"
-                        class="col-lg-{{EntityUtilities.getWidth(dialogData.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(dialogData.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(dialogData.entity, key, 'sm')}}"
-                        (inputChangeEvent)="checkIsDialogArrayItemValid()"
+                        [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                        class="col-lg-{{EntityUtilities.getWidth(arrayItem, key, 'lg')}} col-md-{{EntityUtilities.getWidth(arrayItem, key, 'md')}} col-sm-{{EntityUtilities.getWidth(arrayItem, key, 'sm')}}"
+                        (inputChangeEvent)="checkIsArrayItemValid()"
                     >
                     </ngx-mat-entity-input>
                 </div>
@@ -433,13 +435,67 @@
         </mat-dialog-content>
     
         <mat-dialog-actions>
-            <button type="submit" mat-raised-button (click)="addArrayItem()" [class.mat-button-disabled]="!isDialogArrayItemValid">
-                {{dialogData.createDialogData.createButtonLabel}}
+            <button type="submit" mat-raised-button (click)="addArrayItem()" [disabled]="!isArrayItemValid">
+                {{addArrayItemDialogData.createButtonLabel}}
             </button>
-            <button type="button" mat-raised-button (click)="cancelAddArrayItem()" class="cancel-button">
-                {{dialogData.createDialogData.cancelButtonLabel}}
+            <button type="button" mat-raised-button (click)="closeAddArrayItemDialog()" class="cancel-button">
+                {{addArrayItemDialogData.cancelButtonLabel}}
             </button>
         </mat-dialog-actions>
     </form>
 
+</ng-template>
+
+<!--------------------------------------------------------->
+<!--------------------Edit Array Item Dialog---------------->
+<!--------------------------------------------------------->
+<ng-template #editArrayItemDialog>
+    <div class="mat-dialog-title">
+        <div>{{editArrayItemDialogData.title(arrayItem)}}</div>
+    </div>
+    
+    <form>
+        <mat-dialog-content>
+            <mat-tab-group *ngIf="arrayItemDialogTabs.length > 1" preserveContent>
+                <mat-tab *ngFor="let tab of arrayItemDialogTabs" [label]="tab.tabName">
+                    <div class="row" *ngFor="let row of tab.rows">
+                        <ngx-mat-entity-input
+                            *ngFor="let key of row.keys"
+                            [entity]="arrayItem"
+                            [propertyKey]="key"
+                            [hideOmitForEdit]="true"
+                            class="col-lg-{{EntityUtilities.getWidth(arrayItem, key, 'lg')}} col-md-{{EntityUtilities.getWidth(arrayItem, key, 'md')}} col-sm-{{EntityUtilities.getWidth(arrayItem, key, 'sm')}}"
+                            (inputChangeEvent)="checkArrayItem()"
+                            [isReadOnly]="internalIsReadOnly"
+                        >
+                        </ngx-mat-entity-input>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        
+            <div *ngIf="arrayItemDialogTabs.length <= 1">
+                <div class="row" *ngFor="let row of arrayItemDialogTabs[0].rows">
+                    <ngx-mat-entity-input
+                        *ngFor="let key of row.keys"
+                        [entity]="arrayItem"
+                        [propertyKey]="key"
+                        [hideOmitForEdit]="true"
+                        class="col-lg-{{EntityUtilities.getWidth(arrayItem, key, 'lg')}} col-md-{{EntityUtilities.getWidth(arrayItem, key, 'md')}} col-sm-{{EntityUtilities.getWidth(arrayItem, key, 'sm')}}"
+                        (inputChangeEvent)="checkArrayItem()"
+                        [isReadOnly]="internalIsReadOnly"
+                    >
+                    </ngx-mat-entity-input>
+                </div>
+            </div>
+        </mat-dialog-content>
+        
+        <mat-dialog-actions>
+            <button type="submit" (click)="saveArrayItem()" mat-raised-button [disabled]="internalIsReadOnly || !isArrayItemValid || !isArrayItemDirty">
+                {{editArrayItemDialogData.confirmButtonLabel}}
+            </button>
+            <button type="button" mat-raised-button (click)="closeEditArrayItemDialog()" class="cancel-button">
+                {{editArrayItemDialogData.cancelButtonLabel}}
+            </button>
+        </mat-dialog-actions>
+    </form>
 </ng-template>
