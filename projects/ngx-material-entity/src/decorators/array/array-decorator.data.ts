@@ -1,12 +1,12 @@
-import { CreateDialogData, DisplayColumn } from '../../components/table/table-data';
-import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
-import { DecoratorTypes } from '../base/decorator-types.enum';
-import { PropertyDecoratorConfig } from '../base/property-decorator.data';
-import { DateFilterFn } from '@angular/material/datepicker';
 import { Time } from '@angular/common';
-import { DropdownValue } from '../base/dropdown-value.interface';
-import { DateRange } from '../date/date-decorator.data';
+import { DateFilterFn } from '@angular/material/datepicker';
+import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
+import { CreateDialogData, DisplayColumn } from '../../components/table/table-data';
+import { DecoratorTypes } from '../base/decorator-types.enum';
+import { DropdownValue } from '../base/dropdown-value.interface';
+import { PropertyDecoratorConfig } from '../base/property-decorator.data';
+import { DateRange } from '../date/date-decorator.data';
 
 /**
  * Interface definition for the @array metadata.
@@ -28,6 +28,24 @@ export abstract class ArrayDecoratorConfig extends PropertyDecoratorConfig {
      * The error dialog to display when the user tries to add a duplicate entry.
      */
     duplicatesErrorDialog?: ConfirmDialogData;
+}
+
+/**
+ * The dialog data for the entities array edit dialog.
+ */
+export interface EditArrayItemDialogData<EntityType extends BaseEntityType<EntityType>> {
+    /**
+     * The title of the default edit-dialog.
+     */
+    title?: (entity: EntityType) => string,
+    /**
+     * The label on the confirm-button of the default edit-dialog or page. Defaults to "Save".
+     */
+    confirmButtonLabel?: string,
+    /**
+     * The label on the cancel-button for the default edit-dialog or page. Defaults to "Cancel".
+     */
+    cancelButtonLabel?: string
 }
 
 /**
@@ -53,6 +71,12 @@ export interface EntityArrayDecoratorConfig<EntityType extends BaseEntityType<En
      * Can be omitted when adding items inline.
      */
     createDialogData?: CreateDialogData,
+
+    /**
+     * The data for the edit-item-dialog.
+     * Can be omitted when adding items inline.
+     */
+    editDialogData?: EditArrayItemDialogData<EntityType>,
 
     /**
      * Whether or not the form for adding items to the array

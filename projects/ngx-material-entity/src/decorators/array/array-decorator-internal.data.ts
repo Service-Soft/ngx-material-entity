@@ -8,7 +8,26 @@ import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { DateRange } from '../date/date-decorator.data';
-import { ArrayDecoratorConfig, AutocompleteStringChipsArrayDecoratorConfig, DateArrayDecoratorConfig, DateRangeArrayDecoratorConfig, DateTimeArrayDecoratorConfig, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from './array-decorator.data';
+import { ArrayDecoratorConfig, AutocompleteStringChipsArrayDecoratorConfig, DateArrayDecoratorConfig, DateRangeArrayDecoratorConfig, DateTimeArrayDecoratorConfig, EditArrayItemDialogData, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from './array-decorator.data';
+
+/**
+ * The internal dialog data for the entities array edit dialog.
+ * Sets default values.
+ */
+export class EditArrayItemDialogDataInternal<EntityType extends BaseEntityType<EntityType>> implements EditArrayItemDialogData<EntityType> {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    title: (entity: EntityType) => string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    confirmButtonLabel: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    cancelButtonLabel: string;
+
+    constructor(data?: EditArrayItemDialogData<EntityType>) {
+        this.title = data?.title ?? (() => 'Edit');
+        this.confirmButtonLabel = data?.confirmButtonLabel ?? 'Save';
+        this.cancelButtonLabel = data?.cancelButtonLabel ?? 'Cancel';
+    }
+}
 
 /**
  * The internal EntityArrayDecoratorConfig. Sets default values.
@@ -28,6 +47,8 @@ export class EntityArrayDecoratorConfigInternal<EntityType extends BaseEntityTyp
     displayColumns: DisplayColumn<EntityType>[];
     // eslint-disable-next-line jsdoc/require-jsdoc
     createDialogData?: CreateDialogData;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    editDialogData: EditArrayItemDialogDataInternal<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
     createInline: boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -50,6 +71,7 @@ export class EntityArrayDecoratorConfigInternal<EntityType extends BaseEntityTyp
         this.defaultWidths = data.defaultWidths ?? [12, 12, 12];
         this.addButtonLabel = data.addButtonLabel ?? 'Add';
         this.removeButtonLabel = data.removeButtonLabel ?? 'Remove';
+        this.editDialogData = new EditArrayItemDialogDataInternal(data.editDialogData);
     }
 }
 

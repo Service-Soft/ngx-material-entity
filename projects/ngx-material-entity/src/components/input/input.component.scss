@@ -117,6 +117,10 @@ mat-form-field {
         flex: 0 0 75px;
     }
 
+    .entity:hover {
+        cursor: pointer;
+    }
+
     .array-error {
         display: flex;
         align-items: center;
