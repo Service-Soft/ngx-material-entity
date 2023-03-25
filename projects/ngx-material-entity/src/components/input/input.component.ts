@@ -177,7 +177,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.arrayItem = new this.metadataEntityArray.EntityClass();
         this.arrayItemInlineTabs = EntityUtilities.getEntityTabs(this.arrayItem, true);
 
-        this.createDialogData = new CreateDialogDataBuilder(this.metadataEntityArray.createDialogData).getResult();
+        this.createDialogData = new CreateDialogDataBuilder(this.metadataEntityArray.createDialogData)
+            .withDefault('createButtonLabel', 'Add')
+            .withDefault('title', 'Add to array')
+            .getResult();
         this.arrayItemDialogTabs = EntityUtilities.getEntityTabs(this.arrayItem, true);
     }
 
