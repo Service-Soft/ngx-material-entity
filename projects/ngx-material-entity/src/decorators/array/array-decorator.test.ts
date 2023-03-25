@@ -19,6 +19,8 @@ test('should have array Metadata', () => {
     expect(metadata.displayColumns).toBeDefined();
     expect(metadata.createInline).toEqual(true);
     expect(metadata.missingErrorMessage).toEqual('Needs to contain at least one value');
+    expect(metadata.editDialogData).toBeDefined();
+    expect(metadata.editDialogData.title(testEntity)).toEqual('Edit');
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const customMetadata: EntityArrayDecoratorConfigInternal<any> = EntityUtilities.getPropertyMetadata(testEntity, 'entityArrayValueWithConfig', DecoratorTypes.ARRAY);
