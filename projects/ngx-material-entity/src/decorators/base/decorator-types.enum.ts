@@ -3,6 +3,7 @@ import { CheckboxBooleanDecoratorConfigInternal, DropdownBooleanDecoratorConfigI
 import { CustomDecoratorConfigInternal } from '../custom/custom-decorator-internal.data';
 import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from '../date/date-decorator-internal.data';
 import { DefaultFileDecoratorConfigInternal, ImageFileDecoratorConfigInternal } from '../file/file-decorator-internal.data';
+import { HasManyDecoratorConfigInternal } from '../has-many/has-many-decorator-internal.data';
 import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal, SliderNumberDecoratorConfigInternal } from '../number/number-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../object/object-decorator-internal.data';
 import { ReferencesManyDecoratorConfigInternal } from '../references-many/references-many-decorator-internal.data';
@@ -36,6 +37,7 @@ export enum DecoratorTypes {
     FILE_DEFAULT = 'fileDefault',
     FILE_IMAGE = 'fileImage',
     REFERENCES_MANY = 'referencesMany',
+    HAS_MANY = 'hasMany',
     CUSTOM = 'custom'
 }
 
@@ -70,6 +72,8 @@ export type DecoratorType<T, CustomMetadataType extends Record<string, unknown>>
     : T extends DecoratorTypes.FILE_IMAGE ? ImageFileDecoratorConfigInternal
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     : T extends DecoratorTypes.REFERENCES_MANY ? ReferencesManyDecoratorConfigInternal<any>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    : T extends DecoratorTypes.HAS_MANY ? HasManyDecoratorConfigInternal<any, any>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     : T extends DecoratorTypes.CUSTOM ? CustomDecoratorConfigInternal<any, any, CustomMetadataType, any>
     : never;

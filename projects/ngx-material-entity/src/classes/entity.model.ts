@@ -1,5 +1,4 @@
 import { string } from '../decorators/string/string.decorator';
-import { EntityUtilities } from '../utilities/entity.utilities';
 
 /**
  * The newable type used whenever an entity class is passed to create an entity and initialize its metadata.
@@ -29,6 +28,6 @@ export abstract class Entity {
     readonly id!: string;
 
     constructor(entity?: Entity) {
-        EntityUtilities.new(this, entity);
+        this.id = entity?.id as string;
     }
 }

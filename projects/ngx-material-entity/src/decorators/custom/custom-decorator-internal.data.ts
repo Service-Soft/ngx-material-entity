@@ -5,6 +5,7 @@ import { NgxMatEntityBaseInputComponent } from '../../components/input/base-inpu
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { CustomDecoratorConfig } from './custom-decorator.data';
+import { defaultTrue } from '../../classes/base.builder';
 
 /**
  * The default function to use for checking if the value is dirty.
@@ -39,7 +40,7 @@ export class CustomDecoratorConfigInternal<
     constructor(data: CustomDecoratorConfig<EntityType, ValueType, MetadataType, ComponentType>) {
         super(data);
         this.component = data.component;
-        this.isValid = data.isValid ?? (() => true);
+        this.isValid = data.isValid ?? defaultTrue;
         this.isEqual = data.isEqual ?? defaultIsEqual;
         this.customMetadata = data.customMetadata;
     }

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { BaseBuilder } from '../../classes/base.builder';
+import { BaseBuilder, defaultFalse, defaultTrue } from '../../classes/base.builder';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { EntityService } from '../../services/entity.service';
 import { ConfirmDialogDataBuilder } from '../confirm-dialog/confirm-dialog-data.builder';
@@ -41,32 +41,7 @@ export class BaseDataBuilder<EntityType extends BaseEntityType<EntityType>>
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected generateBaseData(data: BaseData<EntityType>): BaseDataInternal<EntityType> {
-        return new BaseDataInternal<EntityType>(
-            data.title,
-            data.displayColumns,
-            data.EntityServiceClass,
-            data.searchLabel ?? 'Search',
-            data.createButtonLabel ?? 'Create',
-            data.defaultEdit ?? 'dialog',
-            data.searchString ?? defaultSearchFunction,
-            data.allowCreate ?? (() => true),
-            data.allowRead ?? (() => true),
-            data.allowUpdate ?? (() => true),
-            data.allowDelete ?? (() => true),
-            data.multiSelectActions ?? [],
-            data.multiSelectLabel ?? 'Actions',
-            data.displayLoadingSpinner ?? true,
-            data.allowJsonImport ?? false,
-            data.importActionData ?? {
-                displayName: 'Import (JSON)',
-                confirmDialogData: new ConfirmDialogDataBuilder()
-                    .withDefault('text', ['Do you really want to import entities from the provided file?'])
-                    .getResult()
-            },
-            data.EntityClass,
-            data.edit,
-            data.create
-        );
+        return new BaseDataInternal<EntityType>(data);
     }
 }
 
@@ -91,11 +66,11 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
     // eslint-disable-next-line jsdoc/require-jsdoc
     allowCreate: () => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    allowRead: (entity: EntityType) => boolean;
+    allowRead: (entity?: EntityType) => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    allowUpdate: (entity: EntityType) => boolean;
+    allowUpdate: (entity?: EntityType) => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    allowDelete: (entity: EntityType) => boolean;
+    allowDelete: (entity?: EntityType) => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
     multiSelectActions: MultiSelectAction<EntityType>[];
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -114,46 +89,44 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
     // eslint-disable-next-line jsdoc/require-jsdoc
     create?: (entity: EntityType) => unknown;
 
-    constructor(
-        title: string,
-        displayColumns: DisplayColumn<EntityType>[],
-        EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
-        searchLabel: string,
-        createButtonLabel: string,
-        defaultEdit: 'dialog' | 'page',
-        searchString: (entity: EntityType) => string,
-        allowCreate: () => boolean,
-        allowRead: (entity: EntityType) => boolean,
-        allowUpdate: (entity: EntityType) => boolean,
-        allowDelete: (entity: EntityType) => boolean,
-        multiSelectActions: MultiSelectAction<EntityType>[],
-        multiSelectLabel: string,
-        displayLoadingSpinner: boolean,
-        allowJsonImport: boolean,
-        importActionData: Omit<MultiSelectAction<EntityType>, 'action' | 'requireConfirmDialog'>,
-        EntityClass?: EntityClassNewable<EntityType>,
-        edit?: (entity: EntityType) => unknown,
-        create?: (entity: EntityType) => unknown
-    ) {
-        this.title = title;
-        this.displayColumns = displayColumns;
-        this.EntityServiceClass = EntityServiceClass;
-        this.EntityClass = EntityClass;
-        this.searchLabel = searchLabel;
-        this.createButtonLabel = createButtonLabel;
-        this.defaultEdit = defaultEdit;
-        this.searchString = searchString;
-        this.allowCreate = allowCreate;
-        this.allowRead = allowRead;
-        this.allowUpdate = allowUpdate;
-        this.allowDelete = allowDelete;
-        this.multiSelectActions = multiSelectActions;
-        this.multiSelectLabel = multiSelectLabel;
-        this.displayLoadingSpinner = displayLoadingSpinner;
-        this.allowJsonImport = allowJsonImport;
-        this.importActionData = importActionData;
-        this.edit = edit;
-        this.create = create;
+    constructor(data: BaseData<EntityType>) {
+        this.title = data.title;
+        this.displayColumns = data.displayColumns;
+        this.EntityServiceClass = data.EntityServiceClass;
+        this.EntityClass = data.EntityClass;
+        this.searchLabel = data.searchLabel ?? 'Search';
+        this.createButtonLabel = data.createButtonLabel ?? 'Create';
+        this.defaultEdit = data.defaultEdit ?? 'dialog';
+        this.searchString = data.searchString ?? defaultSearchFunction;
+        this.multiSelectActions = data.multiSelectActions ?? [];
+        this.multiSelectLabel = data.multiSelectLabel ?? 'Actions';
+        this.displayLoadingSpinner = data.displayLoadingSpinner ?? true;
+        this.allowJsonImport = data.allowJsonImport ?? false;
+        this.importActionData = data.importActionData ?? {
+            displayName: 'Import (JSON)',
+            confirmDialogData: new ConfirmDialogDataBuilder()
+                .withDefault('text', ['Do you really want to import entities from the provided file?'])
+                .getResult()
+        };
+        this.edit = data.edit;
+        this.create = data.create;
+        this.allowCreate = this.allowDataToFunction(data.allowCreate);
+        this.allowRead = this.allowDataToFunction(data.allowRead);
+        this.allowUpdate = this.allowDataToFunction(data.allowUpdate);
+        this.allowDelete = this.allowDataToFunction(data.allowDelete);
+    }
+
+    private allowDataToFunction(value?: boolean | ((entity?: EntityType) => boolean)): ((entity?: EntityType) => boolean) {
+        if (value == null) {
+            return defaultTrue;
+        }
+        if (typeof value == 'boolean') {
+            if (value) {
+                return defaultTrue;
+            }
+            return defaultFalse;
+        }
+        return value;
     }
 }
 
@@ -188,38 +161,17 @@ export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
             );
         }
         if (
-            (
-                data.baseData.allowCreate !== (() => false)
-                || data.baseData.allowRead !== (() => false)
-                || data.baseData.allowUpdate !== (() => false)
-                || data.baseData.allowDelete !== (() => false)
+            !data.baseData.EntityClass
+            && (
+                data.baseData.allowCreate !== false
+                || data.baseData.allowRead !== false
+                || data.baseData.allowUpdate !== false
+                || data.baseData.allowDelete !== false
             )
-            && !data.baseData.EntityClass
-        ) {
-            throw new Error(`
-                Missing required Input data "EntityClass".
-                You can only omit this value if you can neither create or update entities.`
-            );
-        }
-        if (data.baseData.allowCreate !== (() => false) && !data.baseData.create && !data.createDialogData) {
-            throw new Error(
-                `Missing required Input data "createDialogData".
-                You can only omit this value when creation is disallowed or done with a custom create method.`
-            );
-        }
-        if (
-            (
-                data.baseData.allowRead !== (() => false)
-                || data.baseData.allowUpdate !== (() => false)
-                || data.baseData.allowDelete !== (() => false)
-            )
-            && !data.baseData.edit
-            && data.baseData.defaultEdit == 'dialog'
-            && !data.editData
         ) {
             throw new Error(
-                `Missing required Input data "editDialogData".
-                You can only omit this value when viewing, editing and deleting is disallowed or done with a custom edit method.`
+                `Missing required Input data "EntityClass".
+                You can only omit this value if you can neither create, read, update or delete entities.`
             );
         }
     }
@@ -234,7 +186,7 @@ export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
  * @param entity - An entity that is in the search.
  * @returns The generated string of the given entity used for comparison with the search input.
  */
-function defaultSearchFunction<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): string {
+export function defaultSearchFunction<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): string {
     const searchString: string = Object.keys(entity)
         .reduce((currentTerm: string, key: string) => {
             return `${currentTerm}${(entity as Record<string, unknown>)[key]}◬`;
