@@ -27,6 +27,7 @@
             [required]="metadata.required"
             [compareWith]="compareTimes"
             [disabled]="isReadOnly"
+            (selectionChange)="setTime()"
         >
             <mat-option *ngFor="let validTime of DateUtilities.getValidTimesForDropdown(
                     metadata.times,
@@ -36,7 +37,6 @@
                     metadata.filterTime
                 )"
                 [value]="validTime.value"
-                (click)="setTime()"
             >
                 {{validTime.displayName}}
             </mat-option>

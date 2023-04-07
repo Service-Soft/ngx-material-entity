@@ -1,4 +1,4 @@
-import { cloneDeep, Dictionary, isArray, isEqual, isNil, Many, omit, omitBy, ValueKeyIteratee } from 'lodash';
+import { cloneDeep, isArray, isEqual, isNil, Many, omit, omitBy, PartialObject, ValueKeyIteratee } from 'lodash';
 
 /**
  * Encapsulates all functionality of lodash.
@@ -65,7 +65,7 @@ export abstract class LodashUtilities {
      * @param predicate - The function invoked per property.
      * @returns Returns the new object.
      */
-    static omitBy<T>(object: Dictionary<T> | null | undefined, predicate?: ValueKeyIteratee<T>): Dictionary<T> {
+    static omitBy<T extends object>(object: T | null | undefined, predicate: ValueKeyIteratee<T[keyof T]>): PartialObject<T> {
         return omitBy(object, predicate);
     }
 

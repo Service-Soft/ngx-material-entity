@@ -71,16 +71,18 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
      *
      * @param entity - The data of the entity to create.
      * All values that should be omitted will be removed from it inside this method.
+     * @param baseUrl - The base url to send the post request to.
+     * This can be used if you want to create an entity belonging to another, like "customers/{id}/invoices".
      * @returns A Promise of the created entity.
      */
-    async create(entity: EntityType): Promise<EntityType> {
-        const body: Partial<EntityType> = LodashUtilities.omit(entity, EntityUtilities.getOmitForCreate(entity)) as Partial<EntityType>;
+    async create(entity: EntityType, baseUrl: string = this.baseUrl): Promise<EntityType> {
+        const body: Partial<EntityType> = EntityUtilities.getWithoutOmitCreateValues(entity);
         const filePropertyKeys: (keyof EntityType)[] = EntityUtilities.getFileProperties(entity);
         if (!filePropertyKeys.length) {
-            return await this.createWithJson(body);
+            return await this.createWithJson(body, baseUrl);
         }
         else {
-            return await this.createWithFormData(body, filePropertyKeys, entity);
+            return await this.createWithFormData(body, filePropertyKeys, entity, baseUrl);
         }
     }
 
@@ -111,12 +113,15 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
      * @param body - The body Of the request.
      * @param filePropertyKeys - All property keys that are files and need to be added to the form data.
      * @param entity - The entity to create. This is needed in addition to the body because the body doesn't contain any metadata.
+     * @param baseUrl - The base url to send the post request to.
+     * This can be used if you want to create an entity belonging to another, like "customers/{id}/invoices".
      * @returns The created entity from the server.
      */
     protected async createWithFormData(
         body: Partial<EntityType>,
         filePropertyKeys: (keyof EntityType)[],
-        entity: EntityType
+        entity: EntityType,
+        baseUrl: string = this.baseUrl
     ): Promise<EntityType> {
         const formData: FormData = new FormData();
         formData.append('body', JSON.stringify(LodashUtilities.omit(body, filePropertyKeys)));
@@ -132,7 +137,7 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
                 formData.append(key as string, (await FileUtilities.getFileData(fileData)).file, fileData.name);
             }
         }
-        const e: EntityType | undefined = await firstValueFrom(this.http.post<EntityType | undefined>(this.baseUrl, formData));
+        const e: EntityType | undefined = await firstValueFrom(this.http.post<EntityType | undefined>(baseUrl, formData));
         if (!e) {
             throw new Error(`
                 The created entity was not returned in the response.
@@ -149,10 +154,12 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
      * Creates the entity with a normal json body in contrast to creating it with form data when the entity contains files.
      *
      * @param body - The body Of the request.
+     * @param baseUrl - The base url to send the post request to.
+     * This can be used if you want to create an entity belonging to another, like "customers/{id}/invoices".
      * @returns The created entity from the server.
      */
-    protected async createWithJson(body: Partial<EntityType>): Promise<EntityType> {
-        const e: EntityType | undefined = await firstValueFrom(this.http.post<EntityType | undefined>(this.baseUrl, body));
+    protected async createWithJson(body: Partial<EntityType>, baseUrl: string = this.baseUrl): Promise<EntityType> {
+        const e: EntityType | undefined = await firstValueFrom(this.http.post<EntityType | undefined>(baseUrl, body));
         if (!e) {
             throw new Error(`
                 The created entity was not returned in the response.
@@ -168,10 +175,11 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
     /**
      * Gets all existing entities and pushes them to the entities array.
      *
+     * @param baseUrl - The base url for the request. Defaults to the baseUrl on the service.
      * @returns A Promise of all received Entities.
      */
-    async read(): Promise<EntityType[]> {
-        const e: EntityType[] = await firstValueFrom(this.http.get<EntityType[]>(this.baseUrl));
+    async read(baseUrl = this.baseUrl): Promise<EntityType[]> {
+        const e: EntityType[] = await firstValueFrom(this.http.get<EntityType[]>(baseUrl));
         this.entitiesSubject.next(e);
         this.lastRead = new Date();
         return e;
@@ -202,17 +210,26 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
      * It Is used to get changed values and only update them instead of sending the whole entity data.
      */
     async update(entity: EntityType, entityPriorChanges: EntityType): Promise<void> {
-        const body: Partial<EntityType> = LodashUtilities.omit(
-            await EntityUtilities.difference(entity, entityPriorChanges),
-            EntityUtilities.getOmitForUpdate(entity)
-        ) as unknown as Partial<EntityType>;
         const filePropertyKeys: (keyof EntityType)[] = EntityUtilities.getFileProperties(entityPriorChanges);
+        const body: Partial<EntityType> = await this.entityToUpdateRequestBody(entity, entityPriorChanges);
         if (!filePropertyKeys.length) {
             await this.updateWithJson(body, entityPriorChanges[this.idKey]);
         }
         else {
             await this.updateWithFormData(body, filePropertyKeys, entity, entityPriorChanges[this.idKey]);
         }
+    }
+
+    /**
+     * Builds the update request body from the given entity before and after its changes.
+     *
+     * @param entity - The entity with changed values.
+     * @param entityPriorChanges - The entity before any changes.
+     * @returns A partial of only the changed values.
+     */
+    protected async entityToUpdateRequestBody(entity: EntityType, entityPriorChanges: EntityType): Promise<Partial<EntityType>> {
+        const body: Partial<EntityType> = await EntityUtilities.getWithoutOmitUpdateValues(entity, entityPriorChanges);
+        return LodashUtilities.omitBy(body, LodashUtilities.isNil);
     }
 
     // TODO: Find a way to use blobs with jest
@@ -234,7 +251,7 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
         id: EntityType[keyof EntityType]
     ): Promise<void> {
         const formData: FormData = new FormData();
-        formData.append('body', JSON.stringify(LodashUtilities.omitBy(body, LodashUtilities.isNil)));
+        formData.append('body', JSON.stringify(body));
         for (const key of filePropertyKeys) {
             if (EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT).multiple) {
                 const fileDataValues: FileData[] = body[key] as FileData[];

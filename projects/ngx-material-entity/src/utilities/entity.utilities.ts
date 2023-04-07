@@ -121,6 +121,51 @@ export abstract class EntityUtilities {
     }
 
     /**
+     * Returns the given entity without the values that should be omitted for creation.
+     *
+     * @param entity - The entity with all its values.
+     * @returns The reduced entity object.
+     */
+    static getWithoutOmitCreateValues<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): Partial<EntityType> {
+        return LodashUtilities.omit(entity, EntityUtilities.getOmitForCreate(entity)) as Partial<EntityType>;
+    }
+
+    /**
+     * Returns the given entity without the values that should be omitted for updating.
+     * This also handles omitting keys for @object or @array values and removes values that haven't been changed by default.
+     *
+     * @param entity - The entity with all its values.
+     * @param entityPriorChanges - The entity before any changes were applied.
+     * @returns The reduced entity object.
+     */
+    static async getWithoutOmitUpdateValues<EntityType extends BaseEntityType<EntityType>>(
+        entity: EntityType,
+        entityPriorChanges: EntityType
+    ): Promise<Partial<EntityType>> {
+        const res: Partial<EntityType> = {};
+        for (const key of EntityUtilities.keysOf(entity, false, true)) {
+            const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(entity, key);
+            const type: DecoratorTypes = EntityUtilities.getPropertyType(entity, key);
+            if (!(await EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type))) {
+                switch (type) {
+                    case DecoratorTypes.OBJECT:
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        (res[key] as object) = LodashUtilities.omit(entity[key] as any, EntityUtilities.getOmitForCreate(entity[key]));
+                        break;
+                    case DecoratorTypes.ARRAY:
+                        (res[key] as object[]) = (entity[key] as object[])
+                            .map(value => LodashUtilities.omit(value, EntityUtilities.getOmitForCreate(value)));
+                        break;
+                    default:
+                        res[key] = entity[key];
+                        break;
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
      * Gets all properties on the given entity which are files.
      *
      * @param entity - The entity to check for file properties.
@@ -386,6 +431,7 @@ export abstract class EntityUtilities {
                 }
                 break;
             case DecoratorTypes.REFERENCES_MANY:
+            case DecoratorTypes.HAS_MANY:
                 break;
             case DecoratorTypes.CUSTOM:
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any, max-len
@@ -627,6 +673,7 @@ export abstract class EntityUtilities {
         return res;
     }
 
+    // TODO Remove
     /**
      * Compares two Entities and returns their difference in an object.
      *
@@ -634,20 +681,20 @@ export abstract class EntityUtilities {
      * @param entityPriorChanges - The second entity to compare.
      * @returns The difference between the two Entities in form of a Partial.
      */
-    static async difference<EntityType extends BaseEntityType<EntityType>>(
-        entity: EntityType,
-        entityPriorChanges: EntityType
-    ): Promise<Partial<EntityType>> {
-        const res: Partial<EntityType> = {};
-        for (const key in entity) {
-            const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(entity, key);
-            const type: DecoratorTypes = EntityUtilities.getPropertyType(entity, key);
-            if (!(await EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type))) {
-                res[key] = entity[key];
-            }
-        }
-        return res;
-    }
+    // static async difference<EntityType extends BaseEntityType<EntityType>>(
+    //     entity: EntityType,
+    //     entityPriorChanges: EntityType
+    // ): Promise<Partial<EntityType>> {
+    //     const res: Partial<EntityType> = {};
+    //     for (const key in entity) {
+    //         const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(entity, key);
+    //         const type: DecoratorTypes = EntityUtilities.getPropertyType(entity, key);
+    //         if (!(await EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type))) {
+    //             res[key] = entity[key];
+    //         }
+    //     }
+    //     return res;
+    // }
 
     /**
      * Checks if two given values are equal.

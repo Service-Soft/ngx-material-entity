@@ -209,18 +209,34 @@ interface Address {
     city: string
 }
 
+interface TimeTracking {
+    date: Date,
+    hours: number,
+    minutes: number,
+    usedForInvoice: boolean
+}
+
 interface Person {
     id: string,
     firstName: string,
     lastName: string,
-    addressIds: string[]
+    addressIds: string[],
+    timeTrackings: TimeTracking[]
 }
 
 const personData: Person = {
     id: '1',
     firstName: 'John',
     lastName: 'Smith',
-    addressIds: ['1']
+    addressIds: ['1'],
+    timeTrackings: [
+        {
+            date: new Date(),
+            hours: 4,
+            minutes: 30,
+            usedForInvoice: false
+        }
+    ]
 };
 
 const addressData: Address = {

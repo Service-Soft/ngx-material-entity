@@ -3,7 +3,7 @@ import { Entity } from '../classes/entity.model';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../encapsulation/reflect.utilities';
-import { getDatesBetween, TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder, TestObjectEntity } from '../mocks/test-entity.interface';
+import { getDatesBetween, TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder, TestObjectArrayEntity, TestObjectEntity } from '../mocks/test-entity.interface';
 import { EntityTab, EntityUtilities } from './entity.utilities';
 
 const builder: TestEntityWithoutCustomPropertiesMockBuilder = new TestEntityWithoutCustomPropertiesMockBuilder();
@@ -88,6 +88,47 @@ describe('getOmitForUpdate', () => {
     test('should get correct omitForUpdate values from metadata', async () => {
         expect(EntityUtilities.getOmitForUpdate(testEntity)).toEqual(['id', 'omitForUpdateValue', 'customFileValues']);
         expect(EntityUtilities.getOmitForUpdate(testEntityWithoutData)).toEqual(['id', 'omitForUpdateValue', 'customFileValues']);
+    });
+});
+
+describe('getWithoutOmitUpdateValues', () => {
+    test('should get correct update request body', async () => {
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
+        const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        tE.entityArrayValue.push(new TestObjectArrayEntity({
+            stringValue: 'stringValue',
+            secondTabValue: 'secondTabValue',
+            id: 'id'
+        }));
+        tE.objectValue = new TestObjectEntity({
+            maxLengthStringValue: 'test',
+            secondTabStringValue: 'test',
+            rowValue1: 'test',
+            rowValue2: 'test',
+            id: 'id'
+        });
+        const res: Partial<TestEntityWithoutCustomProperties> = await EntityUtilities.getWithoutOmitUpdateValues(tE, tEPriorChanges);
+        expect(res).toEqual({
+            objectValue: {
+                maxLengthStringValue: 'test',
+                rowValue1: 'test',
+                rowValue2: 'test',
+                secondTabStringValue: 'test'
+            },
+            entityArrayValue: [
+                {
+                    secondTabValue: 'stv 1',
+                    stringValue: 'stringValue'
+                },
+                {
+                    secondTabValue: 'stv 2',
+                    stringValue: 'stringValue2' },
+                {
+                    secondTabValue: 'secondTabValue',
+                    stringValue: 'stringValue'
+                }
+            ] });
     });
 });
 

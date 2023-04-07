@@ -94,6 +94,9 @@ export class TestObjectArrayEntity extends Entity {
     }
 }
 
+/**
+ * An Entity used to Test the @referencesMany decorator on the TestEntity class.
+ */
 export class ReferencedEntity extends Entity {
     @string({
         displayStyle: 'line',
@@ -125,13 +128,7 @@ export interface TestEntityWithoutCustomPropertiesInterface {
     minNumberValue: number,
     maxNumberValue: number,
     numberSliderValue: number,
-    objectValue: {
-        id: string,
-        maxLengthStringValue: string,
-        secondTabStringValue: string,
-        rowValue1: string,
-        rowValue2: string
-    },
+    objectValue: TestObjectEntity,
     stringChipsArrayValue: string[],
     stringChipsAutocompleteArrayValue: string[],
     stringChipsArrayValueWithConfig: string[],
@@ -140,30 +137,14 @@ export interface TestEntityWithoutCustomPropertiesInterface {
     orderValue2: string,
     orderValue3: string,
     rowValue: string,
-    entityArrayValue: {
-        id: string,
-        stringValue: string,
-        secondTabValue: string
-    }[],
-    entityArrayValueWithConfig: {
-        id: string,
-        stringValue: string,
-        secondTabValue: string
-    }[],
+    entityArrayValue: TestObjectArrayEntity[],
+    entityArrayValueWithConfig: TestObjectArrayEntity[],
     dateArrayValue: Date[],
     customDateArrayValue: Date[],
     dateTimeArrayValue: Date[],
     customDateTimeArrayValue: Date[],
-    dateRangeArrayValue: {
-        start: Date,
-        end: Date,
-        values?: Date[]
-    }[],
-    customDateRangeArrayValue: {
-        start: Date,
-        end: Date,
-        values?: Date[]
-    }[],
+    dateRangeArrayValue: DateRange[],
+    customDateRangeArrayValue: DateRange[],
     numberDropdownValue: number,
     stringDropdownValue: string,
     customBooleanDropdownValue: boolean,
@@ -176,42 +157,12 @@ export interface TestEntityWithoutCustomPropertiesInterface {
     customDateRangeValue: DateRange,
     dateTimeValue: Date,
     customDateTimeValue: Date,
-    fileValue: {
-        name: string,
-        url?: string,
-        size: number,
-        type: string
-    },
-    dragDropFileValue: {
-        name: string,
-        url?: string,
-        size: number,
-        type: string
-    },
-    customFileValues: {
-        url?: string,
-        name: string,
-        size: number,
-        type: string
-    }[],
-    imageValue: {
-        url?: string,
-        name: string,
-        size: number,
-        type: string
-    },
-    imageDragDropValue: {
-        url?: string,
-        name: string,
-        size: number,
-        type: string
-    },
-    customImageValues: {
-        url?: string,
-        name: string,
-        size: number,
-        type: string
-    }[],
+    fileValue: FileData,
+    dragDropFileValue: FileData,
+    customFileValues: FileData[],
+    imageValue: FileData,
+    imageDragDropValue: FileData,
+    customImageValues: FileData[],
     randomValue: string,
     referencesManyIds: string[]
 }

@@ -35,8 +35,8 @@
                     [indeterminate]="selection.hasValue() && !SelectionUtilities.isAllSelected(selection, referencedEntitiesDataSource)">
                 </mat-checkbox>
             </mat-header-cell>
-            <mat-cell *matCellDef="let module">
-                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(module) : null" [checked]="selection.isSelected(module)"></mat-checkbox>
+            <mat-cell *matCellDef="let entity">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(entity) : null" [checked]="selection.isSelected(entity)"></mat-checkbox>
             </mat-cell>
         </ng-container>
     

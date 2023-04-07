@@ -1,20 +1,28 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EnvironmentInjector, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewChild, inject } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { BaseEntityType } from '../../classes/entity.model';
 import { EditArrayItemDialogDataInternal, EntityArrayDecoratorConfigInternal } from '../../decorators/array/array-decorator-internal.data';
 import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
+import { HasManyDecoratorConfigInternal } from '../../decorators/has-many/has-many-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../../decorators/object/object-decorator-internal.data';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
+import { EntityService } from '../../services/entity.service';
 import { DateUtilities } from '../../utilities/date.utilities';
 import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
 import { SelectionUtilities } from '../../utilities/selection.utilities';
+import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { NGX_GET_VALIDATION_ERROR_MESSAGE } from '../get-validation-error-message.function';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from '../table/create-dialog/create-dialog-data.builder';
+import { MultiSelectAction } from '../table/table-data';
 
 /**
  * The default input component. It gets the metadata of the property from the given @Input "entity" and @Input "propertyKey"
@@ -103,17 +111,42 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     arrayItem!: EntityType;
     arrayItemPriorChanges!: EntityType;
     arrayItemInlineTabs!: EntityTab<EntityType>[];
-    dataSource!: MatTableDataSource<EntityType>;
-    selection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
-    displayedColumns!: string[];
+    entityArrayDataSource!: MatTableDataSource<EntityType>;
+    entityArraySelection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
+    entityArrayDisplayedColumns!: string[];
     isArrayItemValid: boolean = false;
     isArrayItemDirty: boolean = false;
     indexOfEditedArrayItem!: number;
-
     addArrayItemDialogData!: CreateDialogDataInternal;
     arrayItemDialogTabs!: EntityTab<EntityType>[];
-
     editArrayItemDialogData!: EditArrayItemDialogDataInternal<EntityType>;
+
+    metadataHasMany!: HasManyDecoratorConfigInternal<EntityType, EntityType>;
+    hasManyIsLoading: boolean = true;
+    @ViewChild(MatPaginator, { static: true })
+    hasManyPaginator!: MatPaginator;
+    @ViewChild(MatSort, { static: true })
+    hasManySort!: MatSort;
+    @ViewChild('filter', { static: true })
+    hasManyFilter!: string;
+    displayedHasManyColumns!: string[];
+    hasManyDataSource: MatTableDataSource<EntityType> = new MatTableDataSource();
+    hasManySelection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
+    hasManyImportAction!: Omit<MultiSelectAction<EntityType>, 'confirmationDialog'>;
+    private hasManyEntityService!: EntityService<EntityType>;
+    @ViewChild('createHasManyDialog')
+    createHasManyDialog!: TemplateRef<unknown>;
+    createHasManyDialogRef!: MatDialogRef<unknown>;
+    @ViewChild('editHasManyDialog')
+    editHasManyDialog!: TemplateRef<unknown>;
+    editHasManyDialogRef!: MatDialogRef<unknown>;
+    hasManyEntity!: EntityType;
+    hasManyEntityPriorChanges!: EntityType;
+    isHasManyEntityValid: boolean = false;
+    isHasManyEntityDirty: boolean = false;
+    hasManyCreateTabs!: EntityTab<EntityType>[];
+    hasManyUpdateTabs!: EntityTab<EntityType>[];
+    private createBaseUrl!: string;
 
     readonly DecoratorTypes: typeof DecoratorTypes = DecoratorTypes;
 
@@ -123,6 +156,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     constructor(
         private readonly dialog: MatDialog,
+        private readonly injector: EnvironmentInjector,
+        private readonly router: Router,
         @Inject(NGX_GET_VALIDATION_ERROR_MESSAGE)
         protected readonly defaultGetValidationErrorMessage: (model: NgModel) => string
     ) {}
@@ -154,12 +189,64 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.type = EntityUtilities.getPropertyType(this.internalEntity, this.internalPropertyKey);
         this.metadata = EntityUtilities.getPropertyMetadata(this.internalEntity, this.internalPropertyKey, this.type);
 
-        if (this.type === DecoratorTypes.OBJECT) {
-            this.initObjectInput();
+        switch (this.type) {
+            case DecoratorTypes.OBJECT:
+                this.initObjectInput();
+                break;
+            case DecoratorTypes.ARRAY:
+                this.initEntityArray();
+                break;
+            case DecoratorTypes.HAS_MANY:
+                this.initHasMany();
+                break;
+            default:
+                break;
         }
-        if (this.type === DecoratorTypes.ARRAY) {
-            this.initEntityArray();
+    }
+
+    private initHasMany(): void {
+        this.metadataHasMany = this.metadata as HasManyDecoratorConfigInternal<EntityType, EntityType>;
+        this.hasManyImportAction = {
+            ...this.metadataHasMany.tableData.baseData.importActionData,
+            action: () => this.startImportJson()
+        };
+
+        this.injector.runInContext(() => {
+            this.hasManyEntityService = inject<EntityService<EntityType>>(this.metadataHasMany.tableData.baseData.EntityServiceClass);
+            this.createBaseUrl = this.metadataHasMany.createBaseUrl(this.internalEntity, this.metadataHasMany);
+        });
+
+        const givenDisplayColumns: string[] = this.metadataHasMany.tableData.baseData.displayColumns.map((v) => v.displayName);
+        if (this.metadataHasMany.tableData.baseData.multiSelectActions.length) {
+            this.displayedHasManyColumns = ['select'].concat(givenDisplayColumns);
         }
+        else {
+            this.displayedHasManyColumns = givenDisplayColumns;
+        }
+
+        this.hasManyDataSource.sortingDataAccessor = (entity: EntityType, header: string) => {
+            return this.metadataHasMany.tableData.baseData.displayColumns.find((dp) => dp.displayName === header)?.value(entity) as string;
+        };
+        this.hasManyDataSource.sort = this.hasManySort;
+        this.hasManyDataSource.filterPredicate = (entity: EntityType, filter: string) => {
+            const searchStr: string = this.metadataHasMany.tableData.baseData.searchString(entity);
+            const formattedSearchString: string = searchStr.toLowerCase();
+            const formattedFilterString: string = filter.toLowerCase();
+            return formattedSearchString.includes(formattedFilterString);
+        };
+        this.hasManyDataSource.filter = this.hasManyFilter;
+        this.hasManyDataSource.paginator = this.hasManyPaginator;
+
+        this.hasManyEntityService.entitiesSubject.subscribe((entities) => {
+            this.hasManyDataSource.data = entities;
+            this.hasManySelection.clear();
+        });
+        this.injector.runInContext(() => {
+            const readBaseUrl: string = this.metadataHasMany.readBaseUrl(this.internalEntity, this.metadataHasMany);
+            void this.hasManyEntityService.read(readBaseUrl).then(() => {
+                this.hasManyIsLoading = false;
+            });
+        });
     }
 
     private initEntityArray(): void {
@@ -180,10 +267,11 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 Please choose a different name.`
             );
         }
-        this.displayedColumns = this.internalIsReadOnly ? givenDisplayColumns : ['select'].concat(givenDisplayColumns);
-        this.dataSource = new MatTableDataSource();
-        this.dataSource.data = this.entityArrayValues;
+        this.entityArrayDisplayedColumns = this.internalIsReadOnly ? givenDisplayColumns : ['select'].concat(givenDisplayColumns);
+        this.entityArrayDataSource = new MatTableDataSource();
+        this.entityArrayDataSource.data = this.entityArrayValues;
         this.arrayItem = new this.metadataEntityArray.EntityClass();
+        this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
         this.arrayItemInlineTabs = EntityUtilities.getEntityTabs(this.arrayItem, true);
 
         this.addArrayItemDialogData = new CreateDialogDataBuilder(this.metadataEntityArray.createDialogData)
@@ -199,6 +287,308 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfigInternal<EntityType>;
         this.objectProperty = this.internalEntity[this.internalPropertyKey] as EntityType;
         this.objectPropertyTabs = EntityUtilities.getEntityTabs(this.objectProperty, this.hideOmitForCreate, this.hideOmitForEdit);
+    }
+
+    private startImportJson(): void {
+        const input: HTMLInputElement = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json';
+        input.onchange = async () => {
+            if (input.files) {
+                this.importJson(input.files[0]);
+            }
+        };
+        input.click();
+    }
+
+    private importJson(file: File): void {
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.hasManyImportAction.confirmDialogData)
+            .withDefault('text', this.metadataHasMany.tableData.baseData.importActionData.confirmDialogData?.text as string[])
+            .withDefault('title', this.hasManyImportAction.displayName)
+            .getResult();
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+            data: dialogData,
+            autoFocus: false,
+            restoreFocus: false
+        });
+        dialogRef.afterClosed().subscribe(res => {
+            if (res == true) {
+                void this.hasManyEntityService.import(file);
+            }
+        });
+    }
+
+    /**
+     * Edits an entity. This either calls the edit-Method provided by the user or uses a default edit-dialog.
+     *
+     * @param entity - The entity that should be updated.
+     * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
+     */
+    editHasManyEntity(entity: EntityType): void {
+        if (!(this.metadataHasMany.tableData.baseData.allowUpdate(entity) || this.metadataHasMany.tableData.baseData.allowRead(entity))) {
+            return;
+        }
+        if (!this.metadataHasMany.tableData.baseData.EntityClass) {
+            throw new Error('No "EntityClass" specified for this table');
+        }
+        if (this.metadataHasMany.tableData.baseData.edit) {
+            this.metadataHasMany.tableData.baseData.edit(new this.metadataHasMany.tableData.baseData.EntityClass(entity));
+            return;
+        }
+        if (this.metadataHasMany.tableData.baseData.defaultEdit == 'page') {
+            this.editHasManyDefaultPage(new this.metadataHasMany.tableData.baseData.EntityClass(entity));
+            return;
+        }
+        void this.editHasManyDefaultDialog(new this.metadataHasMany.tableData.baseData.EntityClass(entity));
+    }
+
+    private editHasManyDefaultPage(entity: EntityType): void {
+        void this.router.navigate(['', this.hasManyEntityService.editBaseRoute, entity[this.hasManyEntityService.idKey]]);
+    }
+
+    private async editHasManyDefaultDialog(entity: EntityType): Promise<void> {
+        this.hasManyEntity = LodashUtilities.cloneDeep(entity);
+        this.hasManyEntityPriorChanges = LodashUtilities.cloneDeep(this.hasManyEntity);
+        this.hasManyUpdateTabs = EntityUtilities.getEntityTabs(this.hasManyEntity, false, true);
+        await this.checkHasManyEntity();
+        this.editHasManyDialogRef = this.dialog.open(
+            this.editHasManyDialog,
+            {
+                minWidth: '60%',
+                autoFocus: false,
+                restoreFocus: false
+            }
+        );
+        const res: number = await firstValueFrom(this.editHasManyDialogRef.afterClosed()) as number;
+        if (res === 0) {
+            const data: EntityType[] = this.hasManyDataSource.data;
+            // eslint-disable-next-line max-len
+            data[this.hasManyDataSource.data.findIndex((e) => e[this.hasManyEntityService.idKey] === entity[this.hasManyEntityService.idKey])] = entity;
+            this.hasManyDataSource.data = data;
+            this.hasManySelection.clear();
+        }
+    }
+
+    /**
+     * Tries to save the changes and close the dialog afterwards.
+     * Also handles the confirmation if required.
+     */
+    dialogEditHasMany(): void {
+        if (this.internalIsReadOnly || !this.isHasManyEntityValid || !this.isHasManyEntityDirty) {
+            return;
+        }
+        if (!this.metadataHasMany.tableData.editData.editRequiresConfirmDialog) {
+            this.dialogConfirmEditHasMany();
+            return;
+        }
+        // eslint-disable-next-line max-len
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.metadataHasMany.tableData.editData.confirmEditDialogData)
+            .withDefault('text', ['Do you really want to save all changes?'])
+            .withDefault('confirmButtonLabel', 'Save')
+            .withDefault('title', 'Edit')
+            .getResult();
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+            data: dialogData,
+            autoFocus: false,
+            restoreFocus: false
+        });
+        dialogRef.afterClosed().subscribe(res => {
+            if (res == true) {
+                this.dialogConfirmEditHasMany();
+            }
+        });
+    }
+    private dialogConfirmEditHasMany(): void {
+        void this.hasManyEntityService.update(this.hasManyEntity, this.hasManyEntityPriorChanges)
+            .then(() => this.editHasManyDialogRef.close(1));
+    }
+
+    /**
+     * Tries to delete the entity and close the dialog afterwards.
+     * Also handles the confirmation if required.
+     */
+    deleteHasManyEntity(): void {
+        if (!this.metadataHasMany.tableData.editData.deleteRequiresConfirmDialog) {
+            this.confirmDeleteHasManyEntity();
+            return;
+        }
+        // eslint-disable-next-line max-len
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.metadataHasMany.tableData.editData.confirmDeleteDialogData)
+            .withDefault('text', ['Do you really want to delete this entity?'])
+            .withDefault('type', 'delete')
+            .withDefault('confirmButtonLabel', 'Delete')
+            .withDefault('title', 'Delete')
+            .getResult();
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+            data: dialogData,
+            autoFocus: false,
+            restoreFocus: false
+        });
+        dialogRef.afterClosed().subscribe(res => {
+            if (res == true) {
+                this.confirmDeleteHasManyEntity();
+            }
+        });
+    }
+
+    private confirmDeleteHasManyEntity(): void {
+        void this.hasManyEntityService.delete(this.hasManyEntityPriorChanges).then(() => this.editHasManyDialogRef.close(2));
+    }
+
+    /**
+     * Cancels the editing of the has many entity and closes the dialog.
+     */
+    dialogCancelEditHasMany(): void {
+        EntityUtilities.resetChangesOnEntity(this.hasManyEntity, this.hasManyEntityPriorChanges);
+        this.editHasManyDialogRef.close(0);
+    }
+
+    /**
+     * Creates a new Entity. This either calls the create-Method provided by the user or uses a default create-dialog.
+     *
+     * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
+     */
+    createHasManyEntity(): void {
+        if (this.metadataHasMany.tableData.baseData.allowCreate()) {
+            if (!this.metadataHasMany.tableData.baseData.EntityClass) {
+                throw new Error('No "EntityClass" specified for this table');
+            }
+            if (this.metadataHasMany.tableData.baseData.create) {
+                this.metadataHasMany.tableData.baseData.create(new this.metadataHasMany.tableData.baseData.EntityClass());
+            }
+            else {
+                this.createHasManyDefault(new this.metadataHasMany.tableData.baseData.EntityClass());
+            }
+        }
+    }
+
+    private createHasManyDefault(entity: EntityType): void {
+        this.hasManyEntity = entity;
+        this.hasManyCreateTabs = EntityUtilities.getEntityTabs(this.hasManyEntity, true);
+        this.checkIsHasManyEntityValid('create');
+        this.createHasManyDialogRef = this.dialog.open(
+            this.createHasManyDialog,
+            {
+                minWidth: '60%',
+                autoFocus: false,
+                restoreFocus: false
+            }
+        );
+    }
+
+    /**
+     * Creates the has many entity over the dialog.
+     */
+    dialogCreateHasMany(): void {
+        if (!this.isHasManyEntityValid) {
+            return;
+        }
+        if (!this.metadataHasMany.tableData.createDialogData.createRequiresConfirmDialog) {
+            this.dialogConfirmCreateHasMany();
+            return;
+        }
+        // eslint-disable-next-line max-len
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.metadataHasMany.tableData.createDialogData.confirmCreateDialogData)
+            .withDefault('text', ['Do you really want to create this entity?'])
+            .withDefault('confirmButtonLabel', 'Create')
+            .withDefault('title', 'Create')
+            .getResult();
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+            data: dialogData,
+            autoFocus: false,
+            restoreFocus: false
+        });
+        dialogRef.afterClosed().subscribe(res => {
+            if (res == true) {
+                this.dialogConfirmCreateHasMany();
+            }
+        });
+    }
+    private dialogConfirmCreateHasMany(): void {
+        void this.hasManyEntityService.create(this.hasManyEntity, this.createBaseUrl).then(() => {
+            this.createHasManyDialogRef.close();
+        });
+    }
+
+    /**
+     * Cancels the creating of the has many entity and closes the dialog.
+     */
+    dialogCancelCreateHasMany(): void {
+        this.createHasManyDialogRef.close();
+    }
+
+    /**
+     * Runs the MultiAction for all selected entries.
+     * Also handles confirmation with an additional dialog if configured.
+     *
+     * @param action - The MultiAction to run.
+     */
+    runHasManyMultiAction(action: MultiSelectAction<EntityType>): void {
+        if (!action.requireConfirmDialog || !action.requireConfirmDialog(this.hasManySelection.selected)) {
+            this.confirmRunHasManyMultiAction(action);
+            return;
+        }
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(action.confirmDialogData)
+            .withDefault('text', [`Do you really want to run this action on ${this.hasManySelection.selected.length} entries?`])
+            .withDefault('title', action.displayName)
+            .getResult();
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+            data: dialogData,
+            autoFocus: false,
+            restoreFocus: false
+        });
+        dialogRef.afterClosed().subscribe(res => {
+            if (res == true) {
+                this.confirmRunHasManyMultiAction(action);
+            }
+        });
+    }
+
+    private confirmRunHasManyMultiAction(action: MultiSelectAction<EntityType>): void {
+        action.action(this.hasManySelection.selected);
+    }
+
+    /**
+     * Checks if an MultiAction is disabled (e.g. Because no entries have been selected).
+     *
+     * @param action - The MultiAction to check.
+     * @returns Whether or not the Action can be used.
+     */
+    hasManyMultiActionDisabled(action: MultiSelectAction<EntityType>): boolean {
+        if (!this.hasManySelection.selected.length) {
+            return true;
+        }
+        if (action.enabled?.(this.hasManySelection.selected) === false) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Applies the search input to filter the table entries.
+     *
+     * @param event - The keyup-event which contains the search-string of the user.
+     */
+    applyHasManyFilter(event: Event): void {
+        const filterValue: string = (event.target as HTMLInputElement).value;
+        this.hasManyDataSource.filter = filterValue.trim().toLowerCase();
+    }
+
+    /**
+     * Checks if the entity is valid for updating and if it is dirty.
+     */
+    async checkHasManyEntity(): Promise<void> {
+        this.checkIsHasManyEntityValid('update');
+        this.isHasManyEntityDirty = await EntityUtilities.isDirty(this.hasManyEntity, this.hasManyEntityPriorChanges);
+    }
+
+    /**
+     * Checks if the entity is valid.
+     *
+     * @param omit - Whether values omitted for create or update should be left out.
+     */
+    checkIsHasManyEntityValid(omit: 'create' | 'update'): void {
+        this.isHasManyEntityValid = EntityUtilities.isEntityValid(this.hasManyEntity, omit);
     }
 
     /**
@@ -250,8 +640,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 }
             }
             this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
-            this.dataSource.data = this.entityArrayValues;
-            this.arrayItem = new this.metadataEntityArray.EntityClass();
+            this.entityArrayDataSource.data = this.entityArrayValues;
+            EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
             this.checkIsArrayItemValid();
             this.emitChange();
         }
@@ -275,7 +665,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             return;
         }
         this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
-        this.dataSource.data = this.entityArrayValues;
+        this.entityArrayDataSource.data = this.entityArrayValues;
 
         this.closeAddArrayItemDialog();
     }
@@ -285,7 +675,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     closeAddArrayItemDialog(): void {
         this.addArrayItemDialogRef.close();
-        this.arrayItem = new this.metadataEntityArray.EntityClass();
+        EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
         this.checkIsArrayItemValid();
         this.emitChange();
     }
@@ -317,7 +707,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     saveArrayItem(): void {
         this.entityArrayValues[this.indexOfEditedArrayItem] = LodashUtilities.cloneDeep(this.arrayItem);
-        this.dataSource.data = this.entityArrayValues;
+        this.entityArrayDataSource.data = this.entityArrayValues;
 
         this.closeEditArrayItemDialog();
     }
@@ -336,8 +726,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * Removes all selected entries from the entity array.
      */
-    remove(): void {
-        SelectionUtilities.remove(this.selection, this.entityArrayValues, this.dataSource);
+    removeFromEntityArray(): void {
+        SelectionUtilities.remove(this.entityArraySelection, this.entityArrayValues, this.entityArrayDataSource);
         this.emitChange();
     }
 }

@@ -67,8 +67,8 @@ export class ConfirmDialogDataBuilder extends BaseBuilder<ConfirmDialogDataInter
             return;
         }
         if (data.requireConfirmation === true && !data.confirmationText) {
-            throw new Error(`Missing required Input data "confirmationText".
-            You can only omit this value when "requireConfirmation" is false.`);
+            // eslint-disable-next-line max-len
+            throw new Error('Missing required Input data "confirmationText". You can only omit this value when "requireConfirmation" is false.');
         }
         if (data.requireConfirmation !== true && data.confirmationText) {
             throw new Error('The "confirmationText" will never be shown because "requireConfirmation" is not set to true');

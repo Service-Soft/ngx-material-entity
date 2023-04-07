@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { BaseBuilder } from '../../../classes/base.builder';
+import { BaseBuilder, defaultTrue } from '../../../classes/base.builder';
 import { BaseEntityType } from '../../../classes/entity.model';
 import { EntityService } from '../../../services/entity.service';
 import { EditDataInternal, EditDialogDataBuilder } from './edit-data.builder';
@@ -52,8 +52,8 @@ export class EditEntityDataBuilder<EntityType extends BaseEntityType<EntityType>
             data.entity,
             data.EntityServiceClass,
             editDialogData,
-            data.allowUpdate ?? (() => true),
-            data.allowDelete ?? (() => true)
+            data.allowUpdate ?? defaultTrue,
+            data.allowDelete ?? defaultTrue
         );
     }
 }
