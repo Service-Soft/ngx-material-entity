@@ -33,10 +33,6 @@ mat-dialog-actions {
     padding-right: 20px;
 }
 
-mat-form-field {
-    width: 100%;
-}
-
 ::ng-deep {
 
     .mat-mdc-tab-body-wrapper {
@@ -132,5 +128,28 @@ mat-form-field {
         height: 25.8px;
         border-bottom-left-radius: 5px;
         border-bottom-right-radius: 5px;
+    }
+}
+
+.hasMany {
+    button {
+        width: 100%;
+        height: 56px;
+        line-height: 24px;
+        font-size: 16px;
+    }
+
+    .title {
+        text-align: center;
+    }
+
+    .elevation-container {
+        border-radius: 5px;
+        padding: 5px;
+        margin-bottom: 15px;
+    }
+
+    .enabled:hover {
+        cursor: pointer;
     }
 }

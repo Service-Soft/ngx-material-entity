@@ -1,4 +1,4 @@
-import { BaseBuilder } from '../../classes/base.builder';
+import { BaseBuilder, defaultTrue } from '../../classes/base.builder';
 import { BaseEntityType } from '../../classes/entity.model';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { EditDataInternal, EditDialogDataBuilder } from '../table/edit-dialog/edit-data.builder';
@@ -44,8 +44,8 @@ export class PageEditDataBuilder<EntityType extends BaseEntityType<EntityType>>
                 confirmUnsavedChangesDialogData: confirmUnsavedChangesDialogData,
                 unsavedChangesRequireConfirmDialog: data.editData?.unsavedChangesRequireConfirmDialog ?? true
             },
-            allowUpdate: data.allowUpdate ?? (() => true),
-            allowDelete: data.allowDelete ?? (() => true),
+            allowUpdate: data.allowUpdate ?? defaultTrue,
+            allowDelete: data.allowDelete ?? defaultTrue,
             displayLoadingSpinner: data.displayLoadingSpinner ?? true
         };
     }

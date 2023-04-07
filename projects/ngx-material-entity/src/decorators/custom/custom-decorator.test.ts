@@ -4,6 +4,7 @@ import { EntityUtilities } from '../../utilities/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { CustomDecoratorConfigInternal } from './custom-decorator-internal.data';
 import { custom } from './custom.decorator';
+import { defaultTrue } from '../../classes/base.builder';
 
 export class RandomInputTestEntity {
     @custom<string, RandomMetadata, RandomInputTestEntity>({
@@ -34,7 +35,7 @@ test('should have custom Metadata', () => {
     expect(JSON.stringify(metadata.customMetadata)).toEqual(JSON.stringify({
         random: () => (Math.random() + 1).toString(36).substring(7)
     }));
-    expect(JSON.stringify(metadata.isValid)).toEqual(JSON.stringify((() => true)));
+    expect(JSON.stringify(metadata.isValid)).toEqual(JSON.stringify(defaultTrue));
     expect(JSON.stringify(metadata.isEqual)).toEqual(JSON.stringify(defaultIsEqual));
 
     expect(metadata.isValid(randomTe, 'create')).toBe(true);

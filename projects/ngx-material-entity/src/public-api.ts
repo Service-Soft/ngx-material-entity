@@ -44,6 +44,8 @@ export * from './decorators/object/object-decorator.data';
 export * from './decorators/object/object.decorator';
 export * from './decorators/references-many/references-many-decorator.data';
 export * from './decorators/references-many/references-many.decorator';
+export * from './decorators/has-many/has-many-decorator.data';
+export * from './decorators/has-many/has-many.decorator';
 export * from './decorators/string/string-decorator.data';
 export * from './decorators/string/string.decorator';
 // services

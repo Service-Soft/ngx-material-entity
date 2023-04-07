@@ -102,25 +102,25 @@ export interface BaseData<EntityType extends BaseEntityType<EntityType>> {
      *
      * @default () => true
      */
-    allowCreate?: () => boolean,
+    allowCreate?: boolean | (() => boolean),
     /**
      * Defines whether or not the user can view the specific entity.
      *
      * @default () => true
      */
-    allowRead?: (entity: EntityType) => boolean,
+    allowRead?: boolean | ((entity?: EntityType) => boolean),
     /**
      * Defines whether or not the user can edit the specific entity.
      *
      * @default () => true
      */
-    allowUpdate?: (entity: EntityType) => boolean,
+    allowUpdate?: boolean | ((entity?: EntityType) => boolean),
     /**
      * Whether or not the user can delete this specific entity.
      *
      * @default () => true
      */
-    allowDelete?: (entity: EntityType) => boolean,
+    allowDelete?: boolean | ((entity?: EntityType) => boolean),
     /**
      * All Actions that you want to run on multiple entities can be defined here.
      * (e.g. Download as zip-file or mass delete).

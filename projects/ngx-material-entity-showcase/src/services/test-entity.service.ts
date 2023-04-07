@@ -9,12 +9,12 @@ import { environment } from '../environments/environment';
     providedIn: 'root'
 })
 export class TestEntityService extends EntityService<TestEntity> {
-    readonly baseUrl: string = `${environment.apiUrl}/testEntities`;
+    override readonly baseUrl: string = `${environment.apiUrl}/testEntities`;
 
     override readonly editBaseRoute: string = 'test-entities';
 
-    constructor(private readonly httpClient: HttpClient) {
-        super(httpClient);
+    constructor(http: HttpClient) {
+        super(http);
     }
 
     protected override async createWithFormData(body: Omit<TestEntity, keyof TestEntity>): Promise<TestEntity> {

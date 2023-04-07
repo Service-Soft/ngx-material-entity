@@ -1,18 +1,33 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { formatDate, formatNumber } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, Injectable } from '@angular/core';
-import { DropdownValue, Entity, EntityService, EntityUtilities, referencesMany, string, TableData } from 'ngx-material-entity';
+import { Component, Injectable, inject } from '@angular/core';
+import { DecoratorTypes, DropdownValue, Entity, EntityService, EntityUtilities, TableData, array, boolean, date, hasMany, number, referencesMany, string } from 'ngx-material-entity';
 import { environment } from '../../../environments/environment';
 
-class Address {
-    @string({
-        displayName: 'ID',
-        displayStyle: 'line',
-        required: true,
-        omitForCreate: true,
-        omitForUpdate: true
-    })
-    id!: string;
+@Injectable({
+    providedIn: 'root'
+})
+export class PersonService extends EntityService<Person> {
+    baseUrl: string = `${environment.apiUrl}/persons`;
+
+    constructor(http: HttpClient) {
+        super(http);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class AddressService extends EntityService<Address> {
+    baseUrl: string = `${environment.apiUrl}/addresses`;
+
+    constructor(http: HttpClient) {
+        super(http);
+    }
+}
+
+class Address extends Entity {
 
     @string({
         displayName: 'Street',
@@ -42,18 +57,45 @@ class Address {
     city!: string;
 
     constructor(entity?: Address) {
+        super(entity);
         EntityUtilities.new(this, entity);
     }
 }
 
-@Injectable({
-    providedIn: 'root'
-})
-export class AddressService extends EntityService<Address> {
-    baseUrl: string = `${environment.apiUrl}/addresses`;
+class TimeTracking extends Entity {
 
-    constructor(private readonly httpClient: HttpClient) {
-        super(httpClient);
+    @date({
+        displayName: 'Date',
+        displayStyle: 'date'
+    })
+    date!: Date;
+
+    @number({
+        displayName: 'Hours',
+        displayStyle: 'line',
+        defaultWidths: [3, 3, 3]
+    })
+    hours!: number;
+
+    @number({
+        displayName: 'Minutes',
+        displayStyle: 'line',
+        max: 60,
+        defaultWidths: [3, 3, 3]
+    })
+    minutes!: number;
+
+    @boolean({
+        displayName: 'Used for invoice?',
+        displayStyle: 'dropdown',
+        dropdownTrue: 'Yes',
+        dropdownFalse: 'No'
+    })
+    usedForInvoice!: boolean;
+
+    constructor(entity?: TimeTracking) {
+        super(entity);
+        EntityUtilities.new(this, entity);
     }
 }
 
@@ -84,8 +126,55 @@ class Person extends Entity {
     })
     addressIds!: string[];
 
+    @array({
+        displayName: 'Time Trackings',
+        itemType: DecoratorTypes.OBJECT,
+        EntityClass: TimeTracking,
+        displayColumns: [
+            {
+                displayName: 'Date',
+                value: e => formatDate(e.date, 'dd.MM.yyyy', 'en')
+            },
+            {
+                displayName: 'Time',
+                value: e => `${formatNumber(e.hours, 'en', '2.0-0')}:${formatNumber(e.minutes, 'en', '2.0-0')}`
+            },
+            {
+                displayName: 'Used?',
+                value: e => e.usedForInvoice ? 'Yes' : 'No'
+            }
+        ],
+        omitForCreate: true,
+        required: false
+    })
+    timeTrackings!: TimeTracking[];
+
+    @hasMany({
+        tableData: {
+            baseData: {
+                title: 'Addresses',
+                displayColumns: [
+                    {
+                        displayName: 'Street',
+                        value: e => e.street
+                    }
+                ],
+                EntityServiceClass: AddressService,
+                EntityClass: Address
+            },
+            createDialogData: {}
+        },
+        RelatedEntityServiceClass: PersonService,
+        displayName: 'Addresses',
+        position: {
+            tab: 2,
+            tabName: 'Addresses'
+        }
+    })
+    addresses!: Address[];
+
     constructor(entity?: Person) {
-        super();
+        super(entity);
         EntityUtilities.new(this, entity);
     }
 }
@@ -102,17 +191,6 @@ function getDropdownValues(entities: Address[]): DropdownValue<string>[] {
             value: e.id
         };
     });
-}
-
-@Injectable({
-    providedIn: 'root'
-})
-export class PersonService extends EntityService<Person> {
-    baseUrl: string = `${environment.apiUrl}/persons`;
-
-    constructor(private readonly httpClient: HttpClient) {
-        super(httpClient);
-    }
 }
 
 @Component({
@@ -135,8 +213,8 @@ export class SandboxComponent {
                 }
             ],
             EntityClass: Person,
-            EntityServiceClass: PersonService,
-            allowUpdate: () => false
+            EntityServiceClass: PersonService
+            // allowUpdate: () => false
         },
         createDialogData: {
             title: 'Create Person'
