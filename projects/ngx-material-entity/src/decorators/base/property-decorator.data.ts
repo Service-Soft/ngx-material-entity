@@ -49,6 +49,12 @@ export abstract class PropertyDecoratorConfig {
      * @default { row: -1,  order: -1} (Adds the property at the end)
      */
     position?: Position;
+    /**
+     * Whether or not this property is readonly.
+     * Can either be a boolean or a function returning a boolean.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    isReadOnly?: boolean | ((entity: any) => boolean);
 }
 
 /**

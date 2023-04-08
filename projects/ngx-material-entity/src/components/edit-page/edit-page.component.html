@@ -17,7 +17,7 @@
                 {{data.editData.cancelButtonLabel}}
                 <i class="fas fa-warning" style="color: orange;" *ngIf="hasUnsavedChanges"></i>
             </button>
-            <button (click)="edit()" mat-raised-button [disabled]="isReadOnly || !isEntityValid || !isEntityDirty">
+            <button (click)="edit()" mat-raised-button [disabled]="isEntityReadOnly || !isEntityValid || !isEntityDirty">
                 {{data.editData.confirmButtonLabel}}
             </button>
         </div>
@@ -42,7 +42,7 @@
                         [hideOmitForEdit]="true"
                         class="col-lg-{{EntityUtilities.getWidth(entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(entity, key, 'sm')}}"
                         (inputChangeEvent)="checkEntity()"
-                        [isReadOnly]="isReadOnly"
+                        [isReadOnly]="isReadOnly(key)"
                     >
                     </ngx-mat-entity-input>
                 </div>
@@ -58,13 +58,13 @@
                     [hideOmitForEdit]="true"
                     class="col-lg-{{EntityUtilities.getWidth(entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(entity, key, 'sm')}}"
                     (inputChangeEvent)="checkEntity()"
-                    [isReadOnly]="isReadOnly"
+                    [isReadOnly]="isReadOnly(key)"
                 >
                 </ngx-mat-entity-input>
             </div>
         </div>
 
-        <button type="submit" (click)="edit()" mat-raised-button [disabled]="isReadOnly || !isEntityValid || !isEntityDirty">
+        <button type="submit" (click)="edit()" mat-raised-button [disabled]="isEntityReadOnly || !isEntityValid || !isEntityDirty">
             {{data.editData.confirmButtonLabel}}
         </button>
     </form>

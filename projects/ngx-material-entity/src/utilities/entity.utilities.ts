@@ -328,7 +328,7 @@ export abstract class EntityUtilities {
         if (metadata.omitForUpdate && omit === 'update') {
             return true;
         }
-        if (metadata.required) {
+        if (metadata.required && type !== DecoratorTypes.HAS_MANY) {
             if (entity[key] == null || entity[key] === '') {
                 return false;
             }

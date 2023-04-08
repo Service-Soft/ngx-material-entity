@@ -116,6 +116,7 @@ export interface TestEntityWithoutCustomPropertiesInterface {
     omitForCreateValue: string,
     omitForUpdateValue: string,
     optionalValue?: string,
+    optionalReadOnlyValue?: string,
     maxLengthStringValue: string,
     minLengthStringValue: string,
     regexStringValue: string,
@@ -174,7 +175,8 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         displayName: 'Second Tab Value',
         position: {
             tab: 2
-        }
+        },
+        isReadOnly: false
     })
     secondTabValue!: string;
 
@@ -183,7 +185,8 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         displayName: 'Order Value 3',
         position: {
             order: 3
-        }
+        },
+        isReadOnly: () => false
     })
     orderValue3!: string;
 
@@ -225,6 +228,14 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         required: false
     })
     optionalValue?: string;
+
+    @string({
+        displayStyle: 'line',
+        displayName: 'Optional Read Only Value',
+        required: false,
+        isReadOnly: true
+    })
+    optionalReadOnlyValue?: string;
 
     @string({
         displayStyle: 'line',
@@ -775,6 +786,7 @@ const testEntityData: TestEntityWithoutCustomProperties = {
     omitForCreateValue: 'omitForCreateValue',
     omitForUpdateValue: 'omitForUpdateValue',
     optionalValue: 'optional',
+    optionalReadOnlyValue: 'optionalReadOnly',
     maxLengthStringValue: '1234',
     minLengthStringValue: '12345678',
     regexStringValue: '12345',

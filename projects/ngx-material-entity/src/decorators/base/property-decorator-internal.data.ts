@@ -1,3 +1,4 @@
+import { defaultFalse, defaultTrue } from '../../classes/base.builder';
 import { Col, Position, PropertyDecoratorConfig } from './property-decorator.data';
 
 /**
@@ -57,6 +58,8 @@ export abstract class PropertyDecoratorConfigInternal implements PropertyDecorat
     defaultWidths: [Col, Col, Col];
     // eslint-disable-next-line jsdoc/require-jsdoc
     position: PositionInternal;
+    // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-explicit-any
+    isReadOnly: (entity: any) => boolean;
 
     constructor(data: PropertyDecoratorConfig) {
         this.display = data.display ?? true;
@@ -66,5 +69,20 @@ export abstract class PropertyDecoratorConfigInternal implements PropertyDecorat
         this.omitForUpdate = data.omitForUpdate ?? false;
         this.defaultWidths = data.defaultWidths ?? [6, 6, 12];
         this.position = new PositionInternal(data.position);
+        this.isReadOnly = this.isReadOnlyToFunction(data.isReadOnly);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private isReadOnlyToFunction(value?: boolean | ((entity: any) => boolean)): (entity: any) => boolean {
+        if (value == null) {
+            return defaultFalse;
+        }
+        if (typeof value == 'boolean') {
+            if (value) {
+                return defaultTrue;
+            }
+            return defaultFalse;
+        }
+        return value;
     }
 }
