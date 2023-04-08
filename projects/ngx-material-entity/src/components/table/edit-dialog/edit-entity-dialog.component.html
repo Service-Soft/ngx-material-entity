@@ -44,7 +44,6 @@
         <button type="submit" (click)="edit()" mat-raised-button [disabled]="isEntityReadOnly || !isEntityValid || !isEntityDirty">
             {{data.editData.confirmButtonLabel}}
         </button>
-        readonly {{isEntityReadOnly}} valid {{isEntityValid}} dirty {{isEntityDirty}}
         <button type="button" mat-raised-button (click)="cancel()" class="cancel-button">
             {{data.editData.cancelButtonLabel}}
         </button>
