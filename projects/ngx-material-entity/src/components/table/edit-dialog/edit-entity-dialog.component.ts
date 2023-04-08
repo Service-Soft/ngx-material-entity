@@ -1,6 +1,7 @@
 import { Component, Inject, Injector, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BaseEntityType } from '../../../classes/entity.model';
+import { PropertyDecoratorConfigInternal } from '../../../decorators/base/property-decorator-internal.data';
 import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
 import { EntityService } from '../../../services/entity.service';
 import { EntityTab, EntityUtilities } from '../../../utilities/entity.utilities';
@@ -34,7 +35,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
     isEntityValid: boolean = true;
     isEntityDirty: boolean = false;
 
-    isReadOnly!: boolean;
+    isEntityReadOnly!: boolean;
 
     constructor(
         @Inject(MAT_DIALOG_DATA)
@@ -47,10 +48,21 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
     ngOnInit(): void {
         this.data = new EditEntityDataBuilder(this.inputData).getResult();
         this.entityPriorChanges = LodashUtilities.cloneDeep(this.data.entity);
-        this.isReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
+        this.isEntityReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
         this.dialogRef.disableClose = true;
         this.entityTabs = EntityUtilities.getEntityTabs(this.data.entity, false, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
+    }
+
+    /**
+     * Checks if the input with the given key is readonly.
+     *
+     * @param key - The key for the input to check.
+     * @returns Whether or not the input for the key is read only.
+     */
+    isReadOnly(key: keyof EntityType): boolean {
+        const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(this.data.entity, key);
+        return this.isEntityReadOnly || metadata.isReadOnly(this.data.entity);
     }
 
     /**
@@ -66,7 +78,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      * Also handles the confirmation if required.
      */
     edit(): void {
-        if (this.isReadOnly || !this.isEntityValid || !this.isEntityDirty) {
+        if (this.isEntityReadOnly || !this.isEntityValid || !this.isEntityDirty) {
             return;
         }
         if (!this.data.editData.editRequiresConfirmDialog) {

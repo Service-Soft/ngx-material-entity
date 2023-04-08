@@ -276,7 +276,7 @@
                         [getValidationErrorMessage]="internalGetValidationErrorMessage"
                         [hideOmitForCreate]="hideOmitForCreate"
                         [hideOmitForEdit]="hideOmitForEdit"
-                        [isReadOnly]="internalIsReadOnly"
+                        [isReadOnly]="isPropertyReadOnly(objectProperty, key)"
                         class="col-lg-{{EntityUtilities.getWidth(objectProperty, key, 'lg')}} col-md-{{EntityUtilities.getWidth(objectProperty, key, 'md')}} col-sm-{{EntityUtilities.getWidth(objectProperty, key, 'sm')}}"
                         (inputChangeEvent)="emitChange()"
                     >
@@ -293,7 +293,7 @@
                     [getValidationErrorMessage]="internalGetValidationErrorMessage"
                     [hideOmitForCreate]="hideOmitForCreate"
                     [hideOmitForEdit]="hideOmitForEdit"
-                    [isReadOnly]="internalIsReadOnly"
+                    [isReadOnly]="isPropertyReadOnly(objectProperty, key)"
                     class="col-lg-{{EntityUtilities.getWidth(objectProperty, key, 'lg')}} col-md-{{EntityUtilities.getWidth(objectProperty, key, 'md')}} col-sm-{{EntityUtilities.getWidth(objectProperty, key, 'sm')}}"
                     (inputChangeEvent)="emitChange()"
                 >
@@ -576,7 +576,7 @@
 <!--------------------------------------------------------->
 <ng-template #editArrayItemDialog>
     <div class="mat-dialog-title">
-        <div>{{editArrayItemDialogData.title(arrayItem)}}</div>
+        <div>{{editArrayItemDialogData.title(arrayItemPriorChanges)}}</div>
     </div>
     
     <form>
@@ -591,7 +591,7 @@
                             [hideOmitForEdit]="true"
                             class="col-lg-{{EntityUtilities.getWidth(arrayItem, key, 'lg')}} col-md-{{EntityUtilities.getWidth(arrayItem, key, 'md')}} col-sm-{{EntityUtilities.getWidth(arrayItem, key, 'sm')}}"
                             (inputChangeEvent)="checkArrayItem()"
-                            [isReadOnly]="internalIsReadOnly"
+                            [isReadOnly]="isPropertyReadOnly(arrayItem, key)"
                         >
                         </ngx-mat-entity-input>
                     </div>
@@ -607,7 +607,7 @@
                         [hideOmitForEdit]="true"
                         class="col-lg-{{EntityUtilities.getWidth(arrayItem, key, 'lg')}} col-md-{{EntityUtilities.getWidth(arrayItem, key, 'md')}} col-sm-{{EntityUtilities.getWidth(arrayItem, key, 'sm')}}"
                         (inputChangeEvent)="checkArrayItem()"
-                        [isReadOnly]="internalIsReadOnly"
+                        [isReadOnly]="isPropertyReadOnly(arrayItem, key)"
                     >
                     </ngx-mat-entity-input>
                 </div>
@@ -680,7 +680,7 @@
 
 <ng-template #editHasManyDialog>
     <div class="mat-dialog-title">
-        <div>{{metadataHasMany.tableData.editData.title(hasManyEntity)}}</div>
+        <div>{{metadataHasMany.tableData.editData.title(hasManyEntityPriorChanges)}}</div>
         <button type="button" *ngIf="metadataHasMany.tableData.baseData.allowDelete(hasManyEntity)" mat-raised-button (click)="deleteHasManyEntity()" color="warn" class="delete-button" tabindex="-1">
             {{metadataHasMany.tableData.editData.deleteButtonLabel}}
         </button>
@@ -698,7 +698,7 @@
                             [hideOmitForEdit]="true"
                             class="col-lg-{{EntityUtilities.getWidth(hasManyEntity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(hasManyEntity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(hasManyEntity, key, 'sm')}}"
                             (inputChangeEvent)="checkHasManyEntity()"
-                            [isReadOnly]="isReadOnly"
+                            [isReadOnly]="isPropertyReadOnly(hasManyEntity, key)"
                         >
                         </ngx-mat-entity-input>
                     </div>
@@ -714,7 +714,7 @@
                         [hideOmitForEdit]="true"
                         class="col-lg-{{EntityUtilities.getWidth(hasManyEntity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(hasManyEntity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(hasManyEntity, key, 'sm')}}"
                         (inputChangeEvent)="checkHasManyEntity()"
-                        [isReadOnly]="isReadOnly"
+                        [isReadOnly]="isPropertyReadOnly(hasManyEntity, key)"
                     >
                     </ngx-mat-entity-input>
                 </div>
@@ -722,7 +722,7 @@
         </mat-dialog-content>
         
         <mat-dialog-actions>
-            <button type="submit" (click)="dialogEditHasMany()" mat-raised-button [disabled]="isReadOnly || !isHasManyEntityValid || !isHasManyEntityDirty">
+            <button type="submit" (click)="dialogEditHasMany()" mat-raised-button [disabled]="internalIsReadOnly || !isHasManyEntityValid || !isHasManyEntityDirty">
                 {{metadataHasMany.tableData.editData.confirmButtonLabel}}
             </button>
             <button type="button" mat-raised-button (click)="dialogCancelEditHasMany()" class="cancel-button">
