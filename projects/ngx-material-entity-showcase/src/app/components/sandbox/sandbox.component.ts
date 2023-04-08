@@ -89,7 +89,8 @@ class TimeTracking extends Entity {
         displayName: 'Used for invoice?',
         displayStyle: 'dropdown',
         dropdownTrue: 'Yes',
-        dropdownFalse: 'No'
+        dropdownFalse: 'No',
+        isReadOnly: (entity: TimeTracking) => entity.usedForInvoice
     })
     usedForInvoice!: boolean;
 

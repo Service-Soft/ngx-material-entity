@@ -5,8 +5,9 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, DefaultExport, Route } from '@angular/router';
-import { first, map, Observable } from 'rxjs';
+import { Observable, first, map } from 'rxjs';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
+import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { EntityService } from '../../services/entity.service';
 import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
@@ -98,7 +99,7 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
     isEntityValid: boolean = true;
     isEntityDirty: boolean = false;
 
-    isReadOnly!: boolean;
+    isEntityReadOnly!: boolean;
 
     private inConfirmNavigation: boolean = false;
 
@@ -119,6 +120,17 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
         private readonly inputData: PageEditData<EntityType>
     ) { }
 
+    /**
+     * Checks if the input with the given key is readonly.
+     *
+     * @param key - The key for the input to check.
+     * @returns Whether or not the input for the key is read only.
+     */
+    isReadOnly(key: keyof EntityType): boolean {
+        const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(this.entity, key);
+        return this.isEntityReadOnly || metadata.isReadOnly(this.entity);
+    }
+
     async ngOnInit(): Promise<void> {
         this.data = new PageEditDataBuilder(this.inputData).getResult();
         if (this.data == null) {
@@ -137,7 +149,7 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
         this.entity = new this.EntityClass(foundEntity);
         this.entityPriorChanges = LodashUtilities.cloneDeep(this.entity);
 
-        this.isReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
+        this.isEntityReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
         this.entityTabs = EntityUtilities.getEntityTabs(this.entity, false, true);
     }
 
@@ -164,7 +176,7 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
      * Also handles the confirmation if required.
      */
     edit(): void {
-        if (this.isReadOnly || !this.isEntityValid || !this.isEntityDirty) {
+        if (this.isEntityReadOnly || !this.isEntityValid || !this.isEntityDirty) {
             return;
         }
         if (!this.data.editData.editRequiresConfirmDialog) {

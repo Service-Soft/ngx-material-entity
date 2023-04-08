@@ -42,6 +42,7 @@ const testEntityData: TestEntity = {
     omitForCreateValue: 'omitForCreateValue',
     omitForUpdateValue: 'omitForUpdateValue',
     optionalValue: 'optional',
+    optionalReadOnlyValue: 'optionalReadOnly',
     maxLengthStringValue: '1234',
     minLengthStringValue: '12345678',
     regexStringValue: '12345',

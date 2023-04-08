@@ -163,6 +163,18 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     ) {}
 
     /**
+     * Checks if the input with the given key on the given property is readonly.
+     *
+     * @param property - The property on which to check the input.
+     * @param key - The key for the input to check.
+     * @returns Whether or not the input is read only.
+     */
+    isPropertyReadOnly(property: EntityType, key: keyof EntityType): boolean {
+        const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(property, key);
+        return this.internalIsReadOnly || metadata.isReadOnly(property);
+    }
+
+    /**
      * This is needed for the inputs to work inside an ngFor.
      *
      * @param index - The index of the element in the ngFor.

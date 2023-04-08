@@ -1,5 +1,5 @@
 <div class="mat-dialog-title">
-    <div>{{data.editData.title(data.entity)}}</div>
+    <div>{{data.editData.title(entityPriorChanges)}}</div>
     <button type="button" *ngIf="data.allowDelete(data.entity)" mat-raised-button (click)="delete()" color="warn" class="delete-button" tabindex="-1">
         {{data.editData.deleteButtonLabel}}
     </button>
@@ -17,7 +17,7 @@
                         [hideOmitForEdit]="true"
                         class="col-lg-{{EntityUtilities.getWidth(data.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(data.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(data.entity, key, 'sm')}}"
                         (inputChangeEvent)="checkEntity()"
-                        [isReadOnly]="isReadOnly"
+                        [isReadOnly]="isReadOnly(key)"
                     >
                     </ngx-mat-entity-input>
                 </div>
@@ -33,7 +33,7 @@
                     [hideOmitForEdit]="true"
                     class="col-lg-{{EntityUtilities.getWidth(data.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(data.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(data.entity, key, 'sm')}}"
                     (inputChangeEvent)="checkEntity()"
-                    [isReadOnly]="isReadOnly"
+                    [isReadOnly]="isReadOnly(key)"
                 >
                 </ngx-mat-entity-input>
             </div>
@@ -41,9 +41,10 @@
     </mat-dialog-content>
     
     <mat-dialog-actions>
-        <button type="submit" (click)="edit()" mat-raised-button [disabled]="isReadOnly || !isEntityValid || !isEntityDirty">
+        <button type="submit" (click)="edit()" mat-raised-button [disabled]="isEntityReadOnly || !isEntityValid || !isEntityDirty">
             {{data.editData.confirmButtonLabel}}
         </button>
+        readonly {{isEntityReadOnly}} valid {{isEntityValid}} dirty {{isEntityDirty}}
         <button type="button" mat-raised-button (click)="cancel()" class="cancel-button">
             {{data.editData.cancelButtonLabel}}
         </button>
