@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, EnvironmentInjector, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -16,7 +16,7 @@ import { NgxMatEntityCreateDialogComponent } from './create-dialog/create-entity
 import { EditEntityData } from './edit-dialog/edit-entity-data';
 import { NgxMatEntityEditDialogComponent } from './edit-dialog/edit-entity-dialog.component';
 import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-dialog/edit-entity.builder';
-import { TableData } from './table-data';
+import { DisplayColumn, TableData } from './table-data';
 import { BaseTableActionInternal, TableActionInternal, TableDataBuilder, TableDataInternal } from './table-data.builder';
 
 /**
@@ -57,7 +57,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
 
     constructor(
         private readonly dialog: MatDialog,
-        private readonly injector: Injector,
+        private readonly injector: EnvironmentInjector,
         private readonly router: Router
     ) {}
 
@@ -72,7 +72,9 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
             action: () => this.startImportJson()
         };
 
-        this.entityService = this.injector.get(this.data.baseData.EntityServiceClass) as EntityService<EntityType>;
+        this.injector.runInContext(() => {
+            this.entityService = inject<EntityService<EntityType>>(this.data.baseData.EntityServiceClass);
+        });
 
         const givenDisplayColumns: string[] = this.data.baseData.displayColumns.map((v) => v.displayName);
         if (this.data.baseData.tableActions.filter(tA => tA.type === 'multi-select').length) {
@@ -83,7 +85,9 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         }
 
         this.dataSource.sortingDataAccessor = (entity: EntityType, header: string) => {
-            return this.data.baseData.displayColumns.find((dp) => dp.displayName === header)?.value(entity) as string;
+            return this.injector.runInContext(() => {
+                return this.data.baseData.displayColumns.find((dp) => dp.displayName === header)?.value(entity) as string;
+            });
         };
         this.dataSource.sort = this.sort;
         this.dataSource.filterPredicate = (entity: EntityType, filter: string) => {
@@ -101,6 +105,20 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         });
         void this.entityService.read().then(() => {
             this.isLoading = false;
+        });
+    }
+
+    /**
+     * Gets the value to display in the column.
+     * Runs in environment context to enable injection.
+     *
+     * @param entity - The entity to get the value from.
+     * @param displayColumn - The display column to get the value from.
+     * @returns The value of the display column.
+     */
+    getDisplayColumnValue(entity: EntityType, displayColumn: DisplayColumn<EntityType>): unknown {
+        return this.injector.runInContext(() => {
+            return displayColumn.value(entity);
         });
     }
 
@@ -228,16 +246,16 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
      * @param action - The TableAction to run.
      */
     runTableAction(action: TableActionInternal<EntityType>): void {
-        if (!action.requireConfirmDialog(this.selection.selected)) {
+        const requireConfirmDialog: boolean = this.injector.runInContext(() => {
+            return action.requireConfirmDialog(this.selection.selected);
+        });
+
+        if (!requireConfirmDialog) {
             this.confirmRunTableAction(action);
             return;
         }
-        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(action.confirmDialogData)
-            .withDefault('text', [`Do you really want to run this action on ${this.selection.selected.length} entries?`])
-            .withDefault('title', action.displayName)
-            .getResult();
         const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
-            data: dialogData,
+            data: action.confirmDialogData,
             autoFocus: false,
             restoreFocus: false
         });
@@ -249,7 +267,9 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     }
 
     private confirmRunTableAction(action: TableActionInternal<EntityType>): void {
-        action.action(this.selection.selected);
+        this.injector.runInContext(() => {
+            action.action(this.selection.selected);
+        });
     }
 
     /**
@@ -259,7 +279,9 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
      * @returns Whether or not the Action can be used.
      */
     tableActionDisabled(action: TableActionInternal<EntityType>): boolean {
-        return !action.enabled(this.selection.selected);
+        return this.injector.runInContext(() => {
+            return !action.enabled(this.selection.selected);
+        });
     }
 
     ngOnDestroy(): void {

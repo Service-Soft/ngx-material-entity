@@ -377,7 +377,7 @@
                         {{dCol.displayName}}
                     </mat-header-cell>
                     <mat-cell (click)="editArrayItem(entity)" class="entity" *matCellDef="let entity">
-                        {{dCol.value(entity)}}
+                        {{getDisplayColumnValue(entity, dCol)}}
                     </mat-cell>
                 </ng-container>
             
@@ -456,7 +456,7 @@
                         {{dCol.displayName}}
                     </mat-header-cell>
                     <mat-cell class="entity" [class.enabled]="metadataHasMany.tableData.baseData.allowUpdate(entity) || metadataHasMany.tableData.baseData.allowRead(entity)" (click)="editHasManyEntity(entity)" *matCellDef="let entity">
-                        {{dCol.value(entity)}}
+                        {{getDisplayColumnValue(entity, dCol)}}
                     </mat-cell>
                 </ng-container>
 
