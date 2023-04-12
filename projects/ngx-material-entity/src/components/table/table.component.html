@@ -59,7 +59,7 @@
                 {{dCol.displayName}}
             </mat-header-cell>
             <mat-cell class="entity" [class.enabled]="data.baseData.allowUpdate(entity) || data.baseData.allowRead(entity)" (click)="editEntity(entity)" *matCellDef="let entity">
-                {{dCol.value(entity)}}
+                {{getDisplayColumnValue(entity, dCol)}}
             </mat-cell>
         </ng-container>
 

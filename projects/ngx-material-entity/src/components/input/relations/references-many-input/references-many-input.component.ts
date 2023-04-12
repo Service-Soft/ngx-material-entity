@@ -7,6 +7,7 @@ import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 import { SelectionUtilities } from '../../../../utilities/selection.utilities';
+import { DisplayColumn } from '../../../table/table-data';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({
@@ -63,6 +64,21 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
                 this.dropdownValues.splice(this.dropdownValues.indexOf(foundValue), 1);
             }
         }
+    }
+
+    /**
+     * Gets the value to display in the column.
+     * Runs in environment context to enable injection.
+     *
+     * @param entityId - The id of the entity to get the value from.
+     * @param displayColumn - The display column to get the value from.
+     * @returns The value of the display column.
+     */
+    getDisplayColumnValue(entityId: string, displayColumn: DisplayColumn<EntityType>): unknown {
+        return this.injector.runInContext(() => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            return displayColumn.value(this.metadata.getEntityForId(entityId, this.allReferencedEntities));
+        });
     }
 
     async add(): Promise<void> {
