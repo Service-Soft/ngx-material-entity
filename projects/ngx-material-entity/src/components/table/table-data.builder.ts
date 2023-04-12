@@ -2,10 +2,72 @@ import { HttpClient } from '@angular/common/http';
 import { BaseBuilder, defaultFalse, defaultTrue } from '../../classes/base.builder';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { EntityService } from '../../services/entity.service';
-import { ConfirmDialogDataBuilder } from '../confirm-dialog/confirm-dialog-data.builder';
+import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from './create-dialog/create-dialog-data.builder';
 import { EditDataInternal, EditDialogDataBuilder } from './edit-dialog/edit-data.builder';
-import { BaseData, DisplayColumn, MultiSelectAction, TableData } from './table-data';
+import { BaseData, BaseTableAction, DisplayColumn, MultiSelectAction, TableData } from './table-data';
+
+/**
+ * The internal BaseTableAction. Sets default values.
+ */
+export class BaseTableActionInternal implements BaseTableAction {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    type: 'default' = 'default';
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    displayName: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    action: () => unknown;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    enabled: (() => boolean);
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    requireConfirmDialog: (() => boolean);
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    confirmDialogData: ConfirmDialogDataInternal;
+
+    constructor(data: BaseTableAction) {
+        this.displayName = data.displayName;
+        this.action = data.action;
+        this.enabled = data.enabled ?? (() => true);
+        this.requireConfirmDialog = data.requireConfirmDialog ?? (() => false);
+        this.confirmDialogData = new ConfirmDialogDataBuilder(data.confirmDialogData)
+            .withDefault('text', ['Do you really want to run this action?'])
+            .getResult();
+    }
+}
+
+/**
+ * The internal BaseTableAction. Sets default values.
+ */
+export class MultiSelectActionInternal<EntityType extends BaseEntityType<EntityType>> implements MultiSelectAction<EntityType> {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    type: 'multi-select' = 'multi-select';
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    displayName: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    action: (selectedEntities: EntityType[]) => unknown;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    enabled: ((selectedEntities: EntityType[]) => boolean);
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    requireConfirmDialog: ((selectedEntities: EntityType[]) => boolean);
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    confirmDialogData: ConfirmDialogDataInternal;
+
+    constructor(data: MultiSelectAction<EntityType>) {
+        this.displayName = data.displayName;
+        this.action = data.action;
+        this.enabled = data.enabled ?? ((entities: EntityType[]) => !!entities.length);
+        this.requireConfirmDialog = data.requireConfirmDialog ?? (() => false);
+        this.confirmDialogData = new ConfirmDialogDataBuilder(data.confirmDialogData)
+            .withDefault('text', ['Do you really want to run this action?'])
+            .getResult();
+    }
+}
+
+/**
+ * The Internal Table Action. Sets default values.
+ */
+export type TableActionInternal<EntityType extends BaseEntityType<EntityType>> =
+    BaseTableActionInternal | MultiSelectActionInternal<EntityType>;
 
 /**
  * The internal TableData. Requires all default values the user can leave out.
@@ -72,16 +134,15 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
     // eslint-disable-next-line jsdoc/require-jsdoc
     allowDelete: (entity?: EntityType) => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    multiSelectActions: MultiSelectAction<EntityType>[];
+    tableActions: TableActionInternal<EntityType>[];
     // eslint-disable-next-line jsdoc/require-jsdoc
-    multiSelectLabel: string;
+    tableActionsLabel: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayLoadingSpinner: boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
     allowJsonImport: boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    importActionData: Omit<MultiSelectAction<EntityType>, 'action' | 'requireConfirmDialog'>;
-
+    importActionData: Omit<BaseTableActionInternal, 'action'>;
     // eslint-disable-next-line jsdoc/require-jsdoc
     EntityClass?: EntityClassNewable<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -98,22 +159,44 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         this.createButtonLabel = data.createButtonLabel ?? 'Create';
         this.defaultEdit = data.defaultEdit ?? 'dialog';
         this.searchString = data.searchString ?? defaultSearchFunction;
-        this.multiSelectActions = data.multiSelectActions ?? [];
-        this.multiSelectLabel = data.multiSelectLabel ?? 'Actions';
+        if (data.tableActions) {
+            this.tableActions = data.tableActions.map(tA => {
+                return tA.type === 'default' ? new BaseTableActionInternal(tA) : new MultiSelectActionInternal(tA);
+            });
+        }
+        else {
+            this.tableActions = [];
+        }
+        this.tableActionsLabel = data.tableActionsLabel ?? 'Actions';
         this.displayLoadingSpinner = data.displayLoadingSpinner ?? true;
         this.allowJsonImport = data.allowJsonImport ?? false;
-        this.importActionData = data.importActionData ?? {
-            displayName: 'Import (JSON)',
-            confirmDialogData: new ConfirmDialogDataBuilder()
-                .withDefault('text', ['Do you really want to import entities from the provided file?'])
-                .getResult()
-        };
+        this.importActionData = this.buildImportActionData(data.importActionData);
         this.edit = data.edit;
         this.create = data.create;
         this.allowCreate = this.allowDataToFunction(data.allowCreate);
         this.allowRead = this.allowDataToFunction(data.allowRead);
         this.allowUpdate = this.allowDataToFunction(data.allowUpdate);
         this.allowDelete = this.allowDataToFunction(data.allowDelete);
+    }
+
+    private buildImportActionData(
+        importActionData?: Omit<BaseTableAction, 'action' | 'requireConfirmDialog' | 'type'>
+    ): Omit<BaseTableActionInternal, 'action'> {
+        importActionData = importActionData ?? {
+            displayName: 'Import (JSON)',
+            confirmDialogData: new ConfirmDialogDataBuilder()
+                .withDefault('text', ['Do you really want to import entities from the provided file?'])
+                .getResult()
+        };
+        /* istanbul ignore next */
+        const data: Omit<BaseTableActionInternal, 'action'> = {
+            ...importActionData,
+            enabled: importActionData.enabled ?? (() => true),
+            requireConfirmDialog: () => false,
+            confirmDialogData: new ConfirmDialogDataBuilder(importActionData.confirmDialogData).getResult(),
+            type: 'default'
+        };
+        return data;
     }
 
     private allowDataToFunction(value?: boolean | ((entity?: EntityType) => boolean)): ((entity?: EntityType) => boolean) {
@@ -154,7 +237,7 @@ export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected override validateInput(data: TableData<EntityType>): void {
-        if (data.baseData.multiSelectActions?.length && data.baseData.displayColumns.find(dp => dp.displayName === 'select')) {
+        if (data.baseData.tableActions?.length && data.baseData.displayColumns.find(dp => dp.displayName === 'select')) {
             throw new Error(
                 `The name "select" for a display column is reserved for the multi-select action functionality.
                 Please choose a different name.`

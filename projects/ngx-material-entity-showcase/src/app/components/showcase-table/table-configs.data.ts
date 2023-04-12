@@ -1,4 +1,4 @@
-import { exportAsJsonMultiAction, exportAsCsvMultiAction, TableData, exportAsXmlMultiAction } from 'ngx-material-entity';
+import { TableData, exportAsCsvMultiAction, exportAsJsonMultiAction, exportAsXmlMultiAction } from 'ngx-material-entity';
 import { TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';
 import { TestEntityService } from '../../../services/test-entity.service';
 
@@ -66,26 +66,36 @@ export const customTableData: TableData<TestEntity> = {
         allowRead: () => false,
         allowUpdate: () => false,
         allowDelete: () => false,
-        multiSelectActions: [
+        tableActions: [
             {
+                type: 'default',
+                displayName: 'Default Action',
+                // eslint-disable-next-line no-console
+                action: () => console.log('ran table action')
+            },
+            {
+                type: 'multi-select',
                 displayName: 'Multi Action',
                 // eslint-disable-next-line no-console
                 action: () => console.log('ran multi action')
             },
             {
+                type: 'multi-select',
                 displayName: 'Export (JSON)',
                 action: exportAsJsonMultiAction
             },
             {
+                type: 'multi-select',
                 displayName: 'Export (Xml)',
                 action: exportAsXmlMultiAction
             },
             {
+                type: 'multi-select',
                 displayName: 'Export (CSV)',
                 action: exportAsCsvMultiAction
             }
         ],
-        multiSelectLabel: 'Custom Multi Select Label',
+        tableActionsLabel: 'Custom Multi Select Label',
         allowJsonImport: true
     },
     createDialogData: {
@@ -116,14 +126,21 @@ export const customTableDataReadOnly: TableData<TestEntity> = {
         searchString: () => 'x',
         allowUpdate: () => false,
         allowDelete: () => false,
-        multiSelectActions: [
+        tableActions: [
             {
+                type: 'default',
+                displayName: 'Default Action',
+                // eslint-disable-next-line no-console
+                action: () => console.log('ran table action')
+            },
+            {
+                type: 'multi-select',
                 displayName: 'Multi Action',
                 // eslint-disable-next-line no-console
-                action: () => console.log('ran multi action')
+                action: () => console.log('ran table action')
             }
         ],
-        multiSelectLabel: 'Custom Multi Select Label'
+        tableActionsLabel: 'Custom Multi Select Label'
     },
     createDialogData: {
         title: 'Create Test Entity'
