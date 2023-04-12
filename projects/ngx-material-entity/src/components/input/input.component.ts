@@ -22,6 +22,7 @@ import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { NGX_GET_VALIDATION_ERROR_MESSAGE } from '../get-validation-error-message.function';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from '../table/create-dialog/create-dialog-data.builder';
+import { DisplayColumn } from '../table/table-data';
 import { BaseTableActionInternal, TableActionInternal } from '../table/table-data.builder';
 
 /**
@@ -184,6 +185,20 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         return index;
     }
 
+    /**
+     * Gets the value to display in the column.
+     * Runs in environment context to enable injection.
+     *
+     * @param entity - The entity to get the value from.
+     * @param displayColumn - The display column to get the value from.
+     * @returns The value of the display column.
+     */
+    getDisplayColumnValue(entity: EntityType, displayColumn: DisplayColumn<EntityType>): unknown {
+        return this.injector.runInContext(() => {
+            return displayColumn.value(entity);
+        });
+    }
+
     ngOnInit(): void {
         if (!this.entity) {
             throw new Error('Missing required Input data "entity"');
@@ -237,7 +252,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         }
 
         this.hasManyDataSource.sortingDataAccessor = (entity: EntityType, header: string) => {
-            return this.metadataHasMany.tableData.baseData.displayColumns.find((dp) => dp.displayName === header)?.value(entity) as string;
+            return this.injector.runInContext(() => {
+                // eslint-disable-next-line max-len
+                return this.metadataHasMany.tableData.baseData.displayColumns.find((dp) => dp.displayName === header)?.value(entity) as string;
+            });
         };
         this.hasManyDataSource.sort = this.hasManySort;
         this.hasManyDataSource.filterPredicate = (entity: EntityType, filter: string) => {
@@ -536,7 +554,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * @param action - The TableAction to run.
      */
     runHasManyTableAction(action: TableActionInternal<EntityType>): void {
-        if (!action.requireConfirmDialog(this.hasManySelection.selected)) {
+        const requireConfirmDialog: boolean = this.injector.runInContext(() => {
+            return action.requireConfirmDialog(this.hasManySelection.selected);
+        });
+        if (!requireConfirmDialog) {
             this.confirmRunHasManyTableAction(action);
             return;
         }
@@ -557,7 +578,9 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     }
 
     private confirmRunHasManyTableAction(action: TableActionInternal<EntityType>): void {
-        action.action(this.hasManySelection.selected);
+        this.injector.runInContext(() => {
+            action.action(this.hasManySelection.selected);
+        });
     }
 
     /**
@@ -567,7 +590,9 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * @returns Whether or not the Action can be used.
      */
     hasManyTableActionDisabled(action: TableActionInternal<EntityType>): boolean {
-        return !action.enabled(this.hasManySelection.selected);
+        return this.injector.runInContext(() => {
+            return !action.enabled(this.hasManySelection.selected);
+        });
     }
 
     /**

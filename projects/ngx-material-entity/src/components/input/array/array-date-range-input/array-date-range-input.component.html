@@ -63,7 +63,7 @@
                 {{dCol.displayName}}
             </mat-header-cell>
             <mat-cell class="entity" *matCellDef="let entity">
-                {{dCol.value(entity)}}
+                {{getDisplayColumnValue(entity, dCol)}}
             </mat-cell>
         </ng-container>
     

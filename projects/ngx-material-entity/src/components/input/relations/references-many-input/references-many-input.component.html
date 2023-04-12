@@ -45,7 +45,7 @@
                 {{dCol.displayName}}
             </mat-header-cell>
             <mat-cell class="entity" *matCellDef="let entityId">
-                {{dCol.value(metadata.getEntityForId(entityId, allReferencedEntities))}}
+                {{getDisplayColumnValue(entityId, dCol)}}
             </mat-cell>
         </ng-container>
     

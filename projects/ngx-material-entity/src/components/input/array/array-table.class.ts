@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, OnInit } from '@angular/core';
+import { Component, EnvironmentInjector, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { BaseEntityType } from '../../../classes/entity.model';
@@ -9,6 +9,7 @@ import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
 import { EntityUtilities } from '../../../utilities/entity.utilities';
 import { SelectionUtilities } from '../../../utilities/selection.utilities';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
+import { DisplayColumn } from '../../table/table-data';
 import { NgxMatEntityBaseInputComponent } from '../base-input.component';
 
 type ArrayTableType = DecoratorTypes.ARRAY | DecoratorTypes.ARRAY_DATE
@@ -31,7 +32,7 @@ export abstract class ArrayTableComponent<ValueType, EntityType extends BaseEnti
 
     SelectionUtilities: typeof SelectionUtilities = SelectionUtilities;
 
-    constructor(private readonly matDialog: MatDialog) {
+    constructor(private readonly matDialog: MatDialog, private readonly injector: EnvironmentInjector) {
         super();
     }
 
@@ -47,6 +48,20 @@ export abstract class ArrayTableComponent<ValueType, EntityType extends BaseEnti
         }
         this.displayedColumns = this.isReadOnly ? givenDisplayColumns : ['select'].concat(givenDisplayColumns);
         this.dataSource.data = this.propertyValue;
+    }
+
+    /**
+     * Gets the value to display in the column.
+     * Runs in environment context to enable injection.
+     *
+     * @param entity - The entity to get the value from.
+     * @param displayColumn - The display column to get the value from.
+     * @returns The value of the display column.
+     */
+    getDisplayColumnValue(entity: ValueType, displayColumn: DisplayColumn<ValueType>): unknown {
+        return this.injector.runInContext(() => {
+            return displayColumn.value(entity);
+        });
     }
 
     /**
