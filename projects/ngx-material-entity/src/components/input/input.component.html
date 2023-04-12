@@ -403,7 +403,7 @@
                 <input matInput (keyup)="applyHasManyFilter($event)">
             </mat-form-field>
             <div
-                *ngIf="metadataHasMany.tableData.baseData.multiSelectActions.length"
+                *ngIf="metadataHasMany.tableData.baseData.tableActions.length"
                 [class.col-lg-2]="metadataHasMany.tableData.baseData.allowCreate()"
                 [class.col-lg-4]="!metadataHasMany.tableData.baseData.allowCreate()"
                 [class.col-md-3]="metadataHasMany.tableData.baseData.allowCreate()"
@@ -412,26 +412,26 @@
                 [class.col-sm-12]="!metadataHasMany.tableData.baseData.allowCreate()"
             >
                 <button type="button" class="actions-button" [matMenuTriggerFor]="menu" mat-raised-button>
-                    {{metadataHasMany.tableData.baseData.multiSelectLabel}}
+                    {{metadataHasMany.tableData.baseData.tableActionsLabel}}
                 </button>
             </div>
             <mat-menu #menu="matMenu">
-                <button *ngIf="metadataHasMany.tableData.baseData.allowJsonImport" type="button" [disabled]="hasManyImportAction.enabled?.(this.hasManySelection.selected) === false" (click)="runHasManyMultiAction(hasManyImportAction)" mat-menu-item>
+                <button *ngIf="metadataHasMany.tableData.baseData.allowJsonImport" type="button" [disabled]="hasManyTableActionDisabled(hasManyImportAction)" (click)="runHasManyTableAction(hasManyImportAction)" mat-menu-item>
                     {{hasManyImportAction.displayName}}
                 </button>
-                <button type="button" *ngFor="let action of metadataHasMany.tableData.baseData.multiSelectActions" [disabled]="hasManyMultiActionDisabled(action)" (click)="runHasManyMultiAction(action)" mat-menu-item>
+                <button type="button" *ngFor="let action of metadataHasMany.tableData.baseData.tableActions" [disabled]="hasManyTableActionDisabled(action)" (click)="runHasManyTableAction(action)" mat-menu-item>
                     {{action.displayName}}
                 </button>
             </mat-menu>
 
             <div
                 *ngIf="metadataHasMany.tableData.baseData.allowCreate()"
-                [class.col-lg-2]="metadataHasMany.tableData.baseData.multiSelectActions.length"
-                [class.col-lg-4]="!metadataHasMany.tableData.baseData.multiSelectActions.length"
-                [class.col-md-3]="metadataHasMany.tableData.baseData.multiSelectActions.length"
-                [class.col-md-6]="!metadataHasMany.tableData.baseData.multiSelectActions.length"
-                [class.col-sm-6]="metadataHasMany.tableData.baseData.multiSelectActions.length"
-                [class.col-sm-12]="!metadataHasMany.tableData.baseData.multiSelectActions.length"
+                [class.col-lg-2]="metadataHasMany.tableData.baseData.tableActions.length"
+                [class.col-lg-4]="!metadataHasMany.tableData.baseData.tableActions.length"
+                [class.col-md-3]="metadataHasMany.tableData.baseData.tableActions.length"
+                [class.col-md-6]="!metadataHasMany.tableData.baseData.tableActions.length"
+                [class.col-sm-6]="metadataHasMany.tableData.baseData.tableActions.length"
+                [class.col-sm-12]="!metadataHasMany.tableData.baseData.tableActions.length"
             >
                 <button type="button" class="create-button" (click)="createHasManyEntity()" mat-raised-button>
                     {{metadataHasMany.tableData.baseData.createButtonLabel}}

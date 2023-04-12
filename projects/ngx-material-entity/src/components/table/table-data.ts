@@ -18,9 +18,47 @@ export interface DisplayColumn<EntityType extends BaseEntityType<EntityType>> {
 }
 
 /**
+ * A table action that will run regardless if something has been selected in the table.
+ */
+export interface BaseTableAction {
+    /**
+     * The type of the table action to distinct between base and multi-select actions.
+     */
+    type: 'default',
+    /**
+     * The name of the action.
+     */
+    displayName: string,
+    /**
+     * The action itself.
+     */
+    action: () => unknown,
+    /**
+     * A method that defines whether or not the action can be used.
+     *
+     * @default () => true
+     */
+    enabled?: () => boolean,
+    /**
+     * A method that defines whether or not a confirm dialog is needed to run the action.
+     *
+     * @default false
+     */
+    requireConfirmDialog?: () => boolean,
+    /**
+     * The data used to generate a confirmation dialog for the table action.
+     */
+    confirmDialogData?: ConfirmDialogData
+}
+
+/**
  * The Definition of an Action that can be run on multiple selected entities.
  */
 export interface MultiSelectAction<EntityType extends BaseEntityType<EntityType>> {
+    /**
+     * The type of the table action to distinct between base and multi-select actions.
+     */
+    type: 'multi-select',
     /**
      * The name of the action.
      */
@@ -32,7 +70,7 @@ export interface MultiSelectAction<EntityType extends BaseEntityType<EntityType>
     /**
      * A method that defines whether or not the action can be used.
      *
-     * @default true
+     * @default (selectedEntities: EntityType[]) => !!selectedEntities.length
      */
     enabled?: (selectedEntities: EntityType[]) => boolean,
     /**
@@ -42,10 +80,15 @@ export interface MultiSelectAction<EntityType extends BaseEntityType<EntityType>
      */
     requireConfirmDialog?: (selectedEntities: EntityType[]) => boolean,
     /**
-     * The data used to generate a confirmation dialog for the multiSelect action.
+     * The data used to generate a confirmation dialog for the table action.
      */
     confirmDialogData?: ConfirmDialogData
 }
+
+/**
+ * An action for the table. Can either be independent or run on the selected entities in the table.
+ */
+export type TableAction<EntityType extends BaseEntityType<EntityType>> = BaseTableAction | MultiSelectAction<EntityType>;
 
 /**
  * The base data of the ngx-mat-entity-table.
@@ -122,14 +165,14 @@ export interface BaseData<EntityType extends BaseEntityType<EntityType>> {
      */
     allowDelete?: boolean | ((entity?: EntityType) => boolean),
     /**
-     * All Actions that you want to run on multiple entities can be defined here.
-     * (e.g. Download as zip-file or mass delete).
+     * All Actions that you want to run on the table can be defined here.
+     * (e.g. Download as zip-file, import or mass delete).
      */
-    multiSelectActions?: MultiSelectAction<EntityType>[],
+    tableActions?: TableAction<EntityType>[],
     /**
-     * The Label for the button that opens all multi-actions.
+     * The Label for the button that opens all table-actions.
      */
-    multiSelectLabel?: string,
+    tableActionsLabel?: string,
     /**
      * Whether or not to display a loading spinner while the entities of the table are loaded.
      *
@@ -138,7 +181,7 @@ export interface BaseData<EntityType extends BaseEntityType<EntityType>> {
     displayLoadingSpinner?: boolean,
     /**
      * Whether or not JSON imports are allowed.
-     * This adds an multi select action.
+     * This adds an table select action.
      *
      * @default false
      */
@@ -146,7 +189,7 @@ export interface BaseData<EntityType extends BaseEntityType<EntityType>> {
     /**
      * Data to customize the json import action.
      */
-    importActionData?: Omit<MultiSelectAction<EntityType>, 'action' | 'requireConfirmDialog'>
+    importActionData?: Omit<BaseTableAction, 'action' | 'requireConfirmDialog' | 'type'>
 }
 
 /**
