@@ -125,10 +125,12 @@ describe('custom table', () => {
     it('should run multi actions', () => {
         cy.get('button').contains('Custom Multi Select Label').click();
         cy.get('button').contains('Multi Action').parent().should('be.disabled');
+        cy.get('button').contains('Default Action').parent().should('not.be.disabled');
         cy.get('.cdk-overlay-backdrop').click();
         cy.get('mat-checkbox').first().click();
         cy.get('button').contains('Custom Multi Select Label').click();
         cy.get('button').contains('Multi Action').parent().should('not.be.disabled');
+        cy.get('button').contains('Default Action').parent().should('not.be.disabled');
         cy.get('button').contains('Multi Action').click();
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         expect(spy).to.be.calledOnce;

@@ -22,7 +22,7 @@ import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { NGX_GET_VALIDATION_ERROR_MESSAGE } from '../get-validation-error-message.function';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from '../table/create-dialog/create-dialog-data.builder';
-import { MultiSelectAction } from '../table/table-data';
+import { BaseTableActionInternal, TableActionInternal } from '../table/table-data.builder';
 
 /**
  * The default input component. It gets the metadata of the property from the given @Input "entity" and @Input "propertyKey"
@@ -132,7 +132,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     displayedHasManyColumns!: string[];
     hasManyDataSource: MatTableDataSource<EntityType> = new MatTableDataSource();
     hasManySelection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
-    hasManyImportAction!: Omit<MultiSelectAction<EntityType>, 'confirmationDialog'>;
+    hasManyImportAction!: BaseTableActionInternal;
     private hasManyEntityService!: EntityService<EntityType>;
     @ViewChild('createHasManyDialog')
     createHasManyDialog!: TemplateRef<unknown>;
@@ -229,7 +229,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         });
 
         const givenDisplayColumns: string[] = this.metadataHasMany.tableData.baseData.displayColumns.map((v) => v.displayName);
-        if (this.metadataHasMany.tableData.baseData.multiSelectActions.length) {
+        if (this.metadataHasMany.tableData.baseData.tableActions.filter(tA => tA.type === 'multi-select').length) {
             this.displayedHasManyColumns = ['select'].concat(givenDisplayColumns);
         }
         else {
@@ -315,7 +315,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     private importJson(file: File): void {
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.hasManyImportAction.confirmDialogData)
-            .withDefault('text', this.metadataHasMany.tableData.baseData.importActionData.confirmDialogData?.text as string[])
+            .withDefault('text', this.metadataHasMany.tableData.baseData.importActionData.confirmDialogData?.text )
             .withDefault('title', this.hasManyImportAction.displayName)
             .getResult();
         const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
@@ -530,14 +530,14 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     }
 
     /**
-     * Runs the MultiAction for all selected entries.
+     * Runs the TableAction for all selected entries.
      * Also handles confirmation with an additional dialog if configured.
      *
-     * @param action - The MultiAction to run.
+     * @param action - The TableAction to run.
      */
-    runHasManyMultiAction(action: MultiSelectAction<EntityType>): void {
-        if (!action.requireConfirmDialog || !action.requireConfirmDialog(this.hasManySelection.selected)) {
-            this.confirmRunHasManyMultiAction(action);
+    runHasManyTableAction(action: TableActionInternal<EntityType>): void {
+        if (!action.requireConfirmDialog(this.hasManySelection.selected)) {
+            this.confirmRunHasManyTableAction(action);
             return;
         }
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(action.confirmDialogData)
@@ -551,29 +551,23 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         });
         dialogRef.afterClosed().subscribe(res => {
             if (res == true) {
-                this.confirmRunHasManyMultiAction(action);
+                this.confirmRunHasManyTableAction(action);
             }
         });
     }
 
-    private confirmRunHasManyMultiAction(action: MultiSelectAction<EntityType>): void {
+    private confirmRunHasManyTableAction(action: TableActionInternal<EntityType>): void {
         action.action(this.hasManySelection.selected);
     }
 
     /**
-     * Checks if an MultiAction is disabled (e.g. Because no entries have been selected).
+     * Checks if an TableAction is disabled (e.g. Because no entries have been selected).
      *
-     * @param action - The MultiAction to check.
+     * @param action - The TableAction to check.
      * @returns Whether or not the Action can be used.
      */
-    hasManyMultiActionDisabled(action: MultiSelectAction<EntityType>): boolean {
-        if (!this.hasManySelection.selected.length) {
-            return true;
-        }
-        if (action.enabled?.(this.hasManySelection.selected) === false) {
-            return true;
-        }
-        return false;
+    hasManyTableActionDisabled(action: TableActionInternal<EntityType>): boolean {
+        return !action.enabled(this.hasManySelection.selected);
     }
 
     /**

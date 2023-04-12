@@ -6,7 +6,6 @@ class ConfirmDialogDataEntity extends Entity {
     @array({
         required: false,
         displayName: 'Text Paragraphs',
-        displayStyle: 'chips',
         itemType: DecoratorTypes.STRING
     })
     text?: string[];

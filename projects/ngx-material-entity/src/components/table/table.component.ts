@@ -5,7 +5,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { firstValueFrom, Subject, takeUntil } from 'rxjs';
+import { Subject, firstValueFrom, takeUntil } from 'rxjs';
 import { BaseEntityType, Entity } from '../../classes/entity.model';
 import { EntityService } from '../../services/entity.service';
 import { SelectionUtilities } from '../../utilities/selection.utilities';
@@ -16,8 +16,8 @@ import { NgxMatEntityCreateDialogComponent } from './create-dialog/create-entity
 import { EditEntityData } from './edit-dialog/edit-entity-data';
 import { NgxMatEntityEditDialogComponent } from './edit-dialog/edit-entity-dialog.component';
 import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-dialog/edit-entity.builder';
-import { MultiSelectAction, TableData } from './table-data';
-import { TableDataBuilder, TableDataInternal } from './table-data.builder';
+import { TableData } from './table-data';
+import { BaseTableActionInternal, TableActionInternal, TableDataBuilder, TableDataInternal } from './table-data.builder';
 
 /**
  * Generates a fully functional table for displaying, creating, updating and deleting entities
@@ -53,7 +53,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
 
     SelectionUtilities: typeof SelectionUtilities = SelectionUtilities;
 
-    importAction!: Omit<MultiSelectAction<EntityType>, 'confirmationDialog'>;
+    importAction!: BaseTableActionInternal;
 
     constructor(
         private readonly dialog: MatDialog,
@@ -75,7 +75,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         this.entityService = this.injector.get(this.data.baseData.EntityServiceClass) as EntityService<EntityType>;
 
         const givenDisplayColumns: string[] = this.data.baseData.displayColumns.map((v) => v.displayName);
-        if (this.data.baseData.multiSelectActions.length) {
+        if (this.data.baseData.tableActions.filter(tA => tA.type === 'multi-select').length) {
             this.displayedColumns = ['select'].concat(givenDisplayColumns);
         }
         else {
@@ -118,7 +118,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
 
     private importJson(file: File): void {
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.importAction.confirmDialogData)
-            .withDefault('text', this.data.baseData.importActionData.confirmDialogData?.text as string[])
+            .withDefault('text', this.data.baseData.importActionData.confirmDialogData.text)
             .withDefault('title', this.importAction.displayName)
             .getResult();
         const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
@@ -222,14 +222,14 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     }
 
     /**
-     * Runs the MultiAction for all selected entries.
+     * Runs the TableAction for all selected entries.
      * Also handles confirmation with an additional dialog if configured.
      *
-     * @param action - The MultiAction to run.
+     * @param action - The TableAction to run.
      */
-    runMultiAction(action: MultiSelectAction<EntityType>): void {
-        if (!action.requireConfirmDialog || !action.requireConfirmDialog(this.selection.selected)) {
-            this.confirmRunMultiAction(action);
+    runTableAction(action: TableActionInternal<EntityType>): void {
+        if (!action.requireConfirmDialog(this.selection.selected)) {
+            this.confirmRunTableAction(action);
             return;
         }
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(action.confirmDialogData)
@@ -243,29 +243,23 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         });
         dialogRef.afterClosed().subscribe(res => {
             if (res == true) {
-                this.confirmRunMultiAction(action);
+                this.confirmRunTableAction(action);
             }
         });
     }
 
-    private confirmRunMultiAction(action: MultiSelectAction<EntityType>): void {
+    private confirmRunTableAction(action: TableActionInternal<EntityType>): void {
         action.action(this.selection.selected);
     }
 
     /**
-     * Checks if an MultiAction is disabled (e.g. Because no entries have been selected).
+     * Checks if an TableAction is disabled (e.g. Because no entries have been selected).
      *
-     * @param action - The MultiAction to check.
+     * @param action - The TableAction to check.
      * @returns Whether or not the Action can be used.
      */
-    multiActionDisabled(action: MultiSelectAction<EntityType>): boolean {
-        if (!this.selection.selected.length) {
-            return true;
-        }
-        if (action.enabled?.(this.selection.selected) === false) {
-            return true;
-        }
-        return false;
+    tableActionDisabled(action: TableActionInternal<EntityType>): boolean {
+        return !action.enabled(this.selection.selected);
     }
 
     ngOnDestroy(): void {

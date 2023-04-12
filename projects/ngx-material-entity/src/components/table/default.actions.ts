@@ -1,7 +1,7 @@
 import { Js2XmlUtilities } from '../../encapsulation/js-2-xml.utilities';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../../encapsulation/reflect.utilities';
-import { BaseEntityType } from '../../public-api';
+import { BaseEntityType } from '../../classes/entity.model';
 import { FileUtilities } from '../../utilities/file.utilities';
 
 const CSV_SEPARATOR: string = ';';
