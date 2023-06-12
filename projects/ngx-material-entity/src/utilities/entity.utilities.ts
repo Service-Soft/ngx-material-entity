@@ -382,8 +382,14 @@ export abstract class EntityUtilities {
             case DecoratorTypes.OBJECT:
                 const entityObject: EntityType = entity[key] as EntityType;
                 for (const parameterKey in entityObject) {
-                    if (!EntityUtilities.isPropertyValid(entityObject, parameterKey, omit)) {
-                        return false;
+                    const value: unknown = entityObject[parameterKey];
+                    if (
+                        !(metadata as DefaultObjectDecoratorConfigInternal<EntityType>).omit.includes(parameterKey)
+                        && !(!metadata.required && (value == null || value == ''))
+                    ) {
+                        if (!EntityUtilities.isPropertyValid(entityObject, parameterKey, omit)) {
+                            return false;
+                        }
                     }
                 }
                 break;
@@ -928,11 +934,13 @@ export abstract class EntityUtilities {
         entity: EntityType,
         tab: number,
         hideOmitForCreate: boolean,
-        hideOmitForEdit: boolean
+        hideOmitForEdit: boolean,
+        additionalOmitValues: (keyof EntityType)[]
     ): EntityRow<EntityType>[] {
         const res: EntityRow<EntityType>[] = [];
 
-        const keys: (keyof EntityType)[] = EntityUtilities.keysOf(entity, hideOmitForCreate, hideOmitForEdit);
+        const keys: (keyof EntityType)[] = EntityUtilities.keysOf(entity, hideOmitForCreate, hideOmitForEdit)
+            .filter(k => !additionalOmitValues.includes(k));
         const numberOfRows: number = EntityUtilities.getNumberOfRows<EntityType>(keys, entity, tab);
         for (let i: number = 1; i <= numberOfRows; i++) {
             const row: EntityRow<EntityType> = {
@@ -959,22 +967,27 @@ export abstract class EntityUtilities {
      * @param entity - The entity to get the rows from.
      * @param hideOmitForCreate - Whether or not keys with the metadata omitForCreate should be filtered out.
      * @param hideOmitForEdit - Whether or not keys with the metadata omitForUpdate should be filtered out.
+     * @param additionalOmitValues - Additional omit values.
      * @returns The sorted Tabs containing the rows and the keys to display in that row.
      */
     static getEntityTabs<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         hideOmitForCreate: boolean = false,
-        hideOmitForEdit: boolean = false
+        hideOmitForEdit: boolean = false,
+        additionalOmitValues: (keyof EntityType)[] = []
     ): EntityTab<EntityType>[] {
         const res: EntityTab<EntityType>[] = [];
-        const keys: (keyof EntityType)[] = EntityUtilities.keysOf(entity, hideOmitForCreate, hideOmitForEdit);
+        const keys: (keyof EntityType)[] = EntityUtilities.keysOf(entity, hideOmitForCreate, hideOmitForEdit)
+            .filter(k => !additionalOmitValues.includes(k));
         const numberOfTabs: number = EntityUtilities.getNumberOfTabs<EntityType>(keys, entity);
 
-        if (EntityUtilities.getEntityRows<EntityType>(entity, -1, hideOmitForCreate, hideOmitForEdit).length) {
+        // eslint-disable-next-line max-len
+        const firstTabRows: EntityRow<EntityType>[] = EntityUtilities.getEntityRows<EntityType>(entity, -1, hideOmitForCreate, hideOmitForEdit, additionalOmitValues);
+        if (firstTabRows.length) {
             const firstTab: EntityTab<EntityType> = {
                 tabName: EntityUtilities.getFirstTabName(entity),
                 tab: -1,
-                rows: EntityUtilities.getEntityRows<EntityType>(entity, -1, hideOmitForCreate, hideOmitForEdit)
+                rows: firstTabRows
             };
             res.push(firstTab);
         }
@@ -983,7 +996,7 @@ export abstract class EntityUtilities {
             const tab: EntityTab<EntityType> = {
                 tabName: EntityUtilities.getTabName(entity, i),
                 tab: i,
-                rows: EntityUtilities.getEntityRows<EntityType>(entity, i, hideOmitForCreate, hideOmitForEdit)
+                rows: EntityUtilities.getEntityRows<EntityType>(entity, i, hideOmitForCreate, hideOmitForEdit, additionalOmitValues)
             };
             res.push(tab);
         }

@@ -14,6 +14,7 @@ import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-
 import { HasManyDecoratorConfigInternal } from '../../decorators/has-many/has-many-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../../decorators/object/object-decorator-internal.data';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
+import { ReflectUtilities } from '../../encapsulation/reflect.utilities';
 import { EntityService } from '../../services/entity.service';
 import { DateUtilities } from '../../utilities/date.utilities';
 import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
@@ -78,6 +79,15 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     @Input()
     hideOmitForEdit?: boolean;
+
+    /**
+     * Whether or not an empty value should be valid.
+     * Is used internally for the object property.
+     *
+     * @default undefined
+     */
+    @Input()
+    validEmpty?: boolean; // TODO
 
     /**
      * Whether or not the input should be readonly.
@@ -214,6 +224,13 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.internalIsReadOnly = this.isReadOnly ?? false;
 
         this.type = EntityUtilities.getPropertyType(this.internalEntity, this.internalPropertyKey);
+        if (this.validEmpty != null) {
+            // eslint-disable-next-line max-len
+            const currentMetadata: object = ReflectUtilities.getMetadata('metadata', this.internalEntity, this.internalPropertyKey) as object;
+            // eslint-disable-next-line max-len
+            ReflectUtilities.defineMetadata('metadata', { ...currentMetadata, required: !this.validEmpty }, this.internalEntity, this.internalPropertyKey);
+            ReflectUtilities.defineMetadata('validEmpty', true, this.internalEntity, this.internalPropertyKey);
+        }
         this.metadata = EntityUtilities.getPropertyMetadata(this.internalEntity, this.internalPropertyKey, this.type);
 
         switch (this.type) {
@@ -316,7 +333,12 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     private initObjectInput(): void {
         this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfigInternal<EntityType>;
         this.objectProperty = this.internalEntity[this.internalPropertyKey] as EntityType;
-        this.objectPropertyTabs = EntityUtilities.getEntityTabs(this.objectProperty, this.hideOmitForCreate, this.hideOmitForEdit);
+        this.objectPropertyTabs = EntityUtilities.getEntityTabs(
+            this.objectProperty,
+            this.hideOmitForCreate,
+            this.hideOmitForEdit,
+            this.metadataDefaultObject.omit
+        );
     }
 
     private startImportJson(): void {

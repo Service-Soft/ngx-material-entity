@@ -94,7 +94,7 @@ Cypress.Commands.add(
         cy.getInputByLabel('Date Array Value').click().type('1/1/2022');
         cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(1).click();
 
-        cy.getInputByLabel('Custom Date Array Value').click().type('1/2/2022');
+        cy.getInputByLabel('Custom Date Array Value').click().type('2/1/2022');
         cy.get('button').filter((i, elt) => elt.innerText === 'Custom Add').eq(1).click();
 
         cy.getInputByLabel('Date Time Array Value').click().type('1/1/2022');
@@ -102,7 +102,7 @@ Cypress.Commands.add(
         cy.get('mat-option').contains('0:00').click();
         cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(2).click();
 
-        cy.getInputByLabel('Custom Date Time Array Value').click().type('1/2/2022');
+        cy.getInputByLabel('Custom Date Time Array Value').click().type('2/1/2022');
         cy.getInputByLabel('Custom Time Display Name', 0).click();
         cy.get('mat-option').contains('3:15 PM').click();
         cy.get('button').filter((i, elt) => elt.innerText === 'Custom Add').eq(2).click();
@@ -111,8 +111,8 @@ Cypress.Commands.add(
         cy.get('.mat-end-date').eq(0).click().type('2/2/2022');
         cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(3).click();
 
-        cy.get('.mat-start-date').eq(1).click().type('1/2/2022');
-        cy.get('.mat-end-date').eq(1).click().type('2/20/2022');
+        cy.get('.mat-start-date').eq(1).click().type('2/2/2022');
+        cy.get('.mat-end-date').eq(1).click().type('20/2/2022');
         cy.get('button').filter((i, elt) => elt.innerText === 'Custom Add').eq(3).click();
 
         cy.getInputByLabel('Number Dropdown Value').click();
@@ -134,7 +134,7 @@ Cypress.Commands.add(
         cy.getInputByLabel('Custom Date Value').click().type('2/2/2022');
         cy.get('.mat-start-date').eq(2).click().type('1/1/2022');
         cy.get('.mat-end-date').eq(2).click().type('2/2/2022');
-        cy.get('.mat-start-date').eq(3).click().type('1/2/2022');
+        cy.get('.mat-start-date').eq(3).click().type('2/1/2022');
         cy.get('.mat-end-date').eq(3).click().type('2/2/2022');
         cy.getInputByLabel('Date Time Value').click().type('1/1/2022');
         cy.getInputByLabel('Time', 1).click();

@@ -130,6 +130,7 @@ export interface TestEntityWithoutCustomPropertiesInterface {
     maxNumberValue: number,
     numberSliderValue: number,
     objectValue: TestObjectEntity,
+    optionalObjectValue?: TestObjectEntity,
     stringChipsArrayValue: string[],
     stringChipsAutocompleteArrayValue: string[],
     stringChipsArrayValueWithConfig: string[],
@@ -342,6 +343,15 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         EntityClass: TestObjectEntity
     })
     objectValue!: TestObjectEntity;
+
+    @object({
+        displayStyle: 'inline',
+        displayName: 'Optional Object Value',
+        EntityClass: TestObjectEntity,
+        required: false,
+        omit: ['secondTabStringValue']
+    })
+    optionalObjectValue?: TestObjectEntity;
 
     @array({
         displayName: 'String Chips Array Value',
@@ -806,6 +816,9 @@ const testEntityData: TestEntityWithoutCustomProperties = {
         rowValue1: 'rowValue1',
         rowValue2: 'rowValue2'
     },
+    optionalObjectValue: {
+        rowValue1: ''
+    } as TestObjectEntity,
     stringChipsArrayValue: ['01234', '56789'],
     // eslint-disable-next-line @cspell/spellchecker
     stringChipsAutocompleteArrayValue: ['ABCDE', 'FGHIJ'],

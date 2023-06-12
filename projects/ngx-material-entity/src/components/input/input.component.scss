@@ -149,6 +149,10 @@ mat-dialog-actions {
         margin-bottom: 15px;
     }
 
+    .mat-column-select {
+        flex: 0 0 75px;
+    }
+
     .enabled:hover {
         cursor: pointer;
     }

@@ -1,4 +1,4 @@
-import { CommonModule, Location } from '@angular/common';
+import { Location, NgFor, NgIf } from '@angular/common';
 import { Component, EnvironmentProviders, HostListener, Inject, InjectionToken, OnInit, Provider, Type } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -83,7 +83,14 @@ export const NGX_EDIT_DATA: InjectionToken<PageEditData<any>> = new InjectionTok
     templateUrl: './edit-page.component.html',
     styleUrls: ['./edit-page.component.scss'],
     standalone: true,
-    imports: [CommonModule, MatButtonModule, MatTabsModule, NgxMatEntityInputModule, MatProgressSpinnerModule]
+    imports: [
+        NgIf,
+        NgFor,
+        MatButtonModule,
+        MatTabsModule,
+        NgxMatEntityInputModule,
+        MatProgressSpinnerModule
+    ]
 })
 export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 

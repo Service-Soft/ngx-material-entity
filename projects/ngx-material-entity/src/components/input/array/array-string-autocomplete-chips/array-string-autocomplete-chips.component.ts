@@ -46,9 +46,7 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntity
      * @param input - The input of the user.
      */
     filterAutocompleteStrings(input: unknown): void {
-        if (input != null) {
-            const filterValue: string = (input as string).toLowerCase();
-            this.filteredAutocompleteStrings = this.autocompleteValues.filter(s => s.toLowerCase().includes(filterValue));
-        }
+        const filterValue: string = (input as string).toLowerCase();
+        this.filteredAutocompleteStrings = this.autocompleteValues.filter(s => s.toLowerCase().includes(filterValue));
     }
 }

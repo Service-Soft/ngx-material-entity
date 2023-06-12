@@ -2,7 +2,7 @@
 import { TestRandomInputComponent } from '../../../ngx-material-entity-showcase/src/app/components/custom-input-component/custom-input.component';
 import { custom } from '../decorators/custom/custom.decorator';
 import { EntityUtilities } from '../utilities/entity.utilities';
-import { getDatesBetween, TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesInterface } from './test-entity.interface';
+import { getDatesBetween, TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesInterface, TestObjectEntity } from './test-entity.interface';
 
 export interface TestEntityInterface extends TestEntityWithoutCustomPropertiesInterface {
     randomValue: string
@@ -62,6 +62,9 @@ const testEntityData: TestEntity = {
         rowValue1: 'rowValue1',
         rowValue2: 'rowValue2'
     },
+    optionalObjectValue: {
+        rowValue1: ''
+    } as TestObjectEntity,
     stringChipsArrayValue: ['01234', '56789'],
     // eslint-disable-next-line @cspell/spellchecker
     stringChipsAutocompleteArrayValue: ['ABCDE', 'FGHIJ'],

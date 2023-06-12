@@ -163,14 +163,14 @@ export class MyEntityService extends EntityService<MyEntity> {
 ```
 
 ### Define the Table-Element
-Import the `NgxMatEntityTableModule` anywhere in your code:
+Import the `NgxMatEntityTableComponent` anywhere in your code:
 
 ```typescript
-import { NgxMatEntityTableModule } from 'ngx-material-entity';
+import { NgxMatEntityTableComponent } from 'ngx-material-entity';
 
 ...
     imports: [
-        NgxMatEntityTableModule
+        NgxMatEntityTableComponent
     ]
 ...
 ```

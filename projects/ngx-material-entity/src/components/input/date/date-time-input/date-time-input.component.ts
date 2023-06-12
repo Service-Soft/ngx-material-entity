@@ -64,6 +64,7 @@ export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType
             this.emitChange();
             return;
         }
+        this.propertyValue = new Date(this.propertyValue);
         if (this.time?.hours != null && this.time?.minutes != null) {
             this.propertyValue.setHours(this.time.hours, this.time.minutes, 0, 0);
         }
