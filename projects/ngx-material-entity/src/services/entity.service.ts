@@ -48,8 +48,12 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
 
 
     /**
-     * A subject of all the entity values.
-     * Can be subscribed to when you want to do a specific thing whenever the entities change.
+     * When frequently trying to find a single entity by an id (eg. When nesting relations)
+     * you might send a lot of unnecessary requests.
+     * Therefore the findById method tries to look in the already existing entities first,
+     * IF the entities have been requested in the last READ_EXPIRATION_IN_MS milliseconds.
+     *
+     * @default 900000 (5 minutes)
      */
     protected readonly READ_EXPIRATION_IN_MS: number = 900000;
 
@@ -64,7 +68,7 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
 
     lastRead?: Date;
 
-    constructor(private readonly http: HttpClient) {}
+    constructor(protected readonly http: HttpClient) {}
 
     /**
      * Creates a new Entity and pushes it to the entities array.

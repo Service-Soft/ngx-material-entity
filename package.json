@@ -50,6 +50,7 @@
         "@angular-devkit/build-angular": "~15.2.4",
         "@angular/cli": "~15.2.4",
         "@angular/compiler-cli": "~15.2.3",
+        "@angular/material-moment-adapter": "^15.2.6",
         "@types/cross-spawn": "^6.0.2",
         "@types/jest": "^29.5.0",
         "@types/json-server": "^0.14.4",
