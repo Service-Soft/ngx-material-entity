@@ -31,9 +31,23 @@ describe('new', () => {
         for (const key of ReflectUtilities.ownKeys(testEntity)) {
             const value: unknown = ReflectUtilities.get(testEntity, key);
             expect(value).toBeDefined();
-            if (valueIsEntity(value)) {
-                for (const k of ReflectUtilities.ownKeys(value)) {
-                    expect(ReflectUtilities.get(value, k)).toBeDefined();
+            if (key == ('optionalObjectValue' as keyof TestEntityWithoutCustomProperties)) {
+                if (valueIsEntity(value)) {
+                    for (const k of ReflectUtilities.ownKeys(value)) {
+                        if (k == ('rowValue1' as keyof TestEntityWithoutCustomProperties)) {
+                            expect(ReflectUtilities.get(value, k)).toBe('');
+                        }
+                        else {
+                            expect(ReflectUtilities.get(value, k)).toBeUndefined();
+                        }
+                    }
+                }
+            }
+            else {
+                if (valueIsEntity(value)) {
+                    for (const k of ReflectUtilities.ownKeys(value)) {
+                        expect(ReflectUtilities.get(value, k)).toBeDefined();
+                    }
                 }
             }
         }
@@ -675,7 +689,7 @@ describe('keysOf', () => {
     test('should get all keys of the entity', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
-        expect(EntityUtilities.keysOf(tE)).toHaveLength(55);
+        expect(EntityUtilities.keysOf(tE)).toHaveLength(56);
     });
     test('should get keys without omitForCreate', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);

@@ -1,8 +1,8 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
+import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
-import { BaseEntityType } from '../../../../classes/entity.model';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({
@@ -29,8 +29,7 @@ export class StringAutocompleteInputComponent<EntityType extends BaseEntityType<
      * @param input - The input of the user.
      */
     filterAutocompleteStrings(input?: string): void {
-        if (input) {
-            this.filteredAutocompleteStrings = this.autocompleteStrings.filter(s => s.toLowerCase().includes(input.toLowerCase()));
-        }
+        const searchString: string = input ?? '';
+        this.filteredAutocompleteStrings = this.autocompleteStrings.filter(s => s.toLowerCase().includes(searchString.toLowerCase()));
     }
 }

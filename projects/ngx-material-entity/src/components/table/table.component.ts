@@ -1,9 +1,17 @@
 import { SelectionModel } from '@angular/cdk/collections';
+import { NgFor, NgIf } from '@angular/common';
 import { Component, EnvironmentInjector, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Subject, firstValueFrom, takeUntil } from 'rxjs';
 import { BaseEntityType, Entity } from '../../classes/entity.model';
@@ -13,6 +21,7 @@ import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from './create-dialog/create-entity-dialog-data.builder';
 import { NgxMatEntityCreateDialogComponent } from './create-dialog/create-entity-dialog.component';
+import { DisplayColumnValueComponent } from './display-column-value/display-column-value.component';
 import { EditEntityData } from './edit-dialog/edit-entity-data';
 import { NgxMatEntityEditDialogComponent } from './edit-dialog/edit-entity-dialog.component';
 import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-dialog/edit-entity.builder';
@@ -28,7 +37,25 @@ import { BaseTableActionInternal, TableActionInternal, TableDataBuilder, TableDa
 @Component({
     selector: 'ngx-mat-entity-table',
     templateUrl: './table.component.html',
-    styleUrls: ['./table.component.scss']
+    styleUrls: ['./table.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        NgFor,
+        MatInputModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatCheckboxModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatDialogModule,
+        MatProgressSpinnerModule,
+        NgxMatEntityCreateDialogComponent,
+        NgxMatEntityEditDialogComponent,
+        DisplayColumnValueComponent
+    ]
 })
 export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity>> implements OnInit, OnDestroy {
 
@@ -155,9 +182,13 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
      * Edits an entity. This either calls the edit-Method provided by the user or uses a default edit-dialog.
      *
      * @param entity - The entity that should be updated.
+     * @param dCol - The display column. Is needed if a custom component was used that handles the click event differently.
      * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
      */
-    editEntity(entity: EntityType): void {
+    editEntity(entity: EntityType, dCol: DisplayColumn<EntityType>): void {
+        if (dCol.disableClick == true) {
+            return;
+        }
         if (!(this.data.baseData.allowUpdate(entity) || this.data.baseData.allowRead(entity))) {
             return;
         }
@@ -298,4 +329,6 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         const filterValue: string = (event.target as HTMLInputElement).value;
         this.dataSource.filter = filterValue.trim().toLowerCase();
     }
+
+
 }

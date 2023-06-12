@@ -1,14 +1,14 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SandboxComponent } from './sandbox.component';
+import { NgModule } from '@angular/core';
+import { NgxMatEntityTableComponent } from 'ngx-material-entity';
 import { SandboxRoutingModule } from './sandbox-routing.module';
-import { NgxMatEntityTableModule } from 'ngx-material-entity';
+import { SandboxComponent } from './sandbox.component';
 
 @NgModule({
     imports: [
         CommonModule,
         SandboxRoutingModule,
-        NgxMatEntityTableModule
+        NgxMatEntityTableComponent
     ],
     declarations: [SandboxComponent]
 })

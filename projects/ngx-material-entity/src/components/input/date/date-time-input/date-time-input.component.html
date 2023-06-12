@@ -11,7 +11,7 @@
             [min]="metadata.minDate ? metadata.minDate(propertyValue) : undefined"
             [max]="metadata.maxDate ? metadata.maxDate(propertyValue) : undefined"
             [matDatepickerFilter]="metadata.filterDate ?? defaultDateFilter"
-            (dateInput)="setTime()"
+            (dateChange)="setTime()"
             [disabled]="isReadOnly"
         >
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>

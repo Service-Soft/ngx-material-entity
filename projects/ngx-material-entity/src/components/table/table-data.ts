@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
+import { Type } from '@angular/core';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { EntityService } from '../../services/entity.service';
 import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
+import { NgxMatEntityBaseDisplayColumnValueComponent } from './display-column-value/base-display-column-value.component';
 
 /**
  * The Definition of a Column inside the table.
@@ -12,9 +14,19 @@ export interface DisplayColumn<EntityType extends BaseEntityType<EntityType>> {
      */
     displayName: string,
     /**
-     * A method to get the value inside an row.
+     * What to display inside the row.
      */
-    value: (entity: EntityType) => string
+    value: (entity: EntityType) => string,
+    /**
+     * A custom component to use instead of the value.
+     * You still need to provide a value function for the sorting by header to work.
+     */
+    Component?: Type<NgxMatEntityBaseDisplayColumnValueComponent<EntityType>>,
+    /**
+     * Whether or not the click event should be disabled.
+     * This can be useful if your component has a custom way to handle clicks.
+     */
+    disableClick?: boolean
 }
 
 /**

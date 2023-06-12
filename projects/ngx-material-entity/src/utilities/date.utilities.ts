@@ -1,7 +1,7 @@
 import { Time } from '@angular/common';
 import { DateFilterFn } from '@angular/material/datepicker';
-import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { DropdownValue } from '../decorators/base/dropdown-value.interface';
+import { LodashUtilities } from '../encapsulation/lodash.utilities';
 
 const DAY_IN_MS: number = 1000 * 60 * 60 * 24;
 

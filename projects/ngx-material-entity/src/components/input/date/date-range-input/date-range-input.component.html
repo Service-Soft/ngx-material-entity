@@ -10,7 +10,7 @@
             [min]="metadata.minStart ? metadata.minStart(dateRange.start) : undefined"
             [max]="metadata.maxStart ? metadata.maxStart(dateRange.start) : undefined"
             [placeholder]="metadata.placeholderStart"
-            (ngModelChange)="setDateRangeValues()"
+            (dateChange)="setDateRangeValues()"
         >
         <input matEndDate
             [(ngModel)]="dateRangeEnd"
@@ -20,7 +20,7 @@
             [min]="metadata.minEnd ? metadata.minEnd(dateRange.end) : undefined"
             [max]="metadata.maxEnd ? metadata.maxEnd(dateRange.end) : undefined"
             [placeholder]="metadata.placeholderEnd"
-            (ngModelChange)="setDateRangeValues()"
+            (dateChange)="setDateRangeValues()"
         >
     </mat-date-range-input>
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>

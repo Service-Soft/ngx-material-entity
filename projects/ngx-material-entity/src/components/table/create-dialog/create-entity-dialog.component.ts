@@ -1,10 +1,15 @@
+import { NgFor, NgIf } from '@angular/common';
 import { Component, Inject, Injector, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
 import { BaseEntityType } from '../../../classes/entity.model';
 import { EntityService } from '../../../services/entity.service';
 import { EntityTab, EntityUtilities } from '../../../utilities/entity.utilities';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
+import { NgxMatEntityInputModule } from '../../input/input.module';
 import { CreateEntityDialogData } from './create-entity-dialog-data';
 import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from './create-entity-dialog-data.builder';
 
@@ -17,7 +22,17 @@ import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from '.
 @Component({
     selector: 'ngx-mat-entity-create-dialog',
     templateUrl: './create-entity-dialog.component.html',
-    styleUrls: ['./create-entity-dialog.component.scss']
+    styleUrls: ['./create-entity-dialog.component.scss'],
+    standalone: true,
+    imports: [
+        NgFor,
+        NgIf,
+        NgxMatEntityInputModule,
+        MatDialogModule,
+        FormsModule,
+        MatButtonModule,
+        MatTabsModule
+    ]
 })
 export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
     EntityUtilities: typeof EntityUtilities = EntityUtilities;

@@ -58,8 +58,13 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>
                 {{dCol.displayName}}
             </mat-header-cell>
-            <mat-cell class="entity" [class.enabled]="data.baseData.allowUpdate(entity) || data.baseData.allowRead(entity)" (click)="editEntity(entity)" *matCellDef="let entity">
-                {{getDisplayColumnValue(entity, dCol)}}
+            <mat-cell class="entity" [class.enabled]="!dCol.disableClick && (data.baseData.allowUpdate(entity) || data.baseData.allowRead(entity))" (click)="editEntity(entity, dCol)" *matCellDef="let entity">
+                <ng-container *ngIf="dCol.Component">
+                    <display-column-value [entity]="entity" [ComponentClass]="dCol.Component"></display-column-value>
+                </ng-container>
+                <ng-container *ngIf="!dCol.Component">
+                    {{getDisplayColumnValue(entity, dCol)}}
+                </ng-container>
             </mat-cell>
         </ng-container>
 

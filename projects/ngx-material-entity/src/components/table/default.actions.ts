@@ -1,10 +1,35 @@
+import { Type, inject } from '@angular/core';
+import { BaseEntityType } from '../../classes/entity.model';
 import { Js2XmlUtilities } from '../../encapsulation/js-2-xml.utilities';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../../encapsulation/reflect.utilities';
-import { BaseEntityType } from '../../classes/entity.model';
+import { EntityService } from '../../services/entity.service';
 import { FileUtilities } from '../../utilities/file.utilities';
 
 const CSV_SEPARATOR: string = ';';
+
+/**
+ * A multi select action that imports the data from a json file.
+ *
+ * @param EntityServiceClass - The entity class that handles importing the file.
+ */
+export function importFromJsonMultiAction<EntityType extends BaseEntityType<EntityType>>(
+    EntityServiceClass: Type<EntityService<EntityType>>
+): void {
+    const service: EntityService<EntityType> = inject(EntityServiceClass);
+    const htmlInput: HTMLInputElement = document.createElement('input');
+    htmlInput.type = 'file';
+    htmlInput.accept = 'application/json';
+    htmlInput.multiple = false;
+    htmlInput.onchange = () => {
+        const file: File | undefined | null = htmlInput.files?.item(0);
+        if (file != null) {
+            void service.import(file);
+        }
+    };
+    htmlInput.click();
+    htmlInput.remove();
+}
 
 /**
  * A multi select action that exports the data as a json file.

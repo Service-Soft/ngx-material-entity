@@ -2,8 +2,9 @@
 import { formatDate, formatNumber } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Injectable, inject } from '@angular/core';
-import { DecoratorTypes, DropdownValue, Entity, EntityService, EntityUtilities, TableData, array, boolean, date, hasMany, number, referencesMany, string } from 'ngx-material-entity';
+import { DecoratorTypes, DropdownValue, Entity, EntityService, EntityUtilities, TableData, array, boolean, date, hasMany, number, object, referencesMany, string } from 'ngx-material-entity';
 import { environment } from '../../../environments/environment';
+import { PdfDownloadDisplayValueComponent } from '../pdf-download-display-value/pdf-download-display-value.component';
 
 @Injectable({
     providedIn: 'root'
@@ -100,7 +101,7 @@ class TimeTracking extends Entity {
     }
 }
 
-class Person extends Entity {
+export class Person extends Entity {
 
     @string({
         displayName: 'First Name',
@@ -113,6 +114,15 @@ class Person extends Entity {
         displayStyle: 'line'
     })
     lastName!: string;
+
+    @object({
+        displayName: 'Optional Partial Address',
+        displayStyle: 'inline',
+        EntityClass: Address,
+        required: false,
+        omit: ['postcode']
+    })
+    address!: Address;
 
     @referencesMany({
         displayName: 'Addresses',
@@ -211,6 +221,12 @@ export class SandboxComponent {
                 {
                     displayName: 'Name',
                     value: (entity: Person) => `${entity.firstName} ${entity.lastName}`
+                },
+                {
+                    displayName: 'Pdf',
+                    value: () => '',
+                    Component: PdfDownloadDisplayValueComponent,
+                    disableClick: true
                 }
             ],
             EntityClass: Person,

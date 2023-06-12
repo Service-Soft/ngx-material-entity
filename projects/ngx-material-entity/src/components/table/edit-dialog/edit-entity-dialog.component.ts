@@ -1,5 +1,9 @@
+import { NgFor, NgIf } from '@angular/common';
 import { Component, Inject, Injector, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
 import { BaseEntityType } from '../../../classes/entity.model';
 import { PropertyDecoratorConfigInternal } from '../../../decorators/base/property-decorator-internal.data';
 import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
@@ -7,6 +11,7 @@ import { EntityService } from '../../../services/entity.service';
 import { EntityTab, EntityUtilities } from '../../../utilities/entity.utilities';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
+import { NgxMatEntityInputModule } from '../../input/input.module';
 import { EditEntityData } from './edit-entity-data';
 import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-entity.builder';
 
@@ -19,7 +24,18 @@ import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-entity.bui
 @Component({
     selector: 'ngx-mat-entity-edit-dialog',
     templateUrl: './edit-entity-dialog.component.html',
-    styleUrls: ['./edit-entity-dialog.component.scss']
+    styleUrls: ['./edit-entity-dialog.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        NgFor,
+        NgxMatEntityInputModule,
+        MatDialogModule,
+        FormsModule,
+        MatButtonModule,
+        MatTabsModule,
+        NgxMatEntityConfirmDialogComponent
+    ]
 })
 export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
     EntityUtilities: typeof EntityUtilities = EntityUtilities;

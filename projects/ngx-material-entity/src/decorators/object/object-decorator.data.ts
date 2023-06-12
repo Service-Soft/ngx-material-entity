@@ -17,6 +17,11 @@ abstract class ObjectDecoratorConfig<EntityType extends BaseEntityType<EntityTyp
      * Useful if the object only contains a few properties (e.g. A address on a user).
      */
     displayStyle!: 'inline';
+
+    /**
+     * Some properties of the objects entity class that should be omitted.
+     */
+    omit?: (keyof EntityType)[];
 }
 
 /**
