@@ -993,12 +993,17 @@ export abstract class EntityUtilities {
         }
 
         for (let i: number = 2; i <= numberOfTabs; i++) {
-            const tab: EntityTab<EntityType> = {
-                tabName: EntityUtilities.getTabName(entity, i),
-                tab: i,
-                rows: EntityUtilities.getEntityRows<EntityType>(entity, i, hideOmitForCreate, hideOmitForEdit, additionalOmitValues)
-            };
-            res.push(tab);
+            const rows: EntityRow<EntityType>[] = EntityUtilities.getEntityRows<EntityType>(
+                entity, i, hideOmitForCreate, hideOmitForEdit, additionalOmitValues
+            );
+            if (rows.length) {
+                const tab: EntityTab<EntityType> = {
+                    tabName: EntityUtilities.getTabName(entity, i),
+                    tab: i,
+                    rows: rows
+                };
+                res.push(tab);
+            }
         }
 
         return res;
