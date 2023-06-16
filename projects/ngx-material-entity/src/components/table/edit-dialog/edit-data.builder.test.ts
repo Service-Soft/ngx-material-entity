@@ -8,6 +8,7 @@ const editDataWithActions: EditData<TestEntityWithoutCustomProperties> = {
     actions: [
         {
             displayName: 'Test',
+            // eslint-disable-next-line no-console
             action: () => console.log(42)
         }
     ]
