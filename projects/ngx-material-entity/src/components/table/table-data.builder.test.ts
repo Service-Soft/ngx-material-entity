@@ -78,6 +78,16 @@ const noEntityClassAllowDeleteErrorData: TableData<TestEntityWithoutCustomProper
     }
 };
 
+const editDataAndDefaultEditPageErrorData: TableData<TestEntityWithoutCustomProperties> = {
+    baseData: {
+        ...baseTableData.baseData,
+        defaultEdit: 'page'
+    },
+    editData: {
+        actionsLabel: 'Do'
+    }
+};
+
 const actionsTableData: TableData<TestEntityWithoutCustomProperties> = {
     baseData: {
         ...baseTableData.baseData,
@@ -144,6 +154,14 @@ describe('validateInput', () => {
             .toThrow(
                 `Missing required Input data "EntityClass".
                 You can only omit this value if you can neither create, read, update or delete entities.`
+            );
+    });
+    test('should throw error for provided edit data when default edit is page', () => {
+        expect(() => new TableDataBuilder(editDataAndDefaultEditPageErrorData))
+            .toThrow(
+                `The configured edit data can't be used, as the entity gets edited on its own page.
+                You need to provide values for the "NGX_EDIT_DATA", "NGX_EDIT_DATA_ENTITY" and "NGX_EDIT_DATA_ENTITY_SERVICE" injection keys
+                on the route where the edit page is used.`
             );
     });
 });

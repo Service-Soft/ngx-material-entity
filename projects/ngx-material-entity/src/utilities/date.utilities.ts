@@ -1,5 +1,6 @@
 import { Time } from '@angular/common';
 import { DateFilterFn } from '@angular/material/datepicker';
+import { defaultTrue } from '../classes/base.builder';
 import { DropdownValue } from '../decorators/base/dropdown-value.interface';
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 
@@ -18,7 +19,7 @@ export abstract class DateUtilities {
     /**
      * The default filter function to user when none was provided by the user.
      */
-    static defaultDateFilter: DateFilterFn<Date | null | undefined> = () => true;
+    static defaultDateFilter: DateFilterFn<Date | null | undefined> = defaultTrue;
 
     /**
      * Gets the given value as a date value.

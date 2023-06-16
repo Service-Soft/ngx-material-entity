@@ -1,7 +1,6 @@
 /**
  * Public API Surface of ngx-material-entity.
  */
-import 'reflect-metadata';
 
 // classes
 export * from './classes/entity.model';

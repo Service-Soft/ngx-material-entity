@@ -21,7 +21,10 @@
         </mat-tab-group>
     
         <div *ngIf="entityTabs.length <= 1">
-            <div class="row" *ngFor="let row of entityTabs[0].rows">
+            <span class="no-entity-tabs" *ngIf="!entityTabs.length">
+                ERROR: No Inputs. Did you correctly assign all values in the model constructor?
+            </span>
+            <div class="row" *ngFor="let row of entityTabs[0]?.rows">
                 <ngx-mat-entity-input
                     *ngFor="let key of row.keys"
                     [entity]="data.entity"

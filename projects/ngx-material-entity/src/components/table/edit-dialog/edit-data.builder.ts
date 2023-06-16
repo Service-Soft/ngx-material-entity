@@ -1,8 +1,35 @@
-import { BaseBuilder } from '../../../classes/base.builder';
+import { BaseBuilder, defaultFalse, defaultTrue } from '../../../classes/base.builder';
 import { BaseEntityType } from '../../../classes/entity.model';
 import { ConfirmDialogData } from '../../confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
-import { EditData } from '../table-data';
+import { EditAction, EditData } from '../table-data';
+
+/**
+ * The internal edit action.
+ * Sets default values.
+ */
+export class EditActionInternal<EntityType extends BaseEntityType<EntityType>> implements EditAction<EntityType> {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    displayName: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    action: (e: EntityType) => unknown;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    enabled: ((e: EntityType) => boolean);
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    requireConfirmDialog: ((e: EntityType) => boolean);
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    confirmDialogData: ConfirmDialogData;
+
+    constructor(data: EditAction<EntityType>) {
+        this.displayName = data.displayName;
+        this.action = data.action;
+        this.enabled = data.enabled ?? defaultTrue;
+        this.requireConfirmDialog = data.requireConfirmDialog ?? defaultFalse;
+        this.confirmDialogData = new ConfirmDialogDataBuilder(data.confirmDialogData)
+            .withDefault('text', ['Do you really want to run this action?'])
+            .getResult();
+    }
+}
 
 /**
  * The internal EditData. Requires all default values the user can leave out.
@@ -24,6 +51,10 @@ export class EditDataInternal<EntityType extends BaseEntityType<EntityType>> imp
     confirmDeleteDialogData: ConfirmDialogData;
     // eslint-disable-next-line jsdoc/require-jsdoc
     confirmEditDialogData: ConfirmDialogData;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    actionsLabel: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    actions: EditActionInternal<EntityType>[];
 
     constructor(
         title: (entity: EntityType) => string,
@@ -33,7 +64,9 @@ export class EditDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         deleteRequiresConfirmDialog: boolean,
         editRequiresConfirmDialog: boolean,
         confirmDeleteDialogData: ConfirmDialogData,
-        confirmEditDialogData: ConfirmDialogData
+        confirmEditDialogData: ConfirmDialogData,
+        actionsLabel: string,
+        actions: EditAction<EntityType>[]
     ) {
         this.title = title;
         this.confirmButtonLabel = confirmButtonLabel;
@@ -43,6 +76,8 @@ export class EditDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         this.editRequiresConfirmDialog = editRequiresConfirmDialog;
         this.confirmDeleteDialogData = confirmDeleteDialogData;
         this.confirmEditDialogData = confirmEditDialogData;
+        this.actionsLabel = actionsLabel;
+        this.actions = actions.map(a => new EditActionInternal(a));
     }
 }
 
@@ -79,7 +114,9 @@ export class EditDialogDataBuilder<EntityType extends BaseEntityType<EntityType>
             data?.deleteRequiresConfirmDialog ?? true,
             data?.editRequiresConfirmDialog ?? false,
             confirmDeleteDialogData,
-            confirmEditDialogData
+            confirmEditDialogData,
+            data?.actionsLabel ?? 'Actions',
+            data?.actions ?? []
         );
     }
 }
