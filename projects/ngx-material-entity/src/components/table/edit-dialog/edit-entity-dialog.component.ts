@@ -1,8 +1,9 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, Inject, Injector, OnInit } from '@angular/core';
+import { Component, EnvironmentInjector, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BaseEntityType } from '../../../classes/entity.model';
 import { PropertyDecoratorConfigInternal } from '../../../decorators/base/property-decorator-internal.data';
@@ -12,6 +13,7 @@ import { EntityTab, EntityUtilities } from '../../../utilities/entity.utilities'
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { NgxMatEntityInputModule } from '../../input/input.module';
+import { EditActionInternal } from './edit-data.builder';
 import { EditEntityData } from './edit-entity-data';
 import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-entity.builder';
 
@@ -34,7 +36,8 @@ import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-entity.bui
         FormsModule,
         MatButtonModule,
         MatTabsModule,
-        NgxMatEntityConfirmDialogComponent
+        NgxMatEntityConfirmDialogComponent,
+        MatMenuModule
     ]
 })
 export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
@@ -57,7 +60,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
         @Inject(MAT_DIALOG_DATA)
         private readonly inputData: EditEntityData<EntityType>,
         public dialogRef: MatDialogRef<NgxMatEntityEditDialogComponent<EntityType>>,
-        private readonly injector: Injector,
+        private readonly injector: EnvironmentInjector,
         private readonly dialog: MatDialog
     ) {}
 
@@ -159,5 +162,49 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
     cancel(): void {
         EntityUtilities.resetChangesOnEntity(this.data.entity, this.entityPriorChanges);
         this.dialogRef.close(0);
+    }
+
+    /**
+     * Runs the edit action on the entity.
+     *
+     * @param action - The action to run.
+     */
+    runEditAction(action: EditActionInternal<EntityType>): void {
+        const requireConfirmDialog: boolean = this.injector.runInContext(() => {
+            return action.requireConfirmDialog(this.entityPriorChanges);
+        });
+
+        if (!requireConfirmDialog) {
+            this.confirmRunEditAction(action);
+            return;
+        }
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+            data: action.confirmDialogData,
+            autoFocus: false,
+            restoreFocus: false
+        });
+        dialogRef.afterClosed().subscribe(res => {
+            if (res == true) {
+                this.confirmRunEditAction(action);
+            }
+        });
+    }
+
+    private confirmRunEditAction(action: EditActionInternal<EntityType>): void {
+        this.injector.runInContext(() => {
+            action.action(this.entityPriorChanges);
+        });
+    }
+
+    /**
+     * Checks if an EditAction is disabled (e.g. Because the current entry doesn't fullfil the requirements).
+     *
+     * @param action - The EditAction to check.
+     * @returns Whether or not the Action can be used.
+     */
+    editActionDisabled(action: EditActionInternal<EntityType>): boolean {
+        return this.injector.runInContext(() => {
+            return !action.enabled(this.entityPriorChanges);
+        });
     }
 }

@@ -1,6 +1,6 @@
 <div *ngIf="!entityTabs && data.displayLoadingSpinner" class="container">
     <br>
-    <mat-spinner style="margin-left: auto; margin-right: auto;"></mat-spinner>
+    <mat-spinner></mat-spinner>
     <br>
 </div>
 
@@ -11,19 +11,30 @@
     <!-- Header -->
     <!------------>
     <div class="header">
-        <div>
+        <div class="save-cancel-container">
             <button type="button" [class.unsavedChanges]="hasUnsavedChanges" mat-raised-button (click)="navigateBack()" class="back-button" tabindex="-1">
                 <i class="fas fa-chevron-left"></i>
                 {{data.editData.cancelButtonLabel}}
-                <i class="fas fa-warning" style="color: orange;" *ngIf="hasUnsavedChanges"></i>
+                <i class="fas fa-warning" *ngIf="hasUnsavedChanges"></i>
             </button>
-            <button (click)="edit()" mat-raised-button [disabled]="isEntityReadOnly || !isEntityValid || !isEntityDirty">
+            <button type="button" class="save-button" (click)="edit()" mat-raised-button [disabled]="isEntityReadOnly || !isEntityValid || !isEntityDirty">
                 {{data.editData.confirmButtonLabel}}
             </button>
         </div>
-        <button type="button" *ngIf="data.allowDelete(entity)" mat-raised-button (click)="delete()" color="warn" class="delete-button" tabindex="-1">
-            {{data.editData.deleteButtonLabel}}
-        </button>
+        <div class="actions-container">
+            <button *ngIf="data.editData.actions.length" type="button" [matMenuTriggerFor]="menu" mat-raised-button>
+                {{data.editData.actionsLabel}}
+            </button>
+            <mat-menu #menu="matMenu">
+                <button type="button" *ngFor="let action of data.editData.actions" [disabled]="editActionDisabled(action)" (click)="runEditAction(action)" mat-menu-item>
+                    {{action.displayName}}
+                </button>
+            </mat-menu>
+        
+            <button type="button" *ngIf="data.allowDelete(entity)" mat-raised-button (click)="delete()" color="warn" class="delete-button" tabindex="-1">
+                {{data.editData.deleteButtonLabel}}
+            </button>
+        </div>
     </div>
 
     <h1>{{data.editData.title(entityPriorChanges)}}</h1>
@@ -50,7 +61,10 @@
         </mat-tab-group>
     
         <div *ngIf="entityTabs.length <= 1">
-            <div class="row" *ngFor="let row of entityTabs[0].rows">
+            <span class="no-entity-tabs" *ngIf="!entityTabs.length">
+                ERROR: No Inputs. Did you correctly assign all values in the model constructor?
+            </span>
+            <div class="row" *ngFor="let row of entityTabs[0]?.rows">
                 <ngx-mat-entity-input
                     *ngFor="let key of row.keys"
                     [entity]="entity"

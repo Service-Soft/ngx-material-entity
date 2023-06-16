@@ -7,12 +7,12 @@
     </mat-form-field>
     <div
         *ngIf="data.baseData.tableActions.length"
-        [class.col-lg-2]="data.baseData.allowCreate()"
-        [class.col-lg-4]="!data.baseData.allowCreate()"
-        [class.col-md-3]="data.baseData.allowCreate()"
-        [class.col-md-6]="!data.baseData.allowCreate()"
-        [class.col-sm-6]="data.baseData.allowCreate()"
-        [class.col-sm-12]="!data.baseData.allowCreate()"
+        [class.col-lg-2]="allowCreate"
+        [class.col-lg-4]="!allowCreate"
+        [class.col-md-3]="allowCreate"
+        [class.col-md-6]="!allowCreate"
+        [class.col-sm-6]="allowCreate"
+        [class.col-sm-12]="!allowCreate"
     >
         <button type="button" class="actions-button" [matMenuTriggerFor]="menu" mat-raised-button>
             {{data.baseData.tableActionsLabel}}
@@ -28,7 +28,7 @@
     </mat-menu>
 
     <div
-        *ngIf="data.baseData.allowCreate()"
+        *ngIf="allowCreate"
         [class.col-lg-2]="data.baseData.tableActions.length"
         [class.col-lg-4]="!data.baseData.tableActions.length"
         [class.col-md-3]="data.baseData.tableActions.length"
@@ -47,10 +47,16 @@
         <!-- select Column -->
         <ng-container matColumnDef="select">
             <mat-header-cell *matHeaderCellDef>
-                <mat-checkbox (change)="$event ? SelectionUtilities.masterToggle(selection, dataSource) : null" [checked]="selection.hasValue() && SelectionUtilities.isAllSelected(selection, dataSource)" [indeterminate]="selection.hasValue() && !SelectionUtilities.isAllSelected(selection, dataSource)"> </mat-checkbox>
+                <mat-checkbox (change)="$event ? SelectionUtilities.masterToggle(selection, dataSource) : null"
+                    [checked]="selection.hasValue() && SelectionUtilities.isAllSelected(selection, dataSource)"
+                    [indeterminate]="selection.hasValue() && !SelectionUtilities.isAllSelected(selection, dataSource)">
+                </mat-checkbox>
             </mat-header-cell>
             <mat-cell class="entity" *matCellDef="let entity">
-                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(entity) : null" [checked]="selection.isSelected(entity)"> </mat-checkbox>
+                <mat-checkbox (click)="$event.stopPropagation()"
+                    (change)="$event ? selection.toggle(entity) : null"
+                    [checked]="selection.isSelected(entity)">
+                </mat-checkbox>
             </mat-cell>
         </ng-container>
 
@@ -58,7 +64,10 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>
                 {{dCol.displayName}}
             </mat-header-cell>
-            <mat-cell class="entity" [class.enabled]="!dCol.disableClick && (data.baseData.allowUpdate(entity) || data.baseData.allowRead(entity))" (click)="editEntity(entity, dCol)" *matCellDef="let entity">
+            <mat-cell class="entity" [class.enabled]="!dCol.disableClick && (data.baseData.allowUpdate(entity) || data.baseData.allowRead(entity))"
+                (click)="editEntity(entity, dCol)"
+                *matCellDef="let entity"
+            >
                 <ng-container *ngIf="dCol.Component">
                     <display-column-value [entity]="entity" [ComponentClass]="dCol.Component"></display-column-value>
                 </ng-container>
@@ -72,7 +81,7 @@
         <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     </mat-table>
 
-    <mat-spinner *ngIf="isLoading && data.baseData.displayLoadingSpinner" style="margin-left: auto; margin-right: auto; margin-top: 10px; margin-bottom: 10px;">
+    <mat-spinner *ngIf="isLoading && data.baseData.displayLoadingSpinner">
     </mat-spinner>
 
     <mat-paginator [length]="dataSource.filteredData.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>

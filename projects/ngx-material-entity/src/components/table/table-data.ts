@@ -231,6 +231,36 @@ export interface CreateDialogData {
 }
 
 /**
+ * An action that can be run from inside the edit dialog or page.
+ */
+export interface EditAction<EntityType extends BaseEntityType<EntityType>> {
+    /**
+     * The name of the action.
+     */
+    displayName: string,
+    /**
+     * The action itself.
+     */
+    action: (e: EntityType) => unknown,
+    /**
+     * A method that defines whether or not the action can be used.
+     *
+     * @default () => true
+     */
+    enabled?: (e: EntityType) => boolean,
+    /**
+     * A method that defines whether or not a confirm dialog is needed to run the action.
+     *
+     * @default false
+     */
+    requireConfirmDialog?: (e: EntityType) => boolean,
+    /**
+     * The data used to generate a confirmation dialog for the action.
+     */
+    confirmDialogData?: ConfirmDialogData
+}
+
+/**
  * The data of the default edit-dialog or page.
  */
 export interface EditData<EntityType extends BaseEntityType<EntityType>> {
@@ -258,16 +288,22 @@ export interface EditData<EntityType extends BaseEntityType<EntityType>> {
      * Whether or not the editing of an entry should require a confirm dialog.
      */
     editRequiresConfirmDialog?: boolean,
-
     /**
      * The data used to generate a confirmation dialog for the delete action.
      */
     confirmDeleteDialogData?: ConfirmDialogData,
-
     /**
      * The data used to generate a confirmation dialog for the edit action.
      */
-    confirmEditDialogData?: ConfirmDialogData
+    confirmEditDialogData?: ConfirmDialogData,
+    /**
+     * The label of the actions button.
+     */
+    actionsLabel?: string,
+    /**
+     * All actions of the edit page/dialog.
+     */
+    actions?: EditAction<EntityType>[]
 }
 
 /**

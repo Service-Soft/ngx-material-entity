@@ -466,7 +466,7 @@
                 <mat-row *matRowDef="let row; columns: displayedHasManyColumns"></mat-row>
             </mat-table>
 
-            <mat-spinner *ngIf="hasManyIsLoading && metadataHasMany.tableData.baseData.displayLoadingSpinner" style="margin-left: auto; margin-right: auto; margin-top: 10px; margin-bottom: 10px;">
+            <mat-spinner *ngIf="hasManyIsLoading && metadataHasMany.tableData.baseData.displayLoadingSpinner">
             </mat-spinner>
 
             <mat-paginator [length]="hasManyDataSource.filteredData.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>

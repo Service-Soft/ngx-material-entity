@@ -28,7 +28,7 @@ export class PageEditDataBuilder<EntityType extends BaseEntityType<EntityType>>
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected generateBaseData(data: PageEditData<EntityType>): PageEditDataInternal<EntityType> {
-        const editDialogData: EditDataInternal<EntityType> = new EditDialogDataBuilder(data.editData)
+        const editData: EditDataInternal<EntityType> = new EditDialogDataBuilder(data.editData)
             .withDefault('cancelButtonLabel', 'Back')
             .getResult();
         // eslint-disable-next-line max-len
@@ -40,7 +40,7 @@ export class PageEditDataBuilder<EntityType extends BaseEntityType<EntityType>>
 
         return {
             editData: {
-                ...editDialogData,
+                ...editData,
                 confirmUnsavedChangesDialogData: confirmUnsavedChangesDialogData,
                 unsavedChangesRequireConfirmDialog: data.editData?.unsavedChangesRequireConfirmDialog ?? true
             },
