@@ -27,8 +27,8 @@ export class BaseTableActionInternal implements BaseTableAction {
     constructor(data: BaseTableAction) {
         this.displayName = data.displayName;
         this.action = data.action;
-        this.enabled = data.enabled ?? (() => true);
-        this.requireConfirmDialog = data.requireConfirmDialog ?? (() => false);
+        this.enabled = data.enabled ?? defaultTrue;
+        this.requireConfirmDialog = data.requireConfirmDialog ?? defaultFalse;
         this.confirmDialogData = new ConfirmDialogDataBuilder(data.confirmDialogData)
             .withDefault('text', ['Do you really want to run this action?'])
             .getResult();
@@ -56,7 +56,7 @@ export class MultiSelectActionInternal<EntityType extends BaseEntityType<EntityT
         this.displayName = data.displayName;
         this.action = data.action;
         this.enabled = data.enabled ?? ((entities: EntityType[]) => !!entities.length);
-        this.requireConfirmDialog = data.requireConfirmDialog ?? (() => false);
+        this.requireConfirmDialog = data.requireConfirmDialog ?? defaultFalse;
         this.confirmDialogData = new ConfirmDialogDataBuilder(data.confirmDialogData)
             .withDefault('text', ['Do you really want to run this action?'])
             .getResult();
@@ -191,8 +191,8 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         /* istanbul ignore next */
         const data: Omit<BaseTableActionInternal, 'action'> = {
             ...importActionData,
-            enabled: importActionData.enabled ?? (() => true),
-            requireConfirmDialog: () => false,
+            enabled: importActionData.enabled ?? defaultTrue,
+            requireConfirmDialog: defaultFalse,
             confirmDialogData: new ConfirmDialogDataBuilder(importActionData.confirmDialogData).getResult(),
             type: 'default'
         };
@@ -255,6 +255,13 @@ export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
             throw new Error(
                 `Missing required Input data "EntityClass".
                 You can only omit this value if you can neither create, read, update or delete entities.`
+            );
+        }
+        if (data.editData && data.baseData.defaultEdit == 'page') {
+            throw new Error(
+                `The configured edit data can't be used, as the entity gets edited on its own page.
+                You need to provide values for the "NGX_EDIT_DATA", "NGX_EDIT_DATA_ENTITY" and "NGX_EDIT_DATA_ENTITY_SERVICE" injection keys
+                on the route where the edit page is used.`
             );
         }
     }

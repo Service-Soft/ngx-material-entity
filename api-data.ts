@@ -1,6 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { DateFilterFn } from '@angular/material/datepicker';
-import 'reflect-metadata';
 import { TestEntityWithoutCustomPropertiesInterface } from './projects/ngx-material-entity/src/mocks/test-entity.interface';
 
 function getDatesBetween(

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable jsdoc/require-jsdoc */
 import { formatDate, formatNumber } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -237,7 +238,13 @@ export class SandboxComponent {
             title: 'Create Person'
         },
         editData: {
-            title: (entity: Person) => `${entity.firstName} ${entity.lastName}`
+            title: (entity: Person) => `${entity.firstName} ${entity.lastName}`,
+            actions: [
+                {
+                    displayName: 'Log firstName',
+                    action: (e: Person) => console.log(e.firstName)
+                }
+            ]
         }
     };
 }

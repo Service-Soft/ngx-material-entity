@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 
 /**
  * Encapsulates all functionality of Reflect.

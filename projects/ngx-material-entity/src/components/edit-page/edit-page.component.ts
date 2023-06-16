@@ -1,7 +1,8 @@
 import { Location, NgFor, NgIf } from '@angular/common';
-import { Component, EnvironmentProviders, HostListener, Inject, InjectionToken, OnInit, Provider, Type } from '@angular/core';
+import { Component, EnvironmentInjector, EnvironmentProviders, HostListener, Inject, InjectionToken, OnInit, Provider, Type } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, DefaultExport, Route } from '@angular/router';
@@ -15,6 +16,7 @@ import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { NgxMatEntityInputModule } from '../input/input.module';
+import { EditActionInternal } from '../table/edit-dialog/edit-data.builder';
 import { EditEntityData } from '../table/edit-dialog/edit-entity-data';
 import { EditData } from '../table/table-data';
 import { PageEditDataBuilder, PageEditDataInternal } from './page-edit-data.builder';
@@ -67,10 +69,19 @@ export type PageEditData<EntityType extends BaseEntityType<EntityType>> = Omit<E
     }
 };
 
+/**
+ * The entity service that needs to be provided in the providers array of the edit page route.
+ */
 // eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
 export const NGX_EDIT_DATA_ENTITY_SERVICE: InjectionToken<EntityService<any>> = new InjectionToken<EntityService<any>>('NGX_EDIT_DATA_ENTITY_SERVICE');
+/**
+ * The entity class that needs to be provided in the providers array of the edit page route.
+ */
 // eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
 export const NGX_EDIT_DATA_ENTITY: InjectionToken<EntityClassNewable<any>> = new InjectionToken<EntityClassNewable<any>>('NGX_EDIT_DATA_ENTITY');
+/**
+ * The configuration that needs to be provided in the providers array of the edit page route.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const NGX_EDIT_DATA: InjectionToken<PageEditData<any>> = new InjectionToken<PageEditData<any>>('NGX_EDIT_DATA');
 
@@ -89,7 +100,8 @@ export const NGX_EDIT_DATA: InjectionToken<PageEditData<any>> = new InjectionTok
         MatButtonModule,
         MatTabsModule,
         NgxMatEntityInputModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        MatMenuModule
     ]
 })
 export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
@@ -119,6 +131,7 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
         private readonly dialog: MatDialog,
         private readonly location: Location,
         private readonly route: ActivatedRoute,
+        private readonly injector: EnvironmentInjector,
         @Inject(NGX_EDIT_DATA_ENTITY_SERVICE)
         readonly entityService: EntityService<EntityType>,
         @Inject(NGX_EDIT_DATA_ENTITY)
@@ -279,5 +292,49 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
         this.inConfirmNavigation = true;
         EntityUtilities.resetChangesOnEntity(this.entity, this.entityPriorChanges);
         this.location.back();
+    }
+
+    /**
+     * Runs the edit action on the entity.
+     *
+     * @param action - The action to run.
+     */
+    runEditAction(action: EditActionInternal<EntityType>): void {
+        const requireConfirmDialog: boolean = this.injector.runInContext(() => {
+            return action.requireConfirmDialog(this.entityPriorChanges);
+        });
+
+        if (!requireConfirmDialog) {
+            this.confirmRunEditAction(action);
+            return;
+        }
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+            data: action.confirmDialogData,
+            autoFocus: false,
+            restoreFocus: false
+        });
+        dialogRef.afterClosed().subscribe(res => {
+            if (res == true) {
+                this.confirmRunEditAction(action);
+            }
+        });
+    }
+
+    private confirmRunEditAction(action: EditActionInternal<EntityType>): void {
+        this.injector.runInContext(() => {
+            action.action(this.entityPriorChanges);
+        });
+    }
+
+    /**
+     * Checks if an EditAction is disabled (e.g. Because the current entry doesn't fullfil the requirements).
+     *
+     * @param action - The EditAction to check.
+     * @returns Whether or not the Action can be used.
+     */
+    editActionDisabled(action: EditActionInternal<EntityType>): boolean {
+        return this.injector.runInContext(() => {
+            return !action.enabled(this.entityPriorChanges);
+        });
     }
 }

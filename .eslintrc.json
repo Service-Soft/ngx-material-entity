@@ -138,7 +138,8 @@
             ],
             "rules": {
                 // TODO enable and fix code
-                "@angular-eslint/template/cyclomatic-complexity": "off"
+                "@angular-eslint/template/cyclomatic-complexity": "off",
+                "@angular-eslint/template/no-call-expression": "off"
             }
         }
     ]

@@ -13,6 +13,12 @@
     }
 }
 
+.no-entity-tabs {
+    padding: 10px;
+    background-color: red;
+    color: whitesmoke;
+}
+
 ::ng-deep {
     .mdc-dialog .mdc-dialog__content {
         padding-bottom: 6px !important;

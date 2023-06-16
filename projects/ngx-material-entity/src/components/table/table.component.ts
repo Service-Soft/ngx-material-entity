@@ -68,6 +68,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     data!: TableDataInternal<EntityType>;
 
     isLoading: boolean = true;
+    allowCreate!: boolean;
 
     private entityService!: EntityService<EntityType>;
     private readonly onDestroy: Subject<void> = new Subject<void>();
@@ -93,6 +94,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
      */
     ngOnInit(): void {
         this.data = new TableDataBuilder(this.tableData).getResult();
+        this.allowCreate = this.data.baseData.allowCreate();
 
         this.importAction = {
             ...this.data.baseData.importActionData,

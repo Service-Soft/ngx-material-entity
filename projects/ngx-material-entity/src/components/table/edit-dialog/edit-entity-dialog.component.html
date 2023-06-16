@@ -1,8 +1,20 @@
 <div class="mat-dialog-title">
     <div>{{data.editData.title(entityPriorChanges)}}</div>
-    <button type="button" *ngIf="data.allowDelete(data.entity)" mat-raised-button (click)="delete()" color="warn" class="delete-button" tabindex="-1">
-        {{data.editData.deleteButtonLabel}}
-    </button>
+
+    <div class="actions-container">
+        <button *ngIf="data.editData.actions.length" type="button" [matMenuTriggerFor]="menu" mat-raised-button>
+            {{data.editData.actionsLabel}}
+        </button>
+        <mat-menu #menu="matMenu">
+            <button type="button" *ngFor="let action of data.editData.actions" [disabled]="editActionDisabled(action)" (click)="runEditAction(action)" mat-menu-item>
+                {{action.displayName}}
+            </button>
+        </mat-menu>
+    
+        <button type="button" *ngIf="data.allowDelete(data.entity)" mat-raised-button (click)="delete()" color="warn" class="delete-button" tabindex="-1">
+            {{data.editData.deleteButtonLabel}}
+        </button>
+    </div>
 </div>
 
 <form>
@@ -25,6 +37,9 @@
         </mat-tab-group>
     
         <div *ngIf="entityTabs.length <= 1">
+            <span class="no-entity-tabs" *ngIf="!entityTabs.length">
+                ERROR: No Inputs. Did you correctly assign all values in the model constructor?
+            </span>
             <div class="row" *ngFor="let row of entityTabs[0].rows">
                 <ngx-mat-entity-input
                     *ngFor="let key of row.keys"
