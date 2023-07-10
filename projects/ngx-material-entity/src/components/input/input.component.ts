@@ -181,8 +181,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * @returns Whether or not the input is read only.
      */
     isPropertyReadOnly(property: EntityType, key: keyof EntityType): boolean {
-        const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(property, key);
-        return this.internalIsReadOnly || metadata.isReadOnly(property);
+        return this.injector.runInContext(() => {
+            const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(property, key);
+            return this.internalIsReadOnly || metadata.isReadOnly(property);
+        });
     }
 
     /**
