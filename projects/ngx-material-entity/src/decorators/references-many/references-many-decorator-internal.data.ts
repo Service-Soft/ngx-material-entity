@@ -50,7 +50,7 @@ export class ReferencesManyDecoratorConfigInternal<EntityType extends BaseEntity
  * @param allReferencedEntities - All referenced entities.
  * @returns The entity that has the given id.
  */
-function defaultGetEntityForId<EntityType extends BaseEntityType<EntityType>>(
+export function defaultGetEntityForId<EntityType extends BaseEntityType<EntityType>>(
     entityId: string,
     allReferencedEntities: EntityType[]
 ): EntityType {

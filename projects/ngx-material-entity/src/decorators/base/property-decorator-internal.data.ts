@@ -44,8 +44,8 @@ class PositionInternal implements Position {
  * The internal PropertyDecoratorConfig. Sets default values.
  */
 export abstract class PropertyDecoratorConfigInternal implements PropertyDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    display: boolean;
+    // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-explicit-any
+    display: (entity: any) => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayName: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -62,21 +62,18 @@ export abstract class PropertyDecoratorConfigInternal implements PropertyDecorat
     isReadOnly: (entity: any) => boolean;
 
     constructor(data: PropertyDecoratorConfig) {
-        this.display = data.display ?? true;
+        this.display = this.booleanToFunction(data.display ?? true);
         this.displayName = data.displayName;
         this.required = data.required ?? true;
         this.omitForCreate = data.omitForCreate ?? false;
         this.omitForUpdate = data.omitForUpdate ?? false;
         this.defaultWidths = data.defaultWidths ?? [6, 6, 12];
         this.position = new PositionInternal(data.position);
-        this.isReadOnly = this.isReadOnlyToFunction(data.isReadOnly);
+        this.isReadOnly = this.booleanToFunction(data.isReadOnly ?? false);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private isReadOnlyToFunction(value?: boolean | ((entity: any) => boolean)): (entity: any) => boolean {
-        if (value == null) {
-            return defaultFalse;
-        }
+    private booleanToFunction(value: boolean | ((entity: any) => boolean)): (entity: any) => boolean {
         if (typeof value == 'boolean') {
             if (value) {
                 return defaultTrue;

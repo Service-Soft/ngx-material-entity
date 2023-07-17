@@ -12,7 +12,8 @@ export abstract class PropertyDecoratorConfig {
      *
      * @default true
      */
-    display?: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    display?: boolean | ((entity: any) => boolean);
     /**
      * The name of the property used as a label for form fields.
      */

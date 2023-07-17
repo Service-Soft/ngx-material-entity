@@ -1,5 +1,5 @@
 import { Route, Routes } from '@angular/router';
-import { EditDataRoute, NGX_EDIT_DATA, NGX_EDIT_DATA_ENTITY, NGX_EDIT_DATA_ENTITY_SERVICE, PageEditData, UnsavedChangesGuard, defaultEditDataRoute } from 'ngx-material-entity';
+import { EditDataRoute, NGX_EDIT_DATA, NGX_EDIT_DATA_ENTITY, NGX_EDIT_DATA_ENTITY_SERVICE, PageEditData, defaultEditDataRoute } from 'ngx-material-entity';
 import { NavElementTypes, NavUtilities, NavbarRow } from 'ngx-material-navigation';
 import { TestEntity } from '../../../ngx-material-entity/src/mocks/test-entity.mock';
 import { TestEntityService } from '../services/test-entity.service';
@@ -153,8 +153,7 @@ const editTestEntityRoute: EditDataRoute = {
             provide: NGX_EDIT_DATA,
             useValue: editTestEntityData
         }
-    ],
-    canDeactivate: [UnsavedChangesGuard]
+    ]
 };
 
 export const routes: Routes = NavUtilities.getAngularRoutes(navbarRows, [], [inputRoute, editTestEntityRoute]);

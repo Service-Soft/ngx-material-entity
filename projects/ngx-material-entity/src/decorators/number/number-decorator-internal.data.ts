@@ -1,6 +1,6 @@
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
-import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig, SliderNumberDecoratorConfig } from './number-decorator.data';
+import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig, NumberDropdownValues, SliderNumberDecoratorConfig } from './number-decorator.data';
 
 /**
  * The internal DefaultNumberDecoratorConfig. Sets default values.
@@ -27,13 +27,22 @@ export class DefaultNumberDecoratorConfigInternal extends PropertyDecoratorConfi
 export class DropdownNumberDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DropdownNumberDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown';
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    dropdownValues: DropdownValue<number | undefined>[];
+    // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-explicit-any
+    dropdownValues: ((entity: any) => Promise<DropdownValue<number | undefined>[]>);
 
     constructor(data: DropdownNumberDecoratorConfig) {
         super(data);
         this.displayStyle = data.displayStyle;
-        this.dropdownValues = data.dropdownValues;
+        this.dropdownValues = this.dropdownValuesToFunction(data.dropdownValues);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private dropdownValuesToFunction(dropdownValues: NumberDropdownValues): (entity: any) => Promise<DropdownValue<number | undefined>[]> {
+        if (Array.isArray(dropdownValues)) {
+            return async () => dropdownValues;
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return async (e: any) => await dropdownValues(e);
     }
 }
 

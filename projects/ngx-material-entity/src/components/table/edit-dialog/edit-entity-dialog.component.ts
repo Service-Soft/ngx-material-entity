@@ -55,6 +55,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
     isEntityDirty: boolean = false;
 
     isEntityReadOnly!: boolean;
+    allowDelete!: boolean;
 
     constructor(
         @Inject(MAT_DIALOG_DATA)
@@ -67,7 +68,10 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
     ngOnInit(): void {
         this.data = new EditEntityDataBuilder(this.inputData).getResult();
         this.entityPriorChanges = LodashUtilities.cloneDeep(this.data.entity);
-        this.isEntityReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
+        this.injector.runInContext(() => {
+            this.isEntityReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
+            this.allowDelete = this.data.allowDelete(this.entityPriorChanges);
+        });
         this.dialogRef.disableClose = true;
         this.entityTabs = EntityUtilities.getEntityTabs(this.data.entity, false, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
