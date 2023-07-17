@@ -10,9 +10,11 @@ import { firstValueFrom } from 'rxjs';
 import { BaseEntityType } from '../../classes/entity.model';
 import { EditArrayItemDialogDataInternal, EntityArrayDecoratorConfigInternal } from '../../decorators/array/array-decorator-internal.data';
 import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
+import { DropdownValue } from '../../decorators/base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
 import { HasManyDecoratorConfigInternal } from '../../decorators/has-many/has-many-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../../decorators/object/object-decorator-internal.data';
+import { ReferencesOneDecoratorConfigInternal } from '../../decorators/references-one/references-one-decorator-internal.data';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../../encapsulation/reflect.utilities';
 import { EntityService } from '../../services/entity.service';
@@ -155,9 +157,17 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     hasManyEntityPriorChanges!: EntityType;
     isHasManyEntityValid: boolean = false;
     isHasManyEntityDirty: boolean = false;
+    hasManyAllowCreate!: boolean;
     hasManyCreateTabs!: EntityTab<EntityType>[];
     hasManyUpdateTabs!: EntityTab<EntityType>[];
-    private createBaseUrl!: string;
+    private hasManyCreateBaseUrl!: string;
+
+    metadataReferencesOne!: ReferencesOneDecoratorConfigInternal<EntityType>;
+    referencesOneInput!: string;
+    referencesOneObject!: EntityType;
+    referencesOnePropertyTabs!: EntityTab<EntityType>[];
+    referencesOneAllReferencedEntities!: EntityType[];
+    referencesOneDropdownValues!: DropdownValue<string>[];
 
     readonly DecoratorTypes: typeof DecoratorTypes = DecoratorTypes;
 
@@ -182,8 +192,11 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     isPropertyReadOnly(property: EntityType, key: keyof EntityType): boolean {
         return this.injector.runInContext(() => {
+            if (this.internalIsReadOnly || this.metadataDefaultObject.isReadOnly(property)) {
+                return true;
+            }
             const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(property, key);
-            return this.internalIsReadOnly || metadata.isReadOnly(property);
+            return metadata.isReadOnly(property);
         });
     }
 
@@ -245,9 +258,24 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             case DecoratorTypes.HAS_MANY:
                 this.initHasMany();
                 break;
+            case DecoratorTypes.REFERENCES_ONE:
+                this.initReferencesOne();
+                break;
             default:
                 break;
         }
+    }
+
+    private initReferencesOne(): void {
+        this.metadataReferencesOne = this.metadata as ReferencesOneDecoratorConfigInternal<EntityType>;
+
+        void this.injector.runInContext(async () => {
+            this.referencesOneAllReferencedEntities = await this.metadataReferencesOne.getReferencedEntities();
+            // eslint-disable-next-line max-len
+            this.referencesOneDropdownValues = this.metadataReferencesOne.getDropdownValues(LodashUtilities.cloneDeep(this.referencesOneAllReferencedEntities));
+            this.referencesOneInput = this.internalEntity[this.internalPropertyKey] as string;
+            this.setReferencesOneObject();
+        });
     }
 
     private initHasMany(): void {
@@ -258,8 +286,9 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         };
 
         this.injector.runInContext(() => {
+            this.hasManyAllowCreate = this.metadataHasMany.tableData.baseData.allowCreate();
             this.hasManyEntityService = inject<EntityService<EntityType>>(this.metadataHasMany.tableData.baseData.EntityServiceClass);
-            this.createBaseUrl = this.metadataHasMany.createBaseUrl(this.internalEntity, this.metadataHasMany);
+            this.hasManyCreateBaseUrl = this.metadataHasMany.createBaseUrl(this.internalEntity, this.metadataHasMany);
         });
 
         const givenDisplayColumns: string[] = this.metadataHasMany.tableData.baseData.displayColumns.map((v) => v.displayName);
@@ -373,13 +402,23 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     }
 
     /**
+     * Sets the references one object using the input id.
+     */
+    setReferencesOneObject(): void {
+        // eslint-disable-next-line max-len
+        const foundEntity: EntityType | undefined = this.metadataReferencesOne.getEntityForId(this.referencesOneInput, this.referencesOneAllReferencedEntities);
+        this.referencesOneObject = new this.metadataReferencesOne.EntityClass(foundEntity);
+        this.referencesOnePropertyTabs = EntityUtilities.getEntityTabs(this.referencesOneObject);
+    }
+
+    /**
      * Edits an entity. This either calls the edit-Method provided by the user or uses a default edit-dialog.
      *
      * @param entity - The entity that should be updated.
      * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
      */
     editHasManyEntity(entity: EntityType): void {
-        if (!(this.metadataHasMany.tableData.baseData.allowUpdate(entity) || this.metadataHasMany.tableData.baseData.allowRead(entity))) {
+        if (!(this.hasManyAllowUpdate(entity) || this.hasManyAllowRead(entity))) {
             return;
         }
         if (!this.metadataHasMany.tableData.baseData.EntityClass) {
@@ -394,6 +433,42 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             return;
         }
         void this.editHasManyDefaultDialog(new this.metadataHasMany.tableData.baseData.EntityClass(entity));
+    }
+
+    /**
+     * Whether updating the provided entity from the has many property is allowed.
+     *
+     * @param entity - A single value of the has many property that the user wants to edit.
+     * @returns True when the user can edit the provided entity and false otherwise.
+     */
+    hasManyAllowUpdate(entity: EntityType): boolean {
+        return this.injector.runInContext(() => {
+            return this.metadataHasMany.tableData.baseData.allowUpdate(entity);
+        });
+    }
+
+    /**
+     * Whether viewing the provided entity from the has many property is allowed.
+     *
+     * @param entity - A single value of the has many property that the user wants to view.
+     * @returns True when the user can view the provided entity and false otherwise.
+     */
+    hasManyAllowRead(entity: EntityType): boolean {
+        return this.injector.runInContext(() => {
+            return this.metadataHasMany.tableData.baseData.allowRead(entity);
+        });
+    }
+
+    /**
+     * Whether deleting the provided entity from the has many property is allowed.
+     *
+     * @param entity - A single value of the has many property that the user wants to delete.
+     * @returns True when the user can delete the provided entity and false otherwise.
+     */
+    hasManyAllowDelete(entity: EntityType): boolean {
+        return this.injector.runInContext(() => {
+            return this.metadataHasMany.tableData.baseData.allowDelete(entity);
+        });
     }
 
     private editHasManyDefaultPage(entity: EntityType): void {
@@ -503,17 +578,19 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
      */
     createHasManyEntity(): void {
-        if (this.metadataHasMany.tableData.baseData.allowCreate()) {
-            if (!this.metadataHasMany.tableData.baseData.EntityClass) {
-                throw new Error('No "EntityClass" specified for this table');
+        this.injector.runInContext(() => {
+            if (this.metadataHasMany.tableData.baseData.allowCreate()) {
+                if (!this.metadataHasMany.tableData.baseData.EntityClass) {
+                    throw new Error('No "EntityClass" specified for this table');
+                }
+                if (this.metadataHasMany.tableData.baseData.create) {
+                    this.metadataHasMany.tableData.baseData.create(new this.metadataHasMany.tableData.baseData.EntityClass());
+                }
+                else {
+                    this.createHasManyDefault(new this.metadataHasMany.tableData.baseData.EntityClass());
+                }
             }
-            if (this.metadataHasMany.tableData.baseData.create) {
-                this.metadataHasMany.tableData.baseData.create(new this.metadataHasMany.tableData.baseData.EntityClass());
-            }
-            else {
-                this.createHasManyDefault(new this.metadataHasMany.tableData.baseData.EntityClass());
-            }
-        }
+        });
     }
 
     private createHasManyDefault(entity: EntityType): void {
@@ -559,7 +636,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         });
     }
     private dialogConfirmCreateHasMany(): void {
-        void this.hasManyEntityService.create(this.hasManyEntity, this.createBaseUrl).then(() => {
+        void this.hasManyEntityService.create(this.hasManyEntity, this.hasManyCreateBaseUrl).then(() => {
             this.createHasManyDialogRef.close();
         });
     }

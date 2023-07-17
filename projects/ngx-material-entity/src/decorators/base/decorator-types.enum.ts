@@ -1,4 +1,4 @@
-import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, DateArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal, DateTimeArrayDecoratorConfigInternal, DateRangeArrayDecoratorConfigInternal } from '../array/array-decorator-internal.data';
+import { AutocompleteStringChipsArrayDecoratorConfigInternal, DateArrayDecoratorConfigInternal, DateRangeArrayDecoratorConfigInternal, DateTimeArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal } from '../array/array-decorator-internal.data';
 import { CheckboxBooleanDecoratorConfigInternal, DropdownBooleanDecoratorConfigInternal, ToggleBooleanDecoratorConfigInternal } from '../boolean/boolean-decorator-internal.data';
 import { CustomDecoratorConfigInternal } from '../custom/custom-decorator-internal.data';
 import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from '../date/date-decorator-internal.data';
@@ -7,6 +7,7 @@ import { HasManyDecoratorConfigInternal } from '../has-many/has-many-decorator-i
 import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal, SliderNumberDecoratorConfigInternal } from '../number/number-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../object/object-decorator-internal.data';
 import { ReferencesManyDecoratorConfigInternal } from '../references-many/references-many-decorator-internal.data';
+import { ReferencesOneDecoratorConfigInternal } from '../references-one/references-one-decorator-internal.data';
 import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal, PasswordStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../string/string-decorator-internal.data';
 
 /**
@@ -37,6 +38,7 @@ export enum DecoratorTypes {
     FILE_DEFAULT = 'fileDefault',
     FILE_IMAGE = 'fileImage',
     REFERENCES_MANY = 'referencesMany',
+    REFERENCES_ONE = 'referencesOne',
     HAS_MANY = 'hasMany',
     CUSTOM = 'custom'
 }
@@ -72,6 +74,8 @@ export type DecoratorType<T, CustomMetadataType extends Record<string, unknown>>
     : T extends DecoratorTypes.FILE_IMAGE ? ImageFileDecoratorConfigInternal
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     : T extends DecoratorTypes.REFERENCES_MANY ? ReferencesManyDecoratorConfigInternal<any>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    : T extends DecoratorTypes.REFERENCES_ONE ? ReferencesOneDecoratorConfigInternal<any>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     : T extends DecoratorTypes.HAS_MANY ? HasManyDecoratorConfigInternal<any, any>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

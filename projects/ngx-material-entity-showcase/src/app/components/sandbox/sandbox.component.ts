@@ -3,7 +3,7 @@
 import { formatDate, formatNumber } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Injectable, inject } from '@angular/core';
-import { DecoratorTypes, DropdownValue, Entity, EntityService, EntityUtilities, TableData, array, boolean, date, hasMany, number, object, referencesMany, string } from 'ngx-material-entity';
+import { DecoratorTypes, DropdownValue, Entity, EntityService, EntityUtilities, TableData, array, boolean, date, hasMany, number, object, referencesMany, referencesOne, string } from 'ngx-material-entity';
 import { environment } from '../../../environments/environment';
 import { PdfDownloadDisplayValueComponent } from '../pdf-download-display-value/pdf-download-display-value.component';
 
@@ -137,6 +137,14 @@ export class Person extends Entity {
         ]
     })
     addressIds!: string[];
+
+    @referencesOne({
+        displayName: 'Single Address',
+        getReferencedEntities: getReferencedEntities,
+        getDropdownValues: getDropdownValues,
+        EntityClass: Address
+    })
+    addressId!: string;
 
     @array({
         displayName: 'Time Trackings',

@@ -1,11 +1,10 @@
 import { expect } from '@jest/globals';
 import { firstValueFrom, of } from 'rxjs';
-import { BaseEntityType } from '../../classes/entity.model';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { string } from '../string/string.decorator';
-import { ReferencesManyDecoratorConfigInternal } from './references-many-decorator-internal.data';
+import { ReferencesManyDecoratorConfigInternal, defaultGetEntityForId } from './references-many-decorator-internal.data';
 import { referencesMany } from './references-many.decorator';
 
 class Address {
@@ -112,7 +111,7 @@ test('should have references many Metadata', () => {
     expect(metadata.defaultWidths).toEqual([12, 12, 12]);
     expect(metadata.addButtonLabel).toEqual('Add');
     expect(metadata.dropdownLabel).toEqual('Select');
-    expect(JSON.stringify(metadata.getEntityForId)).toEqual(JSON.stringify(defaultGetEntityForId));
+    expect(metadata.getEntityForId).toEqual(defaultGetEntityForId);
     expect(metadata.removeButtonLabel).toEqual('Remove');
 });
 
@@ -143,10 +142,3 @@ test('should return correct values for default getEntityForId method', async () 
     const entityForId: Address = metadata.getEntityForId('1', referencedEntities);
     expect(entityForId).toEqual({ id: '1', street: 'Example Street', number: '42', postcode: '12345', city: 'Example City' });
 });
-
-function defaultGetEntityForId<EntityType extends BaseEntityType<EntityType>>(
-    entityId: string,
-    allReferencedEntities: EntityType[]
-): EntityType {
-    return allReferencedEntities.find(e => e['id' as keyof EntityType] === entityId) as EntityType;
-}

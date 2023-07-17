@@ -305,6 +305,62 @@
     </div>
 
     <!-------------------------------------------->
+    <!-------------- references one ------------->
+    <!-------------------------------------------->
+    <div *ngSwitchCase="DecoratorTypes.REFERENCES_ONE">
+        <mat-form-field>
+            <mat-label>{{metadata.displayName}}</mat-label>
+            <mat-select [(ngModel)]="referencesOneInput"
+                [name]="internalPropertyKey.toString() + 'input'"
+                #inputModel="ngModel"
+                [disabled]="internalIsReadOnly"
+                [required]="metadata.required"
+                (ngModelChange)="setReferencesOneObject()"
+            >
+                <mat-option *ngIf="!metadata.required">-</mat-option>
+                <mat-option *ngFor="let value of referencesOneDropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
+            </mat-select>
+            <mat-error>{{internalGetValidationErrorMessage(inputModel)}}</mat-error>
+        </mat-form-field>
+        <!-- iterates over the references one properties -->
+        <mat-tab-group *ngIf="referencesOnePropertyTabs.length > 1" preserveContent>
+            <mat-tab *ngFor="let tab of referencesOnePropertyTabs; let tI = index; trackBy: trackByFn" [label]="tab.tabName">
+                <div class="row" *ngFor="let row of tab.rows;">
+                    <ngx-mat-entity-input *ngFor="let key of row.keys; let rI = index; trackBy: trackByFn"
+                        [entity]="referencesOneObject"
+                        [propertyKey]="key"
+                        [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                        [hideOmitForCreate]="hideOmitForCreate"
+                        [hideOmitForEdit]="hideOmitForEdit"
+                        [validEmpty]="!metadata.required"
+                        [isReadOnly]="true"
+                        class="col-lg-{{EntityUtilities.getWidth(referencesOneObject, key, 'lg')}} col-md-{{EntityUtilities.getWidth(referencesOneObject, key, 'md')}} col-sm-{{EntityUtilities.getWidth(referencesOneObject, key, 'sm')}}"
+                        (inputChangeEvent)="emitChange()"
+                    >
+                    </ngx-mat-entity-input>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+
+        <div *ngIf="referencesOnePropertyTabs.length <= 1">
+            <div class="row" *ngFor="let row of referencesOnePropertyTabs[0].rows">
+                <ngx-mat-entity-input *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
+                    [entity]="referencesOneObject"
+                    [propertyKey]="key"
+                    [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                    [hideOmitForCreate]="hideOmitForCreate"
+                    [hideOmitForEdit]="hideOmitForEdit"
+                    [validEmpty]="!metadata.required"
+                    [isReadOnly]="true"
+                    class="col-lg-{{EntityUtilities.getWidth(referencesOneObject, key, 'lg')}} col-md-{{EntityUtilities.getWidth(referencesOneObject, key, 'md')}} col-sm-{{EntityUtilities.getWidth(referencesOneObject, key, 'sm')}}"
+                    (inputChangeEvent)="emitChange()"
+                >
+                </ngx-mat-entity-input>
+            </div>
+        </div>
+    </div>
+
+    <!-------------------------------------------->
     <!-------------------Array-------------------->
     <!-------------------------------------------->
     <div class="entityArray" *ngSwitchCase="DecoratorTypes.ARRAY">
@@ -406,12 +462,12 @@
             </mat-form-field>
             <div
                 *ngIf="metadataHasMany.tableData.baseData.tableActions.length"
-                [class.col-lg-2]="metadataHasMany.tableData.baseData.allowCreate()"
-                [class.col-lg-4]="!metadataHasMany.tableData.baseData.allowCreate()"
-                [class.col-md-3]="metadataHasMany.tableData.baseData.allowCreate()"
-                [class.col-md-6]="!metadataHasMany.tableData.baseData.allowCreate()"
-                [class.col-sm-6]="metadataHasMany.tableData.baseData.allowCreate()"
-                [class.col-sm-12]="!metadataHasMany.tableData.baseData.allowCreate()"
+                [class.col-lg-2]="hasManyAllowCreate"
+                [class.col-lg-4]="!hasManyAllowCreate"
+                [class.col-md-3]="hasManyAllowCreate"
+                [class.col-md-6]="!hasManyAllowCreate"
+                [class.col-sm-6]="hasManyAllowCreate"
+                [class.col-sm-12]="!hasManyAllowCreate"
             >
                 <button type="button" class="actions-button" [matMenuTriggerFor]="menu" mat-raised-button>
                     {{metadataHasMany.tableData.baseData.tableActionsLabel}}
@@ -427,7 +483,7 @@
             </mat-menu>
 
             <div
-                *ngIf="metadataHasMany.tableData.baseData.allowCreate()"
+                *ngIf="hasManyAllowCreate"
                 [class.col-lg-2]="metadataHasMany.tableData.baseData.tableActions.length"
                 [class.col-lg-4]="!metadataHasMany.tableData.baseData.tableActions.length"
                 [class.col-md-3]="metadataHasMany.tableData.baseData.tableActions.length"
@@ -457,7 +513,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
                         {{dCol.displayName}}
                     </mat-header-cell>
-                    <mat-cell class="entity" [class.enabled]="metadataHasMany.tableData.baseData.allowUpdate(entity) || metadataHasMany.tableData.baseData.allowRead(entity)" (click)="editHasManyEntity(entity)" *matCellDef="let entity">
+                    <mat-cell class="entity" [class.enabled]="hasManyAllowUpdate(entity) || hasManyAllowRead(entity)" (click)="editHasManyEntity(entity)" *matCellDef="let entity">
                         {{getDisplayColumnValue(entity, dCol)}}
                     </mat-cell>
                 </ng-container>
@@ -683,7 +739,7 @@
 <ng-template #editHasManyDialog>
     <div class="mat-dialog-title">
         <div>{{metadataHasMany.tableData.editData.title(hasManyEntityPriorChanges)}}</div>
-        <button type="button" *ngIf="metadataHasMany.tableData.baseData.allowDelete(hasManyEntity)" mat-raised-button (click)="deleteHasManyEntity()" color="warn" class="delete-button" tabindex="-1">
+        <button type="button" *ngIf="hasManyAllowDelete(hasManyEntity)" mat-raised-button (click)="deleteHasManyEntity()" color="warn" class="delete-button" tabindex="-1">
             {{metadataHasMany.tableData.editData.deleteButtonLabel}}
         </button>
     </div>

@@ -11,7 +11,7 @@
             </button>
         </mat-menu>
     
-        <button type="button" *ngIf="data.allowDelete(data.entity)" mat-raised-button (click)="delete()" color="warn" class="delete-button" tabindex="-1">
+        <button type="button" *ngIf="allowDelete" mat-raised-button (click)="delete()" color="warn" class="delete-button" tabindex="-1">
             {{data.editData.deleteButtonLabel}}
         </button>
     </div>

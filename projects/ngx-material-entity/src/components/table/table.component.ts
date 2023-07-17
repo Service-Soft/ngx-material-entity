@@ -94,7 +94,9 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
      */
     ngOnInit(): void {
         this.data = new TableDataBuilder(this.tableData).getResult();
-        this.allowCreate = this.data.baseData.allowCreate();
+        this.injector.runInContext(() => {
+            this.allowCreate = this.data.baseData.allowCreate();
+        });
 
         this.importAction = {
             ...this.data.baseData.importActionData,
@@ -191,7 +193,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         if (dCol.disableClick == true) {
             return;
         }
-        if (!(this.data.baseData.allowUpdate(entity) || this.data.baseData.allowRead(entity))) {
+        if (!(this.allowUpdate(entity) || this.allowRead(entity))) {
             return;
         }
         if (!this.data.baseData.EntityClass) {
@@ -206,6 +208,30 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
             return;
         }
         void this.editDefaultDialog(new this.data.baseData.EntityClass(entity));
+    }
+
+    /**
+     * Whether updating the provided entity is allowed.
+     *
+     * @param entity - The entity that the user wants to edit.
+     * @returns True when the user can edit the provided entity and false otherwise.
+     */
+    allowUpdate(entity: EntityType): boolean {
+        return this.injector.runInContext(() => {
+            return this.data.baseData.allowUpdate(entity);
+        });
+    }
+
+    /**
+     * Whether viewing the provided entity is allowed.
+     *
+     * @param entity - The entity that the user wants to view.
+     * @returns True when the user can view the provided entity and false otherwise.
+     */
+    allowRead(entity: EntityType): boolean {
+        return this.injector.runInContext(() => {
+            return this.data.baseData.allowRead(entity);
+        });
     }
 
     private editDefaultPage(entity: EntityType): void {
@@ -243,17 +269,19 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
      * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
      */
     createEntity(): void {
-        if (this.data.baseData.allowCreate()) {
-            if (!this.data.baseData.EntityClass) {
-                throw new Error('No "EntityClass" specified for this table');
+        this.injector.runInContext(() => {
+            if (this.data.baseData.allowCreate()) {
+                if (!this.data.baseData.EntityClass) {
+                    throw new Error('No "EntityClass" specified for this table');
+                }
+                if (this.data.baseData.create) {
+                    this.data.baseData.create(new this.data.baseData.EntityClass());
+                }
+                else {
+                    this.createDefault(new this.data.baseData.EntityClass());
+                }
             }
-            if (this.data.baseData.create) {
-                this.data.baseData.create(new this.data.baseData.EntityClass());
-            }
-            else {
-                this.createDefault(new this.data.baseData.EntityClass());
-            }
-        }
+        });
     }
 
     private createDefault(entity: EntityType): void {
