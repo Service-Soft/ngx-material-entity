@@ -25,6 +25,16 @@ class TestEntity extends Entity {
     nameDropdown!: string;
 
     @string({
+        displayStyle: 'dropdown',
+        displayName: 'Name',
+        dropdownValues: () => [
+            { displayName: 'John Smith', value: 'johnSmith' },
+            { displayName: 'Jane Smith', value: 'janeSmith' }
+        ]
+    })
+    nameDropdownWithFunction!: string;
+
+    @string({
         displayStyle: 'autocomplete',
         displayName: 'Name',
         autocompleteValues: ['Mr.', 'Ms.']
@@ -39,7 +49,8 @@ class TestEntity extends Entity {
 const testEntityData: TestEntity = {
     id: '1',
     name: 'John Smith',
-    nameDropdown: 'johnSmith',
+    nameDropdown: 'John Smith',
+    nameDropdownWithFunction: 'John Smith',
     nameAutocomplete: 'Mr.'
 };
 const testEntity: TestEntity = new TestEntity(testEntityData);
@@ -51,7 +62,7 @@ test('name should have string Metadata', () => {
     expect(metadata.minLength).toBe(5);
     expect(metadata.maxLength).toBe(100);
 });
-test('nameDropdown should have stringDropdown Metadata', () => {
+test('nameDropdown should have stringDropdown Metadata', async () => {
     const metadata: DropdownStringDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(
         testEntity,
         'nameDropdown',
@@ -59,7 +70,19 @@ test('nameDropdown should have stringDropdown Metadata', () => {
     );
     expect(metadata).toBeDefined();
     expect(metadata.displayStyle).toBe('dropdown');
-    expect(metadata.dropdownValues).toEqual([
+    expect(await metadata.dropdownValues(testEntity)).toEqual([
+        { displayName: 'John Smith', value: 'johnSmith' },
+        { displayName: 'Jane Smith', value: 'janeSmith' }
+    ]);
+
+    const metadata2: DropdownStringDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(
+        testEntity,
+        'nameDropdownWithFunction',
+        DecoratorTypes.STRING_DROPDOWN
+    );
+    expect(metadata2).toBeDefined();
+    expect(metadata2.displayStyle).toBe('dropdown');
+    expect(await metadata2.dropdownValues(testEntity)).toEqual([
         { displayName: 'John Smith', value: 'johnSmith' },
         { displayName: 'Jane Smith', value: 'janeSmith' }
     ]);

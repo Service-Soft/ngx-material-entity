@@ -1,6 +1,14 @@
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type StringDropdownValues =
+    DropdownValue<string | undefined>[]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    | ((entity: any) => DropdownValue<string | undefined>[])
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    | ((entity: any) => Promise<DropdownValue<string | undefined>[]>)
+
 /**
  * Definition for the @string metadata.
  */
@@ -21,7 +29,7 @@ export interface DropdownStringDecoratorConfig extends StringDecoratorConfig {
      * The values of the dropdown, consisting of a name to display and the actual value
      * Can also receive a function to determine the values.
      */
-    dropdownValues: DropdownValue<string | undefined>[]
+    dropdownValues: StringDropdownValues
 }
 
 /**

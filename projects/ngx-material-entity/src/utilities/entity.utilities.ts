@@ -94,7 +94,7 @@ export abstract class EntityUtilities {
      */
     static getOmitForUpdate<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
-        for (const key of EntityUtilities.keysOf(entity)) {
+        for (const key of ReflectUtilities.ownKeys(entity)) {
             const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(entity, key);
             if (metadata.omitForUpdate) {
                 res.push(key);
@@ -111,7 +111,7 @@ export abstract class EntityUtilities {
      */
     static getOmitForCreate<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
-        for (const key of EntityUtilities.keysOf(entity)) {
+        for (const key of ReflectUtilities.ownKeys(entity)) {
             const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(entity, key);
             if (metadata.omitForCreate) {
                 res.push(key);
@@ -177,7 +177,7 @@ export abstract class EntityUtilities {
         omit?: 'create' | 'update'
     ): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
-        for (const key of EntityUtilities.keysOf(entity)) {
+        for (const key of ReflectUtilities.ownKeys(entity)) {
             const type: DecoratorTypes = EntityUtilities.getPropertyType(entity, key);
             if (type === DecoratorTypes.FILE_DEFAULT || type === DecoratorTypes.FILE_IMAGE) {
                 const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(entity, key);
@@ -1039,14 +1039,14 @@ export abstract class EntityUtilities {
     }
 
     private static getTabName<EntityType extends BaseEntityType<EntityType>>(entity: EntityType, tab: number): string {
-        const providedTabName: string | undefined = EntityUtilities.keysOf(entity)
+        const providedTabName: string | undefined = ReflectUtilities.ownKeys(entity)
             .map(k => EntityUtilities.getPropertyMetadata(entity, k))
             .find(m => m.position.tab === tab && m.position.tabName)?.position.tabName;
         return providedTabName ?? `Tab ${tab}`;
     }
 
     private static getFirstTabName<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): string {
-        const providedTabName: string | undefined = EntityUtilities.keysOf(entity)
+        const providedTabName: string | undefined = ReflectUtilities.ownKeys(entity)
             .map(k => EntityUtilities.getPropertyMetadata(entity, k))
             .find(m => m.position.tabName && m.position.tab === -1)?.position.tabName;
         return providedTabName ?? 'Tab 1';
@@ -1066,6 +1066,8 @@ export abstract class EntityUtilities {
         hideOmitForEdit: boolean = false
     ): (keyof EntityType)[] {
         let keys: (keyof EntityType)[] = ReflectUtilities.ownKeys(entity);
+        const dontDisplayKeys: (keyof EntityType)[] = EntityUtilities.getDontDisplayKeys(entity);
+        keys = keys.filter(k => !dontDisplayKeys.includes(k));
         if (hideOmitForCreate) {
             const omitForCreateKeys: (keyof EntityType)[] = EntityUtilities.getOmitForCreate(entity);
             keys = keys.filter(k => !omitForCreateKeys.includes(k));
@@ -1075,6 +1077,17 @@ export abstract class EntityUtilities {
             keys = keys.filter(k => !omitForUpdateKeys.includes(k));
         }
         return keys;
+    }
+
+    private static getDontDisplayKeys<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): (keyof EntityType)[] {
+        const res: (keyof EntityType)[] = [];
+        for (const key of ReflectUtilities.ownKeys(entity)) {
+            const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(entity, key);
+            if (!metadata.display(entity)) {
+                res.push(key);
+            }
+        }
+        return res;
     }
 }
 

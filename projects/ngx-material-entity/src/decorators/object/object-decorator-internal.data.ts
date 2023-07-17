@@ -20,5 +20,6 @@ export class DefaultObjectDecoratorConfigInternal<EntityType extends BaseEntityT
         this.displayStyle = data.displayStyle;
         this.EntityClass = data.EntityClass;
         this.omit = data.omit ?? [];
+        this.defaultWidths = data.defaultWidths ?? [12, 12, 12];
     }
 }

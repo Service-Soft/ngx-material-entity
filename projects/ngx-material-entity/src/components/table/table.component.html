@@ -64,7 +64,7 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>
                 {{dCol.displayName}}
             </mat-header-cell>
-            <mat-cell class="entity" [class.enabled]="!dCol.disableClick && (data.baseData.allowUpdate(entity) || data.baseData.allowRead(entity))"
+            <mat-cell class="entity" [class.enabled]="!dCol.disableClick && (allowUpdate(entity) || allowRead(entity))"
                 (click)="editEntity(entity, dCol)"
                 *matCellDef="let entity"
             >

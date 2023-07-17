@@ -11,7 +11,7 @@ describe('baseProperty', () => {
         // eslint-disable-next-line max-len
         const metadata: DefaultStringDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(new TestEntityWithoutCustomPropertiesMockBuilder().testEntity, 'id', DecoratorTypes.STRING);
         expect(metadata).toBeDefined();
-        expect(metadata.display).toBe(false);
+        expect(metadata.display(null)).toBe(false);
         expect(metadata.displayName).toBe('ID');
         expect(metadata.omitForCreate).toBe(true);
         expect(metadata.omitForUpdate).toBe(true);

@@ -7,6 +7,7 @@ export * from './classes/entity.model';
 // components
 export * from './components/confirm-dialog/confirm-dialog-data';
 export * from './components/confirm-dialog/confirm-dialog.component';
+export * from './components/edit-page/edit-data.route';
 export * from './components/edit-page/edit-page.component';
 export * from './components/get-validation-error-message.function';
 export * from './components/input/base-input.component';
@@ -42,6 +43,8 @@ export * from './decorators/object/object-decorator.data';
 export * from './decorators/object/object.decorator';
 export * from './decorators/references-many/references-many-decorator.data';
 export * from './decorators/references-many/references-many.decorator';
+export * from './decorators/references-one/references-one-decorator.data';
+export * from './decorators/references-one/references-one.decorator';
 export * from './decorators/string/string-decorator.data';
 export * from './decorators/string/string.decorator';
 // services

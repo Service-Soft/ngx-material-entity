@@ -1,6 +1,6 @@
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
-import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, DropdownStringDecoratorConfig, PasswordStringDecoratorConfig, TextboxStringDecoratorConfig } from './string-decorator.data';
+import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, DropdownStringDecoratorConfig, PasswordStringDecoratorConfig, StringDropdownValues, TextboxStringDecoratorConfig } from './string-decorator.data';
 
 /**
  * The internal DropdownStringDecoratorConfig. Sets default values.
@@ -8,13 +8,22 @@ import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, Dropdo
 export class DropdownStringDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DropdownStringDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown';
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    dropdownValues: DropdownValue<string | undefined>[];
+    // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-explicit-any
+    dropdownValues: ((entity: any) => Promise<DropdownValue<string | undefined>[]>);
 
     constructor(data: DropdownStringDecoratorConfig) {
         super(data);
         this.displayStyle = data.displayStyle;
-        this.dropdownValues = data.dropdownValues;
+        this.dropdownValues = this.dropdownValuesToFunction(data.dropdownValues);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private dropdownValuesToFunction(dropdownValues: StringDropdownValues): (entity: any) => Promise<DropdownValue<string | undefined>[]> {
+        if (Array.isArray(dropdownValues)) {
+            return async () => dropdownValues;
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return async (e: any) => await dropdownValues(e);
     }
 }
 

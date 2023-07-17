@@ -1,6 +1,14 @@
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type NumberDropdownValues =
+    DropdownValue<number | undefined>[]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    | ((entity: any) => DropdownValue<number | undefined>[])
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    | ((entity: any) => Promise<DropdownValue<number | undefined>[]>)
+
 /**
  * Definition for the @number metadata.
  */
@@ -36,7 +44,7 @@ export interface DropdownNumberDecoratorConfig extends NumberDecoratorConfig {
     /**
      * The values of the dropdown, consisting of a name to display and the actual value.
      */
-    dropdownValues: DropdownValue<number | undefined>[]
+    dropdownValues: NumberDropdownValues
 }
 
 /**

@@ -1,11 +1,11 @@
 import { Location, NgFor, NgIf } from '@angular/common';
-import { Component, EnvironmentInjector, EnvironmentProviders, HostListener, Inject, InjectionToken, OnInit, Provider, Type } from '@angular/core';
+import { Component, EnvironmentInjector, HostListener, Inject, InjectionToken, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ActivatedRoute, DefaultExport, Route } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, first, map } from 'rxjs';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
@@ -20,26 +20,6 @@ import { EditActionInternal } from '../table/edit-dialog/edit-data.builder';
 import { EditEntityData } from '../table/edit-dialog/edit-entity-data';
 import { EditData } from '../table/table-data';
 import { PageEditDataBuilder, PageEditDataInternal } from './page-edit-data.builder';
-
-/**
- * The definition for a route to use with the "NgxMatEntityEditPageComponent".
- */
-export interface EditDataRoute extends Route {
-    // eslint-disable-next-line max-len, jsdoc/require-jsdoc
-    loadComponent: () => Type<unknown> | Observable<Type<unknown> | DefaultExport<Type<unknown>>> | Promise<Type<unknown> | DefaultExport<Type<unknown>>>,
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    providers: (Provider | EnvironmentProviders)[],
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    title: string,
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    path: string
-}
-
-export const defaultEditDataRoute: Omit<EditDataRoute, 'providers'> = {
-    loadComponent: () => NgxMatEntityEditPageComponent,
-    title: 'Edit',
-    path: 'entities:id'
-};
 
 /**
  * The data that needs to be provided for a route to be able to edit a entity.
@@ -119,6 +99,7 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
     isEntityDirty: boolean = false;
 
     isEntityReadOnly!: boolean;
+    allowDelete!: boolean;
 
     private inConfirmNavigation: boolean = false;
 
@@ -171,7 +152,10 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
         this.entity = new this.EntityClass(foundEntity);
         this.entityPriorChanges = LodashUtilities.cloneDeep(this.entity);
 
-        this.isEntityReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
+        this.injector.runInContext(() => {
+            this.isEntityReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
+            this.allowDelete = this.data.allowDelete(this.entityPriorChanges);
+        });
         this.entityTabs = EntityUtilities.getEntityTabs(this.entity, false, true);
     }
 
