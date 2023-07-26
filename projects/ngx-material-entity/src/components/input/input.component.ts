@@ -239,12 +239,11 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.internalIsReadOnly = this.isReadOnly ?? false;
 
         this.type = EntityUtilities.getPropertyType(this.internalEntity, this.internalPropertyKey);
-        if (this.validEmpty != null) {
+        if (this.validEmpty === true) {
             // eslint-disable-next-line max-len
-            const currentMetadata: object = ReflectUtilities.getMetadata('metadata', this.internalEntity, this.internalPropertyKey) as object;
+            const currentMetadata: PropertyDecoratorConfigInternal = ReflectUtilities.getMetadata('metadata', this.internalEntity, this.internalPropertyKey) as PropertyDecoratorConfigInternal;
             // eslint-disable-next-line max-len
-            ReflectUtilities.defineMetadata('metadata', { ...currentMetadata, required: !this.validEmpty }, this.internalEntity, this.internalPropertyKey);
-            ReflectUtilities.defineMetadata('validEmpty', true, this.internalEntity, this.internalPropertyKey);
+            ReflectUtilities.defineMetadata('metadata', { ...currentMetadata, required: false }, this.internalEntity, this.internalPropertyKey);
         }
         this.metadata = EntityUtilities.getPropertyMetadata(this.internalEntity, this.internalPropertyKey, this.type);
 
