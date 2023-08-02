@@ -663,17 +663,19 @@ export abstract class EntityUtilities {
         const res: Difference<EntityType>[] = [];
         for (const key of ReflectUtilities.ownKeys(entity)) {
             const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(entity, key);
-            const type: DecoratorTypes = EntityUtilities.getPropertyType(entity, key);
-            if (!(await EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type))) {
-                res.push({
-                    key: key,
-                    before: entityPriorChanges[key],
-                    after: entity[key]
-                });
-            }
-            else {
-                // This is needed to set blob file data so that it is only requested once.
-                entityPriorChanges[key] = LodashUtilities.cloneDeep(entity[key]);
+            if (!metadata.isReadOnly(entity)) {
+                const type: DecoratorTypes = EntityUtilities.getPropertyType(entity, key);
+                if (!(await EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type))) {
+                    res.push({
+                        key: key,
+                        before: entityPriorChanges[key],
+                        after: entity[key]
+                    });
+                }
+                else {
+                    // This is needed to set blob file data so that it is only requested once.
+                    entityPriorChanges[key] = LodashUtilities.cloneDeep(entity[key]);
+                }
             }
         }
         return res;
