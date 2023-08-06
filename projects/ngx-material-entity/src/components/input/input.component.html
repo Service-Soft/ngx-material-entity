@@ -276,7 +276,7 @@
                         [getValidationErrorMessage]="internalGetValidationErrorMessage"
                         [hideOmitForCreate]="hideOmitForCreate"
                         [hideOmitForEdit]="hideOmitForEdit"
-                        [validEmpty]="!metadata.required"
+                        [validEmpty]="!metadata.required(entity)"
                         [isReadOnly]="isPropertyReadOnly(objectProperty, key)"
                         class="col-lg-{{EntityUtilities.getWidth(objectProperty, key, 'lg')}} col-md-{{EntityUtilities.getWidth(objectProperty, key, 'md')}} col-sm-{{EntityUtilities.getWidth(objectProperty, key, 'sm')}}"
                         (inputChangeEvent)="emitChange()"
@@ -294,7 +294,7 @@
                     [getValidationErrorMessage]="internalGetValidationErrorMessage"
                     [hideOmitForCreate]="hideOmitForCreate"
                     [hideOmitForEdit]="hideOmitForEdit"
-                    [validEmpty]="!metadata.required"
+                    [validEmpty]="!metadata.required(entity)"
                     [isReadOnly]="isPropertyReadOnly(objectProperty, key)"
                     class="col-lg-{{EntityUtilities.getWidth(objectProperty, key, 'lg')}} col-md-{{EntityUtilities.getWidth(objectProperty, key, 'md')}} col-sm-{{EntityUtilities.getWidth(objectProperty, key, 'sm')}}"
                     (inputChangeEvent)="emitChange()"
@@ -310,20 +310,20 @@
     <div *ngSwitchCase="DecoratorTypes.REFERENCES_ONE">
         <mat-form-field>
             <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-select [(ngModel)]="referencesOneInput"
+            <mat-select [(ngModel)]="internalEntity[internalPropertyKey]"
                 [name]="internalPropertyKey.toString() + 'input'"
                 #inputModel="ngModel"
                 [disabled]="internalIsReadOnly"
-                [required]="metadata.required"
+                [required]="metadata.required(entity)"
                 (ngModelChange)="setReferencesOneObject()"
             >
-                <mat-option *ngIf="!metadata.required">-</mat-option>
+                <mat-option *ngIf="!metadata.required(entity)">-</mat-option>
                 <mat-option *ngFor="let value of referencesOneDropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
             </mat-select>
             <mat-error>{{internalGetValidationErrorMessage(inputModel)}}</mat-error>
         </mat-form-field>
         <!-- iterates over the references one properties -->
-        <mat-tab-group *ngIf="referencesOnePropertyTabs.length > 1" preserveContent>
+        <mat-tab-group *ngIf="referencesOnePropertyTabs && referencesOnePropertyTabs.length > 1" preserveContent>
             <mat-tab *ngFor="let tab of referencesOnePropertyTabs; let tI = index; trackBy: trackByFn" [label]="tab.tabName">
                 <div class="row" *ngFor="let row of tab.rows;">
                     <ngx-mat-entity-input *ngFor="let key of row.keys; let rI = index; trackBy: trackByFn"
@@ -332,7 +332,7 @@
                         [getValidationErrorMessage]="internalGetValidationErrorMessage"
                         [hideOmitForCreate]="hideOmitForCreate"
                         [hideOmitForEdit]="hideOmitForEdit"
-                        [validEmpty]="!metadata.required"
+                        [validEmpty]="!metadata.required(entity)"
                         [isReadOnly]="true"
                         class="col-lg-{{EntityUtilities.getWidth(referencesOneObject, key, 'lg')}} col-md-{{EntityUtilities.getWidth(referencesOneObject, key, 'md')}} col-sm-{{EntityUtilities.getWidth(referencesOneObject, key, 'sm')}}"
                         (inputChangeEvent)="emitChange()"
@@ -342,7 +342,7 @@
             </mat-tab>
         </mat-tab-group>
 
-        <div *ngIf="referencesOnePropertyTabs.length <= 1">
+        <div *ngIf="referencesOnePropertyTabs && referencesOnePropertyTabs.length <= 1">
             <div class="row" *ngFor="let row of referencesOnePropertyTabs[0].rows">
                 <ngx-mat-entity-input *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
                     [entity]="referencesOneObject"
@@ -350,7 +350,7 @@
                     [getValidationErrorMessage]="internalGetValidationErrorMessage"
                     [hideOmitForCreate]="hideOmitForCreate"
                     [hideOmitForEdit]="hideOmitForEdit"
-                    [validEmpty]="!metadata.required"
+                    [validEmpty]="!metadata.required(entity)"
                     [isReadOnly]="true"
                     class="col-lg-{{EntityUtilities.getWidth(referencesOneObject, key, 'lg')}} col-md-{{EntityUtilities.getWidth(referencesOneObject, key, 'md')}} col-sm-{{EntityUtilities.getWidth(referencesOneObject, key, 'sm')}}"
                     (inputChangeEvent)="emitChange()"

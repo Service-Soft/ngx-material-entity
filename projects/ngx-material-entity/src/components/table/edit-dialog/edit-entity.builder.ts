@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { BaseBuilder, defaultTrue } from '../../../classes/base.builder';
+import { BaseBuilder } from '../../../classes/base.builder';
 import { BaseEntityType } from '../../../classes/entity.model';
+import { defaultTrue } from '../../../functions/default-true.function';
 import { EntityService } from '../../../services/entity.service';
 import { EditDataInternal, EditDialogDataBuilder } from './edit-data.builder';
 import { EditEntityData } from './edit-entity-data';

@@ -1,5 +1,6 @@
-import { BaseBuilder, defaultTrue } from '../../classes/base.builder';
+import { BaseBuilder } from '../../classes/base.builder';
 import { BaseEntityType } from '../../classes/entity.model';
+import { defaultTrue } from '../../functions/default-true.function';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { EditDataInternal, EditDialogDataBuilder } from '../table/edit-dialog/edit-data.builder';
 import { EditEntityDataInternal } from '../table/edit-dialog/edit-entity.builder';

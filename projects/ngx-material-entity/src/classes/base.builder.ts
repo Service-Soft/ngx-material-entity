@@ -1,8 +1,5 @@
 import { BaseEntityType } from './entity.model';
 
-export const defaultTrue: () => boolean = () => true;
-export const defaultFalse: () => boolean = () => false;
-
 /**
  * The abstract BaseBuilder class.
  */

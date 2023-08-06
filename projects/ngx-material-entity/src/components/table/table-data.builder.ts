@@ -1,6 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { BaseBuilder, defaultFalse, defaultTrue } from '../../classes/base.builder';
+import { BaseBuilder } from '../../classes/base.builder';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
+import { defaultFalse } from '../../functions/default-false.function';
+import { defaultTrue } from '../../functions/default-true.function';
+import { isAsyncFunction } from '../../functions/is-async-function.function';
 import { EntityService } from '../../services/entity.service';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from './create-dialog/create-dialog-data.builder';
@@ -16,7 +19,7 @@ export class BaseTableActionInternal implements BaseTableAction {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayName: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    action: () => unknown;
+    action: () => Promise<unknown>;
     // eslint-disable-next-line jsdoc/require-jsdoc
     enabled: (() => boolean);
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -26,12 +29,28 @@ export class BaseTableActionInternal implements BaseTableAction {
 
     constructor(data: BaseTableAction) {
         this.displayName = data.displayName;
-        this.action = data.action;
+        this.action = this.functionToAsync(data.action);
         this.enabled = data.enabled ?? defaultTrue;
         this.requireConfirmDialog = data.requireConfirmDialog ?? defaultFalse;
         this.confirmDialogData = new ConfirmDialogDataBuilder(data.confirmDialogData)
             .withDefault('text', ['Do you really want to run this action?'])
             .getResult();
+    }
+
+    private functionToAsync(originalFunction: (() => unknown) | (() => Promise<unknown>)): () => Promise<unknown> {
+        if (isAsyncFunction(originalFunction)) {
+            return originalFunction as () => Promise<unknown>;
+        }
+
+        /* istanbul ignore next */
+        return () => new Promise<unknown>((resolve, reject) => {
+            try {
+                resolve(originalFunction());
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
     }
 }
 
@@ -44,7 +63,7 @@ export class MultiSelectActionInternal<EntityType extends BaseEntityType<EntityT
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayName: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    action: (selectedEntities: EntityType[]) => unknown;
+    action: (selectedEntities: EntityType[]) => Promise<unknown>;
     // eslint-disable-next-line jsdoc/require-jsdoc
     enabled: ((selectedEntities: EntityType[]) => boolean);
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -54,12 +73,29 @@ export class MultiSelectActionInternal<EntityType extends BaseEntityType<EntityT
 
     constructor(data: MultiSelectAction<EntityType>) {
         this.displayName = data.displayName;
-        this.action = data.action;
+        this.action = this.functionToAsync(data.action);
         this.enabled = data.enabled ?? ((entities: EntityType[]) => !!entities.length);
         this.requireConfirmDialog = data.requireConfirmDialog ?? defaultFalse;
         this.confirmDialogData = new ConfirmDialogDataBuilder(data.confirmDialogData)
             .withDefault('text', ['Do you really want to run this action?'])
             .getResult();
+    }
+
+    // eslint-disable-next-line max-len
+    private functionToAsync(originalFunction: ((selectedEntities: EntityType[]) => unknown) | ((selectedEntities: EntityType[]) => Promise<unknown>)): (selectedEntities: EntityType[]) => Promise<unknown> {
+        if (isAsyncFunction(originalFunction)) {
+            return originalFunction as (selectedEntities: EntityType[]) => Promise<unknown>;
+        }
+
+        /* istanbul ignore next */
+        return (selectedEntities: EntityType[]) => new Promise<unknown>((resolve, reject) => {
+            try {
+                resolve(originalFunction(selectedEntities));
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
     }
 }
 

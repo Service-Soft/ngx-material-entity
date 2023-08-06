@@ -5,7 +5,7 @@ import { NgxMatEntityBaseInputComponent } from '../../components/input/base-inpu
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { CustomDecoratorConfig } from './custom-decorator.data';
-import { defaultTrue } from '../../classes/base.builder';
+import { defaultTrue } from '../../functions/default-true.function';
 
 /**
  * The default function to use for checking if the value is dirty.

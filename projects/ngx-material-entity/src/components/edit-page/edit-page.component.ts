@@ -307,8 +307,9 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
     }
 
     private confirmRunEditAction(action: EditActionInternal<EntityType>): void {
-        this.injector.runInContext(() => {
-            action.action(this.entityPriorChanges);
+        void this.injector.runInContext(async () => {
+            await action.action(this.entity, this.entityPriorChanges);
+            await this.checkEntity();
         });
     }
 

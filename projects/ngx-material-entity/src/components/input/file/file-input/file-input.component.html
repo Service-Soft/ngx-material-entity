@@ -9,7 +9,7 @@
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-chip-grid #chipGrid
         [(ngModel)]="filenames" name="file" #model="ngModel"
-        [required]="metadata.required"
+        [required]="metadata.required(entity)"
     >
         <mat-chip-row *ngFor="let name of filenames" (removed)="removeFile(name)">
             {{name}}
