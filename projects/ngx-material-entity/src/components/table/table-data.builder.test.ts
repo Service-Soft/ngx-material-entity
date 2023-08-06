@@ -95,12 +95,17 @@ const actionsTableData: TableData<TestEntityWithoutCustomProperties> = {
             {
                 type: 'default',
                 displayName: 'Default Action',
-                action: () => 42
+                action: async () => 42
             },
             {
                 type: 'multi-select',
                 displayName: 'Multi Select Action',
                 action: entities => entities.length
+            },
+            {
+                type: 'multi-select',
+                displayName: 'Multi Select Action Async',
+                action: async entities => entities.length
             }
         ]
     }
@@ -115,11 +120,19 @@ describe('generateBaseData', () => {
         expect(new TableDataBuilder(tableData).getResult().baseData.searchString.toString()).toBe(defaultSearchFunction.toString());
         expect(() => new TableDataBuilder(tableData).getResult().baseData.searchString(data)).not.toThrowError();
     });
-    test('should build the actions correctly', () => {
+    test('should build the actions correctly', async () => {
         const tableData: TableDataInternal<TestEntityWithoutCustomProperties> = new TableDataBuilder(actionsTableData).getResult();
-        expect(tableData.baseData.tableActions).toHaveLength(2);
+        expect(tableData.baseData.tableActions).toHaveLength(3);
         expect(tableData.baseData.tableActions[0]).toBeInstanceOf(BaseTableActionInternal);
+        const action1Res: unknown = await tableData.baseData.tableActions[0].action([]);
+        expect(action1Res).toBe(42);
         expect(tableData.baseData.tableActions[1]).toBeInstanceOf(MultiSelectActionInternal);
+        const action2Res: unknown = await tableData.baseData.tableActions[1].action([{} as TestEntityWithoutCustomProperties]);
+        expect(action2Res).toBe(1);
+        expect(tableData.baseData.tableActions[2]).toBeInstanceOf(MultiSelectActionInternal);
+        // eslint-disable-next-line max-len
+        const action3Res: unknown = await tableData.baseData.tableActions[1].action([{} as TestEntityWithoutCustomProperties, {} as TestEntityWithoutCustomProperties]);
+        expect(action3Res).toBe(2);
     });
 });
 

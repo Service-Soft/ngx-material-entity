@@ -1260,7 +1260,7 @@ export interface MultiSelectAction<EntityType extends object> {
     /**
      * The action itself.
      */
-    action: (selectedEntities: EntityType[]) => unknown,
+    action: (selectedEntities: EntityType[]) => Promise<unknown>,
     /**
      * A method that defines whether or not the action can be used.
      *

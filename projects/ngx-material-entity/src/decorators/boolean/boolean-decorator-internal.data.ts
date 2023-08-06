@@ -30,7 +30,7 @@ export class CheckboxBooleanDecoratorConfigInternal extends PropertyDecoratorCon
     constructor(data: CheckboxBooleanDecoratorConfig) {
         super(data);
         this.displayStyle = data.displayStyle;
-        this.required = data.required ?? false;
+        this.required = this.booleanToFunction(data.required ?? false);
     }
 }
 
@@ -44,6 +44,6 @@ export class ToggleBooleanDecoratorConfigInternal extends PropertyDecoratorConfi
     constructor(data: ToggleBooleanDecoratorConfig) {
         super(data);
         this.displayStyle = data.displayStyle;
-        this.required = data.required ?? false;
+        this.required = this.booleanToFunction(data.required ?? false);
     }
 }

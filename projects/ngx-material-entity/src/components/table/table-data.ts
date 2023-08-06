@@ -44,7 +44,7 @@ export interface BaseTableAction {
     /**
      * The action itself.
      */
-    action: () => unknown,
+    action: (() => unknown) | (() => Promise<unknown>),
     /**
      * A method that defines whether or not the action can be used.
      *
@@ -78,7 +78,7 @@ export interface MultiSelectAction<EntityType extends BaseEntityType<EntityType>
     /**
      * The action itself.
      */
-    action: (selectedEntities: EntityType[]) => unknown,
+    action: ((selectedEntities: EntityType[]) => unknown) | ((selectedEntities: EntityType[]) => Promise<unknown>),
     /**
      * A method that defines whether or not the action can be used.
      *
@@ -241,7 +241,8 @@ export interface EditAction<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The action itself.
      */
-    action: (e: EntityType) => unknown,
+    // eslint-disable-next-line max-len
+    action: ((entity: EntityType, entityPriorChanges: EntityType) => unknown) | ((entity: EntityType, entityPriorChanges: EntityType) => Promise<unknown>),
     /**
      * A method that defines whether or not the action can be used.
      *

@@ -1,5 +1,8 @@
-import { BaseBuilder, defaultFalse, defaultTrue } from '../../../classes/base.builder';
+import { BaseBuilder } from '../../../classes/base.builder';
 import { BaseEntityType } from '../../../classes/entity.model';
+import { defaultFalse } from '../../../functions/default-false.function';
+import { defaultTrue } from '../../../functions/default-true.function';
+import { isAsyncFunction } from '../../../functions/is-async-function.function';
 import { ConfirmDialogData } from '../../confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { EditAction, EditData } from '../table-data';
@@ -12,7 +15,7 @@ export class EditActionInternal<EntityType extends BaseEntityType<EntityType>> i
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayName: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    action: (e: EntityType) => unknown;
+    action: (entity: EntityType, entityPriorChanges: EntityType) => Promise<unknown>;
     // eslint-disable-next-line jsdoc/require-jsdoc
     enabled: ((e: EntityType) => boolean);
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -22,12 +25,29 @@ export class EditActionInternal<EntityType extends BaseEntityType<EntityType>> i
 
     constructor(data: EditAction<EntityType>) {
         this.displayName = data.displayName;
-        this.action = data.action;
+        this.action = this.functionToAsync(data.action);
         this.enabled = data.enabled ?? defaultTrue;
         this.requireConfirmDialog = data.requireConfirmDialog ?? defaultFalse;
         this.confirmDialogData = new ConfirmDialogDataBuilder(data.confirmDialogData)
             .withDefault('text', ['Do you really want to run this action?'])
             .getResult();
+    }
+
+    // eslint-disable-next-line max-len
+    private functionToAsync(originalFunction: ((e: EntityType, ePriorChanges: EntityType) => unknown) | ((e: EntityType, ePriorChanges: EntityType) => Promise<unknown>)): (e: EntityType, ePriorChanges: EntityType) => Promise<unknown> {
+        if (isAsyncFunction(originalFunction)) {
+            return originalFunction as (e: EntityType) => Promise<unknown>;
+        }
+
+        /* istanbul ignore next */
+        return (e: EntityType, ePriorChanges: EntityType) => new Promise<unknown>((resolve, reject) => {
+            try {
+                resolve(originalFunction(e, ePriorChanges));
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
     }
 }
 

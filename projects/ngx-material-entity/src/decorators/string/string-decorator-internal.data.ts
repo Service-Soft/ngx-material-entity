@@ -124,5 +124,6 @@ export class PasswordStringDecoratorConfigInternal
         this.needsConfirmation = data.needsConfirmation ?? true;
         this.confirmationDisplayName = data.confirmationDisplayName ?? 'Confirm Password';
         this.passwordsDontMatchErrorMessage = data.passwordsDontMatchErrorMessage ?? 'Passwords need to match!';
+        this.defaultWidths = data.defaultWidths ?? [12, 12, 12];
     }
 }

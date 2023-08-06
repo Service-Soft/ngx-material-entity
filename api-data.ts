@@ -218,6 +218,8 @@ interface TimeTracking {
 
 interface Person {
     id: string,
+    addressId: string,
+    addressObject: Address,
     firstName: string,
     lastName: string,
     addressIds: string[],
@@ -228,6 +230,14 @@ const personData: Person = {
     id: '1',
     firstName: 'John',
     lastName: 'Smith',
+    addressObject: {
+        id: '2',
+        city: 'Test City',
+        street: 'Test Street',
+        number: '1',
+        postcode: '12345'
+    },
+    addressId: '1',
     addressIds: ['1'],
     timeTrackings: [
         {

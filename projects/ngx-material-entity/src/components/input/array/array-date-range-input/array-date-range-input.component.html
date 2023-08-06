@@ -6,12 +6,12 @@
         <mat-form-field>
             <mat-label>{{metadata.displayName}}</mat-label>
             
-            <mat-date-range-input [rangePicker]="picker" [required]="metadata.required" [dateFilter]="metadata.filter ? metadata.filter : DateUtilities.defaultDateFilter">
+            <mat-date-range-input [rangePicker]="picker" [required]="metadata.required(entity)" [dateFilter]="metadata.filter ? metadata.filter : DateUtilities.defaultDateFilter">
                 <input matStartDate
                     [(ngModel)]="dateRangeStart"
                     [name]="key.toString() + 'start'"
                     #startModel="ngModel"
-                    [required]="metadata.required"
+                    [required]="metadata.required(entity)"
                     [min]="metadata.minStart ? metadata.minStart(input?.start) : undefined"
                     [max]="metadata.maxStart ? metadata.maxStart(input?.start) : undefined"
                     [placeholder]="metadata.placeholderStart"
@@ -20,7 +20,7 @@
                     [(ngModel)]="dateRangeEnd"
                     [name]="key.toString() + 'end'"
                     #endModel="ngModel"
-                    [required]="metadata.required"
+                    [required]="metadata.required(entity)"
                     [min]="metadata.minEnd ? metadata.minEnd(input?.end) : undefined"
                     [max]="metadata.maxEnd ? metadata.maxEnd(input?.end) : undefined"
                     [placeholder]="metadata.placeholderEnd"
