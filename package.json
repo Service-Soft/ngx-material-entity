@@ -4,7 +4,7 @@
     "scripts": {
         "start": "npm run stack",
         "stack": "run-s clear:dist stack:only",
-        "showcase": "ng serve --host 0.0.0.0 ngx-material-entity-showcase",
+        "showcase": "ng serve ngx-material-entity-showcase",
         "build:watch": "ng build ngx-material-entity --watch",
         "api": "nodemon --watch api-data.ts --watch api.ts --watch dist/ngx-material-entity/public-api.d.ts api.ts",
         "test": "jest --config projects/ngx-material-entity/jest.config.ts",

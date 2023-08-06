@@ -328,7 +328,7 @@ export abstract class EntityUtilities {
         if (metadata.omitForUpdate && omit === 'update') {
             return true;
         }
-        if (metadata.required && type !== DecoratorTypes.HAS_MANY) {
+        if (metadata.required(entity) && type !== DecoratorTypes.HAS_MANY) {
             if (entity[key] == null || entity[key] === '') {
                 return false;
             }
@@ -340,7 +340,7 @@ export abstract class EntityUtilities {
             case DecoratorTypes.BOOLEAN_TOGGLE:
                 const entityBoolean: boolean = entity[key] as boolean;
                 const booleanMetadata: ToggleBooleanDecoratorConfigInternal = metadata as ToggleBooleanDecoratorConfigInternal;
-                if (!EntityUtilities.isBooleanValid(entityBoolean, booleanMetadata)) {
+                if (!EntityUtilities.isBooleanValid(entity, entityBoolean, booleanMetadata)) {
                     return false;
                 }
                 break;
@@ -385,7 +385,7 @@ export abstract class EntityUtilities {
                     const value: unknown = entityObject[parameterKey];
                     if (
                         !(metadata as DefaultObjectDecoratorConfigInternal<EntityType>).omit.includes(parameterKey)
-                        && !(!metadata.required && (value == null || value == ''))
+                        && !(!metadata.required(entity) && (value == null || value == ''))
                     ) {
                         if (!EntityUtilities.isPropertyValid(entityObject, parameterKey, omit)) {
                             return false;
@@ -402,7 +402,7 @@ export abstract class EntityUtilities {
                 const entityArray: unknown[] = entity[key] as unknown[];
                 // eslint-disable-next-line max-len
                 const arrayMetadata: EntityArrayDecoratorConfigInternal<EntityType> = metadata as EntityArrayDecoratorConfigInternal<EntityType>;
-                if (arrayMetadata.required && !entityArray.length) {
+                if (arrayMetadata.required(entity) && !entityArray.length) {
                     return false;
                 }
                 break;
@@ -416,7 +416,7 @@ export abstract class EntityUtilities {
             case DecoratorTypes.DATE_RANGE:
                 const entityDateRange: DateRange = LodashUtilities.cloneDeep(entity[key] as DateRange);
                 const dateRangeMetadata: DateRangeDateDecoratorConfigInternal = metadata as DateRangeDateDecoratorConfigInternal;
-                if (!EntityUtilities.isDateRangeValid(entityDateRange, dateRangeMetadata)) {
+                if (!EntityUtilities.isDateRangeValid(entity, entityDateRange, dateRangeMetadata)) {
                     return false;
                 }
                 break;
@@ -437,6 +437,7 @@ export abstract class EntityUtilities {
                 }
                 break;
             case DecoratorTypes.REFERENCES_MANY:
+            case DecoratorTypes.REFERENCES_ONE:
             case DecoratorTypes.HAS_MANY:
                 break;
             case DecoratorTypes.CUSTOM:
@@ -452,8 +453,12 @@ export abstract class EntityUtilities {
         return true;
     }
 
-    private static isBooleanValid(value: boolean, metadata: ToggleBooleanDecoratorConfigInternal): boolean {
-        if (metadata.required && !value) {
+    private static isBooleanValid<EntityType extends BaseEntityType<EntityType>>(
+        entity: EntityType,
+        value: boolean,
+        metadata: ToggleBooleanDecoratorConfigInternal
+    ): boolean {
+        if (metadata.required(entity) && !value) {
             return false;
         }
         return true;
@@ -521,8 +526,12 @@ export abstract class EntityUtilities {
         return true;
     }
 
-    private static isDateRangeValid(value: DateRange, metadata: DateRangeDateDecoratorConfigInternal): boolean {
-        if (metadata.required) {
+    private static isDateRangeValid<EntityType extends BaseEntityType<EntityType>>(
+        entity: EntityType,
+        value: DateRange,
+        metadata: DateRangeDateDecoratorConfigInternal
+    ): boolean {
+        if (metadata.required(entity)) {
             if (!(value.start as Date | undefined)) {
                 return false;
             }
@@ -650,10 +659,8 @@ export abstract class EntityUtilities {
         if (!(entityPriorChanges as EntityType | undefined)) {
             return false;
         }
-        else {
-            const differences: Difference<EntityType>[] = await EntityUtilities.differencesForDirty(entity, entityPriorChanges);
-            return differences.length ? true : false;
-        }
+        const differences: Difference<EntityType>[] = await EntityUtilities.differencesForDirty(entity, entityPriorChanges);
+        return differences.length ? true : false;
     }
 
     private static async differencesForDirty<EntityType extends BaseEntityType<EntityType>>(
@@ -663,19 +670,17 @@ export abstract class EntityUtilities {
         const res: Difference<EntityType>[] = [];
         for (const key of ReflectUtilities.ownKeys(entity)) {
             const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(entity, key);
-            if (!metadata.isReadOnly(entity)) {
-                const type: DecoratorTypes = EntityUtilities.getPropertyType(entity, key);
-                if (!(await EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type))) {
-                    res.push({
-                        key: key,
-                        before: entityPriorChanges[key],
-                        after: entity[key]
-                    });
-                }
-                else {
-                    // This is needed to set blob file data so that it is only requested once.
-                    entityPriorChanges[key] = LodashUtilities.cloneDeep(entity[key]);
-                }
+            const type: DecoratorTypes = EntityUtilities.getPropertyType(entity, key);
+            if (!(await EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type))) {
+                res.push({
+                    key: key,
+                    before: entityPriorChanges[key],
+                    after: entity[key]
+                });
+            }
+            else {
+                // This is needed to set blob file data so that it is only requested once.
+                entityPriorChanges[key] = LodashUtilities.cloneDeep(entity[key]);
             }
         }
         return res;

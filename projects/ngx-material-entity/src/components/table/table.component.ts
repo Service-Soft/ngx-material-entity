@@ -98,10 +98,10 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
             this.allowCreate = this.data.baseData.allowCreate();
         });
 
-        this.importAction = {
+        this.importAction = new BaseTableActionInternal({
             ...this.data.baseData.importActionData,
             action: () => this.startImportJson()
-        };
+        });
 
         this.injector.runInContext(() => {
             this.entityService = inject<EntityService<EntityType>>(this.data.baseData.EntityServiceClass);
@@ -328,8 +328,8 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     }
 
     private confirmRunTableAction(action: TableActionInternal<EntityType>): void {
-        this.injector.runInContext(() => {
-            action.action(this.selection.selected);
+        void this.injector.runInContext(async () => {
+            await action.action(this.selection.selected);
         });
     }
 

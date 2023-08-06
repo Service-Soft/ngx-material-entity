@@ -17,6 +17,7 @@ import { DefaultObjectDecoratorConfigInternal } from '../../decorators/object/ob
 import { ReferencesOneDecoratorConfigInternal } from '../../decorators/references-one/references-one-decorator-internal.data';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../../encapsulation/reflect.utilities';
+import { defaultFalse } from '../../functions/default-false.function';
 import { EntityService } from '../../services/entity.service';
 import { DateUtilities } from '../../utilities/date.utilities';
 import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
@@ -163,7 +164,6 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     private hasManyCreateBaseUrl!: string;
 
     metadataReferencesOne!: ReferencesOneDecoratorConfigInternal<EntityType>;
-    referencesOneInput!: string;
     referencesOneObject!: EntityType;
     referencesOnePropertyTabs!: EntityTab<EntityType>[];
     referencesOneAllReferencedEntities!: EntityType[];
@@ -188,11 +188,11 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      *
      * @param property - The property on which to check the input.
      * @param key - The key for the input to check.
-     * @returns Whether or not the input is read only.
+     * @returns Whether or not the input is readonly.
      */
     isPropertyReadOnly(property: EntityType, key: keyof EntityType): boolean {
         return this.injector.runInContext(() => {
-            if (this.internalIsReadOnly || this.metadataDefaultObject.isReadOnly(property)) {
+            if (this.internalIsReadOnly || this.metadataDefaultObject?.isReadOnly(property)) {
                 return true;
             }
             const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(property, key);
@@ -243,7 +243,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             // eslint-disable-next-line max-len
             const currentMetadata: PropertyDecoratorConfigInternal = ReflectUtilities.getMetadata('metadata', this.internalEntity, this.internalPropertyKey) as PropertyDecoratorConfigInternal;
             // eslint-disable-next-line max-len
-            ReflectUtilities.defineMetadata('metadata', { ...currentMetadata, required: false }, this.internalEntity, this.internalPropertyKey);
+            ReflectUtilities.defineMetadata('metadata', { ...currentMetadata, required: defaultFalse }, this.internalEntity, this.internalPropertyKey);
         }
         this.metadata = EntityUtilities.getPropertyMetadata(this.internalEntity, this.internalPropertyKey, this.type);
 
@@ -272,17 +272,16 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             this.referencesOneAllReferencedEntities = await this.metadataReferencesOne.getReferencedEntities();
             // eslint-disable-next-line max-len
             this.referencesOneDropdownValues = this.metadataReferencesOne.getDropdownValues(LodashUtilities.cloneDeep(this.referencesOneAllReferencedEntities));
-            this.referencesOneInput = this.internalEntity[this.internalPropertyKey] as string;
             this.setReferencesOneObject();
         });
     }
 
     private initHasMany(): void {
         this.metadataHasMany = this.metadata as HasManyDecoratorConfigInternal<EntityType, EntityType>;
-        this.hasManyImportAction = {
+        this.hasManyImportAction = new BaseTableActionInternal({
             ...this.metadataHasMany.tableData.baseData.importActionData,
             action: () => this.startImportJson()
-        };
+        });
 
         this.injector.runInContext(() => {
             this.hasManyAllowCreate = this.metadataHasMany.tableData.baseData.allowCreate();
@@ -405,9 +404,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     setReferencesOneObject(): void {
         // eslint-disable-next-line max-len
-        const foundEntity: EntityType | undefined = this.metadataReferencesOne.getEntityForId(this.referencesOneInput, this.referencesOneAllReferencedEntities);
+        const foundEntity: EntityType | undefined = this.metadataReferencesOne.getEntityForId(this.internalEntity[this.internalPropertyKey] as string, this.referencesOneAllReferencedEntities);
         this.referencesOneObject = new this.metadataReferencesOne.EntityClass(foundEntity);
         this.referencesOnePropertyTabs = EntityUtilities.getEntityTabs(this.referencesOneObject);
+        this.emitChange();
     }
 
     /**
@@ -528,7 +528,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     }
     private dialogConfirmEditHasMany(): void {
         void this.hasManyEntityService.update(this.hasManyEntity, this.hasManyEntityPriorChanges)
-            .then(() => this.editHasManyDialogRef.close(1));
+            .then(() => {
+                this.editHasManyDialogRef.close(1);
+                this.emitChange();
+            });
     }
 
     /**
@@ -560,7 +563,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     }
 
     private confirmDeleteHasManyEntity(): void {
-        void this.hasManyEntityService.delete(this.hasManyEntityPriorChanges).then(() => this.editHasManyDialogRef.close(2));
+        void this.hasManyEntityService.delete(this.hasManyEntityPriorChanges).then(() => {
+            this.editHasManyDialogRef.close(2);
+            this.emitChange();
+        });
     }
 
     /**
@@ -637,6 +643,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     private dialogConfirmCreateHasMany(): void {
         void this.hasManyEntityService.create(this.hasManyEntity, this.hasManyCreateBaseUrl).then(() => {
             this.createHasManyDialogRef.close();
+            this.emitChange();
         });
     }
 
@@ -678,8 +685,9 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     }
 
     private confirmRunHasManyTableAction(action: TableActionInternal<EntityType>): void {
-        this.injector.runInContext(() => {
-            action.action(this.hasManySelection.selected);
+        void this.injector.runInContext(async () => {
+            await action.action(this.hasManySelection.selected);
+            this.emitChange();
         });
     }
 

@@ -10,6 +10,11 @@ const editDataWithActions: EditData<TestEntityWithoutCustomProperties> = {
             displayName: 'Test',
             // eslint-disable-next-line no-console
             action: () => console.log(42)
+        },
+        {
+            displayName: 'Test Async',
+            // eslint-disable-next-line no-console
+            action: async () => console.log(42)
         }
     ]
 };

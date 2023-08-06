@@ -19,7 +19,7 @@ export class StringPasswordInputComponent<EntityType extends BaseEntityType<Enti
     hide: boolean = true;
     hideConfirm: boolean = true;
 
-    confirmRequired!: boolean;
+    confirmRequired: boolean = false;
 
     get confirmPassword(): string | undefined {
         return ReflectUtilities.getMetadata(EntityUtilities.CONFIRM_PASSWORD_KEY, this.entity, this.key) as string | undefined;
@@ -31,7 +31,7 @@ export class StringPasswordInputComponent<EntityType extends BaseEntityType<Enti
 
     override ngOnInit(): void {
         super.ngOnInit();
-        this.confirmRequired = this.metadata.required;
+        this.confirmRequired = Boolean(this.propertyValue);
         this.confirmPassword = LodashUtilities.cloneDeep(this.propertyValue);
     }
 

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable jsdoc/require-jsdoc */
 import { formatDate, formatNumber } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -123,7 +122,7 @@ export class Person extends Entity {
         required: false,
         omit: ['postcode']
     })
-    address!: Address;
+    address?: Omit<Address, 'postcode'>;
 
     @referencesMany({
         displayName: 'Addresses',
@@ -193,6 +192,17 @@ export class Person extends Entity {
     })
     addresses!: Address[];
 
+    @object({
+        displayName: 'Address',
+        displayStyle: 'inline',
+        EntityClass: Address,
+        position: {
+            tab: 2,
+            tabName: 'Addresses'
+        }
+    })
+    addressObject!: Address[];
+
     constructor(entity?: Person) {
         super(entity);
         EntityUtilities.new(this, entity);
@@ -249,8 +259,8 @@ export class SandboxComponent {
             title: (entity: Person) => `${entity.firstName} ${entity.lastName}`,
             actions: [
                 {
-                    displayName: 'Log firstName',
-                    action: (e: Person) => console.log(e.firstName)
+                    displayName: 'Set first name to Jane',
+                    action: (e: Person) => e.firstName = 'Jane'
                 }
             ]
         }
