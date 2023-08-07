@@ -12,7 +12,8 @@ export abstract class PropertyDecoratorConfig {
      *
      * @default true
      */
-    display?: boolean | ((entity: unknown) => boolean);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    display?: boolean | ((entity: any) => boolean);
     /**
      * The name of the property used as a label for form fields.
      */
@@ -22,7 +23,8 @@ export abstract class PropertyDecoratorConfig {
      *
      * @default true
      */
-    required?: boolean | ((entity: unknown) => boolean);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    required?: boolean | ((entity: any) => boolean);
     /**
      * Whether or not the property gets omitted when creating new Entities.
      *
