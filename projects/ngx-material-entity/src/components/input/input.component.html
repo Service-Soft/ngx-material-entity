@@ -434,8 +434,13 @@
                     <mat-header-cell *matHeaderCellDef>
                         {{dCol.displayName}}
                     </mat-header-cell>
-                    <mat-cell (click)="editArrayItem(entity)" class="entity" *matCellDef="let entity">
-                        {{getDisplayColumnValue(entity, dCol)}}
+                    <mat-cell [class.enabled]="!dCol.disableClick" (click)="editArrayItem(entity, dCol)" *matCellDef="let entity">
+                        <ng-container *ngIf="dCol.Component">
+                            <display-column-value [entity]="entity" [ComponentClass]="dCol.Component"></display-column-value>
+                        </ng-container>
+                        <ng-container *ngIf="!dCol.Component">
+                            {{getDisplayColumnValue(entity, dCol)}}
+                        </ng-container>
                     </mat-cell>
                 </ng-container>
             
@@ -504,7 +509,7 @@
                     <mat-header-cell *matHeaderCellDef>
                         <mat-checkbox (change)="$event ? SelectionUtilities.masterToggle(hasManySelection, hasManyDataSource) : null" [checked]="hasManySelection.hasValue() && SelectionUtilities.isAllSelected(hasManySelection, hasManyDataSource)" [indeterminate]="hasManySelection.hasValue() && !SelectionUtilities.isAllSelected(hasManySelection, hasManyDataSource)"> </mat-checkbox>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let entity" class="entity">
+                    <mat-cell *matCellDef="let entity" class="enabled">
                         <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? hasManySelection.toggle(entity) : null" [checked]="hasManySelection.isSelected(entity)"> </mat-checkbox>
                     </mat-cell>
                 </ng-container>
@@ -513,8 +518,13 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
                         {{dCol.displayName}}
                     </mat-header-cell>
-                    <mat-cell class="entity" [class.enabled]="hasManyAllowUpdate(entity) || hasManyAllowRead(entity)" (click)="editHasManyEntity(entity)" *matCellDef="let entity">
-                        {{getDisplayColumnValue(entity, dCol)}}
+                    <mat-cell [class.enabled]="!dCol.disableClick && (hasManyAllowUpdate(entity) || hasManyAllowRead(entity))" (click)="editHasManyEntity(entity, dCol)" *matCellDef="let entity">
+                        <ng-container *ngIf="dCol.Component">
+                            <display-column-value [entity]="entity" [ComponentClass]="dCol.Component"></display-column-value>
+                        </ng-container>
+                        <ng-container *ngIf="!dCol.Component">
+                            {{getDisplayColumnValue(entity, dCol)}}
+                        </ng-container>
                     </mat-cell>
                 </ng-container>
 

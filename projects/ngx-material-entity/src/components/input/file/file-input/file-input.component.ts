@@ -1,4 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -49,7 +50,7 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
     @Output()
     fileDataChangeEvent: EventEmitter<FileData | FileData[]> = new EventEmitter<FileData | FileData[]>();
 
-    constructor(private readonly dialog: MatDialog) { }
+    constructor(private readonly dialog: MatDialog, private readonly http: HttpClient) { }
 
     async ngOnInit(): Promise<void> {
         if (this.metadata.multiple) {
@@ -179,11 +180,11 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
             // the index need to be saved in a constant because we edit foundFileData
             // => .indexOf() returns undefined.
             const index: number = (this.propertyValue as FileData[]).indexOf(foundFileData);
-            (this.propertyValue as FileData[])[index] = await FileUtilities.getFileData(foundFileData);
+            (this.propertyValue as FileData[])[index] = await FileUtilities.getFileData(foundFileData, this.http);
             FileUtilities.downloadSingleFile((this.propertyValue as FileData[])[index] as FileDataWithFile);
         }
         else if (this.propertyValue) {
-            this.propertyValue = await FileUtilities.getFileData(this.propertyValue as FileData);
+            this.propertyValue = await FileUtilities.getFileData(this.propertyValue as FileData, this.http);
             FileUtilities.downloadSingleFile(this.propertyValue);
         }
     }
@@ -204,7 +205,7 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
     async downloadAll(): Promise<void> {
         if ((this.propertyValue as FileData[]).length) {
             // eslint-disable-next-line max-len
-            void FileUtilities.downloadMultipleFiles(this.metadata.displayName, LodashUtilities.cloneDeep(this.propertyValue as FileData[]));
+            void FileUtilities.downloadMultipleFiles(this.metadata.displayName, LodashUtilities.cloneDeep(this.propertyValue as FileData[]), this.http);
         }
     }
 }

@@ -1,5 +1,6 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { SelectionModel } from '@angular/cdk/collections';
+import { HttpClient } from '@angular/common/http';
 import { Component, EnvironmentInjector, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -32,7 +33,7 @@ export abstract class ArrayTableComponent<ValueType, EntityType extends BaseEnti
 
     SelectionUtilities: typeof SelectionUtilities = SelectionUtilities;
 
-    constructor(private readonly matDialog: MatDialog, private readonly injector: EnvironmentInjector) {
+    constructor(private readonly matDialog: MatDialog, private readonly injector: EnvironmentInjector, private readonly http: HttpClient) {
         super();
     }
 
@@ -72,7 +73,7 @@ export abstract class ArrayTableComponent<ValueType, EntityType extends BaseEnti
             if (
                 !this.metadata.allowDuplicates
                 && this.propertyValue?.find(
-                    async v => await EntityUtilities.isEqual(this.input, v, this.metadata, this.metadata.itemType)
+                    async v => await EntityUtilities.isEqual(this.input, v, this.metadata, this.metadata.itemType, this.http)
                 ) != null
             ) {
                 this.matDialog.open(NgxMatEntityConfirmDialogComponent, {

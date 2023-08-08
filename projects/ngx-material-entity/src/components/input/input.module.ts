@@ -18,6 +18,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import { DisplayColumnValueComponent } from '../table/display-column-value/display-column-value.component';
 import { ArrayDateInputComponent } from './array/array-date-input/array-date-input.component';
 import { ArrayDateRangeInputComponent } from './array/array-date-range-input/array-date-range-input.component';
 import { ArrayDateTimeInputComponent } from './array/array-date-time-input/array-date-time-input.component';
@@ -93,7 +94,8 @@ import { StringTextboxInputComponent } from './string/string-textbox-input/strin
         MatTabsModule,
         MatMenuModule,
         MatProgressSpinnerModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        DisplayColumnValueComponent
     ],
     exports: [NgxMatEntityInputComponent]
 })

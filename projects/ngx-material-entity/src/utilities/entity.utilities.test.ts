@@ -1,8 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { expect } from '@jest/globals';
 import { Entity } from '../classes/entity.model';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../encapsulation/reflect.utilities';
+import { HttpClientMock } from '../mocks/http-client.mock';
 import { getDatesBetween, TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder, TestObjectArrayEntity, TestObjectEntity } from '../mocks/test-entity.interface';
 import { EntityTab, EntityUtilities } from './entity.utilities';
 
@@ -10,6 +12,7 @@ const builder: TestEntityWithoutCustomPropertiesMockBuilder = new TestEntityWith
 const testEntity: TestEntityWithoutCustomProperties = builder.testEntity;
 const testEntityWithoutData: TestEntityWithoutCustomProperties = builder.testEntityWithoutData;
 const testEntityWithoutMetadata: TestEntityWithoutCustomProperties = builder.testEntityData;
+const http: HttpClient = new HttpClientMock([]) as unknown as HttpClient;
 
 /**
  * Checks whether or not a given value is an Entity.
@@ -122,7 +125,7 @@ describe('getWithoutOmitUpdateValues', () => {
             rowValue2: 'test',
             id: 'id'
         });
-        const res: Partial<TestEntityWithoutCustomProperties> = await EntityUtilities.getWithoutOmitUpdateValues(tE, tEPriorChanges);
+        const res: Partial<TestEntityWithoutCustomProperties> = await EntityUtilities.getWithoutOmitUpdateValues(tE, tEPriorChanges, http);
         expect(res).toEqual({
             objectValue: {
                 maxLengthStringValue: 'test',
@@ -598,37 +601,37 @@ describe('dirty', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
         const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(tE);
-        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(false);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges, http)).toBe(false);
         tE.minNumberValue = 1234;
-        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(true);
-        expect(await EntityUtilities.isDirty(tE, undefined as never)).toBe(false);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges, http)).toBe(true);
+        expect(await EntityUtilities.isDirty(tE, undefined as never, http)).toBe(false);
     });
     test('should tell if date range array is dirty', async () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
         const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(tE);
-        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(false);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges, http)).toBe(false);
 
         tE.dateRangeArrayValue[0].start = new Date();
-        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(true);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges, http)).toBe(true);
 
         tE.dateRangeArrayValue[0].start = testEntity.dateRangeArrayValue[0].start;
-        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(false);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges, http)).toBe(false);
 
         tE.dateRangeArrayValue.push({ start: new Date(), end: new Date() });
-        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(true);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges, http)).toBe(true);
 
         tE.dateRangeArrayValue = testEntity.dateRangeArrayValue;
-        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(false);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges, http)).toBe(false);
     });
     test('should tell if custom value is dirty', async () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
         const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         tE.randomValue = '12345';
-        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(true);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges, http)).toBe(true);
         tE.randomValue = '42';
-        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(false);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges, http)).toBe(false);
     });
 });
 
@@ -659,9 +662,9 @@ describe('resetChangesOnEntity', () => {
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
         const tEPriorChanges: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(tE);
         tE.minLengthStringValue = 'changed value';
-        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(true);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges, http)).toBe(true);
         EntityUtilities.resetChangesOnEntity(tE, tEPriorChanges);
-        expect(await EntityUtilities.isDirty(tE, tEPriorChanges)).toBe(false);
+        expect(await EntityUtilities.isDirty(tE, tEPriorChanges, http)).toBe(false);
     });
 });
 
