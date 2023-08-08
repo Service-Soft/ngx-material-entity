@@ -1,4 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, EnvironmentInjector, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -62,7 +63,8 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
         private readonly inputData: EditEntityData<EntityType>,
         public dialogRef: MatDialogRef<NgxMatEntityEditDialogComponent<EntityType>>,
         private readonly injector: EnvironmentInjector,
-        private readonly dialog: MatDialog
+        private readonly dialog: MatDialog,
+        private readonly http: HttpClient
     ) {}
 
     ngOnInit(): void {
@@ -95,7 +97,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      */
     async checkEntity(): Promise<void> {
         this.isEntityValid = EntityUtilities.isEntityValid(this.data.entity, 'update');
-        this.isEntityDirty = await EntityUtilities.isDirty(this.data.entity, this.entityPriorChanges);
+        this.isEntityDirty = await EntityUtilities.isDirty(this.data.entity, this.entityPriorChanges, this.http);
     }
 
     /**

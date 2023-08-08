@@ -1,4 +1,5 @@
 import { Time } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { DateFilterFn } from '@angular/material/datepicker';
 import { BaseEntityType } from '../classes/entity.model';
 import { DateRangeArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
@@ -136,17 +137,19 @@ export abstract class EntityUtilities {
      *
      * @param entity - The entity with all its values.
      * @param entityPriorChanges - The entity before any changes were applied.
+     * @param http - The angular HttpClient. Used to fetch files.
      * @returns The reduced entity object.
      */
     static async getWithoutOmitUpdateValues<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
-        entityPriorChanges: EntityType
+        entityPriorChanges: EntityType,
+        http: HttpClient
     ): Promise<Partial<EntityType>> {
         const res: Partial<EntityType> = {};
         for (const key of EntityUtilities.keysOf(entity, false, true)) {
             const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(entity, key);
             const type: DecoratorTypes = EntityUtilities.getPropertyType(entity, key);
-            if (!(await EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type))) {
+            if (!(await EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type, http))) {
                 switch (type) {
                     case DecoratorTypes.OBJECT:
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -331,6 +334,11 @@ export abstract class EntityUtilities {
         if (metadata.required(entity) && type !== DecoratorTypes.HAS_MANY) {
             if (entity[key] == null || entity[key] === '') {
                 return false;
+            }
+        }
+        if (!metadata.required(entity)) {
+            if (entity[key] == null || entity[key] === '') {
+                return true;
             }
         }
         switch (type) {
@@ -650,28 +658,31 @@ export abstract class EntityUtilities {
      *
      * @param entity - The entity after all changes.
      * @param entityPriorChanges - The entity before the changes.
+     * @param http - The angular HttpClient. Used to fetch files.
      * @returns Whether or not the entity is dirty.
      */
     static async isDirty<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
-        entityPriorChanges: EntityType
+        entityPriorChanges: EntityType,
+        http: HttpClient
     ): Promise<boolean> {
         if (!(entityPriorChanges as EntityType | undefined)) {
             return false;
         }
-        const differences: Difference<EntityType>[] = await EntityUtilities.differencesForDirty(entity, entityPriorChanges);
+        const differences: Difference<EntityType>[] = await EntityUtilities.differencesForDirty(entity, entityPriorChanges, http);
         return differences.length ? true : false;
     }
 
     private static async differencesForDirty<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
-        entityPriorChanges: EntityType
+        entityPriorChanges: EntityType,
+        http: HttpClient
     ): Promise<Difference<EntityType>[]> {
         const res: Difference<EntityType>[] = [];
         for (const key of ReflectUtilities.ownKeys(entity)) {
             const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(entity, key);
             const type: DecoratorTypes = EntityUtilities.getPropertyType(entity, key);
-            if (!(await EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type))) {
+            if (!(await EntityUtilities.isEqual(entity[key], entityPriorChanges[key], metadata, type, http))) {
                 res.push({
                     key: key,
                     before: entityPriorChanges[key],
@@ -717,13 +728,15 @@ export abstract class EntityUtilities {
      * @param valuePriorChanges - The value before any changes.
      * @param metadata - The metadata of the property.
      * @param type - The type of the property.
+     * @param http - The angular HttpClient. Used to fetch files.
      * @returns Whether or not the given values are equal.
      */
     static async isEqual(
         value: unknown,
         valuePriorChanges: unknown,
         metadata: PropertyDecoratorConfigInternal,
-        type: DecoratorTypes
+        type: DecoratorTypes,
+        http: HttpClient
     ): Promise<boolean> {
         switch (type) {
             case DecoratorTypes.DATE_RANGE:
@@ -750,7 +763,8 @@ export abstract class EntityUtilities {
                 return EntityUtilities.isEqualArrayString(value, valuePriorChanges);
             case DecoratorTypes.FILE_IMAGE:
             case DecoratorTypes.FILE_DEFAULT:
-                return EntityUtilities.isEqualFile(value, valuePriorChanges, (metadata as DefaultFileDecoratorConfigInternal).multiple);
+                // eslint-disable-next-line max-len
+                return EntityUtilities.isEqualFile(value, valuePriorChanges, (metadata as DefaultFileDecoratorConfigInternal).multiple, http);
             case DecoratorTypes.CUSTOM:
                 // eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
                 return EntityUtilities.isEqualCustom(value, valuePriorChanges, metadata as CustomDecoratorConfigInternal<any, any, any, any>);
@@ -821,7 +835,7 @@ export abstract class EntityUtilities {
 
     // TODO: Find a way to use blobs with jest
     /* istanbul ignore next */
-    private static async isEqualFile(value: unknown, valuePriorChanges: unknown, multiple: boolean): Promise<boolean> {
+    private static async isEqualFile(value: unknown, valuePriorChanges: unknown, multiple: boolean, http: HttpClient): Promise<boolean> {
         if (value == null) {
             if (valuePriorChanges == null) {
                 return true;
@@ -841,11 +855,11 @@ export abstract class EntityUtilities {
                 return false;
             }
             if (filesPriorChanges[i].file && !files[i].file) {
-                files[i] = await FileUtilities.getFileData(files[i]);
+                files[i] = await FileUtilities.getFileData(files[i], http);
                 value = files[i];
             }
             if (files[i].file && !filesPriorChanges[i].file) {
-                filesPriorChanges[i] = await FileUtilities.getFileData(filesPriorChanges[i]);
+                filesPriorChanges[i] = await FileUtilities.getFileData(filesPriorChanges[i], http);
                 valuePriorChanges = filesPriorChanges[i];
             }
             if (!LodashUtilities.isEqual(await files[i].file?.text(), await filesPriorChanges[i].file?.text())) {
