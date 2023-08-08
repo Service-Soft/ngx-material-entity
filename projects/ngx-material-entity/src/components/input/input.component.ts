@@ -1,4 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
+import { HttpClient } from '@angular/common/http';
 import { Component, EnvironmentInjector, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewChild, inject } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -180,7 +181,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         private readonly injector: EnvironmentInjector,
         private readonly router: Router,
         @Inject(NGX_GET_VALIDATION_ERROR_MESSAGE)
-        protected readonly defaultGetValidationErrorMessage: (model: NgModel) => string
+        protected readonly defaultGetValidationErrorMessage: (model: NgModel) => string,
+        private readonly http: HttpClient
     ) {}
 
     /**
@@ -414,10 +416,11 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * Edits an entity. This either calls the edit-Method provided by the user or uses a default edit-dialog.
      *
      * @param entity - The entity that should be updated.
+     * @param dCol - The display column that was clicked on.
      * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
      */
-    editHasManyEntity(entity: EntityType): void {
-        if (!(this.hasManyAllowUpdate(entity) || this.hasManyAllowRead(entity))) {
+    editHasManyEntity(entity: EntityType, dCol: DisplayColumn<EntityType>): void {
+        if ((dCol.disableClick === true) || (!this.hasManyAllowUpdate(entity) && !this.hasManyAllowRead(entity))) {
             return;
         }
         if (!this.metadataHasMany.tableData.baseData.EntityClass) {
@@ -718,7 +721,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     async checkHasManyEntity(): Promise<void> {
         this.checkIsHasManyEntityValid('update');
-        this.isHasManyEntityDirty = await EntityUtilities.isDirty(this.hasManyEntity, this.hasManyEntityPriorChanges);
+        this.isHasManyEntityDirty = await EntityUtilities.isDirty(this.hasManyEntity, this.hasManyEntityPriorChanges, this.http);
     }
 
     /**
@@ -742,7 +745,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * Checks if the array item is dirty.
      */
     async checkIsArrayItemDirty(): Promise<void> {
-        this.isArrayItemDirty = await EntityUtilities.isDirty(this.arrayItem, this.arrayItemPriorChanges);
+        this.isArrayItemDirty = await EntityUtilities.isDirty(this.arrayItem, this.arrayItemPriorChanges, this.http);
     }
 
     /**
@@ -768,7 +771,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         if (this.metadataEntityArray.createInline) {
             if (!this.metadataEntityArray.allowDuplicates) {
                 for (const v of this.entityArrayValues) {
-                    if ((await EntityUtilities.isEqual(this.arrayItem, v, this.metadata, this.metadataEntityArray.itemType))) {
+                    if ((await EntityUtilities.isEqual(this.arrayItem, v, this.metadata, this.metadataEntityArray.itemType, this.http))) {
                         this.dialog.open(NgxMatEntityConfirmDialogComponent, {
                             data: this.metadataEntityArray.duplicatesErrorDialog,
                             autoFocus: false,
@@ -823,8 +826,12 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * Edits an entity array item.
      *
      * @param entity - The entity that has been clicked.
+     * @param dCol - The display column that was clicked on.
      */
-    editArrayItem(entity: EntityType): void {
+    editArrayItem(entity: EntityType, dCol: DisplayColumn<EntityType>): void {
+        if (dCol.disableClick === true) {
+            return;
+        }
         this.indexOfEditedArrayItem = this.entityArrayValues.indexOf(entity);
         this.arrayItem = new this.metadataEntityArray.EntityClass(entity);
         this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);

@@ -133,12 +133,12 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
             if (EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT).multiple) {
                 const fileDataValues: FileData[] = body[key] as FileData[];
                 for (const value of fileDataValues) {
-                    formData.append(key as string, (await FileUtilities.getFileData(value)).file, value.name);
+                    formData.append(key as string, (await FileUtilities.getFileData(value, this.http)).file, value.name);
                 }
             }
             else {
                 const fileData: FileData = body[key] as FileData;
-                formData.append(key as string, (await FileUtilities.getFileData(fileData)).file, fileData.name);
+                formData.append(key as string, (await FileUtilities.getFileData(fileData, this.http)).file, fileData.name);
             }
         }
         const e: EntityType | undefined = await firstValueFrom(this.http.post<EntityType | undefined>(baseUrl, formData));
@@ -232,7 +232,7 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
      * @returns A partial of only the changed values.
      */
     protected async entityToUpdateRequestBody(entity: EntityType, entityPriorChanges: EntityType): Promise<Partial<EntityType>> {
-        const body: Partial<EntityType> = await EntityUtilities.getWithoutOmitUpdateValues(entity, entityPriorChanges);
+        const body: Partial<EntityType> = await EntityUtilities.getWithoutOmitUpdateValues(entity, entityPriorChanges, this.http);
         return LodashUtilities.omitBy(body, LodashUtilities.isNil);
     }
 
@@ -260,12 +260,12 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
             if (EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT).multiple) {
                 const fileDataValues: FileData[] = body[key] as FileData[];
                 for (const value of fileDataValues) {
-                    formData.append(key as string, (await FileUtilities.getFileData(value)).file, value.name);
+                    formData.append(key as string, (await FileUtilities.getFileData(value, this.http)).file, value.name);
                 }
             }
             else {
                 const fileData: FileData = body[key] as FileData;
-                formData.append(key as string, (await FileUtilities.getFileData(fileData)).file, fileData.name);
+                formData.append(key as string, (await FileUtilities.getFileData(fileData, this.http)).file, fileData.name);
             }
         }
         const updatedEntity: EntityType | undefined = await firstValueFrom(

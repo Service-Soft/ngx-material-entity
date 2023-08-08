@@ -1,4 +1,5 @@
 import { Location, NgFor, NgIf } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, EnvironmentInjector, HostListener, Inject, InjectionToken, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -118,7 +119,8 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
         @Inject(NGX_EDIT_DATA_ENTITY)
         private readonly EntityClass: EntityClassNewable<EntityType>,
         @Inject(NGX_EDIT_DATA)
-        private readonly inputData: PageEditData<EntityType>
+        private readonly inputData: PageEditData<EntityType>,
+        private readonly http: HttpClient
     ) { }
 
     /**
@@ -174,7 +176,7 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
      */
     async checkEntity(): Promise<void> {
         this.isEntityValid = EntityUtilities.isEntityValid(this.entity, 'update');
-        this.isEntityDirty = await EntityUtilities.isDirty(this.entity, this.entityPriorChanges);
+        this.isEntityDirty = await EntityUtilities.isDirty(this.entity, this.entityPriorChanges, this.http);
     }
 
     /**

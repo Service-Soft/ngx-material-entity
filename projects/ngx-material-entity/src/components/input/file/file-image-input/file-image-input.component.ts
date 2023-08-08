@@ -1,4 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
@@ -18,8 +19,6 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 export class FileImageInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.FILE_IMAGE, FileData | FileData[]> implements OnInit {
 
-    FileUtilities: typeof FileUtilities = FileUtilities;
-
     get multiPreviewImages(): string[] | undefined {
         return ReflectUtilities.getMetadata(EntityUtilities.MULTI_PREVIEW_IMAGES_KEY, this.entity, this.key) as string[] | undefined;
     }
@@ -37,9 +36,13 @@ export class FileImageInputComponent<EntityType extends BaseEntityType<EntityTyp
     imageIndex: number = 0;
     placeHolder: string = placeholder;
 
+    constructor(private readonly http: HttpClient) {
+        super();
+    }
+
     private async setSinglePreviewImage(): Promise<void> {
         if (this.propertyValue) {
-            this.propertyValue = await FileUtilities.getFileData(this.propertyValue as FileData);
+            this.propertyValue = await FileUtilities.getFileData(this.propertyValue as FileData, this.http);
             this.singlePreviewImage = await FileUtilities.getDataURLFromFile(this.propertyValue.file);
         }
         else {
@@ -53,7 +56,7 @@ export class FileImageInputComponent<EntityType extends BaseEntityType<EntityTyp
         if (multiFileData?.length) {
             for (let i: number = 0; i < multiFileData.length; i++) {
                 if (i === index) {
-                    multiFileData[index] = await FileUtilities.getFileData(multiFileData[index]);
+                    multiFileData[index] = await FileUtilities.getFileData(multiFileData[index], this.http);
                     previewImages.push(await FileUtilities.getDataURLFromFile(multiFileData[index].file) as string);
                 }
                 else {

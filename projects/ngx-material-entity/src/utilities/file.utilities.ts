@@ -1,3 +1,5 @@
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { FileDataWithFile } from '../decorators/file/file-decorator-internal.data';
 import { FileData } from '../decorators/file/file-decorator.data';
 import { JSZipUtilities, Zip } from '../encapsulation/jszip.utilities';
@@ -46,15 +48,16 @@ export abstract class FileUtilities {
      * Gets a file from the given url.
      *
      * @param url - The url to get the file from.
+     * @param http - The angular HttpClient. Used to fetch files.
      * @returns A promise of the File.
      */
-    private static async getFileFromUrl(url: string): Promise<Blob> {
-        const res: Response = await fetch(url);
-        if (!res.ok) {
-            // TODO make error more robust
-            throw new Error(`Error fetching the file from the url ${url}`);
+    private static async getFileFromUrl(url: string, http: HttpClient): Promise<Blob> {
+        try {
+            return await firstValueFrom(http.get(url, { responseType: 'blob' }));
         }
-        return await res.blob();
+        catch (error) {
+            throw new Error(`Error fetching the file from the url ${url}:\n ${error}`);
+        }
     }
 
     // TODO: Find a way to use blobs with jest
@@ -63,9 +66,10 @@ export abstract class FileUtilities {
      * Gets the file data with the blob from the given File Data.
      *
      * @param data - The File Data to get the file data with blob from.
+     * @param http - The angular HttpClient. Used to fetch files.
      * @returns FileDataWithFile.
      */
-    static async getFileData(data: FileData): Promise<FileDataWithFile> {
+    static async getFileData(data: FileData, http: HttpClient): Promise<FileDataWithFile> {
         if (data.file) {
             return {
                 file: data.file,
@@ -77,7 +81,7 @@ export abstract class FileUtilities {
         }
         else {
             return {
-                file: await FileUtilities.getFileFromUrl(data.url as string),
+                file: await FileUtilities.getFileFromUrl(data.url as string, http),
                 name: data.name,
                 url: data.url,
                 type: data.type,
@@ -123,11 +127,12 @@ export abstract class FileUtilities {
      *
      * @param name - The name of the zip file to generate.
      * @param multiFileData - The file data array to put in the zip.
+     * @param http - The angular HttpClient. Used to fetch files.
      */
-    static async downloadMultipleFiles(name: string, multiFileData: FileData[]): Promise<void> {
+    static async downloadMultipleFiles(name: string, multiFileData: FileData[], http: HttpClient): Promise<void> {
         const zip: Zip = JSZipUtilities.new();
         for (let i: number = 0; i < multiFileData.length; i++) {
-            multiFileData[i] = await FileUtilities.getFileData(multiFileData[i]);
+            multiFileData[i] = await FileUtilities.getFileData(multiFileData[i], http);
             zip.file(multiFileData[i].name, (multiFileData[i] as FileDataWithFile).file);
         }
         const zipBlob: Blob = await zip.generateAsync({ type: 'blob' });

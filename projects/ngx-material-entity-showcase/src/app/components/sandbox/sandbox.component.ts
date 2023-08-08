@@ -176,6 +176,12 @@ export class Person extends Entity {
                     {
                         displayName: 'Street',
                         value: e => e.street
+                    },
+                    {
+                        displayName: 'Pdf',
+                        value: () => '',
+                        Component: PdfDownloadDisplayValueComponent,
+                        disableClick: true
                     }
                 ],
                 EntityServiceClass: AddressService,
