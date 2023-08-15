@@ -8,7 +8,7 @@
             <input
                 matInput
                 [(ngModel)]="input"
-                [name]="key.toString()"
+                [name]="key.toString() + uuid"
                 #model="ngModel"
                 [matDatepicker]="picker"
                 [required]="metadata.required(entity)"
@@ -59,7 +59,7 @@
         <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     </mat-table>
 
-    <div class="array-error" *ngIf="metadata.required && !dataSource.data.length">
+    <div class="array-error" *ngIf="metadata.required(entity) && !dataSource.data.length">
         {{metadata.missingErrorMessage}}
     </div>
 </div>

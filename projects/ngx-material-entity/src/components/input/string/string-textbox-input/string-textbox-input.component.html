@@ -3,7 +3,7 @@
     <textarea
         matInput
         [(ngModel)]="propertyValue"
-        [name]="key.toString()"
+        [name]="key.toString() + uuid"
         #model="ngModel"
         cdkTextareaAutosize
         cdkAutosizeMinRows="10"

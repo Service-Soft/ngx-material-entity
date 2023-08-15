@@ -3,7 +3,7 @@
     <input
         matInput
         [(ngModel)]="propertyValue"
-        [name]="key.toString()"
+        [name]="key.toString() + uuid"
         #model="ngModel"
         [required]="metadata.required(entity)"
         [pattern]="metadata.regex ?? '[\\s\\S]*'"

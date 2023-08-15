@@ -1,7 +1,7 @@
 <mat-form-field>
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-chip-grid #chipGrid
-        [(ngModel)]="propertyValue" [name]="key.toString()" #model="ngModel"
+        [(ngModel)]="propertyValue" [name]="key.toString() + uuid" #model="ngModel"
         [required]="metadata.required(entity)"
         [disabled]="isReadOnly"
     >
@@ -15,7 +15,7 @@
             [matChipInputFor]="chipGrid"
             [matChipInputAddOnBlur]="true"
             (matChipInputTokenEnd)="addStringChipArrayValue($event)"
-            [(ngModel)]="chipsInput" [name]="key.toString()" #chipsModel="ngModel"
+            [(ngModel)]="chipsInput" [name]="key.toString() + uuid2" #chipsModel="ngModel"
             [minlength]="metadata.minLength ?? null"
             [maxlength]="metadata.maxLength ?? null"
             [pattern]="metadata.regex ?? '[\\s\\S]*'"

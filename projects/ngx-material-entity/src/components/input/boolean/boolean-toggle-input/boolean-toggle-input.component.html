@@ -4,16 +4,16 @@
         color="primary"
         (click)="model.control.markAsTouched()"
         [(ngModel)]="propertyValue"
-        [name]="key.toString()"
+        [name]="key.toString() + uuid"
         [disabled]="isReadOnly"
     >
     </mat-slide-toggle>
     <!-- hidden input is needed so that the toggle can be used inside a mat-form-field -->
     <input matInput hidden
         [(ngModel)]="propertyValue"
-        [name]="key.toString() + 'Helper'"
+        [name]="key.toString() + 'Helper' + uuid"
         #model="ngModel"
-        [pattern]="metadata.required ? 'true' : '[\\s\\S]*'"
+        [pattern]="metadata.required(entity) ? 'true' : '[\\s\\S]*'"
         [required]="metadata.required(entity)"
         (ngModelChange)="emitChange()"
     >

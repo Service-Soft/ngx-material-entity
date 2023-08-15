@@ -3,7 +3,7 @@
     <input
         matInput
         [(ngModel)]="entity['randomValue']"
-        [name]="key.toString()"
+        [name]="key.toString() + uuid"
         #model="ngModel"
         [required]="metadata.required(entity)"
         (ngModelChange)="emitChange()"

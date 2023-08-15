@@ -1,6 +1,6 @@
 {
     "name": "ngx-material-entity",
-    "version": "15.3.1",
+    "version": "16.0.0",
     "license": "MIT",
     "keywords": [
         "angular",
@@ -9,12 +9,12 @@
         "entity"
     ],
     "peerDependencies": {
-        "@angular/animations": "15",
-        "@angular/cdk": "15",
-        "@angular/common": "15",
-        "@angular/core": "15",
-        "@angular/forms": "15",
-        "@angular/material": "15",
+        "@angular/animations": "16",
+        "@angular/cdk": "16",
+        "@angular/common": "16",
+        "@angular/core": "16",
+        "@angular/forms": "16",
+        "@angular/material": "16",
         "lodash": "4",
         "jszip": "^3.10.1",
         "js2xmlparser": "^5.0.0"
