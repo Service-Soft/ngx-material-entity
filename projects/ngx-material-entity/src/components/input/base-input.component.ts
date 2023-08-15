@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { BaseEntityType } from '../../classes/entity.model';
 import { DecoratorType, DecoratorTypes } from '../../decorators/base/decorator-types.enum';
+import { UUIDUtilities } from '../../encapsulation/uuid.utilities';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 
 /**
@@ -74,6 +75,11 @@ export abstract class NgxMatEntityBaseInputComponent<
      * The metadata of the property.
      */
     metadata!: DecoratorType<Type, CustomMetadataType>;
+
+    /**
+     * A uuid that is used to specify unique name values for inputs.
+     */
+    uuid: string = UUIDUtilities.create();
 
     ngOnInit(): void {
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key);

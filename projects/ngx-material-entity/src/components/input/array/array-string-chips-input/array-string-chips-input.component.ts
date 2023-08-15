@@ -1,6 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { UUIDUtilities } from 'projects/ngx-material-entity/src/encapsulation/uuid.utilities';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
@@ -14,6 +15,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.ARRAY_STRING_CHIPS, string[]> implements OnInit {
 
+    uuid2: string = UUIDUtilities.create();
     chipsInput: string = '';
 
     /**

@@ -4,7 +4,7 @@
         matInput
         type="number"
         [(ngModel)]="propertyValue"
-        [name]="key.toString()"
+        [name]="key.toString() + uuid"
         #model="ngModel"
         [required]="metadata.required(entity)"
         [min]="metadata.min ?? null"

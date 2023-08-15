@@ -1,8 +1,8 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { AutocompleteStringChipsArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
 import { BaseEntityType } from '../../../../classes/entity.model';
+import { AutocompleteStringChipsArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 import { ArrayStringChipsInputComponent } from '../array-string-chips-input/array-string-chips-input.component';
 

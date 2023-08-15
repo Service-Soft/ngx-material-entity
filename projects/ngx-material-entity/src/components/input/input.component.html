@@ -311,7 +311,7 @@
         <mat-form-field>
             <mat-label>{{metadata.displayName}}</mat-label>
             <mat-select [(ngModel)]="internalEntity[internalPropertyKey]"
-                [name]="internalPropertyKey.toString() + 'input'"
+                [name]="internalPropertyKey.toString() + 'input' + referencesOneUUID"
                 #inputModel="ngModel"
                 [disabled]="internalIsReadOnly"
                 [required]="metadata.required(entity)"
@@ -448,7 +448,7 @@
                 <mat-row *matRowDef="let row; columns: entityArrayDisplayedColumns"></mat-row>
             </mat-table>
         
-            <div class="array-error" *ngIf="metadataEntityArray.required && !entityArrayDataSource.data.length">
+            <div class="array-error" *ngIf="metadataEntityArray.required(entity) && !entityArrayDataSource.data.length">
                 {{metadataEntityArray.missingErrorMessage}}
             </div>
         </div>
