@@ -4,7 +4,7 @@
         <input
             matInput
             [(ngModel)]="propertyValue"
-            [name]="key.toString()"
+            [name]="key.toString() + uuid"
             #model="ngModel"
             [matDatepicker]="picker"
             [required]="metadata.required(entity)"
@@ -22,7 +22,7 @@
         <mat-label>{{metadata.timeDisplayName}}</mat-label>
         <mat-select
             [(ngModel)]="time"
-            [name]="key.toString() + 'time'"
+            [name]="key.toString() + 'time' + uuid"
             #timeModel="ngModel"
             [required]="metadata.required(entity)"
             [compareWith]="compareTimes"

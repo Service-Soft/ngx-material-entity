@@ -1,6 +1,6 @@
 <mat-form-field>
     <mat-label>{{metadata.displayName}}</mat-label>
-    <mat-select [(ngModel)]="propertyValue" [name]="key.toString()" #model="ngModel" [required]="metadata.required(entity)" [disabled]="isReadOnly" (selectionChange)="emitChange()">
+    <mat-select [(ngModel)]="propertyValue" [name]="key.toString() + uuid" #model="ngModel" [required]="metadata.required(entity)" [disabled]="isReadOnly" (selectionChange)="emitChange()">
         <mat-option *ngFor="let value of dropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
     </mat-select>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>

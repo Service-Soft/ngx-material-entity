@@ -12,7 +12,7 @@
 >
     <input matSliderThumb
         [(ngModel)]="propertyValue"
-        [name]="key.toString() + 'Helper'"
+        [name]="key.toString() + 'Helper' + uuid"
         #model="ngModel"
         [required]="metadata.required(entity)"
         [min]="metadata.min ?? null"

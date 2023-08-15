@@ -18,6 +18,7 @@ import { DefaultObjectDecoratorConfigInternal } from '../../decorators/object/ob
 import { ReferencesOneDecoratorConfigInternal } from '../../decorators/references-one/references-one-decorator-internal.data';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../../encapsulation/reflect.utilities';
+import { UUIDUtilities } from '../../encapsulation/uuid.utilities';
 import { defaultFalse } from '../../functions/default-false.function';
 import { EntityService } from '../../services/entity.service';
 import { DateUtilities } from '../../utilities/date.utilities';
@@ -175,6 +176,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     EntityUtilities: typeof EntityUtilities = EntityUtilities;
     DateUtilities: typeof DateUtilities = DateUtilities;
     SelectionUtilities: typeof SelectionUtilities = SelectionUtilities;
+    referencesOneUUID: string = UUIDUtilities.create();
 
     constructor(
         private readonly dialog: MatDialog,

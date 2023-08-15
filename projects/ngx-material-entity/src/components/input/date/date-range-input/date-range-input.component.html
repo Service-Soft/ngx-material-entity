@@ -4,7 +4,7 @@
     <mat-date-range-input [rangePicker]="picker" [required]="metadata.required(entity)" [dateFilter]="metadata.filter ?? defaultDateFilter" [disabled]="isReadOnly">
         <input matStartDate
             [(ngModel)]="dateRangeStart"
-            [name]="key.toString() + 'start'"
+            [name]="key.toString() + 'start' + uuid"
             #startModel="ngModel"
             [required]="metadata.required(entity)"
             [min]="metadata.minStart ? metadata.minStart(dateRange.start) : undefined"
@@ -14,7 +14,7 @@
         >
         <input matEndDate
             [(ngModel)]="dateRangeEnd"
-            [name]="key.toString() + 'end'"
+            [name]="key.toString() + 'end' + uuid"
             #endModel="ngModel"
             [required]="metadata.required(entity)"
             [min]="metadata.minEnd ? metadata.minEnd(dateRange.end) : undefined"

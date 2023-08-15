@@ -9,7 +9,7 @@
             <mat-date-range-input [rangePicker]="picker" [required]="metadata.required(entity)" [dateFilter]="metadata.filter ? metadata.filter : DateUtilities.defaultDateFilter">
                 <input matStartDate
                     [(ngModel)]="dateRangeStart"
-                    [name]="key.toString() + 'start'"
+                    [name]="key.toString() + 'start' + uuid"
                     #startModel="ngModel"
                     [required]="metadata.required(entity)"
                     [min]="metadata.minStart ? metadata.minStart(input?.start) : undefined"
@@ -18,7 +18,7 @@
                 >
                 <input matEndDate
                     [(ngModel)]="dateRangeEnd"
-                    [name]="key.toString() + 'end'"
+                    [name]="key.toString() + 'end' + uuid"
                     #endModel="ngModel"
                     [required]="metadata.required(entity)"
                     [min]="metadata.minEnd ? metadata.minEnd(input?.end) : undefined"
@@ -71,7 +71,7 @@
         <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     </mat-table>
 
-    <div class="array-error" *ngIf="metadata.required && !dataSource.data.length">
+    <div class="array-error" *ngIf="metadata.required(entity) && !dataSource.data.length">
         {{metadata.missingErrorMessage}}
     </div>
 </div>

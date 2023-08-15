@@ -4,7 +4,7 @@
         (ngModelChange)="emitChange()"
         matInput
         [(ngModel)]="propertyValue"
-        [name]="key.toString()"
+        [name]="key.toString() + uuid"
         #model="ngModel"
         [matDatepicker]="picker"
         [required]="metadata.required(entity)"
