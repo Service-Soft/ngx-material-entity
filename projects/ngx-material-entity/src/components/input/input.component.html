@@ -507,10 +507,16 @@
                 <!-- select Column -->
                 <ng-container matColumnDef="select">
                     <mat-header-cell *matHeaderCellDef>
-                        <mat-checkbox (change)="$event ? SelectionUtilities.masterToggle(hasManySelection, hasManyDataSource) : null" [checked]="hasManySelection.hasValue() && SelectionUtilities.isAllSelected(hasManySelection, hasManyDataSource)" [indeterminate]="hasManySelection.hasValue() && !SelectionUtilities.isAllSelected(hasManySelection, hasManyDataSource)"> </mat-checkbox>
+                        <mat-checkbox (change)="$event ? SelectionUtilities.masterToggle(hasManySelection, hasManyDataSource) : null"
+                            [checked]="hasManySelection.hasValue() && SelectionUtilities.isAllSelected(hasManySelection, hasManyDataSource)"
+                            [indeterminate]="hasManySelection.hasValue() && !SelectionUtilities.isAllSelected(hasManySelection, hasManyDataSource)">
+                        </mat-checkbox>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let entity" class="enabled">
-                        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? hasManySelection.toggle(entity) : null" [checked]="hasManySelection.isSelected(entity)"> </mat-checkbox>
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? hasManySelection.toggle(entity) : null"
+                            [checked]="hasManySelection.isSelected(entity)">
+                        </mat-checkbox>
                     </mat-cell>
                 </ng-container>
 
@@ -518,7 +524,10 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
                         {{dCol.displayName}}
                     </mat-header-cell>
-                    <mat-cell [class.enabled]="!dCol.disableClick && (hasManyAllowUpdate(entity) || hasManyAllowRead(entity))" (click)="editHasManyEntity(entity, dCol)" *matCellDef="let entity">
+                    <mat-cell [class.enabled]="!dCol.disableClick && (hasManyAllowUpdate(entity) || hasManyAllowRead(entity))"
+                        (click)="editHasManyEntity(entity, dCol)"
+                        *matCellDef="let entity"
+                    >
                         <ng-container *ngIf="dCol.Component">
                             <display-column-value [entity]="entity" [ComponentClass]="dCol.Component"></display-column-value>
                         </ng-container>
@@ -749,9 +758,21 @@
 <ng-template #editHasManyDialog>
     <div class="mat-dialog-title">
         <div>{{metadataHasMany.tableData.editData.title(hasManyEntityPriorChanges)}}</div>
-        <button type="button" *ngIf="hasManyAllowDelete(hasManyEntity)" mat-raised-button (click)="deleteHasManyEntity()" color="warn" class="delete-button" tabindex="-1">
-            {{metadataHasMany.tableData.editData.deleteButtonLabel}}
-        </button>
+
+        <div class="actions-container">
+            <button *ngIf="metadataHasMany.tableData.editData.actions.length" type="button" [matMenuTriggerFor]="menu" mat-raised-button>
+                {{metadataHasMany.tableData.editData.actionsLabel}}
+            </button>
+            <mat-menu #menu="matMenu">
+                <button type="button" *ngFor="let action of metadataHasMany.tableData.editData.actions" [disabled]="hasManyEditActionDisabled(action)" (click)="hasManyRunEditAction(action)" mat-menu-item>
+                    {{action.displayName}}
+                </button>
+            </mat-menu>
+        
+            <button type="button" *ngIf="hasManyAllowDelete(hasManyEntity)" mat-raised-button (click)="deleteHasManyEntity()" color="warn" class="delete-button" tabindex="-1">
+                {{metadataHasMany.tableData.editData.deleteButtonLabel}}
+            </button>
+        </div>
     </div>
     
     <form>

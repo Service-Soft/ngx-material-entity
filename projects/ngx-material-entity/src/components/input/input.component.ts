@@ -28,6 +28,7 @@ import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { NGX_GET_VALIDATION_ERROR_MESSAGE } from '../get-validation-error-message.function';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from '../table/create-dialog/create-dialog-data.builder';
+import { EditActionInternal } from '../table/edit-dialog/edit-data.builder';
 import { DisplayColumn } from '../table/table-data';
 import { BaseTableActionInternal, TableActionInternal } from '../table/table-data.builder';
 
@@ -139,10 +140,26 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     metadataHasMany!: HasManyDecoratorConfigInternal<EntityType, EntityType>;
     hasManyIsLoading: boolean = true;
-    @ViewChild(MatPaginator, { static: true })
-    hasManyPaginator!: MatPaginator;
-    @ViewChild(MatSort, { static: true })
-    hasManySort!: MatSort;
+    /**
+     * A setter for the has many paginator.
+     * Is needed because the paginator is inside a switch case,
+     * which means that at ngOnInit it can't be initialized.
+     */
+    @ViewChild(MatPaginator) set hasManyPaginator(paginator: MatPaginator) {
+        if (!this.hasManyDataSource.paginator) {
+            this.hasManyDataSource.paginator = paginator;
+        }
+    }
+    /**
+     * A setter for the has many sort.
+     * Is needed because the sort is inside a switch case,
+     * which means that at ngOnInit it can't be initialized.
+     */
+    @ViewChild(MatSort) set hasManySort(sort: MatSort) {
+        if (!this.hasManyDataSource.sort) {
+            this.hasManyDataSource.sort = sort;
+        }
+    }
     @ViewChild('filter', { static: true })
     hasManyFilter!: string;
     displayedHasManyColumns!: string[];
@@ -307,7 +324,6 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 return this.metadataHasMany.tableData.baseData.displayColumns.find((dp) => dp.displayName === header)?.value(entity) as string;
             });
         };
-        this.hasManyDataSource.sort = this.hasManySort;
         this.hasManyDataSource.filterPredicate = (entity: EntityType, filter: string) => {
             const searchStr: string = this.metadataHasMany.tableData.baseData.searchString(entity);
             const formattedSearchString: string = searchStr.toLowerCase();
@@ -315,7 +331,6 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             return formattedSearchString.includes(formattedFilterString);
         };
         this.hasManyDataSource.filter = this.hasManyFilter;
-        this.hasManyDataSource.paginator = this.hasManyPaginator;
 
         this.hasManyEntityService.entitiesSubject.subscribe((entities) => {
             this.hasManyDataSource.data = entities;
@@ -472,6 +487,51 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     hasManyAllowDelete(entity: EntityType): boolean {
         return this.injector.runInContext(() => {
             return this.metadataHasMany.tableData.baseData.allowDelete(entity);
+        });
+    }
+
+    /**
+     * Checks if an EditAction is disabled (e.g. Because the current entry doesn't fullfil the requirements).
+     *
+     * @param action - The EditAction to check.
+     * @returns Whether or not the Action can be used.
+     */
+    hasManyEditActionDisabled(action: EditActionInternal<EntityType>): boolean {
+        return this.injector.runInContext(() => {
+            return !action.enabled(this.hasManyEntityPriorChanges);
+        });
+    }
+
+    /**
+     * Runs the edit action on the entity.
+     *
+     * @param action - The action to run.
+     */
+    hasManyRunEditAction(action: EditActionInternal<EntityType>): void {
+        const requireConfirmDialog: boolean = this.injector.runInContext(() => {
+            return action.requireConfirmDialog(this.hasManyEntityPriorChanges);
+        });
+
+        if (!requireConfirmDialog) {
+            this.confirmHasManyRunEditAction(action);
+            return;
+        }
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+            data: action.confirmDialogData,
+            autoFocus: false,
+            restoreFocus: false
+        });
+        dialogRef.afterClosed().subscribe(res => {
+            if (res == true) {
+                this.confirmHasManyRunEditAction(action);
+            }
+        });
+    }
+
+    private confirmHasManyRunEditAction(action: EditActionInternal<EntityType>): void {
+        void this.injector.runInContext(async () => {
+            await action.action(this.hasManyEntity, this.hasManyEntityPriorChanges);
+            await this.checkHasManyEntity();
         });
     }
 

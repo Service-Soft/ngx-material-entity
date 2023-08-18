@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Subject, firstValueFrom, takeUntil } from 'rxjs';
@@ -48,6 +48,7 @@ import { BaseTableActionInternal, TableActionInternal, TableDataBuilder, TableDa
         MatCheckboxModule,
         MatTableModule,
         MatPaginatorModule,
+        MatSortModule,
         MatButtonModule,
         MatMenuModule,
         MatDialogModule,
