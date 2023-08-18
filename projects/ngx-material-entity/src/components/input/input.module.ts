@@ -16,6 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { DisplayColumnValueComponent } from '../table/display-column-value/display-column-value.component';
@@ -95,7 +96,8 @@ import { StringTextboxInputComponent } from './string/string-textbox-input/strin
         MatMenuModule,
         MatProgressSpinnerModule,
         MatPaginatorModule,
-        DisplayColumnValueComponent
+        DisplayColumnValueComponent,
+        MatSortModule
     ],
     exports: [NgxMatEntityInputComponent]
 })
