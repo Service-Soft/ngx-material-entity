@@ -1,9 +1,9 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { UUIDUtilities } from 'projects/ngx-material-entity/src/encapsulation/uuid.utilities';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
+import { UUIDUtilities } from '../../../../encapsulation/uuid.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({
