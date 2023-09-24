@@ -4,7 +4,7 @@ import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 /**
  * Definition for the @object metadata.
  */
-abstract class ObjectDecoratorConfig<EntityType extends BaseEntityType<EntityType>> extends PropertyDecoratorConfig {
+abstract class ObjectDecoratorConfig<EntityType extends BaseEntityType<EntityType>> extends PropertyDecoratorConfig<EntityType> {
     /**
      * The class of the object. Is used to call the constructor so that all metadata is initialized.
      */

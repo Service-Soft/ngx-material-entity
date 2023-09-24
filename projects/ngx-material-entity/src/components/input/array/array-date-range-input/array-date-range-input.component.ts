@@ -25,7 +25,7 @@ export class ArrayDateRangeInputComponent<EntityType extends BaseEntityType<Enti
         this.input = {
             start: undefined as unknown as Date,
             end: undefined as unknown as Date,
-            values: undefined
+            values: undefined as unknown as Date[]
         };
     }
 
@@ -41,7 +41,7 @@ export class ArrayDateRangeInputComponent<EntityType extends BaseEntityType<Enti
                 this.input.end,
                 this.metadata.filter
             );
-            this.input.values = values.length ? values : undefined;
+            this.input.values = values.length ? values : undefined as unknown as Date[];
             this.add();
         }
     }

@@ -11,13 +11,7 @@
     [disabled]="isReadOnly"
 >
     <input matSliderThumb
-        [(ngModel)]="propertyValue"
-        [name]="key.toString() + 'Helper' + uuid"
-        #model="ngModel"
-        [required]="metadata.required(entity)"
-        [min]="metadata.min ?? null"
-        [max]="metadata.max ?? null"
-        (ngModelChange)="emitChange()"
+        (valueChange)="updatePropertyValue($event)"
         [disabled]="isReadOnly"
     >
 </mat-slider>
@@ -25,6 +19,16 @@
 <mat-form-field floatLabel="always">
     <mat-label>{{metadata.displayName}}</mat-label>
     <!-- hidden input is needed so that the slider can be used inside a mat-form-field -->
-    <input matInput style="opacity: 0%;">
+    <input matInput style="opacity: 0%;"
+        [(ngModel)]="propertyValue"
+        [name]="key.toString() + uuid"
+        #model="ngModel"
+        [required]="metadata.required(entity)"
+        [min]="metadata.min ?? null"
+        [max]="metadata.max ?? null"
+        (ngModelChange)="emitChange()"
+        [disabled]="isReadOnly"
+    >
+    
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>

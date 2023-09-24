@@ -5,7 +5,7 @@ import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 /**
  * Definition for the @referencesOne metadata.
  */
-export interface ReferencesOneDecoratorConfig<EntityType extends BaseEntityType<EntityType>> extends PropertyDecoratorConfig {
+export interface ReferencesOneDecoratorConfig<EntityType extends BaseEntityType<EntityType>> extends PropertyDecoratorConfig<EntityType> {
     /**
      * The function that returns the values that can be possibly referenced.
      */

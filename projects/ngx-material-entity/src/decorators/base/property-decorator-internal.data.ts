@@ -44,7 +44,7 @@ class PositionInternal implements Position {
 /**
  * The internal PropertyDecoratorConfig. Sets default values.
  */
-export abstract class PropertyDecoratorConfigInternal implements PropertyDecoratorConfig {
+export abstract class PropertyDecoratorConfigInternal<ValueType> implements PropertyDecoratorConfig<ValueType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     display: (entity: unknown) => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -61,8 +61,12 @@ export abstract class PropertyDecoratorConfigInternal implements PropertyDecorat
     position: PositionInternal;
     // eslint-disable-next-line jsdoc/require-jsdoc
     isReadOnly: (entity: unknown) => boolean;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    default?: () => ValueType;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    change?: (entity: unknown) => void;
 
-    constructor(data: PropertyDecoratorConfig) {
+    constructor(data: PropertyDecoratorConfig<ValueType>) {
         this.display = this.booleanToFunction(data.display ?? true);
         this.displayName = data.displayName;
         this.required = this.booleanToFunction(data.required ?? true);
@@ -71,6 +75,24 @@ export abstract class PropertyDecoratorConfigInternal implements PropertyDecorat
         this.defaultWidths = data.defaultWidths ?? [6, 6, 12];
         this.position = new PositionInternal(data.position);
         this.isReadOnly = this.booleanToFunction(data.isReadOnly ?? false);
+        this.default = this.defaultToFunction(data.default);
+        this.change = data.change;
+    }
+
+    /**
+     * Converts the default value to a function or undefined.
+     *
+     * @param value - The default value provided by the metadata.
+     * @returns A function that returns a default value or undefined.
+     */
+    protected defaultToFunction(value?: ValueType | (() => ValueType)): (() => ValueType) | undefined {
+        if (value == null) {
+            return undefined;
+        }
+        if (typeof value == 'function') {
+            return value as (() => ValueType);
+        }
+        return (() => value);
     }
 
     /**

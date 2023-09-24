@@ -8,7 +8,7 @@ import { ReferencesOneDecoratorConfig } from './references-one-decorator.data';
  * The internal DefaultNumberDecoratorConfig. Sets default values.
  */
 export class ReferencesOneDecoratorConfigInternal<EntityType extends BaseEntityType<EntityType>>
-    extends PropertyDecoratorConfigInternal implements ReferencesOneDecoratorConfig<EntityType> {
+    extends PropertyDecoratorConfigInternal<EntityType> implements ReferencesOneDecoratorConfig<EntityType> {
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     getReferencedEntities: () => Promise<EntityType[]>;

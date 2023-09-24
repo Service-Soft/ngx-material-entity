@@ -903,7 +903,8 @@ const testEntityData: TestEntityWithoutCustomProperties = {
     customDateValue: new Date(2022, 0, 2, 0, 0, 0, 0),
     dateRangeValue: {
         start: new Date(2022, 0, 1, 0, 0, 0, 0),
-        end: new Date(2022, 0, 20, 0, 0, 0, 0)
+        end: new Date(2022, 0, 20, 0, 0, 0, 0),
+        values: getDatesBetween(new Date(2022, 0, 1, 0, 0, 0, 0), new Date(2022, 0, 20, 0, 0, 0, 0))
     },
     customDateRangeValue: {
         start: new Date(2022, 0, 2, 0, 0, 0, 0),

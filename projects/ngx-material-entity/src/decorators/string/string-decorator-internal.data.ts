@@ -5,7 +5,8 @@ import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, Dropdo
 /**
  * The internal DropdownStringDecoratorConfig. Sets default values.
  */
-export class DropdownStringDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DropdownStringDecoratorConfig {
+export class DropdownStringDecoratorConfigInternal extends PropertyDecoratorConfigInternal<string>
+    implements DropdownStringDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown';
     // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-explicit-any
@@ -30,7 +31,7 @@ export class DropdownStringDecoratorConfigInternal extends PropertyDecoratorConf
 /**
  * The internal DefaultStringDecoratorConfig. Sets default values.
  */
-export class DefaultStringDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DefaultStringDecoratorConfig {
+export class DefaultStringDecoratorConfigInternal extends PropertyDecoratorConfigInternal<string> implements DefaultStringDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'line';
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -52,7 +53,7 @@ export class DefaultStringDecoratorConfigInternal extends PropertyDecoratorConfi
 /**
  * The internal TextboxStringDecoratorConfig. Sets default values.
  */
-export class TextboxStringDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements TextboxStringDecoratorConfig {
+export class TextboxStringDecoratorConfigInternal extends PropertyDecoratorConfigInternal<string> implements TextboxStringDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'textbox';
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -72,7 +73,7 @@ export class TextboxStringDecoratorConfigInternal extends PropertyDecoratorConfi
  * The internal AutocompleteStringDecoratorConfig. Sets default values.
  */
 export class AutocompleteStringDecoratorConfigInternal
-    extends PropertyDecoratorConfigInternal implements AutocompleteStringDecoratorConfig {
+    extends PropertyDecoratorConfigInternal<string> implements AutocompleteStringDecoratorConfig {
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'autocomplete';
@@ -99,7 +100,7 @@ export class AutocompleteStringDecoratorConfigInternal
  * The internal PasswordStringDecoratorConfig. Sets default values.
  */
 export class PasswordStringDecoratorConfigInternal
-    extends PropertyDecoratorConfigInternal implements PasswordStringDecoratorConfig {
+    extends PropertyDecoratorConfigInternal<string> implements PasswordStringDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'password';
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -112,8 +113,6 @@ export class PasswordStringDecoratorConfigInternal
     needsConfirmation: boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
     confirmationDisplayName: string;
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    passwordsDontMatchErrorMessage: string;
 
     constructor(data: PasswordStringDecoratorConfig) {
         super(data);
@@ -123,7 +122,6 @@ export class PasswordStringDecoratorConfigInternal
         this.regex = data.regex;
         this.needsConfirmation = data.needsConfirmation ?? true;
         this.confirmationDisplayName = data.confirmationDisplayName ?? 'Confirm Password';
-        this.passwordsDontMatchErrorMessage = data.passwordsDontMatchErrorMessage ?? 'Passwords need to match!';
         this.defaultWidths = data.defaultWidths ?? [12, 12, 12];
     }
 }

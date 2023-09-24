@@ -4,7 +4,8 @@ import { CheckboxBooleanDecoratorConfig, DropdownBooleanDecoratorConfig, ToggleB
 /**
  * The internal DropdownBooleanDecoratorConfig. Sets default values.
  */
-export class DropdownBooleanDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DropdownBooleanDecoratorConfig {
+export class DropdownBooleanDecoratorConfigInternal extends PropertyDecoratorConfigInternal<boolean>
+    implements DropdownBooleanDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown';
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -23,7 +24,8 @@ export class DropdownBooleanDecoratorConfigInternal extends PropertyDecoratorCon
 /**
  * The internal CheckboxBooleanDecoratorConfig. Sets default values.
  */
-export class CheckboxBooleanDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements CheckboxBooleanDecoratorConfig {
+export class CheckboxBooleanDecoratorConfigInternal extends PropertyDecoratorConfigInternal<boolean>
+    implements CheckboxBooleanDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'checkbox';
 
@@ -37,7 +39,7 @@ export class CheckboxBooleanDecoratorConfigInternal extends PropertyDecoratorCon
 /**
  * The internal ToggleBooleanDecoratorConfig. Sets default values.
  */
-export class ToggleBooleanDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements ToggleBooleanDecoratorConfig {
+export class ToggleBooleanDecoratorConfigInternal extends PropertyDecoratorConfigInternal<boolean> implements ToggleBooleanDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'toggle';
 

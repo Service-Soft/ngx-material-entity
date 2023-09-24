@@ -1,7 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
-import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { BaseEntityType } from '../../../../classes/entity.model';
+import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({
@@ -12,4 +12,8 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 })
 export class NumberSliderInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.NUMBER_SLIDER, number> implements OnInit {
+
+    updatePropertyValue(value: number): void {
+        this.propertyValue = value;
+    }
 }

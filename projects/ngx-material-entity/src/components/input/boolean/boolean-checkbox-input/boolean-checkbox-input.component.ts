@@ -17,4 +17,8 @@ export class BooleanCheckboxInputComponent<EntityType extends BaseEntityType<Ent
         super.ngOnInit();
         this.propertyValue = this.propertyValue ?? false;
     }
+
+    updatePropertyValue(): void {
+        this.propertyValue = this.propertyValue != null ? !this.propertyValue : true;
+    }
 }

@@ -6,7 +6,7 @@ import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 /**
  * Definition for the @referencesMany metadata.
  */
-export interface ReferencesManyDecoratorConfig<EntityType extends BaseEntityType<EntityType>> extends PropertyDecoratorConfig {
+export interface ReferencesManyDecoratorConfig<EntityType extends BaseEntityType<EntityType>> extends PropertyDecoratorConfig<EntityType> {
     /**
      * The function that returns the values that can be referenced.
      */

@@ -12,7 +12,7 @@ import { HasManyDecoratorConfig } from './has-many-decorator.data';
 export class HasManyDecoratorConfigInternal<
     EntityType extends BaseEntityType<EntityType>,
     RelatedBaseEntityType extends BaseEntityType<RelatedBaseEntityType>
-> extends PropertyDecoratorConfigInternal implements HasManyDecoratorConfig<EntityType, RelatedBaseEntityType> {
+> extends PropertyDecoratorConfigInternal<EntityType> implements HasManyDecoratorConfig<EntityType, RelatedBaseEntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     override omitForCreate: true;
     // eslint-disable-next-line jsdoc/require-jsdoc

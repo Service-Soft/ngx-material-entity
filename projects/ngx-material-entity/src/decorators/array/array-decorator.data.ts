@@ -11,7 +11,7 @@ import { DateRange } from '../date/date-decorator.data';
 /**
  * Interface definition for the @array metadata.
  */
-export abstract class ArrayDecoratorConfig extends PropertyDecoratorConfig {
+export abstract class ArrayDecoratorConfig<ValueType> extends PropertyDecoratorConfig<ValueType> {
     /**
      * The type of the items inside the array.
      */
@@ -51,7 +51,7 @@ export interface EditArrayItemDialogData<EntityType extends BaseEntityType<Entit
 /**
  * Definition for an array of Entities.
  */
-export interface EntityArrayDecoratorConfig<EntityType extends BaseEntityType<EntityType>> extends ArrayDecoratorConfig {
+export interface EntityArrayDecoratorConfig<EntityType extends BaseEntityType<EntityType>> extends ArrayDecoratorConfig<EntityType[]> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.OBJECT,
 
@@ -109,7 +109,7 @@ export interface EntityArrayDecoratorConfig<EntityType extends BaseEntityType<En
 /**
  * Definition for an array of Dates.
  */
-export interface DateArrayDecoratorConfig extends ArrayDecoratorConfig {
+export interface DateArrayDecoratorConfig extends ArrayDecoratorConfig<Date[]> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.DATE,
 
@@ -157,7 +157,7 @@ export interface DateArrayDecoratorConfig extends ArrayDecoratorConfig {
 /**
  * Definition for an array of DateTimes.
  */
-export interface DateTimeArrayDecoratorConfig extends ArrayDecoratorConfig {
+export interface DateTimeArrayDecoratorConfig extends ArrayDecoratorConfig<Date[]> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.DATE_TIME,
 
@@ -232,7 +232,7 @@ export interface DateTimeArrayDecoratorConfig extends ArrayDecoratorConfig {
 /**
  * Definition for an array of DateRanges.
  */
-export interface DateRangeArrayDecoratorConfig extends ArrayDecoratorConfig {
+export interface DateRangeArrayDecoratorConfig extends ArrayDecoratorConfig<DateRange[]> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.DATE_RANGE,
 
@@ -298,7 +298,7 @@ export interface DateRangeArrayDecoratorConfig extends ArrayDecoratorConfig {
 /**
  * Definition for an array of strings displayed as a chips list.
  */
-export interface StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
+export interface StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig<string[]> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.STRING,
 
@@ -325,7 +325,7 @@ export interface StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
 /**
  * Definition for an array of autocomplete strings displayed as a chips list.
  */
-export interface AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
+export interface AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecoratorConfig<string[]> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
 

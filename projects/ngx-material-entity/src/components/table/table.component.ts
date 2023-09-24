@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 import { Subject, firstValueFrom, takeUntil } from 'rxjs';
 import { BaseEntityType, Entity } from '../../classes/entity.model';
 import { EntityService } from '../../services/entity.service';
+import { EntityUtilities } from '../../utilities/entity.utilities';
 import { SelectionUtilities } from '../../utilities/selection.utilities';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
@@ -251,7 +252,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         const res: number = await firstValueFrom(
             this.dialog.open(NgxMatEntityEditDialogComponent, {
                 data: dialogData,
-                minWidth: '60%',
+                // minWidth: '60%',
                 autoFocus: false,
                 restoreFocus: false
             }).afterClosed()
@@ -275,11 +276,13 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
                 if (!this.data.baseData.EntityClass) {
                     throw new Error('No "EntityClass" specified for this table');
                 }
+                const entity: EntityType = new this.data.baseData.EntityClass();
+                EntityUtilities.setDefaultValues(entity);
                 if (this.data.baseData.create) {
-                    this.data.baseData.create(new this.data.baseData.EntityClass());
+                    this.data.baseData.create(entity);
                 }
                 else {
-                    this.createDefault(new this.data.baseData.EntityClass());
+                    this.createDefault(entity);
                 }
             }
         });
