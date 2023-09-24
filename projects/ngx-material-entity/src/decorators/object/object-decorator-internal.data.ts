@@ -6,7 +6,7 @@ import { DefaultObjectDecoratorConfig } from './object-decorator.data';
  * The internal DefaultObjectDecoratorConfig. Sets default values.
  */
 export class DefaultObjectDecoratorConfigInternal<EntityType extends BaseEntityType<EntityType>>
-    extends PropertyDecoratorConfigInternal implements DefaultObjectDecoratorConfig<EntityType> {
+    extends PropertyDecoratorConfigInternal<EntityType> implements DefaultObjectDecoratorConfig<EntityType> {
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'inline';

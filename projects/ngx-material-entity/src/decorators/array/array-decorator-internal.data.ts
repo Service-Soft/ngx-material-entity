@@ -33,7 +33,7 @@ export class EditArrayItemDialogDataInternal<EntityType extends BaseEntityType<E
  * The internal EntityArrayDecoratorConfig. Sets default values.
  */
 export class EntityArrayDecoratorConfigInternal<EntityType extends BaseEntityType<EntityType>>
-    extends PropertyDecoratorConfigInternal implements EntityArrayDecoratorConfig<EntityType> {
+    extends PropertyDecoratorConfigInternal<EntityType[]> implements EntityArrayDecoratorConfig<EntityType> {
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.OBJECT;
@@ -78,7 +78,7 @@ export class EntityArrayDecoratorConfigInternal<EntityType extends BaseEntityTyp
 /**
  * The internal DateArrayDecoratorConfig. Sets default values.
  */
-export class DateArrayDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DateArrayDecoratorConfig {
+export class DateArrayDecoratorConfigInternal extends PropertyDecoratorConfigInternal<Date[]> implements DateArrayDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.DATE;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -119,7 +119,7 @@ export class DateArrayDecoratorConfigInternal extends PropertyDecoratorConfigInt
 /**
  * The internal DateTimeArrayDecoratorConfig. Sets default values.
  */
-export class DateTimeArrayDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DateTimeArrayDecoratorConfig {
+export class DateTimeArrayDecoratorConfigInternal extends PropertyDecoratorConfigInternal<Date[]> implements DateTimeArrayDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.DATE_TIME;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -175,7 +175,8 @@ export class DateTimeArrayDecoratorConfigInternal extends PropertyDecoratorConfi
 /**
  * The internal DateRangeArrayDecoratorConfig. Sets default values.
  */
-export class DateRangeArrayDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DateRangeArrayDecoratorConfig {
+export class DateRangeArrayDecoratorConfigInternal extends PropertyDecoratorConfigInternal<DateRange[]>
+    implements DateRangeArrayDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.DATE_RANGE;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -228,7 +229,8 @@ export class DateRangeArrayDecoratorConfigInternal extends PropertyDecoratorConf
 /**
  * The internal StringChipsArrayDecoratorConfig. Sets default values.
  */
-export class StringChipsArrayDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements StringChipsArrayDecoratorConfig {
+export class StringChipsArrayDecoratorConfigInternal extends PropertyDecoratorConfigInternal<string[]>
+    implements StringChipsArrayDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.STRING;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -261,7 +263,7 @@ export class StringChipsArrayDecoratorConfigInternal extends PropertyDecoratorCo
  * The internal AutocompleteStringChipsArrayDecoratorConfig. Sets default values.
  */
 export class AutocompleteStringChipsArrayDecoratorConfigInternal
-    extends PropertyDecoratorConfigInternal implements AutocompleteStringChipsArrayDecoratorConfig {
+    extends PropertyDecoratorConfigInternal<string[]> implements AutocompleteStringChipsArrayDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     autocompleteValues: string[];
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -299,7 +301,7 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
  * @param data - The Array Decorator data.
  * @returns The dialog data with set default values.
  */
-function getDefaultDuplicateErrorDialogData(data: ArrayDecoratorConfig): ConfirmDialogData {
+function getDefaultDuplicateErrorDialogData(data: ArrayDecoratorConfig<unknown[]>): ConfirmDialogData {
     return {
         type: data.duplicatesErrorDialog?.type ?? 'info-only',
         text: data.duplicatesErrorDialog?.text ?? ['Adding duplicate entries to the array is not allowed.'],

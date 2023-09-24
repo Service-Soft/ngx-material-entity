@@ -9,7 +9,6 @@ export * from './components/confirm-dialog/confirm-dialog-data';
 export * from './components/confirm-dialog/confirm-dialog.component';
 export * from './components/edit-page/edit-data.route';
 export * from './components/edit-page/edit-page.component';
-export * from './components/get-validation-error-message.function';
 export * from './components/input/base-input.component';
 export * from './components/input/input.component';
 export * from './components/input/input.module';
@@ -21,6 +20,7 @@ export * from './components/table/edit-dialog/edit-entity-data';
 export * from './components/table/edit-dialog/edit-entity-dialog.component';
 export * from './components/table/table-data';
 export * from './components/table/table.component';
+export * from './components/tooltip/tooltip.component';
 // decorators
 export * from './decorators/array/array-decorator.data';
 export * from './decorators/array/array.decorator';
@@ -47,6 +47,9 @@ export * from './decorators/references-one/references-one-decorator.data';
 export * from './decorators/references-one/references-one.decorator';
 export * from './decorators/string/string-decorator.data';
 export * from './decorators/string/string.decorator';
+// functions
+export * from './functions/get-validation-error-message.function';
+export * from './functions/get-validation-errors-tooltip-content.function.ts';
 // services
 export * from './services/entity.service';
 export * from './services/unsaved-changes.guard';
@@ -54,3 +57,4 @@ export * from './services/unsaved-changes.guard';
 export * from './utilities/date.utilities';
 export * from './utilities/entity.utilities';
 export * from './utilities/file.utilities';
+export * from './utilities/validation.utilities';

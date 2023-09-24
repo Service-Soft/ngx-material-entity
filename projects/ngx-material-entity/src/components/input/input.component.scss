@@ -67,7 +67,17 @@ mat-spinner {
         textarea,
         .mat-mdc-select-disabled,
         .mat-mdc-select-value {
-            color: black;
+            color: black !important;
+        }
+
+        .mdc-checkbox .mdc-checkbox__native-control[disabled]:not(:checked):not(:indeterminate):not([data-indeterminate="true"])~.mdc-checkbox__background {
+            border-color: #707070;
+        }
+
+        .mdc-checkbox .mdc-checkbox__native-control[disabled]:checked~.mdc-checkbox__background,
+        .mdc-checkbox .mdc-checkbox__native-control[disabled]:indeterminate~.mdc-checkbox__background,
+        .mdc-checkbox .mdc-checkbox__native-control[data-indeterminate="true"][disabled]~.mdc-checkbox__background {
+            background-color: black;
         }
 
         .mat-mdc-chip.mat-mdc-standard-chip.mat-mdc-chip-disabled {
@@ -78,8 +88,42 @@ mat-spinner {
             }
         }
 
+        .mdc-switch.mdc-switch--selected:disabled,
+        .mdc-switch.mdc-switch--unselected:disabled {
+            .mdc-switch__icons {
+                opacity: 1;
+            }
+
+            .mdc-switch__handle::after {
+                opacity: 1;
+                background: black;
+            }
+
+            .mdc-switch__track {
+                opacity: 0.3;
+            }
+        }
+
         .mat-date-range-input-inner:disabled {
             color: black;
+        }
+    }
+
+    #slider.mat-mdc-slider.mdc-slider--disabled {
+        opacity: 1;
+
+        .mdc-slider__input {
+            cursor: default;
+        }
+
+        mat-slider-visual-thumb {
+
+            .mat-mdc-slider,
+            .mdc-slider__thumb:hover,
+            .mdc-slider__thumb-knob {
+                background-color: black;
+                border-color: black;
+            }
         }
     }
 

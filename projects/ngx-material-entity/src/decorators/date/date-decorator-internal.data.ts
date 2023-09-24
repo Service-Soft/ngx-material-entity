@@ -3,12 +3,12 @@ import { DateFilterFn } from '@angular/material/datepicker';
 import { DateUtilities } from '../../utilities/date.utilities';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
-import { DateRangeDateDecoratorConfig, DateTimeDateDecoratorConfig, DefaultDateDecoratorConfig } from './date-decorator.data';
+import { DateRange, DateRangeDateDecoratorConfig, DateTimeDateDecoratorConfig, DefaultDateDecoratorConfig } from './date-decorator.data';
 
 /**
  * The internal DefaultDateDecoratorConfig. Sets default values.
  */
-export class DefaultDateDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DefaultDateDecoratorConfig {
+export class DefaultDateDecoratorConfigInternal extends PropertyDecoratorConfigInternal<Date> implements DefaultDateDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'date';
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -30,7 +30,8 @@ export class DefaultDateDecoratorConfigInternal extends PropertyDecoratorConfigI
 /**
  * The internal DateRangeDateDecoratorConfig. Sets default values.
  */
-export class DateRangeDateDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DateRangeDateDecoratorConfig {
+export class DateRangeDateDecoratorConfigInternal extends PropertyDecoratorConfigInternal<DateRange>
+    implements DateRangeDateDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'daterange';
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -64,7 +65,7 @@ export class DateRangeDateDecoratorConfigInternal extends PropertyDecoratorConfi
 /**
  * The internal DateTimeDateDecoratorConfig. Sets default values.
  */
-export class DateTimeDateDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DateTimeDateDecoratorConfig {
+export class DateTimeDateDecoratorConfigInternal extends PropertyDecoratorConfigInternal<Date> implements DateTimeDateDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'datetime';
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -95,5 +96,6 @@ export class DateTimeDateDecoratorConfigInternal extends PropertyDecoratorConfig
         this.minTime = data.minTime;
         this.maxTime = data.maxTime;
         this.filterTime = data.filterTime;
+        this.defaultWidths = [6, 12, 12];
     }
 }

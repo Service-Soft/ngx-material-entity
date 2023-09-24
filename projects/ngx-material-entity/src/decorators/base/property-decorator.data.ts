@@ -6,7 +6,7 @@ export type Col = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 /**
  * The base options for all propertyDecorators.
  */
-export abstract class PropertyDecoratorConfig {
+export abstract class PropertyDecoratorConfig<ValueType> {
     /**
      * Whether or not the Property is displayed at all.
      *
@@ -57,6 +57,15 @@ export abstract class PropertyDecoratorConfig {
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     isReadOnly?: boolean | ((entity: any) => boolean);
+    /**
+     * The value that the property should be prefilled with. Only active in create mode.
+     */
+    default?: ValueType | (() => ValueType);
+    /**
+     * A function that runs just before the inputChangeEvent every time the property is changed.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    change?: (entity: any) => void;
 }
 
 /**

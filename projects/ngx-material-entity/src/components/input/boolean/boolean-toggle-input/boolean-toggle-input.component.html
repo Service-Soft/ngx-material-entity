@@ -2,19 +2,19 @@
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-slide-toggle
         color="primary"
-        (click)="model.control.markAsTouched()"
-        [(ngModel)]="propertyValue"
-        [name]="key.toString() + uuid"
+        (click)="model.control.markAsTouched(); updatePropertyValue(); emitChange();"
         [disabled]="isReadOnly"
+        [checked]="propertyValue"
     >
     </mat-slide-toggle>
     <!-- hidden input is needed so that the toggle can be used inside a mat-form-field -->
     <input matInput hidden
         [(ngModel)]="propertyValue"
-        [name]="key.toString() + 'Helper' + uuid"
+        [name]="key.toString() + uuid"
         #model="ngModel"
         [pattern]="metadata.required(entity) ? 'true' : '[\\s\\S]*'"
         [required]="metadata.required(entity)"
+        [disabled]="isReadOnly"
         (ngModelChange)="emitChange()"
     >
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>

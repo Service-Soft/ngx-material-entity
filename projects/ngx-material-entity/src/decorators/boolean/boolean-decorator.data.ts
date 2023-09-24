@@ -3,7 +3,7 @@ import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 /**
  * The Definition for the @boolean metadata.
  */
-abstract class BooleanDecoratorConfig extends PropertyDecoratorConfig {
+abstract class BooleanDecoratorConfig extends PropertyDecoratorConfig<boolean> {
     /**
      * Whether to display the booleans as a checkbox, a toggle button or as a dropdown.
      */

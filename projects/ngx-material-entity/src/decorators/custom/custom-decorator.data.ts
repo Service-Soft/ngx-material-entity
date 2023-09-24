@@ -1,8 +1,8 @@
-import { NgxMatEntityBaseInputComponent } from '../../components/input/base-input.component';
+import { Type } from '@angular/core';
 import { BaseEntityType } from '../../classes/entity.model';
+import { NgxMatEntityBaseInputComponent } from '../../components/input/base-input.component';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
-import { Type } from '@angular/core';
 
 /**
  * Definition for a custom property. Use this if the provided decorators don't fit your needs.
@@ -12,7 +12,7 @@ export interface CustomDecoratorConfig<
     ValueType,
     CustomMetadataType extends BaseEntityType<CustomMetadataType>,
     ComponentType extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.CUSTOM, ValueType, CustomMetadataType>
-> extends PropertyDecoratorConfig {
+> extends PropertyDecoratorConfig<ValueType> {
     /**
      * The component to use for this input.
      */
@@ -26,7 +26,7 @@ export interface CustomDecoratorConfig<
      *
      * @default () => true
      */
-    isValid?: (value: ValueType, omit: 'create' | 'update') => boolean,
+    isValid?: (value: ValueType, omit?: 'create' | 'update') => boolean,
     /**
      * The function that defines whether or not two of your custom values are equal.
      * Needed for the edit and create dialogs.

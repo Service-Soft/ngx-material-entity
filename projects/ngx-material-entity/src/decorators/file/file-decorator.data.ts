@@ -10,7 +10,7 @@ export type FileData = FileDataWithFile | FileDataWithUrl;
 /**
  * Definition for the @file metadata.
  */
-abstract class FileDecoratorConfig extends PropertyDecoratorConfig {
+abstract class FileDecoratorConfig extends PropertyDecoratorConfig<FileData> {
     /**
      * Specifies whether or not the decorated property can have multiple files.
      */

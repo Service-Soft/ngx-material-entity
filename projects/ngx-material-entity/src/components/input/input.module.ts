@@ -19,6 +19,9 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import { DragDropDirective } from '../../directives/drag-drop.directive';
+import { NumberDirective } from '../../directives/number.directive';
+import { PasswordMatchValidatorDirective } from '../../directives/password-match.directive';
 import { DisplayColumnValueComponent } from '../table/display-column-value/display-column-value.component';
 import { ArrayDateInputComponent } from './array/array-date-input/array-date-input.component';
 import { ArrayDateRangeInputComponent } from './array/array-date-range-input/array-date-range-input.component';
@@ -34,7 +37,6 @@ import { DateRangeInputComponent } from './date/date-range-input/date-range-inpu
 import { DateTimeInputComponent } from './date/date-time-input/date-time-input.component';
 import { FileDefaultInputComponent } from './file/file-default-input/file-default-input.component';
 import { FileImageInputComponent } from './file/file-image-input/file-image-input.component';
-import { DragDropDirective } from './file/file-input/dragDrop.directive';
 import { FileInputComponent } from './file/file-input/file-input.component';
 import { NgxMatEntityInputComponent } from './input.component';
 import { NumberDropdownInputComponent } from './number/number-dropdown-input/number-dropdown-input.component';
@@ -97,7 +99,9 @@ import { StringTextboxInputComponent } from './string/string-textbox-input/strin
         MatProgressSpinnerModule,
         MatPaginatorModule,
         DisplayColumnValueComponent,
-        MatSortModule
+        MatSortModule,
+        PasswordMatchValidatorDirective,
+        NumberDirective
     ],
     exports: [NgxMatEntityInputComponent]
 })

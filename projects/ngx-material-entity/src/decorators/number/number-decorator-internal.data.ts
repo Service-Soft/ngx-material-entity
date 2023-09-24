@@ -5,7 +5,7 @@ import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig, NumberDrop
 /**
  * The internal DefaultNumberDecoratorConfig. Sets default values.
  */
-export class DefaultNumberDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DefaultNumberDecoratorConfig {
+export class DefaultNumberDecoratorConfigInternal extends PropertyDecoratorConfigInternal<number> implements DefaultNumberDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'line';
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -24,7 +24,8 @@ export class DefaultNumberDecoratorConfigInternal extends PropertyDecoratorConfi
 /**
  * The internal DropdownNumberDecoratorConfig. Sets default values.
  */
-export class DropdownNumberDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DropdownNumberDecoratorConfig {
+export class DropdownNumberDecoratorConfigInternal extends PropertyDecoratorConfigInternal<number>
+    implements DropdownNumberDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown';
     // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-explicit-any
@@ -49,7 +50,7 @@ export class DropdownNumberDecoratorConfigInternal extends PropertyDecoratorConf
 /**
  * The internal SliderNumberDecoratorConfig. Sets default values.
  */
-export class SliderNumberDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements SliderNumberDecoratorConfig {
+export class SliderNumberDecoratorConfigInternal extends PropertyDecoratorConfigInternal<number> implements SliderNumberDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'slider';
     // eslint-disable-next-line jsdoc/require-jsdoc

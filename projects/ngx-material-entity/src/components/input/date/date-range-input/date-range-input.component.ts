@@ -13,7 +13,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 const EMPTY_DATERANGE: DateRange = {
     start: undefined as unknown as Date,
     end: undefined as unknown as Date,
-    values: undefined
+    values: undefined as unknown as Date[]
 };
 
 @Component({
@@ -68,10 +68,12 @@ export class DateRangeInputComponent<EntityType extends BaseEntityType<EntityTyp
                 new Date(this.dateRange.end),
                 this.metadata.filter
             );
-            this.dateRange.values = values.length ? values : undefined;
+            this.dateRange.values = values.length ? values : undefined as unknown as Date[];
         }
         else {
-            this.dateRange.values = undefined;
+            this.dateRange.start = undefined as unknown as Date;
+            this.dateRange.end = undefined as unknown as Date;
+            this.dateRange.values = undefined as unknown as Date[];
         }
         this.propertyValue = this.dateRange;
         this.emitChange();
