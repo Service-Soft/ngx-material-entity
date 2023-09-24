@@ -2,19 +2,17 @@
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-checkbox
         color="primary"
-        (ngModelChange)="emitChange()"
-        (click)="model.control.markAsTouched()"
-        [(ngModel)]="propertyValue"
-        [name]="key.toString() + uuid"
+        (click)="model.control.markAsTouched(); updatePropertyValue(); emitChange();"
         [disabled]="isReadOnly"
         [class.disabled]="isReadOnly"
         [class.mat-checkbox-disabled]="false"
+        [checked]="propertyValue"
     >
     </mat-checkbox>
     <!-- hidden input is needed so that the checkbox can be used inside a mat-form-field -->
     <input matInput hidden
         [(ngModel)]="propertyValue"
-        [name]="key.toString() + 'Helper' + uuid"
+        [name]="key.toString() + uuid"
         #model="ngModel"
         [pattern]="metadata.required(entity) ? 'true' : '[\\s\\S]*'"
         [required]="metadata.required(entity)"

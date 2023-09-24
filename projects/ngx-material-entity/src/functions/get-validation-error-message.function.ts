@@ -26,6 +26,10 @@ function getValidationErrorMessage(model: NgModel): string {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         return `needs to be at least ${model.getError('minlength').requiredLength} characters long`;
     }
+    else if (model.hasError('maxlength')) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        return `needs to be at most ${model.getError('maxlength').requiredLength} characters long`;
+    }
     else if (model.hasError('min')) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         return `needs to be equal or bigger than ${model.getError('min').min}`;
@@ -33,6 +37,9 @@ function getValidationErrorMessage(model: NgModel): string {
     else if (model.hasError('max')) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         return `needs to be equal or smaller than ${model.getError('max').max}`;
+    }
+    else if (model.hasError('passwordMatch')) {
+        return 'Passwords need to match!';
     }
     else if (model.hasError('required')) {
         return 'required';

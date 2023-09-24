@@ -20,13 +20,14 @@ import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../../encapsulation/reflect.utilities';
 import { UUIDUtilities } from '../../encapsulation/uuid.utilities';
 import { defaultFalse } from '../../functions/default-false.function';
+import { NGX_GET_VALIDATION_ERROR_MESSAGE } from '../../functions/get-validation-error-message.function';
 import { EntityService } from '../../services/entity.service';
 import { DateUtilities } from '../../utilities/date.utilities';
 import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
 import { SelectionUtilities } from '../../utilities/selection.utilities';
+import { ValidationUtilities } from '../../utilities/validation.utilities';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { NGX_GET_VALIDATION_ERROR_MESSAGE } from '../get-validation-error-message.function';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from '../table/create-dialog/create-dialog-data.builder';
 import { EditActionInternal } from '../table/edit-dialog/edit-data.builder';
 import { DisplayColumn } from '../table/table-data';
@@ -117,7 +118,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     editArrayItemDialogRef!: MatDialogRef<unknown>;
 
     type!: DecoratorTypes;
-    metadata!: PropertyDecoratorConfigInternal;
+    metadata!: PropertyDecoratorConfigInternal<unknown>;
 
     metadataDefaultObject!: DefaultObjectDecoratorConfigInternal<EntityType>;
     objectProperty!: EntityType;
@@ -216,7 +217,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             if (this.internalIsReadOnly || this.metadataDefaultObject?.isReadOnly(property)) {
                 return true;
             }
-            const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(property, key);
+            const metadata: PropertyDecoratorConfigInternal<unknown> = EntityUtilities.getPropertyMetadata(property, key);
             return metadata.isReadOnly(property);
         });
     }
@@ -262,7 +263,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.type = EntityUtilities.getPropertyType(this.internalEntity, this.internalPropertyKey);
         if (this.validEmpty === true) {
             // eslint-disable-next-line max-len
-            const currentMetadata: PropertyDecoratorConfigInternal = ReflectUtilities.getMetadata('metadata', this.internalEntity, this.internalPropertyKey) as PropertyDecoratorConfigInternal;
+            const currentMetadata: PropertyDecoratorConfigInternal<unknown> = ReflectUtilities.getMetadata('metadata', this.internalEntity, this.internalPropertyKey) as PropertyDecoratorConfigInternal<unknown>;
             // eslint-disable-next-line max-len
             ReflectUtilities.defineMetadata('metadata', { ...currentMetadata, required: defaultFalse }, this.internalEntity, this.internalPropertyKey);
         }
@@ -792,7 +793,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * @param omit - Whether values omitted for create or update should be left out.
      */
     checkIsHasManyEntityValid(omit: 'create' | 'update'): void {
-        this.isHasManyEntityValid = EntityUtilities.isEntityValid(this.hasManyEntity, omit);
+        this.isHasManyEntityValid = ValidationUtilities.isEntityValid(this.hasManyEntity, omit);
     }
 
     /**
@@ -814,7 +815,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * Checks if the arrayItem is valid.
      */
     checkIsArrayItemValid(): void {
-        this.isArrayItemValid = EntityUtilities.isEntityValid(this.arrayItem, 'create');
+        this.isArrayItemValid = ValidationUtilities.isEntityValid(this.arrayItem, 'create');
     }
 
     /**

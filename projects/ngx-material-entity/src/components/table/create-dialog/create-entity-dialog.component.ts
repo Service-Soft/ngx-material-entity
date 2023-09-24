@@ -1,15 +1,19 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, Inject, Injector, OnInit } from '@angular/core';
+import { Component, Inject, Injector, OnInit, runInInjectionContext } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BaseEntityType } from '../../../classes/entity.model';
+import { getValidationErrorsTooltipContent } from '../../../functions/get-validation-errors-tooltip-content.function.ts';
 import { EntityService } from '../../../services/entity.service';
 import { EntityTab, EntityUtilities } from '../../../utilities/entity.utilities';
+import { ValidationError, ValidationUtilities } from '../../../utilities/validation.utilities';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { NgxMatEntityInputModule } from '../../input/input.module';
+import { TooltipComponent } from '../../tooltip/tooltip.component';
 import { CreateEntityDialogData } from './create-entity-dialog-data';
 import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from './create-entity-dialog-data.builder';
 
@@ -31,7 +35,9 @@ import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from '.
         MatDialogModule,
         FormsModule,
         MatButtonModule,
-        MatTabsModule
+        MatTabsModule,
+        MatBadgeModule,
+        TooltipComponent
     ]
 })
 export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
@@ -44,6 +50,8 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
     data!: CreateEntityDialogDataInternal<EntityType>;
 
     isEntityValid: boolean = false;
+    validationErrors: ValidationError[] = [];
+    tooltipContent: string = '';
 
     constructor(
         @Inject(MAT_DIALOG_DATA)
@@ -58,13 +66,16 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
         this.dialogRef.disableClose = true;
         this.entityTabs = EntityUtilities.getEntityTabs(this.data.entity, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
+        setTimeout(() => this.checkIsEntityValid(), 1);
     }
 
     /**
      * Checks if the entity is valid.
      */
     checkIsEntityValid(): void {
-        this.isEntityValid = EntityUtilities.isEntityValid(this.data.entity, 'create');
+        this.validationErrors = ValidationUtilities.getEntityValidationErrors(this.data.entity, 'create');
+        this.tooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.validationErrors));
+        this.isEntityValid = this.validationErrors.length === 0;
     }
 
     /**

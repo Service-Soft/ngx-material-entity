@@ -39,9 +39,19 @@
     </mat-dialog-content>
     
     <mat-dialog-actions>
-        <button type="submit" (click)="create()" mat-raised-button [disabled]="!isEntityValid">
-            {{data.createDialogData.createButtonLabel}}
-        </button>
+
+        <div class="d-flex align-items-center gap-3" style="margin-top: 10px;">
+            <button type="submit" (click)="create()" mat-raised-button
+                [disabled]="!isEntityValid"
+                [matBadge]="validationErrors.length"
+                [matBadgeHidden]="!validationErrors.length"
+                matBadgeColor="warn"
+            >
+                {{data.createDialogData.createButtonLabel}}
+            </button>
+            <ngx-mat-entity-tooltip *ngIf="validationErrors.length" [tooltipContent]="tooltipContent"></ngx-mat-entity-tooltip>
+        </div>
+
         <button type="button" mat-raised-button (click)="cancel()" class="cancel-button">
             {{data.createDialogData.cancelButtonLabel}}
         </button>

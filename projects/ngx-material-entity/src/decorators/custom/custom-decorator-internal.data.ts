@@ -1,11 +1,11 @@
 import { Type } from '@angular/core';
-import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { BaseEntityType } from '../../classes/entity.model';
 import { NgxMatEntityBaseInputComponent } from '../../components/input/base-input.component';
+import { LodashUtilities } from '../../encapsulation/lodash.utilities';
+import { defaultTrue } from '../../functions/default-true.function';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { CustomDecoratorConfig } from './custom-decorator.data';
-import { defaultTrue } from '../../functions/default-true.function';
 
 /**
  * The default function to use for checking if the value is dirty.
@@ -27,11 +27,11 @@ export class CustomDecoratorConfigInternal<
     ValueType,
     MetadataType extends BaseEntityType<MetadataType>,
     ComponentType extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.CUSTOM, ValueType, MetadataType>
-> extends PropertyDecoratorConfigInternal implements CustomDecoratorConfig<EntityType, ValueType, MetadataType, ComponentType> {
+> extends PropertyDecoratorConfigInternal<ValueType> implements CustomDecoratorConfig<EntityType, ValueType, MetadataType, ComponentType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     component: Type<ComponentType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    isValid: (value: ValueType, omit: 'create' | 'update') => boolean;
+    isValid: (value: ValueType, omit?: 'create' | 'update') => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc, max-len
     isEqual: (value: ValueType, valuePriorChanges: ValueType, metadata: CustomDecoratorConfig<EntityType, ValueType, MetadataType, ComponentType>) => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc

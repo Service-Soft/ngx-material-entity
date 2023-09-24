@@ -1,7 +1,8 @@
 import { NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, EnvironmentInjector, Inject, OnInit } from '@angular/core';
+import { Component, EnvironmentInjector, Inject, OnInit, runInInjectionContext } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
@@ -9,11 +10,14 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { BaseEntityType } from '../../../classes/entity.model';
 import { PropertyDecoratorConfigInternal } from '../../../decorators/base/property-decorator-internal.data';
 import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
+import { getValidationErrorsTooltipContent } from '../../../functions/get-validation-errors-tooltip-content.function.ts';
 import { EntityService } from '../../../services/entity.service';
 import { EntityTab, EntityUtilities } from '../../../utilities/entity.utilities';
+import { ValidationError, ValidationUtilities } from '../../../utilities/validation.utilities';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { NgxMatEntityInputModule } from '../../input/input.module';
+import { TooltipComponent } from '../../tooltip/tooltip.component';
 import { EditActionInternal } from './edit-data.builder';
 import { EditEntityData } from './edit-entity-data';
 import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-entity.builder';
@@ -38,7 +42,9 @@ import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-entity.bui
         MatButtonModule,
         MatTabsModule,
         NgxMatEntityConfirmDialogComponent,
-        MatMenuModule
+        MatMenuModule,
+        MatBadgeModule,
+        TooltipComponent
     ]
 })
 export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
@@ -54,6 +60,8 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
 
     isEntityValid: boolean = true;
     isEntityDirty: boolean = false;
+    validationErrors: ValidationError[] = [];
+    tooltipContent: string = '';
 
     isEntityReadOnly!: boolean;
     allowDelete!: boolean;
@@ -70,13 +78,14 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
     ngOnInit(): void {
         this.data = new EditEntityDataBuilder(this.inputData).getResult();
         this.entityPriorChanges = LodashUtilities.cloneDeep(this.data.entity);
-        this.injector.runInContext(() => {
+        runInInjectionContext(this.injector, () => {
             this.isEntityReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
             this.allowDelete = this.data.allowDelete(this.entityPriorChanges);
         });
         this.dialogRef.disableClose = true;
         this.entityTabs = EntityUtilities.getEntityTabs(this.data.entity, false, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
+        setTimeout(() => this.checkIsEntityValid(), 1);
     }
 
     /**
@@ -86,8 +95,8 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      * @returns Whether or not the input for the key is read only.
      */
     isReadOnly(key: keyof EntityType): boolean {
-        return this.injector.runInContext(() => {
-            const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(this.data.entity, key);
+        return runInInjectionContext(this.injector, () => {
+            const metadata: PropertyDecoratorConfigInternal<unknown> = EntityUtilities.getPropertyMetadata(this.data.entity, key);
             return this.isEntityReadOnly || metadata.isReadOnly(this.data.entity);
         });
     }
@@ -96,8 +105,14 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      * Checks if the entity has become invalid or dirty.
      */
     async checkEntity(): Promise<void> {
-        this.isEntityValid = EntityUtilities.isEntityValid(this.data.entity, 'update');
+        this.checkIsEntityValid();
         this.isEntityDirty = await EntityUtilities.isDirty(this.data.entity, this.entityPriorChanges, this.http);
+    }
+
+    private checkIsEntityValid(): void {
+        this.validationErrors = ValidationUtilities.getEntityValidationErrors(this.data.entity, 'update');
+        this.tooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.validationErrors));
+        this.isEntityValid = this.validationErrors.length === 0;
     }
 
     /**
@@ -178,7 +193,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      * @param action - The action to run.
      */
     runEditAction(action: EditActionInternal<EntityType>): void {
-        const requireConfirmDialog: boolean = this.injector.runInContext(() => {
+        const requireConfirmDialog: boolean = runInInjectionContext(this.injector, () => {
             return action.requireConfirmDialog(this.entityPriorChanges);
         });
 
@@ -199,7 +214,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
     }
 
     private confirmRunEditAction(action: EditActionInternal<EntityType>): void {
-        void this.injector.runInContext(async () => {
+        void runInInjectionContext(this.injector, async () => {
             await action.action(this.data.entity, this.entityPriorChanges);
             await this.checkEntity();
         });
@@ -212,8 +227,6 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      * @returns Whether or not the Action can be used.
      */
     editActionDisabled(action: EditActionInternal<EntityType>): boolean {
-        return this.injector.runInContext(() => {
-            return !action.enabled(this.entityPriorChanges);
-        });
+        return runInInjectionContext(this.injector, () => !action.enabled(this.entityPriorChanges));
     }
 }

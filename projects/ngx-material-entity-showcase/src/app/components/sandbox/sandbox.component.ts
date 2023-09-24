@@ -47,7 +47,8 @@ class Address extends Entity {
         displayStyle: 'line',
         regex: new RegExp('^[0-9]+$'),
         maxLength: 5,
-        minLength: 5
+        minLength: 5,
+        change: (entity: Address) => entity.city = undefined as unknown as string
     })
     postcode!: string;
 
@@ -105,13 +106,15 @@ export class Person extends Entity {
 
     @string({
         displayName: 'First Name',
-        displayStyle: 'line'
+        displayStyle: 'line',
+        default: 'James'
     })
     firstName!: string;
 
     @string({
         displayName: 'Last Name',
-        displayStyle: 'line'
+        displayStyle: 'line',
+        default: () => 'Smith'
     })
     lastName!: string;
 

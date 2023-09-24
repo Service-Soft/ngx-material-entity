@@ -17,9 +17,6 @@
                 {{data.editData.cancelButtonLabel}}
                 <i class="fas fa-warning" *ngIf="hasUnsavedChanges"></i>
             </button>
-            <button type="button" class="save-button" (click)="edit()" mat-raised-button [disabled]="isEntityReadOnly || !isEntityValid || !isEntityDirty">
-                {{data.editData.confirmButtonLabel}}
-            </button>
         </div>
         <div class="actions-container">
             <button *ngIf="data.editData.actions.length" type="button" [matMenuTriggerFor]="menu" mat-raised-button>
@@ -78,9 +75,19 @@
             </div>
         </div>
 
-        <button type="submit" (click)="edit()" mat-raised-button [disabled]="isEntityReadOnly || !isEntityValid || !isEntityDirty">
-            {{data.editData.confirmButtonLabel}}
-        </button>
+        <div class="bottom-row-container">
+            <div class="bottom-row container" style="margin-top: 10px;">
+                <button type="submit" (click)="edit()" mat-raised-button
+                    [disabled]="isEntityReadOnly || !isEntityValid || !isEntityDirty"
+                    [matBadge]="validationErrors.length"
+                    [matBadgeHidden]="!validationErrors.length"
+                    matBadgeColor="warn"
+                >
+                    {{data.editData.confirmButtonLabel}}
+                </button>
+                <ngx-mat-entity-tooltip *ngIf="validationErrors.length" [tooltipContent]="tooltipContent"></ngx-mat-entity-tooltip>
+            </div>
+        </div>
     </form>
 
     <br>

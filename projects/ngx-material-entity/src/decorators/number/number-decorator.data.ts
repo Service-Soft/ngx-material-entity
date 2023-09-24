@@ -12,7 +12,7 @@ export type NumberDropdownValues =
 /**
  * Definition for the @number metadata.
  */
-abstract class NumberDecoratorConfig extends PropertyDecoratorConfig {
+abstract class NumberDecoratorConfig extends PropertyDecoratorConfig<number> {
     /**
      * Whether to display the number in a single line or as a dropdown.
      */

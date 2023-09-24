@@ -1,6 +1,7 @@
 import { Location, NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, EnvironmentInjector, HostListener, Inject, InjectionToken, OnInit } from '@angular/core';
+import { Component, ElementRef, EnvironmentInjector, HostListener, Inject, InjectionToken, OnInit, Renderer2, runInInjectionContext } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
@@ -11,8 +12,10 @@ import { Observable, first, map } from 'rxjs';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
+import { getValidationErrorsTooltipContent } from '../../functions/get-validation-errors-tooltip-content.function.ts';
 import { EntityService } from '../../services/entity.service';
 import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
+import { ValidationError, ValidationUtilities } from '../../utilities/validation.utilities';
 import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
@@ -20,6 +23,7 @@ import { NgxMatEntityInputModule } from '../input/input.module';
 import { EditActionInternal } from '../table/edit-dialog/edit-data.builder';
 import { EditEntityData } from '../table/edit-dialog/edit-entity-data';
 import { EditData } from '../table/table-data';
+import { TooltipComponent } from '../tooltip/tooltip.component';
 import { PageEditDataBuilder, PageEditDataInternal } from './page-edit-data.builder';
 
 /**
@@ -82,7 +86,9 @@ export const NGX_EDIT_DATA: InjectionToken<PageEditData<any>> = new InjectionTok
         MatTabsModule,
         NgxMatEntityInputModule,
         MatProgressSpinnerModule,
-        MatMenuModule
+        MatMenuModule,
+        MatBadgeModule,
+        TooltipComponent
     ]
 })
 export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
@@ -96,8 +102,10 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
 
     data!: PageEditDataInternal<EntityType>;
 
+    validationErrors: ValidationError[] = [];
     isEntityValid: boolean = true;
     isEntityDirty: boolean = false;
+    tooltipContent: string = '';
 
     isEntityReadOnly!: boolean;
     allowDelete!: boolean;
@@ -120,7 +128,9 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
         private readonly EntityClass: EntityClassNewable<EntityType>,
         @Inject(NGX_EDIT_DATA)
         private readonly inputData: PageEditData<EntityType>,
-        private readonly http: HttpClient
+        private readonly http: HttpClient,
+        private readonly el: ElementRef,
+        private readonly renderer: Renderer2
     ) { }
 
     /**
@@ -130,8 +140,8 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
      * @returns Whether or not the input for the key is read only.
      */
     isReadOnly(key: keyof EntityType): boolean {
-        return this.injector.runInContext(() => {
-            const metadata: PropertyDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(this.entity, key);
+        return runInInjectionContext(this.injector, () => {
+            const metadata: PropertyDecoratorConfigInternal<unknown> = EntityUtilities.getPropertyMetadata(this.entity, key);
             return this.isEntityReadOnly || metadata.isReadOnly(this.entity);
         });
     }
@@ -154,11 +164,39 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
         this.entity = new this.EntityClass(foundEntity);
         this.entityPriorChanges = LodashUtilities.cloneDeep(this.entity);
 
-        this.injector.runInContext(() => {
+        runInInjectionContext(this.injector, () => {
             this.isEntityReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
             this.allowDelete = this.data.allowDelete(this.entityPriorChanges);
         });
         this.entityTabs = EntityUtilities.getEntityTabs(this.entity, false, true);
+        setTimeout(() => this.checkOffset(), 1);
+        setTimeout(() => this.checkIsEntityValid(), 1);
+    }
+
+    /**
+     * Checks if the bottom row should be displayed as fixed.
+     */
+    @HostListener('window:scroll')
+    onScroll(): void {
+        this.checkOffset();
+    }
+
+    private checkOffset(): void {
+        const scrollY: number = window.scrollY;
+        const bottomRow: HTMLElement | null = (this.el.nativeElement as HTMLElement).querySelector('.bottom-row');
+        const bottomRowContainer: HTMLElement | null = (this.el.nativeElement as HTMLElement).querySelector('.bottom-row-container');
+
+        if (bottomRow && bottomRowContainer) {
+            const bottomRowContainerOffset: number = bottomRowContainer.offsetTop;
+            const windowHeight: number = window.innerHeight;
+
+            if (scrollY + windowHeight >= bottomRowContainerOffset) {
+                this.renderer.removeClass(bottomRow, 'fixed');
+            }
+            else {
+                this.renderer.addClass(bottomRow, 'fixed');
+            }
+        }
     }
 
     /**
@@ -175,8 +213,14 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
      * Checks if the entity has become invalid or dirty.
      */
     async checkEntity(): Promise<void> {
-        this.isEntityValid = EntityUtilities.isEntityValid(this.entity, 'update');
+        this.checkIsEntityValid();
         this.isEntityDirty = await EntityUtilities.isDirty(this.entity, this.entityPriorChanges, this.http);
+    }
+
+    private checkIsEntityValid(): void {
+        this.validationErrors = ValidationUtilities.getEntityValidationErrors(this.entity, 'update');
+        this.tooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.validationErrors));
+        this.isEntityValid = this.validationErrors.length === 0;
     }
 
     /**

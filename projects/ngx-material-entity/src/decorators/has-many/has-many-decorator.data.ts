@@ -10,7 +10,7 @@ import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 export interface HasManyDecoratorConfig<
     EntityType extends BaseEntityType<EntityType>,
     RelatedBaseEntityType extends BaseEntityType<RelatedBaseEntityType>
-> extends PropertyDecoratorConfig {
+> extends PropertyDecoratorConfig<EntityType> {
     /**
      * Whether or not the property gets omitted when creating new Entities.
      *

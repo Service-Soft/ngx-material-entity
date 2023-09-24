@@ -1,7 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
-import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { BaseEntityType } from '../../../../classes/entity.model';
+import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({
@@ -16,5 +16,9 @@ export class BooleanToggleInputComponent<EntityType extends BaseEntityType<Entit
     override ngOnInit(): void {
         super.ngOnInit();
         this.propertyValue = this.propertyValue ?? false;
+    }
+
+    updatePropertyValue(): void {
+        this.propertyValue = this.propertyValue != null ? !this.propertyValue : true;
     }
 }

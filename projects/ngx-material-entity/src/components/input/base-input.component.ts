@@ -69,6 +69,7 @@ export abstract class NgxMatEntityBaseInputComponent<
     // eslint-disable-next-line jsdoc/require-jsdoc
     set propertyValue(value: ValueType | undefined) {
         (this.entity[this.key] as ValueType | undefined) = value;
+        this.metadata.change?.(this.entity);
     }
 
     /**

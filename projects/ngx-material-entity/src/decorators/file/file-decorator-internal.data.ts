@@ -1,6 +1,6 @@
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
-import { DefaultFileDecoratorConfig, ImageFileDecoratorConfig } from './file-decorator.data';
+import { DefaultFileDecoratorConfig, FileData, ImageFileDecoratorConfig } from './file-decorator.data';
 
 /**
  * Contains data about a file property where a blob exists.
@@ -61,7 +61,7 @@ export interface FileDataWithUrl {
 /**
  * The internal DefaultFileDecoratorConfig. Sets default values.
  */
-export class DefaultFileDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements DefaultFileDecoratorConfig {
+export class DefaultFileDecoratorConfigInternal extends PropertyDecoratorConfigInternal<FileData> implements DefaultFileDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     type: 'other';
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -104,7 +104,7 @@ export class DefaultFileDecoratorConfigInternal extends PropertyDecoratorConfigI
 /**
  * The internal ImageFileDecoratorConfig. Sets default values.
  */
-export class ImageFileDecoratorConfigInternal extends PropertyDecoratorConfigInternal implements ImageFileDecoratorConfig {
+export class ImageFileDecoratorConfigInternal extends PropertyDecoratorConfigInternal<FileData> implements ImageFileDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     type: 'image';
     // eslint-disable-next-line jsdoc/require-jsdoc

@@ -1,3 +1,5 @@
+$dot-diameter: 25px;
+
 .file-input {
     margin-top: 15px;
     margin-bottom: 15px;
@@ -53,34 +55,38 @@
 }
 
 .preview-nav {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 5px;
 
     button {
-        display: inline-block;
-        width: 18px;
-        height: 18px;
-        margin-left: 5px;
-        margin-right: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0px;
+        height: auto;
+        width: auto;
 
         .dot {
-            height: 100%;
-            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: $dot-diameter;
+            width: $dot-diameter;
+            min-width: $dot-diameter;
             background-color: rgba(black, .38);
             border-radius: 50%;
-            display: block;
+
+            .image-index {
+                color: white;
+                font-size: calc($dot-diameter * 0.8);
+                font-weight: 600;
+            }
         }
 
         .dot.selected {
-            background-color: rgba(0, 0, 0, .54);
-        }
-
-        .image-index {
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            display: block;
-            top: -11.5px;
-            color: white;
+            background-color: rgba(black, .54);
         }
     }
 

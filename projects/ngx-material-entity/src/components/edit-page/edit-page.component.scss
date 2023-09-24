@@ -13,6 +13,29 @@ mat-spinner {
     color: orange;
 }
 
+.bottom-row {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+}
+
+.fixed {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: white;
+    // box-shadow: 0 0 5px -1px #0003, 0 0 8px 5px #00000024, 0 0 14px 8px #0000001f;
+
+}
+
 .no-entity-tabs {
     padding: 10px;
     background-color: red;
@@ -32,6 +55,7 @@ mat-spinner {
     .save-cancel-container {
         display: flex;
         justify-content: flex-start;
+        align-items: center;
         column-gap: 10px;
         width: calc(50% - 10px);
     }

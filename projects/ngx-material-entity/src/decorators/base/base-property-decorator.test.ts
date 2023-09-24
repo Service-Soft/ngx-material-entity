@@ -17,6 +17,7 @@ describe('baseProperty', () => {
         expect(metadata.omitForCreate).toBe(true);
         expect(metadata.omitForUpdate).toBe(true);
         expect(metadata.required).toBe(defaultTrue);
+        expect(metadata.change).toBe(undefined);
     });
 
     test('should throw error for incorrect order metadata', () => {

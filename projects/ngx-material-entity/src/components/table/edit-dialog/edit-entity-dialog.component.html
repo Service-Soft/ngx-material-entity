@@ -56,9 +56,19 @@
     </mat-dialog-content>
     
     <mat-dialog-actions>
-        <button type="submit" (click)="edit()" mat-raised-button [disabled]="isEntityReadOnly || !isEntityValid || !isEntityDirty">
-            {{data.editData.confirmButtonLabel}}
-        </button>
+        <div class="d-flex align-items-center gap-3" style="margin-top: 10px;">
+            <button type="submit" (click)="edit()" mat-raised-button
+                [disabled]="isEntityReadOnly || !isEntityValid || !isEntityDirty"
+                [matBadge]="validationErrors.length"
+                [matBadgeHidden]="!validationErrors.length"
+                matBadgeColor="warn"
+            >
+                {{data.editData.confirmButtonLabel}}
+            </button>
+            <ngx-mat-entity-tooltip *ngIf="validationErrors.length" [tooltipContent]="tooltipContent"></ngx-mat-entity-tooltip>
+        </div>
+
+
         <button type="button" mat-raised-button (click)="cancel()" class="cancel-button">
             {{data.editData.cancelButtonLabel}}
         </button>

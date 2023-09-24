@@ -20,13 +20,13 @@ export interface DateRange {
      * E.g. When you build a tool to request vacation you may want the user to select 3 weeks in the range picker
      * but don't want the weekend dates in the final result.
      */
-    values?: Date[]
+    values: Date[]
 }
 
 /**
  * Definition for the @date metadata.
  */
-abstract class DateDecoratorConfig extends PropertyDecoratorConfig {
+abstract class DateDecoratorConfig<ValueType> extends PropertyDecoratorConfig<ValueType> {
     /**
      * How to display the date.
      */
@@ -36,7 +36,7 @@ abstract class DateDecoratorConfig extends PropertyDecoratorConfig {
 /**
  * The configuration options for a date property displayed as a default single date picker.
  */
-export interface DefaultDateDecoratorConfig extends DateDecoratorConfig {
+export interface DefaultDateDecoratorConfig extends DateDecoratorConfig<Date> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'date',
     /**
@@ -56,7 +56,7 @@ export interface DefaultDateDecoratorConfig extends DateDecoratorConfig {
 /**
  * The configuration options for a date property displayed as a date range.
  */
-export interface DateRangeDateDecoratorConfig extends DateDecoratorConfig {
+export interface DateRangeDateDecoratorConfig extends DateDecoratorConfig<DateRange> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'daterange',
     /**
@@ -96,7 +96,7 @@ export interface DateRangeDateDecoratorConfig extends DateDecoratorConfig {
 /**
  * The configuration options for a date property displayed as date time.
  */
-export interface DateTimeDateDecoratorConfig extends DateDecoratorConfig {
+export interface DateTimeDateDecoratorConfig extends DateDecoratorConfig<Date> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'datetime',
     /**
