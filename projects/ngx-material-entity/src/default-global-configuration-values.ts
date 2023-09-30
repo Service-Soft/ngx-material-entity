@@ -1,13 +1,6 @@
 import { InjectionToken, inject } from '@angular/core';
 import { NGX_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from './global-configuration-values';
 
-// TODO space between actions and delete button in hasMany/array/references many?
-// TODO space between button and validation error tooltip icon
-// TODO add validation error tooltip to input.component.ts inline dialogs
-// TODO fix tooltip not showing in add array item dialog.
-// Its related to the top value not being correctly calculated on te edit page (is above the viewport).
-// TODO update default values: Entity Array, Other Arrays
-
 export const defaultGlobalDefaults: NgxGlobalDefaultValues = {
     createLabel: 'Create',
     editLabel: 'Edit',

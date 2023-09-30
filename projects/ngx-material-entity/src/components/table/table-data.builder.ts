@@ -89,7 +89,7 @@ export class MultiSelectActionInternal<EntityType extends BaseEntityType<EntityT
         this.enabled = data.enabled ?? ((entities: EntityType[]) => !!entities.length);
         this.requireConfirmDialog = data.requireConfirmDialog ?? defaultFalse;
         this.confirmDialogData = new ConfirmDialogDataBuilder(this.globalConfig, data.confirmDialogData)
-            .withDefault('text', globalConfig.confirmBaseActionText) // TODO: Find a way to use confirmMultiSelectActionText here
+            .withDefault('text', globalConfig.confirmBaseActionText)
             .getResult();
     }
 

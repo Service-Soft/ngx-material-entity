@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
 /* eslint-disable no-console */
 import { expect } from '@jest/globals';
+import { defaultGlobalDefaults } from '../../default-global-configuration-values';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../../mocks/test-entity.interface';
 import { TestEntityService } from '../../services/entity.service.test';
 import { ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { TableData } from './table-data';
 import { BaseTableActionInternal, MultiSelectActionInternal, TableDataBuilder, TableDataInternal, defaultSearchFunction } from './table-data.builder';
-import { defaultGlobalDefaults } from '../../default-global-configuration-values';
 
 const baseTableData: TableData<TestEntityWithoutCustomProperties> = {
     baseData: {
@@ -132,7 +132,6 @@ describe('generateBaseData', () => {
         const action2Res: unknown = await tableData.baseData.tableActions[1].action([{} as TestEntityWithoutCustomProperties]);
         expect(action2Res).toBe(1);
         expect(tableData.baseData.tableActions[2]).toBeInstanceOf(MultiSelectActionInternal);
-        // eslint-disable-next-line max-len
         const action3Res: unknown = await tableData.baseData.tableActions[1].action([{} as TestEntityWithoutCustomProperties, {} as TestEntityWithoutCustomProperties]);
         expect(action3Res).toBe(2);
     });

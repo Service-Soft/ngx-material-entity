@@ -353,29 +353,6 @@ export abstract class EntityUtilities {
         return res;
     }
 
-    // TODO Remove
-    /**
-     * Compares two Entities and returns their difference in an object.
-     *
-     * @param entity - The first entity to compare.
-     * @param entityPriorChanges - The second entity to compare.
-     * @returns The difference between the two Entities in form of a Partial.
-     */
-    // static async difference<EntityType extends BaseEntityType<EntityType>>(
-    //     entity: EntityType,
-    //     entityPriorChanges: EntityType
-    // ): Promise<Partial<EntityType>> {
-    //     const res: Partial<EntityType> = {};
-    //     for (const key in entity) {
-    //         const metadata: PropertyDecoratorConfigInternal = this.getPropertyMetadata(entity, key);
-    //         const type: DecoratorTypes = this.getPropertyType(entity, key);
-    //         if (!(await this.isEqual(entity[key], entityPriorChanges[key], metadata, type))) {
-    //             res[key] = entity[key];
-    //         }
-    //     }
-    //     return res;
-    // }
-
     /**
      * Checks if two given values are equal.
      * It uses the isEqual method from LodashUtilities and extends it with functionality regarding Dates.
