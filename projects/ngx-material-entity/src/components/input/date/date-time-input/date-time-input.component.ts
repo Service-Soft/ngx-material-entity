@@ -1,11 +1,15 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Time } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { DateFilterFn } from '@angular/material/datepicker';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
+import { DateTimeDateDecoratorConfigInternal } from '../../../../decorators/date/date-decorator-internal.data';
+import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../../default-global-configuration-values';
 import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
+import { defaultTrue } from '../../../../functions/default-true.function';
+import { NgxGlobalDefaultValues } from '../../../../global-configuration-values';
 import { DateUtilities } from '../../../../utilities/date.utilities';
 import { EntityUtilities } from '../../../../utilities/entity.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
@@ -31,10 +35,18 @@ export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType
         ReflectUtilities.defineMetadata(EntityUtilities.TIME_KEY, value, this.entity, this.key);
     }
 
-    defaultDateFilter: DateFilterFn<Date | null | undefined> = (): boolean => true;
+    defaultDateFilter: DateFilterFn<Date | null | undefined> = defaultTrue;
+
+    constructor(
+        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        private readonly globalConfig: NgxGlobalDefaultValues
+    ) {
+        super();
+    }
 
     override ngOnInit(): void {
         super.ngOnInit();
+        this.metadata = new DateTimeDateDecoratorConfigInternal(this.metadata, this.globalConfig);
         this.time = DateUtilities.getTimeFromDate(this.propertyValue);
         this.timeDropdownValues = this.metadata.times;
         if (this.propertyValue) {

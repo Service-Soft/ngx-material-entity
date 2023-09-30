@@ -28,7 +28,7 @@ describe('baseProperty', () => {
                         displayStyle: 'line',
                         displayName: 'Wrong Order Value',
                         position: {
-                            order: -1
+                            order: 0
                         }
                     })
                     wrongOrderValue!: string;
@@ -66,7 +66,7 @@ describe('baseProperty', () => {
                     wrongOrderValue: '42'
                 });
             }
-        ).toThrow('order cannot be bigger than 12 (the minimum value for a bootstrap column)');
+        ).toThrow('order cannot be bigger than 12 (the maximum value for a bootstrap column)');
     });
 
     test('should throw error for incorrect row metadata', () => {
@@ -77,7 +77,7 @@ describe('baseProperty', () => {
                         displayStyle: 'line',
                         displayName: 'Wrong Row Value',
                         position: {
-                            row: -1
+                            row: 0
                         }
                     })
                     wrongRowValue!: string;

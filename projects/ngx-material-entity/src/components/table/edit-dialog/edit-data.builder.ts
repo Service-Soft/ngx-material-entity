@@ -1,8 +1,12 @@
+import { Inject } from '@angular/core';
 import { BaseBuilder } from '../../../classes/base.builder';
 import { BaseEntityType } from '../../../classes/entity.model';
+import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../default-global-configuration-values';
 import { defaultFalse } from '../../../functions/default-false.function';
 import { defaultTrue } from '../../../functions/default-true.function';
+import { getConfigValue } from '../../../functions/get-config-value.function';
 import { isAsyncFunction } from '../../../functions/is-async-function.function';
+import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
 import { ConfirmDialogData } from '../../confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { EditAction, EditData } from '../table-data';
@@ -23,13 +27,17 @@ export class EditActionInternal<EntityType extends BaseEntityType<EntityType>> i
     // eslint-disable-next-line jsdoc/require-jsdoc
     confirmDialogData: ConfirmDialogData;
 
-    constructor(data: EditAction<EntityType>) {
+    constructor(
+        data: EditAction<EntityType>,
+        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        protected readonly globalConfig: NgxGlobalDefaultValues
+    ) {
         this.displayName = data.displayName;
         this.action = this.functionToAsync(data.action);
         this.enabled = data.enabled ?? defaultTrue;
         this.requireConfirmDialog = data.requireConfirmDialog ?? defaultFalse;
-        this.confirmDialogData = new ConfirmDialogDataBuilder(data.confirmDialogData)
-            .withDefault('text', ['Do you really want to run this action?'])
+        this.confirmDialogData = new ConfirmDialogDataBuilder(this.globalConfig, data.confirmDialogData)
+            .withDefault('text', globalConfig.confirmBaseActionText)
             .getResult();
     }
 
@@ -86,7 +94,9 @@ export class EditDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         confirmDeleteDialogData: ConfirmDialogData,
         confirmEditDialogData: ConfirmDialogData,
         actionsLabel: string,
-        actions: EditAction<EntityType>[]
+        actions: EditAction<EntityType>[],
+        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        globalConfig: NgxGlobalDefaultValues
     ) {
         this.title = title;
         this.confirmButtonLabel = confirmButtonLabel;
@@ -97,7 +107,7 @@ export class EditDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         this.confirmDeleteDialogData = confirmDeleteDialogData;
         this.confirmEditDialogData = confirmEditDialogData;
         this.actionsLabel = actionsLabel;
-        this.actions = actions.map(a => new EditActionInternal(a));
+        this.actions = actions.map(a => new EditActionInternal(a, globalConfig));
     }
 }
 
@@ -107,36 +117,43 @@ export class EditDataInternal<EntityType extends BaseEntityType<EntityType>> imp
 export class EditDialogDataBuilder<EntityType extends BaseEntityType<EntityType>>
     extends BaseBuilder<EditDataInternal<EntityType>, EditData<EntityType>> {
 
-    constructor(data?: EditData<EntityType>) {
-        super(data);
+    constructor(globalConfig: NgxGlobalDefaultValues, data?: EditData<EntityType>) {
+        super(globalConfig, data);
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected generateBaseData(data?: EditData<EntityType>): EditDataInternal<EntityType> {
-        const confirmEditDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(data?.confirmEditDialogData)
-            .withDefault('confirmButtonLabel', 'Save')
-            .withDefault('text', ['Do you really want to save all changes?'])
-            .withDefault('title', 'Edit')
+        const confirmEditDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(
+            this.globalConfig,
+            data?.confirmEditDialogData
+        )
+            .withDefault('confirmButtonLabel', this.globalConfig.saveLabel)
+            .withDefault('text', this.globalConfig.confirmSaveText)
+            .withDefault('title', this.globalConfig.editLabel)
             .getResult();
 
-        const confirmDeleteDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(data?.confirmDeleteDialogData)
-            .withDefault('confirmButtonLabel', 'Delete')
+        const confirmDeleteDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(
+            this.globalConfig,
+            data?.confirmDeleteDialogData
+        )
+            .withDefault('confirmButtonLabel', this.globalConfig.deleteLabel)
             .withDefault('type', 'delete')
-            .withDefault('text', ['Do you really want to delete this entity?'])
-            .withDefault('title', 'Delete')
+            .withDefault('text', this.globalConfig.confirmDeleteText)
+            .withDefault('title', this.globalConfig.deleteLabel)
             .getResult();
 
         return new EditDataInternal(
-            data?.title ?? (() => 'Edit'),
-            data?.confirmButtonLabel ?? 'Save',
-            data?.deleteButtonLabel ?? 'Delete',
-            data?.cancelButtonLabel ?? 'Cancel',
+            getConfigValue(this.globalConfig.editTitle, data?.title),
+            getConfigValue(this.globalConfig.saveLabel, data?.confirmButtonLabel),
+            getConfigValue(this.globalConfig.deleteLabel, data?.deleteButtonLabel),
+            getConfigValue(this.globalConfig.cancelLabel, data?.cancelButtonLabel),
             data?.deleteRequiresConfirmDialog ?? true,
             data?.editRequiresConfirmDialog ?? false,
             confirmDeleteDialogData,
             confirmEditDialogData,
-            data?.actionsLabel ?? 'Actions',
-            data?.actions ?? []
+            getConfigValue(this.globalConfig.actionsLabel, data?.actionsLabel),
+            data?.actions ?? [],
+            this.globalConfig
         );
     }
 }

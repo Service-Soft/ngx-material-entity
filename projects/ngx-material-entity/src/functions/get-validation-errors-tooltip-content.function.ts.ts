@@ -17,14 +17,10 @@ export const NGX_VALIDATION_ERRORS_TOOLTIP_TITLE: InjectionToken<string> = new I
  */
 export function getValidationErrorsTooltipContent(validationErrors: ValidationError[]): string {
     const title: string = inject(NGX_VALIDATION_ERRORS_TOOLTIP_TITLE);
-    let res: string = `
-        ${title}
-        <br>
-        <ul style="margin-bottom: 0px; padding-left: 16px;">
-    `;
+    let res: string = `${title}\n<br>\n<ul style="margin-bottom: 0px; padding-left: 16px;">`;
     for (const error of validationErrors) {
-        res = res.concat(`<li>${error.property}</li>`);
+        res = res.concat(`\n\t<li>${error.property}</li>`);
     }
-    res = res.concat('</ul>');
+    res = res.concat('\n</ul>');
     return res;
 }

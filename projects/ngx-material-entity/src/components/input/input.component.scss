@@ -17,6 +17,11 @@
     }
 }
 
+.actions-container {
+    display: flex;
+    gap: 10px;
+}
+
 ::ng-deep {
     .mdc-dialog .mdc-dialog__content {
         padding-bottom: 6px !important;

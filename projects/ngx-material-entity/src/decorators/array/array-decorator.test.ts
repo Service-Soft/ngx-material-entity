@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { expect } from '@jest/globals';
 import { Entity } from '../../classes/entity.model';
+import { defaultGlobalDefaults } from '../../default-global-configuration-values';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../../mocks/test-entity.interface';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
@@ -12,7 +13,8 @@ const testEntity: TestEntityWithoutCustomProperties = new TestEntityWithoutCusto
 
 test('should have array Metadata', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const metadata: EntityArrayDecoratorConfigInternal<any> = EntityUtilities.getPropertyMetadata(testEntity, 'entityArrayValue', DecoratorTypes.ARRAY);
+    let metadata: EntityArrayDecoratorConfigInternal<any> = EntityUtilities.getPropertyMetadata(testEntity, 'entityArrayValue', DecoratorTypes.ARRAY);
+    metadata = new EntityArrayDecoratorConfigInternal(metadata, defaultGlobalDefaults);
     expect(metadata).toBeDefined();
     expect(metadata.EntityClass).toBeDefined();
     expect(metadata.itemType).toEqual(DecoratorTypes.OBJECT);

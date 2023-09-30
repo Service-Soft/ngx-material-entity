@@ -6,7 +6,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BaseEntityType } from '../../../classes/entity.model';
+import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../default-global-configuration-values';
 import { getValidationErrorsTooltipContent } from '../../../functions/get-validation-errors-tooltip-content.function.ts';
+import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
 import { EntityService } from '../../../services/entity.service';
 import { EntityTab, EntityUtilities } from '../../../utilities/entity.utilities';
 import { ValidationError, ValidationUtilities } from '../../../utilities/validation.utilities';
@@ -58,11 +60,13 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
         private readonly inputData: CreateEntityDialogData<EntityType>,
         public dialogRef: MatDialogRef<NgxMatEntityCreateDialogComponent<EntityType>>,
         private readonly injector: Injector,
-        private readonly dialog: MatDialog
+        private readonly dialog: MatDialog,
+        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        protected readonly globalConfig: NgxGlobalDefaultValues
     ) {}
 
     ngOnInit(): void {
-        this.data = new CreateEntityDialogDataBuilder(this.inputData).getResult();
+        this.data = new CreateEntityDialogDataBuilder(this.inputData, this.globalConfig).getResult();
         this.dialogRef.disableClose = true;
         this.entityTabs = EntityUtilities.getEntityTabs(this.data.entity, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
@@ -90,10 +94,13 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
             this.confirmCreate();
             return;
         }
-        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.createDialogData.confirmCreateDialogData)
-            .withDefault('text', ['Do you really want to create this entity?'])
-            .withDefault('confirmButtonLabel', 'Create')
-            .withDefault('title', 'Create')
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(
+            this.globalConfig,
+            this.data.createDialogData.confirmCreateDialogData
+        )
+            .withDefault('text', this.globalConfig.confirmCreateText)
+            .withDefault('confirmButtonLabel', this.globalConfig.createLabel)
+            .withDefault('title', this.globalConfig.createLabel)
             .getResult();
         const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,

@@ -1,4 +1,5 @@
 import { HttpClient } from '@angular/common/http';
+import { NgxGlobalDefaultValues } from 'projects/ngx-material-entity/src/global-configuration-values';
 import { BaseBuilder } from '../../../classes/base.builder';
 import { BaseEntityType } from '../../../classes/entity.model';
 import { EntityService } from '../../../services/entity.service';
@@ -33,13 +34,14 @@ export class CreateEntityDialogDataInternal<EntityType extends BaseEntityType<En
 export class CreateEntityDialogDataBuilder<EntityType extends BaseEntityType<EntityType>>
     extends BaseBuilder<CreateEntityDialogDataInternal<EntityType>, CreateEntityDialogData<EntityType>> {
 
-    constructor(data: CreateEntityDialogData<EntityType>) {
-        super(data);
+    constructor(data: CreateEntityDialogData<EntityType>, globalConfig: NgxGlobalDefaultValues) {
+        super(globalConfig, data);
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected generateBaseData(data: CreateEntityDialogData<EntityType>): CreateEntityDialogDataInternal<EntityType> {
-        const createDialogData: CreateDialogDataInternal = new CreateDialogDataBuilder(data.createDialogData).getResult();
+        // eslint-disable-next-line max-len
+        const createDialogData: CreateDialogDataInternal = new CreateDialogDataBuilder(this.globalConfig, data.createDialogData).getResult();
         return new CreateEntityDialogDataInternal<EntityType>(
             data.entity,
             data.EntityServiceClass,

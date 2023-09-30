@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
@@ -23,6 +24,7 @@ import { DragDropDirective } from '../../directives/drag-drop.directive';
 import { NumberDirective } from '../../directives/number.directive';
 import { PasswordMatchValidatorDirective } from '../../directives/password-match.directive';
 import { DisplayColumnValueComponent } from '../table/display-column-value/display-column-value.component';
+import { TooltipComponent } from '../tooltip/tooltip.component';
 import { ArrayDateInputComponent } from './array/array-date-input/array-date-input.component';
 import { ArrayDateRangeInputComponent } from './array/array-date-range-input/array-date-range-input.component';
 import { ArrayDateTimeInputComponent } from './array/array-date-time-input/array-date-time-input.component';
@@ -101,7 +103,9 @@ import { StringTextboxInputComponent } from './string/string-textbox-input/strin
         DisplayColumnValueComponent,
         MatSortModule,
         PasswordMatchValidatorDirective,
-        NumberDirective
+        NumberDirective,
+        TooltipComponent,
+        MatBadgeModule
     ],
     exports: [NgxMatEntityInputComponent]
 })

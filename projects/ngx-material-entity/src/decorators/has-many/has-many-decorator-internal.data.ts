@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { BaseEntityType } from '../../classes/entity.model';
 import { BaseDataBuilder, BaseDataInternal, TableDataBuilder, TableDataInternal } from '../../components/table/table-data.builder';
+import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { HasManyDecoratorConfig } from './has-many-decorator.data';
@@ -24,12 +25,12 @@ export class HasManyDecoratorConfigInternal<
     // eslint-disable-next-line jsdoc/require-jsdoc
     readBaseUrl: (baseEntity: RelatedBaseEntityType, metadata: HasManyDecoratorConfig<EntityType, RelatedBaseEntityType>) => string;
 
-    constructor(data: HasManyDecoratorConfig<EntityType, RelatedBaseEntityType>) {
+    constructor(data: HasManyDecoratorConfig<EntityType, RelatedBaseEntityType>, globalConfig: NgxGlobalDefaultValues) {
         super(data);
-        const baseData: BaseDataInternal<EntityType> = new BaseDataBuilder(data.tableData.baseData)
+        const baseData: BaseDataInternal<EntityType> = new BaseDataBuilder(data.tableData.baseData, globalConfig)
             .withDefault('title', data.displayName)
             .getResult();
-        this.tableData = new TableDataBuilder(data.tableData)
+        this.tableData = new TableDataBuilder(globalConfig, data.tableData)
             .withDefault('baseData', baseData)
             .getResult();
         this.RelatedEntityServiceClass = data.RelatedEntityServiceClass;

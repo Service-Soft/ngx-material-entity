@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { expect } from '@jest/globals';
 import { Entity } from '../../classes/entity.model';
+import { defaultGlobalDefaults } from '../../default-global-configuration-values';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { CheckboxBooleanDecoratorConfigInternal, DropdownBooleanDecoratorConfigInternal, ToggleBooleanDecoratorConfigInternal } from './boolean-decorator-internal.data';
@@ -53,7 +54,8 @@ test('should have boolean Metadata', () => {
     expect(metadata.displayStyle).toBe('checkbox');
 });
 test('should have booleanDropdown Metadata', () => {
-    const metadata: DropdownBooleanDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(booleanTestEntity, 'booleanDropdown', DecoratorTypes.BOOLEAN_DROPDOWN);
+    let metadata: DropdownBooleanDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(booleanTestEntity, 'booleanDropdown', DecoratorTypes.BOOLEAN_DROPDOWN);
+    metadata = new DropdownBooleanDecoratorConfigInternal(metadata, defaultGlobalDefaults);
     expect(metadata).toBeDefined();
     expect(metadata.displayStyle).toBe('dropdown');
     expect(metadata.dropdownFalse).toBe('No');

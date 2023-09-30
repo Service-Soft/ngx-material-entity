@@ -1,3 +1,4 @@
+import { needsUpdateGlobalDefaults } from '../../default-global-configuration-values';
 import { baseProperty } from '../base/base-property.decorator';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { CheckboxBooleanDecoratorConfigInternal, DropdownBooleanDecoratorConfigInternal, ToggleBooleanDecoratorConfigInternal } from './boolean-decorator-internal.data';
@@ -13,7 +14,10 @@ export function boolean(
     metadata: CheckboxBooleanDecoratorConfig | ToggleBooleanDecoratorConfig | DropdownBooleanDecoratorConfig
 ): (target: object, propertyKey: string) => void {
     if (metadata.displayStyle === 'dropdown') {
-        return baseProperty(new DropdownBooleanDecoratorConfigInternal(metadata), DecoratorTypes.BOOLEAN_DROPDOWN);
+        return baseProperty(
+            new DropdownBooleanDecoratorConfigInternal(metadata, needsUpdateGlobalDefaults),
+            DecoratorTypes.BOOLEAN_DROPDOWN
+        );
     }
     else if (metadata.displayStyle === 'checkbox') {
         return baseProperty(new CheckboxBooleanDecoratorConfigInternal(metadata), DecoratorTypes.BOOLEAN_CHECKBOX);

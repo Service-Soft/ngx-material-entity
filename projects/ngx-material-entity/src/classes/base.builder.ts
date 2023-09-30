@@ -1,3 +1,5 @@
+import { CONFIG_NEEDS_UPDATE_KEY } from '../default-global-configuration-values';
+import { NgxGlobalDefaultValues } from '../global-configuration-values';
 import { BaseEntityType } from './entity.model';
 
 /**
@@ -7,8 +9,13 @@ export abstract class BaseBuilder<InternalType extends InputType, InputType exte
 
     private readonly data: InternalType;
     private readonly inputData?: InputType;
+    /**
+     * The global configuration, is used for providing default values to fallback to.
+     */
+    protected readonly globalConfig: NgxGlobalDefaultValues;
 
-    protected constructor(data?: InputType) {
+    protected constructor(globalConfig: NgxGlobalDefaultValues, data?: InputType) {
+        this.globalConfig = globalConfig;
         this.validateInput(data);
         this.inputData = data;
         this.data = this.generateBaseData(data);
@@ -41,7 +48,7 @@ export abstract class BaseBuilder<InternalType extends InputType, InputType exte
      * @returns The Builder.
      */
     withDefault(key: keyof InputType, value: Omit<InternalType[keyof InputType], 'undefined'>): BaseBuilder<InternalType, InputType> {
-        if (this.inputData == null || this.inputData[key] == null) {
+        if (this.inputData == null || this.inputData[key] == null || this.inputData[key] === CONFIG_NEEDS_UPDATE_KEY) {
             this.data[key] = value as InternalType[keyof InputType];
         }
         return this;

@@ -1,6 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { NgFor, NgIf } from '@angular/common';
-import { Component, EnvironmentInjector, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, EnvironmentInjector, Inject, Input, OnDestroy, OnInit, ViewChild, inject, runInInjectionContext } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -15,6 +15,8 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Subject, firstValueFrom, takeUntil } from 'rxjs';
 import { BaseEntityType, Entity } from '../../classes/entity.model';
+import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../default-global-configuration-values';
+import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { SelectionUtilities } from '../../utilities/selection.utilities';
@@ -88,24 +90,26 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     constructor(
         private readonly dialog: MatDialog,
         private readonly injector: EnvironmentInjector,
-        private readonly router: Router
+        private readonly router: Router,
+        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        private readonly globalConfig: NgxGlobalDefaultValues
     ) {}
 
     /**
      * Sets up all the configuration for the table and the EntityService.
      */
     ngOnInit(): void {
-        this.data = new TableDataBuilder(this.tableData).getResult();
-        this.injector.runInContext(() => {
+        this.data = new TableDataBuilder(this.globalConfig, this.tableData).getResult();
+        runInInjectionContext(this.injector, () => {
             this.allowCreate = this.data.baseData.allowCreate();
         });
 
         this.importAction = new BaseTableActionInternal({
             ...this.data.baseData.importActionData,
             action: () => this.startImportJson()
-        });
+        }, this.globalConfig);
 
-        this.injector.runInContext(() => {
+        runInInjectionContext(this.injector, () => {
             this.entityService = inject<EntityService<EntityType>>(this.data.baseData.EntityServiceClass);
         });
 
@@ -168,7 +172,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     }
 
     private importJson(file: File): void {
-        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.importAction.confirmDialogData)
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.importAction.confirmDialogData)
             .withDefault('text', this.data.baseData.importActionData.confirmDialogData.text)
             .withDefault('title', this.importAction.displayName)
             .getResult();
@@ -248,7 +252,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
             allowDelete: this.data.baseData.allowDelete,
             editData: this.data.editData
         };
-        const dialogData: EditEntityDataInternal<EntityType> = new EditEntityDataBuilder(inputDialogData).getResult();
+        const dialogData: EditEntityDataInternal<EntityType> = new EditEntityDataBuilder(inputDialogData, this.globalConfig).getResult();
         const res: number = await firstValueFrom(
             this.dialog.open(NgxMatEntityEditDialogComponent, {
                 data: dialogData,
@@ -294,7 +298,8 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
                 entity: entity,
                 EntityServiceClass: this.data.baseData.EntityServiceClass,
                 createDialogData: this.data.createDialogData
-            }
+            },
+            this.globalConfig
         ).getResult();
         this.dialog.open(NgxMatEntityCreateDialogComponent, {
             data: dialogData,
