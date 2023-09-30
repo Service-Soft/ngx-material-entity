@@ -58,3 +58,5 @@ export * from './utilities/date.utilities';
 export * from './utilities/entity.utilities';
 export * from './utilities/file.utilities';
 export * from './utilities/validation.utilities';
+// default values
+export * from './global-configuration-values';

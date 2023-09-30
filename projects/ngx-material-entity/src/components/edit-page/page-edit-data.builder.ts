@@ -1,6 +1,7 @@
 import { BaseBuilder } from '../../classes/base.builder';
 import { BaseEntityType } from '../../classes/entity.model';
 import { defaultTrue } from '../../functions/default-true.function';
+import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { EditDataInternal, EditDialogDataBuilder } from '../table/edit-dialog/edit-data.builder';
 import { EditEntityDataInternal } from '../table/edit-dialog/edit-entity.builder';
@@ -23,20 +24,20 @@ export type PageEditDataInternal<EntityType extends BaseEntityType<EntityType>> 
 export class PageEditDataBuilder<EntityType extends BaseEntityType<EntityType>>
     extends BaseBuilder<PageEditDataInternal<EntityType>, PageEditData<EntityType>> {
 
-    constructor(data: PageEditData<EntityType>) {
-        super(data);
+    constructor(data: PageEditData<EntityType>, globalConfig: NgxGlobalDefaultValues) {
+        super(globalConfig, data);
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected generateBaseData(data: PageEditData<EntityType>): PageEditDataInternal<EntityType> {
-        const editData: EditDataInternal<EntityType> = new EditDialogDataBuilder(data.editData)
-            .withDefault('cancelButtonLabel', 'Back')
+        const editData: EditDataInternal<EntityType> = new EditDialogDataBuilder(this.globalConfig, data.editData)
+            .withDefault('cancelButtonLabel', this.globalConfig.backLabel)
             .getResult();
         // eslint-disable-next-line max-len
-        const confirmUnsavedChangesDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(data.editData?.confirmUnsavedChangesDialogData)
-            .withDefault('title', 'Unsaved Changes')
-            .withDefault('text', ['You have unsaved changes that will be deleted when you leave this page.', 'Continue?'])
-            .withDefault('confirmButtonLabel', 'Leave')
+        const confirmUnsavedChangesDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, data.editData?.confirmUnsavedChangesDialogData)
+            .withDefault('title', this.globalConfig.confirmUnsavedChangesTitle)
+            .withDefault('text', this.globalConfig.confirmUnsavedChangesText)
+            .withDefault('confirmButtonLabel', this.globalConfig.confirmUnsavedChangesLabel)
             .getResult();
 
         return {

@@ -1,5 +1,7 @@
 import { BaseEntityType } from '../../classes/entity.model';
 import { DisplayColumn } from '../../components/table/table-data';
+import { getConfigValue } from '../../functions/get-config-value.function';
+import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { ReferencesManyDecoratorConfig } from './references-many-decorator.data';
@@ -28,18 +30,18 @@ export class ReferencesManyDecoratorConfigInternal<EntityType extends BaseEntity
     // eslint-disable-next-line jsdoc/require-jsdoc
     addAllButtonLabel: string;
 
-    constructor(data: ReferencesManyDecoratorConfig<EntityType>) {
+    constructor(data: ReferencesManyDecoratorConfig<EntityType>, globalConfig: NgxGlobalDefaultValues) {
         super(data);
         this.getReferencedEntities = data.getReferencedEntities;
         this.getDropdownValues = data.getDropdownValues;
         this.getEntityForId = data.getEntityForId ?? defaultGetEntityForId;
         this.displayColumns = data.displayColumns;
-        this.addButtonLabel = data.addButtonLabel ?? 'Add';
-        this.removeButtonLabel = data.removeButtonLabel ?? 'Remove';
+        this.addButtonLabel = getConfigValue(globalConfig.addLabel, data.addButtonLabel);
+        this.removeButtonLabel = getConfigValue(globalConfig.removeLabel, data.removeButtonLabel);
         this.defaultWidths = data.defaultWidths ?? [12, 12, 12];
-        this.dropdownLabel = data.dropdownLabel ?? 'Select';
+        this.dropdownLabel = getConfigValue(globalConfig.selectLabel, data.dropdownLabel);
         this.addAll = data.addAll ?? false;
-        this.addAllButtonLabel = data.addAllButtonLabel ?? 'Add all';
+        this.addAllButtonLabel = getConfigValue(globalConfig.addAllLabel, data.addAllButtonLabel);
     }
 }
 

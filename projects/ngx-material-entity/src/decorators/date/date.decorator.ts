@@ -1,3 +1,4 @@
+import { needsUpdateGlobalDefaults } from '../../default-global-configuration-values';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { baseProperty } from '../base/base-property.decorator';
 import { DecoratorTypes } from '../base/decorator-types.enum';
@@ -17,11 +18,15 @@ export function date(
         return baseProperty(new DefaultDateDecoratorConfigInternal(metadata), DecoratorTypes.DATE);
     }
     else if (metadata.displayStyle === 'datetime') {
-        return baseProperty(new DateTimeDateDecoratorConfigInternal(metadata), DecoratorTypes.DATE_TIME, [EntityUtilities.TIME_KEY]);
+        return baseProperty(
+            new DateTimeDateDecoratorConfigInternal(metadata, needsUpdateGlobalDefaults),
+            DecoratorTypes.DATE_TIME,
+            [EntityUtilities.TIME_KEY]
+        );
     }
     else {
         return baseProperty(
-            new DateRangeDateDecoratorConfigInternal(metadata),
+            new DateRangeDateDecoratorConfigInternal(metadata, needsUpdateGlobalDefaults),
             DecoratorTypes.DATE_RANGE,
             [EntityUtilities.DATE_RANGE_END_KEY, EntityUtilities.DATE_RANGE_KEY, EntityUtilities.DATE_RANGE_START_KEY]
         );

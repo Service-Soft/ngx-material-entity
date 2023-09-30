@@ -1,9 +1,13 @@
 import { HttpClient } from '@angular/common/http';
+import { Inject } from '@angular/core';
 import { BaseBuilder } from '../../classes/base.builder';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
+import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../default-global-configuration-values';
 import { defaultFalse } from '../../functions/default-false.function';
 import { defaultTrue } from '../../functions/default-true.function';
+import { getConfigValue } from '../../functions/get-config-value.function';
 import { isAsyncFunction } from '../../functions/is-async-function.function';
+import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from './create-dialog/create-dialog-data.builder';
@@ -27,13 +31,17 @@ export class BaseTableActionInternal implements BaseTableAction {
     // eslint-disable-next-line jsdoc/require-jsdoc
     confirmDialogData: ConfirmDialogDataInternal;
 
-    constructor(data: BaseTableAction) {
+    constructor(
+        data: BaseTableAction,
+        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        protected readonly globalConfig: NgxGlobalDefaultValues
+    ) {
         this.displayName = data.displayName;
         this.action = this.functionToAsync(data.action);
         this.enabled = data.enabled ?? defaultTrue;
         this.requireConfirmDialog = data.requireConfirmDialog ?? defaultFalse;
-        this.confirmDialogData = new ConfirmDialogDataBuilder(data.confirmDialogData)
-            .withDefault('text', ['Do you really want to run this action?'])
+        this.confirmDialogData = new ConfirmDialogDataBuilder(this.globalConfig, data.confirmDialogData)
+            .withDefault('text', globalConfig.confirmBaseActionText)
             .getResult();
     }
 
@@ -71,13 +79,17 @@ export class MultiSelectActionInternal<EntityType extends BaseEntityType<EntityT
     // eslint-disable-next-line jsdoc/require-jsdoc
     confirmDialogData: ConfirmDialogDataInternal;
 
-    constructor(data: MultiSelectAction<EntityType>) {
+    constructor(
+        data: MultiSelectAction<EntityType>,
+        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        protected readonly globalConfig: NgxGlobalDefaultValues
+    ) {
         this.displayName = data.displayName;
         this.action = this.functionToAsync(data.action);
         this.enabled = data.enabled ?? ((entities: EntityType[]) => !!entities.length);
         this.requireConfirmDialog = data.requireConfirmDialog ?? defaultFalse;
-        this.confirmDialogData = new ConfirmDialogDataBuilder(data.confirmDialogData)
-            .withDefault('text', ['Do you really want to run this action?'])
+        this.confirmDialogData = new ConfirmDialogDataBuilder(this.globalConfig, data.confirmDialogData)
+            .withDefault('text', globalConfig.confirmBaseActionText)
             .getResult();
     }
 
@@ -133,13 +145,13 @@ export class TableDataInternal<EntityType extends BaseEntityType<EntityType>> im
 export class BaseDataBuilder<EntityType extends BaseEntityType<EntityType>>
     extends BaseBuilder<BaseDataInternal<EntityType>, BaseData<EntityType>> {
 
-    constructor(data: BaseData<EntityType>) {
-        super(data);
+    constructor(data: BaseData<EntityType>, globalConfig: NgxGlobalDefaultValues) {
+        super(globalConfig, data);
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected generateBaseData(data: BaseData<EntityType>): BaseDataInternal<EntityType> {
-        return new BaseDataInternal<EntityType>(data);
+        return new BaseDataInternal<EntityType>(data, this.globalConfig);
     }
 }
 
@@ -186,24 +198,29 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
     // eslint-disable-next-line jsdoc/require-jsdoc
     create?: (entity: EntityType) => unknown;
 
-    constructor(data: BaseData<EntityType>) {
+    constructor(
+        data: BaseData<EntityType>,
+        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        protected readonly globalConfig: NgxGlobalDefaultValues
+    ) {
         this.title = data.title;
         this.displayColumns = data.displayColumns;
         this.EntityServiceClass = data.EntityServiceClass;
         this.EntityClass = data.EntityClass;
-        this.searchLabel = data.searchLabel ?? 'Search';
-        this.createButtonLabel = data.createButtonLabel ?? 'Create';
-        this.defaultEdit = data.defaultEdit ?? 'dialog';
+        this.searchLabel = getConfigValue(globalConfig.searchLabel, data.searchLabel);
+        this.createButtonLabel = getConfigValue(globalConfig.createLabel, data.createButtonLabel);
+        this.defaultEdit = getConfigValue(globalConfig.defaultEditMethod, data.defaultEdit);
         this.searchString = data.searchString ?? defaultSearchFunction;
         if (data.tableActions) {
             this.tableActions = data.tableActions.map(tA => {
-                return tA.type === 'default' ? new BaseTableActionInternal(tA) : new MultiSelectActionInternal(tA);
+                // eslint-disable-next-line max-len
+                return tA.type === 'default' ? new BaseTableActionInternal(tA, globalConfig) : new MultiSelectActionInternal(tA, globalConfig);
             });
         }
         else {
             this.tableActions = [];
         }
-        this.tableActionsLabel = data.tableActionsLabel ?? 'Actions';
+        this.tableActionsLabel = getConfigValue(globalConfig.actionsLabel, data.tableActionsLabel);
         this.displayLoadingSpinner = data.displayLoadingSpinner ?? true;
         this.allowJsonImport = data.allowJsonImport ?? false;
         this.importActionData = this.buildImportActionData(data.importActionData);
@@ -220,8 +237,8 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
     ): Omit<BaseTableActionInternal, 'action'> {
         importActionData = importActionData ?? {
             displayName: 'Import (JSON)',
-            confirmDialogData: new ConfirmDialogDataBuilder()
-                .withDefault('text', ['Do you really want to import entities from the provided file?'])
+            confirmDialogData: new ConfirmDialogDataBuilder(this.globalConfig)
+                .withDefault('text', this.globalConfig.confirmImportJsonText)
                 .getResult()
         };
         /* istanbul ignore next */
@@ -229,7 +246,7 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
             ...importActionData,
             enabled: importActionData.enabled ?? defaultTrue,
             requireConfirmDialog: defaultFalse,
-            confirmDialogData: new ConfirmDialogDataBuilder(importActionData.confirmDialogData).getResult(),
+            confirmDialogData: new ConfirmDialogDataBuilder(this.globalConfig, importActionData.confirmDialogData).getResult(),
             type: 'default'
         };
         return data;
@@ -255,15 +272,16 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
 export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
     extends BaseBuilder<TableDataInternal<EntityType>, TableData<EntityType>> {
 
-    constructor(data: TableData<EntityType>) {
-        super(data);
+    constructor(globalConfig: NgxGlobalDefaultValues, data: TableData<EntityType>) {
+        super(globalConfig, data);
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected generateBaseData(data: TableData<EntityType>): TableDataInternal<EntityType> {
-        const createDialogData: CreateDialogDataInternal = new CreateDialogDataBuilder(data.createDialogData).getResult();
-        const editDialogData: EditDataInternal<EntityType> = new EditDialogDataBuilder(data.editData).getResult();
-        const baseData: BaseDataInternal<EntityType> = new BaseDataBuilder(data.baseData).getResult();
+        // eslint-disable-next-line max-len
+        const createDialogData: CreateDialogDataInternal = new CreateDialogDataBuilder(this.globalConfig, data.createDialogData).getResult();
+        const editDialogData: EditDataInternal<EntityType> = new EditDialogDataBuilder(this.globalConfig, data.editData).getResult();
+        const baseData: BaseDataInternal<EntityType> = new BaseDataBuilder(data.baseData, this.globalConfig).getResult();
         return new TableDataInternal<EntityType>(
             baseData,
             createDialogData,

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { BaseBuilder } from '../../../classes/base.builder';
 import { BaseEntityType } from '../../../classes/entity.model';
 import { defaultTrue } from '../../../functions/default-true.function';
+import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
 import { EntityService } from '../../../services/entity.service';
 import { EditDataInternal, EditDialogDataBuilder } from './edit-data.builder';
 import { EditEntityData } from './edit-entity-data';
@@ -42,13 +43,13 @@ export class EditEntityDataInternal<EntityType extends BaseEntityType<EntityType
 export class EditEntityDataBuilder<EntityType extends BaseEntityType<EntityType>>
     extends BaseBuilder<EditEntityDataInternal<EntityType>, EditEntityData<EntityType>> {
 
-    constructor(data: EditEntityData<EntityType>) {
-        super(data);
+    constructor(data: EditEntityData<EntityType>, globalConfig: NgxGlobalDefaultValues) {
+        super(globalConfig, data);
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected generateBaseData(data: EditEntityData<EntityType>): EditEntityDataInternal<EntityType> {
-        const editDialogData: EditDataInternal<EntityType> = new EditDialogDataBuilder(data.editData).getResult();
+        const editDialogData: EditDataInternal<EntityType> = new EditDialogDataBuilder(this.globalConfig, data.editData).getResult();
         return new EditEntityDataInternal<EntityType>(
             data.entity,
             data.EntityServiceClass,

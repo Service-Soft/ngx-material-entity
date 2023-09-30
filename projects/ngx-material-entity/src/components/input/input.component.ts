@@ -1,6 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { HttpClient } from '@angular/common/http';
-import { Component, EnvironmentInjector, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewChild, inject } from '@angular/core';
+import { Component, EnvironmentInjector, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewChild, inject, runInInjectionContext } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -16,16 +16,19 @@ import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-
 import { HasManyDecoratorConfigInternal } from '../../decorators/has-many/has-many-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../../decorators/object/object-decorator-internal.data';
 import { ReferencesOneDecoratorConfigInternal } from '../../decorators/references-one/references-one-decorator-internal.data';
+import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../default-global-configuration-values';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../../encapsulation/reflect.utilities';
 import { UUIDUtilities } from '../../encapsulation/uuid.utilities';
 import { defaultFalse } from '../../functions/default-false.function';
 import { NGX_GET_VALIDATION_ERROR_MESSAGE } from '../../functions/get-validation-error-message.function';
+import { getValidationErrorsTooltipContent } from '../../functions/get-validation-errors-tooltip-content.function.ts';
+import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
 import { DateUtilities } from '../../utilities/date.utilities';
 import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
 import { SelectionUtilities } from '../../utilities/selection.utilities';
-import { ValidationUtilities } from '../../utilities/validation.utilities';
+import { ValidationError, ValidationUtilities } from '../../utilities/validation.utilities';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { CreateDialogDataBuilder, CreateDialogDataInternal } from '../table/create-dialog/create-dialog-data.builder';
@@ -138,6 +141,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     addArrayItemDialogData!: CreateDialogDataInternal;
     arrayItemDialogTabs!: EntityTab<EntityType>[];
     editArrayItemDialogData!: EditArrayItemDialogDataInternal<EntityType>;
+    arrayItemValidationErrors: ValidationError[] = [];
+    arrayItemTooltipContent: string = '';
 
     metadataHasMany!: HasManyDecoratorConfigInternal<EntityType, EntityType>;
     hasManyIsLoading: boolean = true;
@@ -177,6 +182,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     hasManyEntity!: EntityType;
     hasManyEntityPriorChanges!: EntityType;
     isHasManyEntityValid: boolean = false;
+    hasManyValidationErrors: ValidationError[] = [];
+    hasManyTooltipContent: string = '';
     isHasManyEntityDirty: boolean = false;
     hasManyAllowCreate!: boolean;
     hasManyCreateTabs!: EntityTab<EntityType>[];
@@ -202,6 +209,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         private readonly router: Router,
         @Inject(NGX_GET_VALIDATION_ERROR_MESSAGE)
         protected readonly defaultGetValidationErrorMessage: (model: NgModel) => string,
+        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        protected readonly globalConfig: NgxGlobalDefaultValues,
         private readonly http: HttpClient
     ) {}
 
@@ -241,9 +250,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * @returns The value of the display column.
      */
     getDisplayColumnValue(entity: EntityType, displayColumn: DisplayColumn<EntityType>): unknown {
-        return this.injector.runInContext(() => {
-            return displayColumn.value(entity);
-        });
+        return runInInjectionContext(this.injector, () => displayColumn.value(entity));
     }
 
     ngOnInit(): void {
@@ -290,20 +297,28 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     private initReferencesOne(): void {
         this.metadataReferencesOne = this.metadata as ReferencesOneDecoratorConfigInternal<EntityType>;
 
-        void this.injector.runInContext(async () => {
-            this.referencesOneAllReferencedEntities = await this.metadataReferencesOne.getReferencedEntities();
-            // eslint-disable-next-line max-len
-            this.referencesOneDropdownValues = this.metadataReferencesOne.getDropdownValues(LodashUtilities.cloneDeep(this.referencesOneAllReferencedEntities));
-            this.setReferencesOneObject();
-        });
+        void runInInjectionContext(
+            this.injector,
+            (async () => {
+                this.referencesOneAllReferencedEntities = await this.metadataReferencesOne.getReferencedEntities();
+                // eslint-disable-next-line max-len
+                this.referencesOneDropdownValues = this.metadataReferencesOne.getDropdownValues(LodashUtilities.cloneDeep(this.referencesOneAllReferencedEntities));
+                this.setReferencesOneObject();
+            })
+        );
     }
 
     private initHasMany(): void {
+        this.metadata = new HasManyDecoratorConfigInternal(
+            this.metadata as HasManyDecoratorConfigInternal<EntityType, EntityType>,
+            this.globalConfig
+        );
+        ReflectUtilities.defineMetadata('metadata', this.metadata, this.internalEntity, this.internalPropertyKey);
         this.metadataHasMany = this.metadata as HasManyDecoratorConfigInternal<EntityType, EntityType>;
         this.hasManyImportAction = new BaseTableActionInternal({
             ...this.metadataHasMany.tableData.baseData.importActionData,
             action: () => this.startImportJson()
-        });
+        }, this.globalConfig);
 
         this.injector.runInContext(() => {
             this.hasManyAllowCreate = this.metadataHasMany.tableData.baseData.allowCreate();
@@ -346,6 +361,11 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     }
 
     private initEntityArray(): void {
+        this.metadata = new EntityArrayDecoratorConfigInternal(
+            this.metadata as EntityArrayDecoratorConfigInternal<EntityType>,
+            this.globalConfig
+        );
+        ReflectUtilities.defineMetadata('metadata', this.metadata, this.internalEntity, this.internalPropertyKey);
         this.metadataEntityArray = this.metadata as EntityArrayDecoratorConfigInternal<EntityType>;
         if (this.internalEntity[this.internalPropertyKey] == null) {
             (this.internalEntity[this.internalPropertyKey] as EntityType[]) = [];
@@ -369,10 +389,11 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.arrayItem = new this.metadataEntityArray.EntityClass();
         this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
         this.arrayItemInlineTabs = EntityUtilities.getEntityTabs(this.arrayItem, true);
+        EntityUtilities.setDefaultValues(this.arrayItem);
 
-        this.addArrayItemDialogData = new CreateDialogDataBuilder(this.metadataEntityArray.createDialogData)
-            .withDefault('createButtonLabel', 'Add')
-            .withDefault('title', 'Add to array')
+        this.addArrayItemDialogData = new CreateDialogDataBuilder(this.globalConfig, this.metadataEntityArray.createDialogData)
+            .withDefault('createButtonLabel', this.globalConfig.addLabel)
+            .withDefault('title', this.globalConfig.addArrayItemTitle)
             .getResult();
         this.arrayItemDialogTabs = EntityUtilities.getEntityTabs(this.arrayItem, true);
 
@@ -403,7 +424,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     }
 
     private importJson(file: File): void {
-        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.hasManyImportAction.confirmDialogData)
+        // eslint-disable-next-line max-len
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.hasManyImportAction.confirmDialogData)
             .withDefault('text', this.metadataHasMany.tableData.baseData.importActionData.confirmDialogData?.text )
             .withDefault('title', this.hasManyImportAction.displayName)
             .getResult();
@@ -576,10 +598,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             return;
         }
         // eslint-disable-next-line max-len
-        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.metadataHasMany.tableData.editData.confirmEditDialogData)
-            .withDefault('text', ['Do you really want to save all changes?'])
-            .withDefault('confirmButtonLabel', 'Save')
-            .withDefault('title', 'Edit')
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.metadataHasMany.tableData.editData.confirmEditDialogData)
+            .withDefault('text', this.globalConfig.confirmSaveText)
+            .withDefault('confirmButtonLabel', this.globalConfig.saveLabel)
+            .withDefault('title', this.globalConfig.editLabel)
             .getResult();
         const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
@@ -610,11 +632,11 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             return;
         }
         // eslint-disable-next-line max-len
-        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.metadataHasMany.tableData.editData.confirmDeleteDialogData)
-            .withDefault('text', ['Do you really want to delete this entity?'])
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.metadataHasMany.tableData.editData.confirmDeleteDialogData)
+            .withDefault('text', this.globalConfig.confirmDeleteText)
             .withDefault('type', 'delete')
-            .withDefault('confirmButtonLabel', 'Delete')
-            .withDefault('title', 'Delete')
+            .withDefault('confirmButtonLabel', this.globalConfig.deleteLabel)
+            .withDefault('title', this.globalConfig.deleteLabel)
             .getResult();
         const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
@@ -658,7 +680,9 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                     this.metadataHasMany.tableData.baseData.create(new this.metadataHasMany.tableData.baseData.EntityClass());
                 }
                 else {
-                    this.createHasManyDefault(new this.metadataHasMany.tableData.baseData.EntityClass());
+                    const entity: EntityType = new this.metadataHasMany.tableData.baseData.EntityClass();
+                    EntityUtilities.setDefaultValues(entity);
+                    this.createHasManyDefault(entity);
                 }
             }
         });
@@ -690,10 +714,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             return;
         }
         // eslint-disable-next-line max-len
-        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.metadataHasMany.tableData.createDialogData.confirmCreateDialogData)
-            .withDefault('text', ['Do you really want to create this entity?'])
-            .withDefault('confirmButtonLabel', 'Create')
-            .withDefault('title', 'Create')
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.metadataHasMany.tableData.createDialogData.confirmCreateDialogData)
+            .withDefault('text', this.globalConfig.confirmCreateText)
+            .withDefault('confirmButtonLabel', this.globalConfig.createLabel)
+            .withDefault('title', this.globalConfig.createLabel)
             .getResult();
         const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
@@ -722,20 +746,23 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     /**
      * Runs the TableAction for all selected entries.
-     * Also handles confirmation with an additional dialog if configured.
+     * Also handles confirmation with an additional dial#og if configured.
      *
      * @param action - The TableAction to run.
      */
     runHasManyTableAction(action: TableActionInternal<EntityType>): void {
-        const requireConfirmDialog: boolean = this.injector.runInContext(() => {
-            return action.requireConfirmDialog(this.hasManySelection.selected);
-        });
+        const requireConfirmDialog: boolean = runInInjectionContext(
+            this.injector,
+            () => action.requireConfirmDialog(this.hasManySelection.selected)
+        );
         if (!requireConfirmDialog) {
             this.confirmRunHasManyTableAction(action);
             return;
         }
-        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(action.confirmDialogData)
-            .withDefault('text', [`Do you really want to run this action on ${this.hasManySelection.selected.length} entries?`])
+        // eslint-disable-next-line max-len
+        const defaultText: string[] = action.type === 'multi-select' ? this.globalConfig.confirmMultiSelectActionText(this.hasManySelection.selected) : this.globalConfig.confirmBaseActionText;
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, action.confirmDialogData)
+            .withDefault('text', defaultText)
             .withDefault('title', action.displayName)
             .getResult();
         const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
@@ -793,7 +820,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * @param omit - Whether values omitted for create or update should be left out.
      */
     checkIsHasManyEntityValid(omit: 'create' | 'update'): void {
-        this.isHasManyEntityValid = ValidationUtilities.isEntityValid(this.hasManyEntity, omit);
+        this.hasManyValidationErrors = ValidationUtilities.getEntityValidationErrors(this.hasManyEntity, omit);
+        // eslint-disable-next-line max-len
+        this.hasManyTooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.hasManyValidationErrors));
+        this.isHasManyEntityValid = this.hasManyValidationErrors.length === 0;
     }
 
     /**
@@ -815,7 +845,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * Checks if the arrayItem is valid.
      */
     checkIsArrayItemValid(): void {
-        this.isArrayItemValid = ValidationUtilities.isEntityValid(this.arrayItem, 'create');
+        this.arrayItemValidationErrors = ValidationUtilities.getEntityValidationErrors(this.arrayItem, 'create');
+        // eslint-disable-next-line max-len
+        this.arrayItemTooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.arrayItemValidationErrors));
+        this.isArrayItemValid = this.arrayItemValidationErrors.length === 0;
     }
 
     /**
@@ -847,6 +880,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
             this.entityArrayDataSource.data = this.entityArrayValues;
             EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
+            EntityUtilities.setDefaultValues(this.arrayItem);
             this.checkIsArrayItemValid();
             this.emitChange();
         }
@@ -859,6 +893,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                     restoreFocus: false
                 }
             );
+            this.checkIsArrayItemValid();
         }
     }
 

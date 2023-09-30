@@ -637,9 +637,17 @@
         </mat-dialog-content>
     
         <mat-dialog-actions>
-            <button type="submit" mat-raised-button (click)="addArrayItem()" [disabled]="!isArrayItemValid">
-                {{addArrayItemDialogData.createButtonLabel}}
-            </button>
+            <div class="d-flex align-items-center gap-3" style="margin-top: 10px;">
+                <button type="submit" (click)="addArrayItem()" mat-raised-button
+                    [disabled]="!isArrayItemValid"
+                    [matBadge]="arrayItemValidationErrors.length"
+                    [matBadgeHidden]="!arrayItemValidationErrors.length"
+                    matBadgeColor="warn"
+                >
+                    {{addArrayItemDialogData.createButtonLabel}}
+                </button>
+                <ngx-mat-entity-tooltip *ngIf="arrayItemValidationErrors.length" [tooltipContent]="arrayItemTooltipContent"></ngx-mat-entity-tooltip>
+            </div>
             <button type="button" mat-raised-button (click)="closeAddArrayItemDialog()" class="cancel-button">
                 {{addArrayItemDialogData.cancelButtonLabel}}
             </button>
@@ -692,9 +700,17 @@
         </mat-dialog-content>
         
         <mat-dialog-actions>
-            <button type="submit" (click)="saveArrayItem()" mat-raised-button [disabled]="internalIsReadOnly || !isArrayItemValid || !isArrayItemDirty">
-                {{editArrayItemDialogData.confirmButtonLabel}}
-            </button>
+            <div class="d-flex align-items-center gap-3" style="margin-top: 10px;">
+                <button type="submit" (click)="saveArrayItem()" mat-raised-button
+                [disabled]="internalIsReadOnly || !isArrayItemValid || !isArrayItemDirty"
+                    [matBadge]="arrayItemValidationErrors.length"
+                    [matBadgeHidden]="!arrayItemValidationErrors.length"
+                    matBadgeColor="warn"
+                >
+                    {{editArrayItemDialogData.confirmButtonLabel}}
+                </button>
+                <ngx-mat-entity-tooltip *ngIf="arrayItemValidationErrors.length" [tooltipContent]="arrayItemTooltipContent"></ngx-mat-entity-tooltip>
+            </div>
             <button type="button" mat-raised-button (click)="closeEditArrayItemDialog()" class="cancel-button">
                 {{editArrayItemDialogData.cancelButtonLabel}}
             </button>
@@ -744,9 +760,17 @@
         </mat-dialog-content>
         
         <mat-dialog-actions>
-            <button type="submit" (click)="dialogCreateHasMany()" mat-raised-button [disabled]="!isHasManyEntityValid">
-                {{metadataHasMany.tableData.createDialogData.createButtonLabel}}
-            </button>
+            <div class="d-flex align-items-center gap-3" style="margin-top: 10px;">
+                <button type="submit" (click)="dialogCreateHasMany()" mat-raised-button
+                    [disabled]="!isHasManyEntityValid"
+                    [matBadge]="hasManyValidationErrors.length"
+                    [matBadgeHidden]="!hasManyValidationErrors.length"
+                    matBadgeColor="warn"
+                >
+                    {{metadataHasMany.tableData.createDialogData.createButtonLabel}}
+                </button>
+                <ngx-mat-entity-tooltip *ngIf="hasManyValidationErrors.length" [tooltipContent]="hasManyTooltipContent"></ngx-mat-entity-tooltip>
+            </div>
             <button type="button" mat-raised-button (click)="dialogCancelCreateHasMany()" class="cancel-button">
                 {{metadataHasMany.tableData.createDialogData.cancelButtonLabel}}
             </button>
@@ -755,6 +779,9 @@
     
 </ng-template>
 
+<!--------------------------------------------------------->
+<!--------------------Edit Has Many Dialog----------------->
+<!--------------------------------------------------------->
 <ng-template #editHasManyDialog>
     <div class="mat-dialog-title">
         <div>{{metadataHasMany.tableData.editData.title(hasManyEntityPriorChanges)}}</div>
@@ -811,12 +838,20 @@
         </mat-dialog-content>
         
         <mat-dialog-actions>
-            <button type="submit" (click)="dialogEditHasMany()" mat-raised-button [disabled]="internalIsReadOnly || !isHasManyEntityValid || !isHasManyEntityDirty">
-                {{metadataHasMany.tableData.editData.confirmButtonLabel}}
-            </button>
+            <div class="d-flex align-items-center gap-3" style="margin-top: 10px;">
+                <button type="submit" (click)="dialogEditHasMany()" mat-raised-button
+                    [disabled]="internalIsReadOnly || !isHasManyEntityValid || !isHasManyEntityDirty"
+                    [matBadge]="hasManyValidationErrors.length"
+                    [matBadgeHidden]="!hasManyValidationErrors.length"
+                    matBadgeColor="warn"
+                >
+                    {{metadataHasMany.tableData.editData.confirmButtonLabel}}
+                </button>
+                <ngx-mat-entity-tooltip *ngIf="hasManyValidationErrors.length" [tooltipContent]="hasManyTooltipContent"></ngx-mat-entity-tooltip>
+            </div>
             <button type="button" mat-raised-button (click)="dialogCancelEditHasMany()" class="cancel-button">
                 {{metadataHasMany.tableData.editData.cancelButtonLabel}}
             </button>
         </mat-dialog-actions>
-    </form>    
+    </form>
 </ng-template>
