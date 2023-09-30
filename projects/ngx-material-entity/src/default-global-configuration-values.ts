@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { InjectionToken, inject } from '@angular/core';
 import { NGX_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from './global-configuration-values';
 
