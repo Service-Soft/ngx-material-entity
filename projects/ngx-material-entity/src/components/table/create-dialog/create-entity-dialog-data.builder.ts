@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { NgxGlobalDefaultValues } from 'projects/ngx-material-entity/src/global-configuration-values';
+import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
 import { BaseBuilder } from '../../../classes/base.builder';
 import { BaseEntityType } from '../../../classes/entity.model';
 import { EntityService } from '../../../services/entity.service';
