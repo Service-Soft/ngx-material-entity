@@ -1,4 +1,5 @@
 import { expect } from '@jest/globals';
+import { defaultGlobalDefaults } from '../default-global-configuration-values';
 import { BaseBuilder } from './base.builder';
 
 interface Data {
@@ -18,7 +19,7 @@ class DataInternal implements Data {
 class MockBuilder extends BaseBuilder<DataInternal, Data> {
 
     constructor(data: Data) {
-        super(data);
+        super(defaultGlobalDefaults, data);
     }
 
     protected generateBaseData(data: Data): DataInternal {

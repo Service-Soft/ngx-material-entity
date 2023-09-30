@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { firstValueFrom, of } from 'rxjs';
+import { defaultGlobalDefaults } from '../../default-global-configuration-values';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DropdownValue } from '../base/dropdown-value.interface';
@@ -97,12 +98,13 @@ const testEntityData: TestEntity = {
 const testEntity: TestEntity = new TestEntity(testEntityData);
 
 test('should have references many Metadata', () => {
-    const metadata: ReferencesManyDecoratorConfigInternal<Address>
-        = EntityUtilities.getPropertyMetadata(
-            testEntity,
-            'addressIds',
-            DecoratorTypes.REFERENCES_MANY
-        ) as ReferencesManyDecoratorConfigInternal<Address>;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    let metadata: ReferencesManyDecoratorConfigInternal<Address> = EntityUtilities.getPropertyMetadata(
+        testEntity,
+        'addressIds',
+        DecoratorTypes.REFERENCES_MANY
+    );
+    metadata = new ReferencesManyDecoratorConfigInternal(metadata, defaultGlobalDefaults);
     expect(metadata).toBeDefined();
     expect(metadata.getReferencedEntities).toEqual(getReferencedEntities);
     expect(metadata.getDropdownValues).toEqual(getDropdownValues);

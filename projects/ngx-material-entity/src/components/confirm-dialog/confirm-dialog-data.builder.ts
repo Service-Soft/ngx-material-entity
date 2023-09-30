@@ -1,4 +1,7 @@
 import { BaseBuilder } from '../../classes/base.builder';
+import { CONFIG_NEEDS_UPDATE_KEY } from '../../default-global-configuration-values';
+import { getConfigValue } from '../../functions/get-config-value.function';
+import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { ConfirmDialogData, ConfirmDialogTypes } from './confirm-dialog-data';
 
 /**
@@ -44,18 +47,18 @@ export class ConfirmDialogDataInternal implements ConfirmDialogData {
  */
 export class ConfirmDialogDataBuilder extends BaseBuilder<ConfirmDialogDataInternal, ConfirmDialogData> {
 
-    constructor(data?: ConfirmDialogData) {
-        super(data);
+    constructor(globalConfig: NgxGlobalDefaultValues, data?: ConfirmDialogData) {
+        super(globalConfig, data);
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected override generateBaseData(data?: ConfirmDialogData): ConfirmDialogDataInternal {
         return new ConfirmDialogDataInternal(
-            data?.text ?? ['Do you really want to do this?'],
+            getConfigValue(this.globalConfig.defaultConfirmDialogText, data?.text),
             data?.type ?? 'default',
-            data?.confirmButtonLabel ?? 'Confirm',
-            data?.cancelButtonLabel ?? 'Cancel',
-            data?.title ?? 'Confirmation',
+            getConfigValue(this.globalConfig.confirmLabel, data?.confirmButtonLabel),
+            getConfigValue(this.globalConfig.cancelLabel, data?.cancelButtonLabel),
+            getConfigValue(this.globalConfig.defaultConfirmDialogTitle, data?.title),
             data?.requireConfirmation ?? false,
             data?.confirmationText
         );
@@ -73,7 +76,7 @@ export class ConfirmDialogDataBuilder extends BaseBuilder<ConfirmDialogDataInter
         if (data.requireConfirmation !== true && data.confirmationText) {
             throw new Error('The "confirmationText" will never be shown because "requireConfirmation" is not set to true');
         }
-        if (data.type === 'info-only' && data.cancelButtonLabel) {
+        if (data.type === 'info-only' && data.cancelButtonLabel && data.cancelButtonLabel !== CONFIG_NEEDS_UPDATE_KEY) {
             throw new Error('The "cancelButtonLabel" will never be shown because "type" is set to "info-only"');
         }
     }

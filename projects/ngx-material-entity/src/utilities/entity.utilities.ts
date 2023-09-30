@@ -224,9 +224,7 @@ export abstract class EntityUtilities {
     ): DecoratorType<T, CustomMetadataType> {
         const metadata: unknown = ReflectUtilities.getMetadata('metadata', entity, propertyKey);
         if (metadata == null) {
-            throw new Error(
-                `Could not find metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`
-            );
+            throw new Error(`Could not find metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`);
         }
         return metadata as DecoratorType<T, CustomMetadataType>;
     }

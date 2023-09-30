@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NGX_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from 'ngx-material-entity';
 import { NgxMatNavigationFooterModule, NgxMatNavigationNavbarModule } from 'ngx-material-navigation';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -24,6 +25,11 @@ const DATE_FORMATS: MatDateFormats = {
         dateA11yLabel: 'LL',
         monthYearA11yLabel: 'MMMM YYYY'
     }
+};
+
+const NGX_ENTITY_DEFAULTS: Partial<NgxGlobalDefaultValues> = {
+    // saveLabel: 'Default Save',
+    // searchLabel: 'Default Search'
 };
 
 @NgModule({
@@ -47,7 +53,11 @@ const DATE_FORMATS: MatDateFormats = {
     ],
     providers: [
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-        { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS }
+        { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS },
+        {
+            provide: NGX_GLOBAL_DEFAULT_VALUES,
+            useValue: NGX_ENTITY_DEFAULTS
+        }
     ],
     bootstrap: [AppComponent]
 })

@@ -22,8 +22,6 @@ export class TooltipDirective implements OnDestroy {
 
     private tooltipElement?: HTMLElement;
 
-    private isTooltipVisible: boolean = false;
-
     private closeListeners: Listener[] = [];
 
     constructor(
@@ -37,7 +35,7 @@ export class TooltipDirective implements OnDestroy {
     @HostListener('mouseenter')
     @HostListener('click')
     onMouseEnter(): void {
-        if (!this.isTooltipVisible) {
+        if (!this.tooltipElement) {
             this.showTooltip();
             this.registerCloseListeners();
         }
@@ -61,7 +59,6 @@ export class TooltipDirective implements OnDestroy {
         if (!this.tooltipElement) {
             this.tooltipElement = this.renderer.createElement('div') as HTMLElement;
             this.tooltipElement.innerHTML = this.tooltip;
-            const rect: DOMRect = (this.el.nativeElement as HTMLElement).getBoundingClientRect();
 
             this.renderer.setStyle(this.tooltipElement, 'z-index', '1000');
             this.renderer.setStyle(this.tooltipElement, 'position', 'absolute');
@@ -71,12 +68,10 @@ export class TooltipDirective implements OnDestroy {
             this.renderer.setStyle(this.tooltipElement, 'color', 'white');
             this.renderer.setStyle(this.tooltipElement, 'max-height', '30vh');
             this.renderer.setStyle(this.tooltipElement, 'overflow', 'scroll');
-            this.renderer.appendChild(document.body, this.tooltipElement);
-            const left: number = window.scrollX + rect.left - (this.tooltipElement.clientWidth / 2) + 18;
-            this.renderer.setStyle(this.tooltipElement, 'left', `${left}px`);
-            const top: number = window.scrollY + rect.top - this.tooltipElement.clientHeight - 5;
-            this.renderer.setStyle(this.tooltipElement, 'top', `${top}px`);
-            this.isTooltipVisible = true;
+            this.renderer.appendChild(this.el.nativeElement, this.tooltipElement);
+
+            const marginBottom: number = this.tooltipElement.clientHeight + (this.el.nativeElement as HTMLElement).clientHeight + 15;
+            this.renderer.setStyle(this.tooltipElement, 'margin-bottom', `${marginBottom}px`);
         }
     }
 
@@ -101,7 +96,6 @@ export class TooltipDirective implements OnDestroy {
         if (this.tooltipElement) {
             this.renderer.removeChild(this.el.nativeElement, this.tooltipElement);
             this.tooltipElement = undefined;
-            this.isTooltipVisible = false;
         }
     }
 

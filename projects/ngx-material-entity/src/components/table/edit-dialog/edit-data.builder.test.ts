@@ -1,4 +1,5 @@
 import { expect } from '@jest/globals';
+import { defaultGlobalDefaults } from '../../../default-global-configuration-values';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../../../mocks/test-entity.interface';
 import { EditData } from '../table-data';
 import { EditDialogDataBuilder } from './edit-data.builder';
@@ -22,10 +23,10 @@ const entity: TestEntityWithoutCustomProperties = new TestEntityWithoutCustomPro
 
 describe('default values', () => {
     test('should have correct title', () => {
-        expect(new EditDialogDataBuilder(editData).getResult().title(entity)).toBe('Edit');
+        expect(new EditDialogDataBuilder(defaultGlobalDefaults, editData).getResult().title(entity)).toBe('Edit');
     });
 
     test('should build the actions correctly', ()=> {
-        expect(new EditDialogDataBuilder(editDataWithActions).getResult().actions[0].enabled(entity)).toBe(true);
+        expect(new EditDialogDataBuilder(defaultGlobalDefaults, editDataWithActions).getResult().actions[0].enabled(entity)).toBe(true);
     });
 });

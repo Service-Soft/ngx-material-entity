@@ -1,11 +1,13 @@
+import { NgFor, NgIf } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { ConfirmDialogData } from './confirm-dialog-data';
-import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from './confirm-dialog-data.builder';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { NgFor, NgIf } from '@angular/common';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../default-global-configuration-values';
+import { NgxGlobalDefaultValues } from '../../global-configuration-values';
+import { ConfirmDialogData } from './confirm-dialog-data';
+import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from './confirm-dialog-data.builder';
 
 /**
  * The Dialog used whenever confirmation by the user is required (e.g. When the user tries to delete an entity).
@@ -35,11 +37,13 @@ export class NgxMatEntityConfirmDialogComponent implements OnInit {
     constructor(
         private readonly dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent>,
         @Inject(MAT_DIALOG_DATA)
-        private readonly inputData: ConfirmDialogData
+        private readonly inputData: ConfirmDialogData,
+        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        protected readonly globalConfig: NgxGlobalDefaultValues
     ) {}
 
     ngOnInit(): void {
-        this.data = new ConfirmDialogDataBuilder(this.inputData).getResult();
+        this.data = new ConfirmDialogDataBuilder(this.globalConfig, this.inputData).getResult();
         this.dialogRef.disableClose = true;
     }
 

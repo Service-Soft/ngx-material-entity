@@ -1,8 +1,14 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, EnvironmentInjector, Inject, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../../default-global-configuration-values';
 import { BaseEntityType } from '../../../../classes/entity.model';
+import { DateRangeArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
+import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
+import { NgxGlobalDefaultValues } from '../../../../global-configuration-values';
 import { DateUtilities } from '../../../../utilities/date.utilities';
 import { ArrayTableComponent } from '../array-table.class';
 
@@ -20,8 +26,20 @@ export class ArrayDateRangeInputComponent<EntityType extends BaseEntityType<Enti
     dateRangeStart?: Date;
     dateRangeEnd?: Date;
 
+    constructor(
+        matDialog: MatDialog,
+        injector: EnvironmentInjector,
+        http: HttpClient,
+        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        private readonly globalConfig: NgxGlobalDefaultValues
+    ) {
+        super(matDialog, injector, http);
+    }
+
     override ngOnInit(): void {
         super.ngOnInit();
+        this.metadata = new DateRangeArrayDecoratorConfigInternal(this.metadata, this.globalConfig);
+        ReflectUtilities.defineMetadata('metadata', this.metadata, this.entity, this.key);
         this.input = {
             start: undefined as unknown as Date,
             end: undefined as unknown as Date,

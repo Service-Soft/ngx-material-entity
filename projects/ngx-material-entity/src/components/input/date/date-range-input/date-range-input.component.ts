@@ -1,11 +1,14 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { DateFilterFn } from '@angular/material/datepicker';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
+import { DateRangeDateDecoratorConfigInternal } from '../../../../decorators/date/date-decorator-internal.data';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
+import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../../default-global-configuration-values';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
+import { NgxGlobalDefaultValues } from '../../../../global-configuration-values';
 import { DateUtilities } from '../../../../utilities/date.utilities';
 import { EntityUtilities } from '../../../../utilities/entity.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
@@ -48,8 +51,17 @@ export class DateRangeInputComponent<EntityType extends BaseEntityType<EntityTyp
 
     defaultDateFilter: DateFilterFn<Date | null | undefined> = DateUtilities.defaultDateFilter;
 
+    constructor(
+        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        private readonly globalConfig: NgxGlobalDefaultValues
+    ) {
+        super();
+    }
+
     override ngOnInit(): void {
         super.ngOnInit();
+        this.metadata = new DateRangeDateDecoratorConfigInternal(this.metadata, this.globalConfig);
+        ReflectUtilities.defineMetadata('metadata', this.metadata, this.entity, this.key);
         this.dateRange = LodashUtilities.cloneDeep(this.propertyValue) ?? EMPTY_DATERANGE;
         this.dateRangeStart = new Date(this.dateRange.start);
         this.dateRangeEnd = new Date(this.dateRange.end);

@@ -1,3 +1,5 @@
+import { getConfigValue } from '../../functions/get-config-value.function';
+import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { CheckboxBooleanDecoratorConfig, DropdownBooleanDecoratorConfig, ToggleBooleanDecoratorConfig } from './boolean-decorator.data';
 
@@ -13,11 +15,11 @@ export class DropdownBooleanDecoratorConfigInternal extends PropertyDecoratorCon
     // eslint-disable-next-line jsdoc/require-jsdoc
     dropdownFalse: string;
 
-    constructor(data: DropdownBooleanDecoratorConfig) {
+    constructor(data: DropdownBooleanDecoratorConfig, globalConfig: NgxGlobalDefaultValues) {
         super(data);
         this.displayStyle = data.displayStyle;
-        this.dropdownTrue = data.dropdownTrue ?? 'Yes';
-        this.dropdownFalse = data.dropdownFalse ?? 'No';
+        this.dropdownTrue = getConfigValue(globalConfig.dropdownTrue, data.dropdownTrue);
+        this.dropdownFalse = getConfigValue(globalConfig.dropdownFalse, data.dropdownFalse);
     }
 }
 

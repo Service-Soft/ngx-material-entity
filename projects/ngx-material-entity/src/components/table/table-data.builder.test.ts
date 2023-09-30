@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-console */
 import { expect } from '@jest/globals';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../../mocks/test-entity.interface';
@@ -5,6 +6,7 @@ import { TestEntityService } from '../../services/entity.service.test';
 import { ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { TableData } from './table-data';
 import { BaseTableActionInternal, MultiSelectActionInternal, TableDataBuilder, TableDataInternal, defaultSearchFunction } from './table-data.builder';
+import { defaultGlobalDefaults } from '../../default-global-configuration-values';
 
 const baseTableData: TableData<TestEntityWithoutCustomProperties> = {
     baseData: {
@@ -113,15 +115,15 @@ const actionsTableData: TableData<TestEntityWithoutCustomProperties> = {
 
 describe('generateBaseData', () => {
     test('should build the data', () => {
-        expect(new TableDataBuilder(tableData).getResult().baseData.allowCreate()).toBe(false);
+        expect(new TableDataBuilder(defaultGlobalDefaults, tableData).getResult().baseData.allowCreate()).toBe(false);
     });
     test('should have correct default search function', () => {
         const data: TestEntityWithoutCustomProperties = new TestEntityWithoutCustomPropertiesMockBuilder().testEntity;
-        expect(new TableDataBuilder(tableData).getResult().baseData.searchString.toString()).toBe(defaultSearchFunction.toString());
-        expect(() => new TableDataBuilder(tableData).getResult().baseData.searchString(data)).not.toThrowError();
+        expect(new TableDataBuilder(defaultGlobalDefaults, tableData).getResult().baseData.searchString.toString()).toBe(defaultSearchFunction.toString());
+        expect(() => new TableDataBuilder(defaultGlobalDefaults, tableData).getResult().baseData.searchString(data)).not.toThrowError();
     });
     test('should build the actions correctly', async () => {
-        const tableData: TableDataInternal<TestEntityWithoutCustomProperties> = new TableDataBuilder(actionsTableData).getResult();
+        const tableData: TableDataInternal<TestEntityWithoutCustomProperties> = new TableDataBuilder(defaultGlobalDefaults, actionsTableData).getResult();
         expect(tableData.baseData.tableActions).toHaveLength(3);
         expect(tableData.baseData.tableActions[0]).toBeInstanceOf(BaseTableActionInternal);
         const action1Res: unknown = await tableData.baseData.tableActions[0].action([]);
@@ -138,39 +140,39 @@ describe('generateBaseData', () => {
 
 describe('validateInput', () => {
     test('should throw error for manually configured "select" action', () => {
-        expect(() => new TableDataBuilder(selectErrorData))
+        expect(() => new TableDataBuilder(defaultGlobalDefaults, selectErrorData))
             .toThrow(
                 `The name "select" for a display column is reserved for the multi-select action functionality.
                 Please choose a different name.`
             );
     });
     test('should throw error for required EntityClass', () => {
-        expect(() => new TableDataBuilder(noEntityClassAllowCreateErrorData))
+        expect(() => new TableDataBuilder(defaultGlobalDefaults, noEntityClassAllowCreateErrorData))
             .toThrow(
                 `Missing required Input data "EntityClass".
                 You can only omit this value if you can neither create, read, update or delete entities.`
             );
 
-        expect(() => new TableDataBuilder(noEntityClassAllowReadErrorData))
+        expect(() => new TableDataBuilder(defaultGlobalDefaults, noEntityClassAllowReadErrorData))
             .toThrow(
                 `Missing required Input data "EntityClass".
                 You can only omit this value if you can neither create, read, update or delete entities.`
             );
 
-        expect(() => new TableDataBuilder(noEntityClassAllowUpdateErrorData))
+        expect(() => new TableDataBuilder(defaultGlobalDefaults, noEntityClassAllowUpdateErrorData))
             .toThrow(
                 `Missing required Input data "EntityClass".
                 You can only omit this value if you can neither create, read, update or delete entities.`
             );
 
-        expect(() => new TableDataBuilder(noEntityClassAllowDeleteErrorData))
+        expect(() => new TableDataBuilder(defaultGlobalDefaults, noEntityClassAllowDeleteErrorData))
             .toThrow(
                 `Missing required Input data "EntityClass".
                 You can only omit this value if you can neither create, read, update or delete entities.`
             );
     });
     test('should throw error for provided edit data when default edit is page', () => {
-        expect(() => new TableDataBuilder(editDataAndDefaultEditPageErrorData))
+        expect(() => new TableDataBuilder(defaultGlobalDefaults, editDataAndDefaultEditPageErrorData))
             .toThrow(
                 `The configured edit data can't be used, as the entity gets edited on its own page.
                 You need to provide values for the "NGX_EDIT_DATA", "NGX_EDIT_DATA_ENTITY" and "NGX_EDIT_DATA_ENTITY_SERVICE" injection keys
@@ -193,7 +195,7 @@ describe('BaseTableAction', () => {
             type: 'default',
             displayName: 'Test',
             action: () => 42
-        });
+        }, defaultGlobalDefaults);
         expect(action.confirmDialogData).toEqual(expectedConfirmDialogData);
         expect(action.enabled()).toEqual(true);
         expect(action.requireConfirmDialog()).toEqual(false);
@@ -214,7 +216,7 @@ describe('MultiSelectActionInternal', () => {
             type: 'multi-select',
             displayName: 'Test',
             action: () => 42
-        });
+        }, defaultGlobalDefaults);
         expect(action.confirmDialogData).toEqual(expectedConfirmDialogData);
         expect(action.enabled([new TestEntityWithoutCustomPropertiesMockBuilder().testEntity])).toEqual(true);
         expect(action.enabled([])).toEqual(false);

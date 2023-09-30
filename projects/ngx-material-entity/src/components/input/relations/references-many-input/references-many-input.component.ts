@@ -1,11 +1,15 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, EnvironmentInjector, OnInit } from '@angular/core';
+import { Component, EnvironmentInjector, Inject, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
+import { ReferencesManyDecoratorConfigInternal } from '../../../../decorators/references-many/references-many-decorator-internal.data';
+import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../../default-global-configuration-values';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
+import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
+import { NgxGlobalDefaultValues } from '../../../../global-configuration-values';
 import { SelectionUtilities } from '../../../../utilities/selection.utilities';
 import { DisplayColumn } from '../../../table/table-data';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
@@ -35,12 +39,18 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
 
     SelectionUtilities: typeof SelectionUtilities = SelectionUtilities;
 
-    constructor(private readonly injector: EnvironmentInjector) {
+    constructor(
+        private readonly injector: EnvironmentInjector,
+        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        private readonly globalConfig: NgxGlobalDefaultValues
+    ) {
         super();
     }
 
     override async ngOnInit(): Promise<void> {
         super.ngOnInit();
+        this.metadata = new ReferencesManyDecoratorConfigInternal(this.metadata, this.globalConfig);
+        ReflectUtilities.defineMetadata('metadata', this.metadata, this.entity, this.key);
         this.propertyValue = this.propertyValue ?? [];
         const givenDisplayColumns: string[] = this.metadata.displayColumns.map((v) => v.displayName);
         if (givenDisplayColumns.find(s => s === 'select')) {

@@ -1,9 +1,11 @@
 import { Time } from '@angular/common';
 import { DateFilterFn } from '@angular/material/datepicker';
+import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { DateUtilities } from '../../utilities/date.utilities';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { DateRange, DateRangeDateDecoratorConfig, DateTimeDateDecoratorConfig, DefaultDateDecoratorConfig } from './date-decorator.data';
+import { getConfigValue } from '../../functions/get-config-value.function';
 
 /**
  * The internal DefaultDateDecoratorConfig. Sets default values.
@@ -49,7 +51,7 @@ export class DateRangeDateDecoratorConfigInternal extends PropertyDecoratorConfi
     // eslint-disable-next-line jsdoc/require-jsdoc
     placeholderEnd: string;
 
-    constructor(data: DateRangeDateDecoratorConfig) {
+    constructor(data: DateRangeDateDecoratorConfig, globalConfig: NgxGlobalDefaultValues) {
         super(data);
         this.displayStyle = data.displayStyle;
         this.minStart = data.minStart;
@@ -57,8 +59,8 @@ export class DateRangeDateDecoratorConfigInternal extends PropertyDecoratorConfi
         this.minEnd = data.minEnd;
         this.maxEnd = data.maxEnd;
         this.filter = data.filter;
-        this.placeholderStart = data.placeholderStart ?? 'Start';
-        this.placeholderEnd = data.placeholderEnd ?? 'End';
+        this.placeholderStart = getConfigValue(globalConfig.startLabel, data.placeholderStart);
+        this.placeholderEnd = getConfigValue(globalConfig.endLabel, data.placeholderEnd);
     }
 }
 
@@ -85,11 +87,11 @@ export class DateTimeDateDecoratorConfigInternal extends PropertyDecoratorConfig
     // eslint-disable-next-line jsdoc/require-jsdoc
     filterTime?: ((time: Time) => boolean) | (() => boolean);
 
-    constructor(data: DateTimeDateDecoratorConfig) {
+    constructor(data: DateTimeDateDecoratorConfig, globalConfig: NgxGlobalDefaultValues) {
         super(data);
         this.displayStyle = data.displayStyle;
         this.times = data.times ?? DateUtilities.getDefaultTimes();
-        this.timeDisplayName = data.timeDisplayName ?? 'Time';
+        this.timeDisplayName = getConfigValue(globalConfig.timeLabel, data.timeDisplayName);
         this.minDate = data.minDate;
         this.maxDate = data.maxDate;
         this.filterDate = data.filterDate;

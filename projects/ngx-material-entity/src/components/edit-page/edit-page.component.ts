@@ -11,8 +11,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, first, map } from 'rxjs';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
+import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../default-global-configuration-values';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { getValidationErrorsTooltipContent } from '../../functions/get-validation-errors-tooltip-content.function.ts';
+import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
 import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
 import { ValidationError, ValidationUtilities } from '../../utilities/validation.utilities';
@@ -130,7 +132,9 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
         private readonly inputData: PageEditData<EntityType>,
         private readonly http: HttpClient,
         private readonly el: ElementRef,
-        private readonly renderer: Renderer2
+        private readonly renderer: Renderer2,
+        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        protected readonly globalConfig: NgxGlobalDefaultValues
     ) { }
 
     /**
@@ -147,7 +151,7 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
     }
 
     async ngOnInit(): Promise<void> {
-        this.data = new PageEditDataBuilder(this.inputData).getResult();
+        this.data = new PageEditDataBuilder(this.inputData, this.globalConfig).getResult();
         if (this.data == null) {
             this.confirmNavigateBack();
             throw new Error('No edit data was provided for "NGX_EDIT_DATA". You need to provide a value in your routes providers array.');
@@ -235,10 +239,11 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
             this.confirmEdit();
             return;
         }
-        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.editData.confirmEditDialogData)
-            .withDefault('text', ['Do you really want to save all changes?'])
-            .withDefault('confirmButtonLabel', 'Save')
-            .withDefault('title', 'Edit')
+        // eslint-disable-next-line max-len
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.editData.confirmEditDialogData)
+            .withDefault('text', this.globalConfig.confirmSaveText)
+            .withDefault('confirmButtonLabel', this.globalConfig.saveLabel)
+            .withDefault('title', this.globalConfig.editLabel)
             .getResult();
         const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
@@ -265,11 +270,12 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
             this.confirmDelete();
             return;
         }
-        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.editData.confirmDeleteDialogData)
-            .withDefault('text', ['Do you really want to delete this entity?'])
+        // eslint-disable-next-line max-len
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.editData.confirmDeleteDialogData)
+            .withDefault('text', this.globalConfig.confirmDeleteText)
             .withDefault('type', 'delete')
-            .withDefault('confirmButtonLabel', 'Delete')
-            .withDefault('title', 'Delete')
+            .withDefault('confirmButtonLabel', this.globalConfig.deleteLabel)
+            .withDefault('title', this.globalConfig.deleteLabel)
             .getResult();
         const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
@@ -366,8 +372,6 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
      * @returns Whether or not the Action can be used.
      */
     editActionDisabled(action: EditActionInternal<EntityType>): boolean {
-        return this.injector.runInContext(() => {
-            return !action.enabled(this.entityPriorChanges);
-        });
+        return runInInjectionContext(this.injector, () => !action.enabled(this.entityPriorChanges));
     }
 }

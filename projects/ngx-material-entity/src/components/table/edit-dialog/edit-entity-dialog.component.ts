@@ -9,8 +9,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BaseEntityType } from '../../../classes/entity.model';
 import { PropertyDecoratorConfigInternal } from '../../../decorators/base/property-decorator-internal.data';
+import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../default-global-configuration-values';
 import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
 import { getValidationErrorsTooltipContent } from '../../../functions/get-validation-errors-tooltip-content.function.ts';
+import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
 import { EntityService } from '../../../services/entity.service';
 import { EntityTab, EntityUtilities } from '../../../utilities/entity.utilities';
 import { ValidationError, ValidationUtilities } from '../../../utilities/validation.utilities';
@@ -72,11 +74,13 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
         public dialogRef: MatDialogRef<NgxMatEntityEditDialogComponent<EntityType>>,
         private readonly injector: EnvironmentInjector,
         private readonly dialog: MatDialog,
-        private readonly http: HttpClient
+        private readonly http: HttpClient,
+        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        private readonly globalConfig: NgxGlobalDefaultValues
     ) {}
 
     ngOnInit(): void {
-        this.data = new EditEntityDataBuilder(this.inputData).getResult();
+        this.data = new EditEntityDataBuilder(this.inputData, this.globalConfig).getResult();
         this.entityPriorChanges = LodashUtilities.cloneDeep(this.data.entity);
         runInInjectionContext(this.injector, () => {
             this.isEntityReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
@@ -127,10 +131,11 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
             this.confirmEdit();
             return;
         }
-        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.editData.confirmEditDialogData)
-            .withDefault('text', ['Do you really want to save all changes?'])
-            .withDefault('confirmButtonLabel', 'Save')
-            .withDefault('title', 'Edit')
+        // eslint-disable-next-line max-len
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.editData.confirmEditDialogData)
+            .withDefault('text', this.globalConfig.confirmSaveText)
+            .withDefault('confirmButtonLabel', this.globalConfig.saveLabel)
+            .withDefault('title', this.globalConfig.editLabel)
             .getResult();
         const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
@@ -157,11 +162,12 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
             this.confirmDelete();
             return;
         }
-        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.data.editData.confirmDeleteDialogData)
-            .withDefault('text', ['Do you really want to delete this entity?'])
+        // eslint-disable-next-line max-len
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.editData.confirmDeleteDialogData)
+            .withDefault('text', this.globalConfig.confirmDeleteText)
             .withDefault('type', 'delete')
-            .withDefault('confirmButtonLabel', 'Delete')
-            .withDefault('title', 'Delete')
+            .withDefault('confirmButtonLabel', this.globalConfig.deleteLabel)
+            .withDefault('title', this.globalConfig.deleteLabel)
             .getResult();
         const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: dialogData,
