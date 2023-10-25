@@ -1,25 +1,26 @@
-<mat-form-field *ngIf="dateRange">
+<!-- eslint-disable angular/no-call-expression -->
+<mat-form-field>
     <mat-label>{{metadata.displayName}}</mat-label>
     
     <mat-date-range-input [rangePicker]="picker" [required]="metadata.required(entity)" [dateFilter]="metadata.filter ?? defaultDateFilter" [disabled]="isReadOnly">
-        <input matStartDate
-            [(ngModel)]="dateRangeStart"
-            [name]="key.toString() + 'start' + uuid"
-            #startModel="ngModel"
+        <input #startModel="ngModel"
+            matStartDate
+            [name]="name + 'start'"
             [required]="metadata.required(entity)"
-            [min]="metadata.minStart ? metadata.minStart(dateRange.start) : undefined"
-            [max]="metadata.maxStart ? metadata.maxStart(dateRange.start) : undefined"
+            [min]="metadata.minStart ? metadata.minStart(dateRangeStart) : undefined"
+            [max]="metadata.maxStart ? metadata.maxStart(dateRangeStart) : undefined"
             [placeholder]="metadata.placeholderStart"
+            [(ngModel)]="dateRangeStart"
             (dateChange)="setDateRangeValues()"
         >
-        <input matEndDate
-            [(ngModel)]="dateRangeEnd"
-            [name]="key.toString() + 'end' + uuid"
-            #endModel="ngModel"
+        <input #endModel="ngModel"
+            matEndDate
+            [name]="name + 'end'"
             [required]="metadata.required(entity)"
-            [min]="metadata.minEnd ? metadata.minEnd(dateRange.end) : undefined"
-            [max]="metadata.maxEnd ? metadata.maxEnd(dateRange.end) : undefined"
+            [min]="metadata.minEnd ? metadata.minEnd(dateRangeEnd) : undefined"
+            [max]="metadata.maxEnd ? metadata.maxEnd(dateRangeEnd) : undefined"
             [placeholder]="metadata.placeholderEnd"
+            [(ngModel)]="dateRangeEnd"
             (dateChange)="setDateRangeValues()"
         >
     </mat-date-range-input>

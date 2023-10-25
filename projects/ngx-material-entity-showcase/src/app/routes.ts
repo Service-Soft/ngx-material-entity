@@ -1,9 +1,10 @@
 import { Route, Routes } from '@angular/router';
-import { EditDataRoute, NGX_EDIT_DATA, NGX_EDIT_DATA_ENTITY, NGX_EDIT_DATA_ENTITY_SERVICE, PageEditData, defaultEditDataRoute } from 'ngx-material-entity';
+import { CreateDataRoute, EditDataRoute, NGX_CREATE_DATA, NGX_CREATE_DATA_ENTITY, NGX_CREATE_DATA_ENTITY_SERVICE, NGX_EDIT_DATA, NGX_EDIT_DATA_ENTITY, NGX_EDIT_DATA_ENTITY_SERVICE, PageEditData, defaultCreateDataRoute, defaultEditDataRoute } from 'ngx-material-entity';
 import { NavElementTypes, NavUtilities, NavbarRow } from 'ngx-material-navigation';
 import { TestEntity } from '../../../ngx-material-entity/src/mocks/test-entity.mock';
 import { TestEntityService } from '../services/test-entity.service';
 
+// eslint-disable-next-line jsdoc/require-jsdoc
 export const navbarRows: NavbarRow[] = [
     {
         elements: [
@@ -156,4 +157,23 @@ const editTestEntityRoute: EditDataRoute = {
     ]
 };
 
-export const routes: Routes = NavUtilities.getAngularRoutes(navbarRows, [], [inputRoute, editTestEntityRoute]);
+const createTestEntityRoute: CreateDataRoute = {
+    ...defaultCreateDataRoute,
+    providers: [
+        {
+            provide: NGX_CREATE_DATA_ENTITY_SERVICE,
+            useExisting: TestEntityService
+        },
+        {
+            provide: NGX_CREATE_DATA_ENTITY,
+            useValue: TestEntity
+        },
+        {
+            provide: NGX_CREATE_DATA,
+            useValue: editTestEntityData
+        }
+    ]
+};
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const routes: Routes = NavUtilities.getAngularRoutes(navbarRows, [], [inputRoute, editTestEntityRoute, createTestEntityRoute]);

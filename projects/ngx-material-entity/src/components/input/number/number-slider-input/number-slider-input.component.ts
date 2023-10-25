@@ -4,8 +4,8 @@ import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'number-slider-input',
     templateUrl: './number-slider-input.component.html',
     styleUrls: ['./number-slider-input.component.scss']

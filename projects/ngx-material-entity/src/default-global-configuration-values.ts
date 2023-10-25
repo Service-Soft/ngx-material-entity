@@ -2,6 +2,9 @@
 import { InjectionToken, inject } from '@angular/core';
 import { NGX_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from './global-configuration-values';
 
+/**
+ * The default configuration values of the library.
+ */
 export const defaultGlobalDefaults: NgxGlobalDefaultValues = {
     createLabel: 'Create',
     editLabel: 'Edit',
@@ -28,6 +31,7 @@ export const defaultGlobalDefaults: NgxGlobalDefaultValues = {
     confirmBaseActionText: ['Do you really want to run this action?'],
     confirmImportJsonText: ['Do you really want to import entities from the provided file?'],
     defaultEditMethod: 'dialog',
+    defaultCreateMethod: 'dialog',
     emptyArrayErrorMessage: 'Needs to contain at least one value',
     removeLabel: 'Remove',
     timeLabel: 'Time',
@@ -40,8 +44,14 @@ export const defaultGlobalDefaults: NgxGlobalDefaultValues = {
     addAllLabel: 'Add all'
 };
 
+/**
+ * The key for a config value that still needs an update.
+ */
 export const CONFIG_NEEDS_UPDATE_KEY: string = 'NEEDS_UPDATE';
 
+/**
+ * The global defaults for a configuration that needs update.
+ */
 export const needsUpdateGlobalDefaults: NgxGlobalDefaultValues = {
     createLabel: CONFIG_NEEDS_UPDATE_KEY,
     editLabel: CONFIG_NEEDS_UPDATE_KEY,
@@ -68,6 +78,7 @@ export const needsUpdateGlobalDefaults: NgxGlobalDefaultValues = {
     confirmBaseActionText: CONFIG_NEEDS_UPDATE_KEY as unknown as string[],
     confirmImportJsonText: CONFIG_NEEDS_UPDATE_KEY as unknown as string[],
     defaultEditMethod: CONFIG_NEEDS_UPDATE_KEY as 'dialog' | 'page',
+    defaultCreateMethod: CONFIG_NEEDS_UPDATE_KEY as 'dialog' | 'page',
     emptyArrayErrorMessage: CONFIG_NEEDS_UPDATE_KEY,
     removeLabel: CONFIG_NEEDS_UPDATE_KEY,
     timeLabel: CONFIG_NEEDS_UPDATE_KEY,
@@ -80,6 +91,10 @@ export const needsUpdateGlobalDefaults: NgxGlobalDefaultValues = {
     addAllLabel: CONFIG_NEEDS_UPDATE_KEY
 };
 
+/**
+ * The internal values consisting of default ones and values provided by the user in NGX_GLOBAL_DEFAULT_VALUES.
+ */
+// eslint-disable-next-line constCase/uppercase
 export const NGX_INTERNAL_GLOBAL_DEFAULT_VALUES: InjectionToken<NgxGlobalDefaultValues> = new InjectionToken<NgxGlobalDefaultValues>(
     'NGX_INTERNAL_GLOBAL_DEFAULT_VALUES',
     {

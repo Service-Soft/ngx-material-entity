@@ -7,8 +7,8 @@ import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../../default-global-c
 import { NgxGlobalDefaultValues } from '../../../../global-configuration-values';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'boolean-dropdown-input',
     templateUrl: './boolean-dropdown-input.component.html',
     styleUrls: ['./boolean-dropdown-input.component.scss']

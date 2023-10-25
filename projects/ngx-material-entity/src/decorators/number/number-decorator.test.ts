@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { expect } from '@jest/globals';
 import { Entity } from '../../classes/entity.model';
 import { EntityUtilities } from '../../utilities/entity.utilities';

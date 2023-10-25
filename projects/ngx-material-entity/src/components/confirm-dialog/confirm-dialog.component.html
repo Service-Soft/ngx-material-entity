@@ -1,22 +1,23 @@
-<h2 mat-dialog-title *ngIf="data.title">{{data.title}}</h2>
+<!-- eslint-disable angular/cyclomatic-complexity -->
+<h2 *ngIf="data.title" mat-dialog-title>{{data.title}}</h2>
 
 <mat-dialog-content>
     <p *ngFor="let paragraph of data.text">{{paragraph}}</p>
     <div *ngIf="data.requireConfirmation" class="checkbox-wrapper">
-        <mat-checkbox [(ngModel)]="confirm" name="confirm">
+        <mat-checkbox name="confirm" [(ngModel)]="confirm">
             {{data.confirmationText}}
         </mat-checkbox>
     </div>
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button type="button" *ngIf="data.type === 'delete'" mat-raised-button color="warn" (click)="confirmAction()" [disabled]="data.requireConfirmation && !confirm" class="confirm-button">
+    <button *ngIf="data.type === 'delete'" type="button" mat-raised-button color="warn" class="confirm-button" [disabled]="data.requireConfirmation && !confirm" (click)="confirmAction()">
         {{data.confirmButtonLabel}}
     </button>
-    <button type="button" *ngIf="data.type !== 'delete'" mat-raised-button (click)="confirmAction()" [disabled]="data.requireConfirmation && !confirm" class="confirm-button">
+    <button *ngIf="data.type !== 'delete'" type="button" mat-raised-button class="confirm-button" [disabled]="data.requireConfirmation && !confirm" (click)="confirmAction()">
         {{data.confirmButtonLabel}}
     </button>
-    <button type="button" *ngIf="data.type !== 'info-only'" mat-raised-button (click)="cancel()" class="cancel-button">
+    <button *ngIf="data.type !== 'info-only'" type="button" mat-raised-button class="cancel-button" (click)="cancel()">
         {{data.cancelButtonLabel}}
     </button>
 </mat-dialog-actions>

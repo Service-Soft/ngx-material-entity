@@ -6,7 +6,6 @@ import { CheckboxBooleanDecoratorConfig, DropdownBooleanDecoratorConfig, ToggleB
 
 /**
  * Decorator for setting and getting boolean property metadata.
- *
  * @param metadata - The metadata of the boolean property.
  * @returns The method that defines the metadata.
  */

@@ -1,3 +1,5 @@
+<!-- eslint-disable angular/cyclomatic-complexity -->
+<!-- eslint-disable angular/no-call-expression -->
 <h1 class="title">{{data.baseData.title}}</h1>
 
 <div class="row">
@@ -14,15 +16,15 @@
         [class.col-sm-6]="allowCreate"
         [class.col-sm-12]="!allowCreate"
     >
-        <button type="button" class="actions-button" [matMenuTriggerFor]="menu" mat-raised-button>
+        <button type="button" class="actions-button" mat-raised-button [matMenuTriggerFor]="menu">
             {{data.baseData.tableActionsLabel}}
         </button>
     </div>
     <mat-menu #menu="matMenu">
-        <button *ngIf="data.baseData.allowJsonImport" type="button" [disabled]="tableActionDisabled(importAction)" (click)="runTableAction(importAction)" mat-menu-item>
+        <button *ngIf="data.baseData.allowJsonImport" type="button" mat-menu-item [disabled]="tableActionDisabled(importAction)" (click)="runTableAction(importAction)">
             {{importAction.displayName}}
         </button>
-        <button type="button" *ngFor="let action of data.baseData.tableActions" [disabled]="tableActionDisabled(action)" (click)="runTableAction(action)" mat-menu-item>
+        <button *ngFor="let action of data.baseData.tableActions" type="button" mat-menu-item [disabled]="tableActionDisabled(action)" (click)="runTableAction(action)">
             {{action.displayName}}
         </button>
     </mat-menu>
@@ -36,26 +38,26 @@
         [class.col-sm-6]="data.baseData.tableActions.length"
         [class.col-sm-12]="!data.baseData.tableActions.length"
     >
-        <button type="button" class="create-button" (click)="createEntity()" mat-raised-button>
+        <button type="button" class="create-button" mat-raised-button (click)="createEntity()">
             {{data.baseData.createButtonLabel}}
         </button>
     </div>
 </div>
 
 <div class="mat-elevation-z8">
-    <mat-table [dataSource]="dataSource" matSort>
+    <mat-table matSort [dataSource]="dataSource">
         <!-- select Column -->
         <ng-container matColumnDef="select">
             <mat-header-cell *matHeaderCellDef>
-                <mat-checkbox (change)="$event ? SelectionUtilities.masterToggle(selection, dataSource) : null"
-                    [checked]="selection.hasValue() && SelectionUtilities.isAllSelected(selection, dataSource)"
-                    [indeterminate]="selection.hasValue() && !SelectionUtilities.isAllSelected(selection, dataSource)">
+                <mat-checkbox [checked]="selection.hasValue() && SelectionUtilities.isAllSelected(selection, dataSource)"
+                    [indeterminate]="selection.hasValue() && !SelectionUtilities.isAllSelected(selection, dataSource)"
+                    (change)="$event ? SelectionUtilities.masterToggle(selection, dataSource) : null">
                 </mat-checkbox>
             </mat-header-cell>
-            <mat-cell class="entity" *matCellDef="let entity">
-                <mat-checkbox (click)="$event.stopPropagation()"
-                    (change)="$event ? selection.toggle(entity) : null"
-                    [checked]="selection.isSelected(entity)">
+            <mat-cell *matCellDef="let entity" class="entity">
+                <mat-checkbox [checked]="selection.isSelected(entity)"
+                    (click)="$event.stopPropagation()"
+                    (change)="$event ? selection.toggle(entity) : null">
                 </mat-checkbox>
             </mat-cell>
         </ng-container>
@@ -64,9 +66,9 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>
                 {{dCol.displayName}}
             </mat-header-cell>
-            <mat-cell class="entity" [class.enabled]="!dCol.disableClick && (allowUpdate(entity) || allowRead(entity))"
+            <mat-cell *matCellDef="let entity" class="entity"
+                [class.enabled]="!dCol.disableClick && (allowUpdate(entity) || allowRead(entity))"
                 (click)="editEntity(entity, dCol)"
-                *matCellDef="let entity"
             >
                 <ng-container *ngIf="dCol.Component">
                     <display-column-value [entity]="entity" [ComponentClass]="dCol.Component"></display-column-value>

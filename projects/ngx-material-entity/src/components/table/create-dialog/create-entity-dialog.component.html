@@ -1,18 +1,21 @@
+<!-- eslint-disable angular/cyclomatic-complexity -->
+<!-- eslint-disable angular/no-call-expression -->
+ 
 <div class="mat-dialog-title">
-    <div>{{data.createDialogData.title}}</div>
+    <div>{{data.createData.title}}</div>
 </div>
 
 <form>
     <mat-dialog-content>
         <mat-tab-group *ngIf="entityTabs.length > 1" preserveContent>
             <mat-tab *ngFor="let tab of entityTabs" [label]="tab.tabName">
-                <div class="row" *ngFor="let row of tab.rows">
+                <div *ngFor="let row of tab.rows" class="row">
                     <ngx-mat-entity-input
                         *ngFor="let key of row.keys"
                         [entity]="data.entity"
                         [propertyKey]="key"
                         [hideOmitForCreate]="true"
-                        class="col-lg-{{EntityUtilities.getWidth(data.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(data.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(data.entity, key, 'sm')}}"
+                        [class]="EntityUtilities.getWidthClasses(data.entity, key)"
                         (inputChangeEvent)="checkIsEntityValid()"
                     >
                     </ngx-mat-entity-input>
@@ -21,16 +24,16 @@
         </mat-tab-group>
     
         <div *ngIf="entityTabs.length <= 1">
-            <span class="no-entity-tabs" *ngIf="!entityTabs.length">
+            <span *ngIf="!entityTabs.length" class="no-entity-tabs">
                 ERROR: No Inputs. Did you correctly assign all values in the model constructor?
             </span>
-            <div class="row" *ngFor="let row of entityTabs[0]?.rows">
+            <div *ngFor="let row of entityTabs[0]?.rows" class="row">
                 <ngx-mat-entity-input
                     *ngFor="let key of row.keys"
                     [entity]="data.entity"
                     [propertyKey]="key"
                     [hideOmitForCreate]="true"
-                    class="col-lg-{{EntityUtilities.getWidth(data.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(data.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(data.entity, key, 'sm')}}"
+                    [class]="EntityUtilities.getWidthClasses(data.entity, key)"
                     (inputChangeEvent)="checkIsEntityValid()"
                 >
                 </ngx-mat-entity-input>
@@ -41,19 +44,19 @@
     <mat-dialog-actions>
 
         <div class="d-flex align-items-center gap-3" style="margin-top: 10px;">
-            <button type="submit" (click)="create()" mat-raised-button
+            <button type="submit" mat-raised-button matBadgeColor="warn"
                 [disabled]="!isEntityValid"
                 [matBadge]="validationErrors.length"
                 [matBadgeHidden]="!validationErrors.length"
-                matBadgeColor="warn"
+                (click)="create()"
             >
-                {{data.createDialogData.createButtonLabel}}
+                {{data.createData.createButtonLabel}}
             </button>
             <ngx-mat-entity-tooltip *ngIf="validationErrors.length" [tooltipContent]="tooltipContent"></ngx-mat-entity-tooltip>
         </div>
 
-        <button type="button" mat-raised-button (click)="cancel()" class="cancel-button">
-            {{data.createDialogData.cancelButtonLabel}}
+        <button type="button" mat-raised-button class="cancel-button" (click)="cancel()">
+            {{data.createData.cancelButtonLabel}}
         </button>
     </mat-dialog-actions>
 </form>

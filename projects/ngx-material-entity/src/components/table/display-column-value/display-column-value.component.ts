@@ -1,4 +1,3 @@
-/* eslint-disable @angular-eslint/component-selector */
 import { Component, ComponentRef, Input, OnInit, Type, ViewContainerRef } from '@angular/core';
 import { BaseEntityType } from '../../../classes/entity.model';
 import { NgxMatEntityBaseDisplayColumnValueComponent } from './base-display-column-value.component';
@@ -15,12 +14,21 @@ import { NgxMatEntityBaseDisplayColumnValueComponent } from './base-display-colu
 })
 export class DisplayColumnValueComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
+    /**
+     * The entity for which the column should be displayed.
+     */
     @Input()
     entity!: EntityType;
 
+    /**
+     * The class of the component that should be used inside the custom display column.
+     */
     @Input()
     ComponentClass!: Type<NgxMatEntityBaseDisplayColumnValueComponent<EntityType>>;
 
+    /**
+     * The actual component that is used inside the custom display column.
+     */
     component!: ComponentRef<NgxMatEntityBaseDisplayColumnValueComponent<EntityType>>;
 
     constructor(private readonly viewContainerRef: ViewContainerRef) {}

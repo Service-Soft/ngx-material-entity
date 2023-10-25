@@ -4,6 +4,7 @@ import { EntityUtilities, TableData } from 'ngx-material-entity';
 import { TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';
 import { customTableData, customTableDataReadOnly, defaultTableData, defaultTableDataDialog } from './table-configs.data';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     selector: 'app-showcase-table',
     templateUrl: './showcase-table.component.html',

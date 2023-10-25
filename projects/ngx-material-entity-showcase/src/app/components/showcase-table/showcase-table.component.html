@@ -13,8 +13,8 @@
     <br>
     <mat-form-field>
         <mat-label>Table Configuration</mat-label>
-        <mat-select [(ngModel)]="selectedTableDataPreset" name="config" #config="ngModel">
-            <mat-option *ngFor="let value of tableDataPresets" (click)="refreshTable()" [value]="value">
+        <mat-select #config="ngModel" name="config" [(ngModel)]="selectedTableDataPreset">
+            <mat-option *ngFor="let value of tableDataPresets" [value]="value" (click)="refreshTable()">
                 {{value}}
             </mat-option>
         </mat-select>

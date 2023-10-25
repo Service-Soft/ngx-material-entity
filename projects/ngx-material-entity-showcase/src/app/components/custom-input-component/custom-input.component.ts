@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { DecoratorTypes, NgxMatEntityBaseInputComponent } from 'ngx-material-entity';
 import { RandomMetadata, TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     selector: 'app-custom-input-component',
     templateUrl: './custom-input.component.html',

@@ -6,7 +6,6 @@ import * as js2xml from 'js2xmlparser';
 export abstract class Js2XmlUtilities {
     /**
      * Returns a XML string representation of the specified object using the specified options.
-     *
      * @param root - Name of the xml root element.
      * @param value - The json value to convert. Will be a child of root.
      * @param options - Additional options for the conversion.

@@ -2,7 +2,7 @@ import { Time } from '@angular/common';
 import { DateFilterFn } from '@angular/material/datepicker';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
-import { CreateDialogData, DisplayColumn } from '../../components/table/table-data';
+import { CreateData, DisplayColumn } from '../../components/table/table-data';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
@@ -19,7 +19,6 @@ export abstract class ArrayDecoratorConfig<ValueType> extends PropertyDecoratorC
 
     /**
      * Whether or not duplicate values are allowed inside the array.
-     *
      * @default false
      */
     allowDuplicates?: boolean;
@@ -70,7 +69,7 @@ export interface EntityArrayDecoratorConfig<EntityType extends BaseEntityType<En
      * The data for the add-item-dialog.
      * Can be omitted when adding items inline.
      */
-    createDialogData?: CreateDialogData,
+    createDialogData?: CreateData,
 
     /**
      * The data for the edit-item-dialog.
@@ -81,21 +80,18 @@ export interface EntityArrayDecoratorConfig<EntityType extends BaseEntityType<En
     /**
      * Whether or not the form for adding items to the array
      * should be displayed inline.
-     *
      * @default true
      */
     createInline?: boolean,
 
     /**
      * The label for the add button when createInline is true.
-     *
      * @default 'Add'
      */
     addButtonLabel?: string,
 
     /**
      * The label for the remove button when createInline is true.
-     *
      * @default 'Remove'
      */
     removeButtonLabel?: string,
@@ -121,14 +117,12 @@ export interface DateArrayDecoratorConfig extends ArrayDecoratorConfig<Date[]> {
 
     /**
      * The label for the add button.
-     *
      * @default 'Add'
      */
     addButtonLabel?: string,
 
      /**
       * The label for the remove button.
-      *
       * @default 'Remove'
       */
     removeButtonLabel?: string,
@@ -169,14 +163,12 @@ export interface DateTimeArrayDecoratorConfig extends ArrayDecoratorConfig<Date[
 
     /**
      * The label for the add button.
-     *
      * @default 'Add'
      */
     addButtonLabel?: string,
 
      /**
       * The label for the remove button.
-      *
       * @default 'Remove'
       */
     removeButtonLabel?: string,
@@ -193,7 +185,6 @@ export interface DateTimeArrayDecoratorConfig extends ArrayDecoratorConfig<Date[
 
     /**
      * The name to use as a label for the time form field.
-     *
      * @default 'Time'
      */
     timeDisplayName?: string,
@@ -244,14 +235,12 @@ export interface DateRangeArrayDecoratorConfig extends ArrayDecoratorConfig<Date
 
     /**
      * The label for the add button.
-     *
      * @default 'Add'
      */
     addButtonLabel?: string,
 
      /**
       * The label for the remove button.
-      *
       * @default 'Remove'
       */
     removeButtonLabel?: string,
@@ -283,13 +272,11 @@ export interface DateRangeArrayDecoratorConfig extends ArrayDecoratorConfig<Date
     filter?: DateFilterFn<Date>,
     /**
      * The placeholder for the start date of the date range picker.
-     *
      * @default "Start"
      */
     placeholderStart?: string,
     /**
      * The placeholder for the end date of the date range picker.
-     *
      * @default "End"
      */
     placeholderEnd?: string
@@ -304,7 +291,6 @@ export interface StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig<st
 
     /**
      * The class for the <i> tag used to remove an entry from the array.
-     *
      * @default 'fas fa-circle-minus'
      */
     deleteIcon?: string,
@@ -331,7 +317,6 @@ export interface AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecora
 
     /**
      * The class for the <i> tag used to remove an entry from the array.
-     *
      * @default 'fas fa-circle-minus'
      */
     deleteIcon?: string,
@@ -350,5 +335,9 @@ export interface AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecora
     /**
      * A regex used for validation.
      */
-    regex?: RegExp
+    regex?: RegExp,
+    /**
+     * Whether or not valid inputs should be restricted to the autocomplete options.
+     */
+    restrictToOptions?: boolean
 }

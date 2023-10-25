@@ -17,7 +17,6 @@ export class DragDropDirective {
 
     /**
      * Prevents the event default.
-     *
      * @param evt - The Event when dragged files hover over the parent.
      */
     @HostListener('dragover', ['$event'])
@@ -28,7 +27,6 @@ export class DragDropDirective {
 
     /**
      * Prevents the event default.
-     *
      * @param evt - The Event when dragged files leave the parent.
      */
     @HostListener('dragleave', ['$event'])
@@ -39,7 +37,6 @@ export class DragDropDirective {
 
     /**
      * Prevents the event default and emits the dropped files with the output.
-     *
      * @param evt - The Event when files are dropped.
      */
     @HostListener('drop', ['$event'])

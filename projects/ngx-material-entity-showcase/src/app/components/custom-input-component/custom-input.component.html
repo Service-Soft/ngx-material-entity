@@ -1,15 +1,16 @@
+<!-- eslint-disable angular/no-call-expression -->
 <mat-form-field>
     <mat-label>{{metadata.displayName}}</mat-label>
     <input
-        matInput
-        [(ngModel)]="entity['randomValue']"
-        [name]="key.toString() + uuid"
         #model="ngModel"
+        matInput
+        [name]="name"
         [required]="metadata.required(entity)"
-        (ngModelChange)="emitChange()"
         [disabled]="isReadOnly"
+        [(ngModel)]="entity['randomValue']"
+        (ngModelChange)="emitChange()"
     >
-    <button type="button" (click)="randomInput()" mat-icon-button matSuffix [disabled]="isReadOnly">
+    <button type="button" mat-icon-button matSuffix [disabled]="isReadOnly" (click)="randomInput()">
         <i class="fas fa-dice"></i>
     </button>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>

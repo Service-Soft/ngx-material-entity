@@ -132,7 +132,7 @@ describe('custom table', () => {
         cy.get('button').contains('Multi Action').parent().should('not.be.disabled');
         cy.get('button').contains('Default Action').parent().should('not.be.disabled');
         cy.get('button').contains('Multi Action').click();
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        // eslint-disable-next-line typescript/no-unused-expressions
         expect(spy).to.be.calledOnce;
     });
 

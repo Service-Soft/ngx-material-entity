@@ -7,7 +7,6 @@ import { AutocompleteStringChipsArrayDecoratorConfig, DateArrayDecoratorConfig, 
 
 /**
  * Decorator for setting and getting array property metadata.
- *
  * @param metadata - The metadata of the array property.
  * @returns The method that defines the metadata.
  * @throws When the given type of the array-items is unknown.
@@ -46,7 +45,7 @@ export function array<EntityType extends BaseEntityType<EntityType>>(
                 DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS
             );
         default:
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+            // eslint-disable-next-line typescript/no-explicit-any, typescript/no-unsafe-member-access
             throw new Error(`Unknown itemType ${(metadata as any).itemType}`);
     }
 }

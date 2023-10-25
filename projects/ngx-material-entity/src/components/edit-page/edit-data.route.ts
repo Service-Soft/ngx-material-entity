@@ -17,6 +17,9 @@ export interface EditDataRoute extends Route {
     path: string
 }
 
+/**
+ * The default data for a edit route.
+ */
 export const defaultEditDataRoute: Omit<EditDataRoute, 'providers'> = {
     loadComponent: () => import('./edit-page.component').then(m => m.NgxMatEntityEditPageComponent),
     title: 'Edit',

@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /* eslint-disable no-console */
 import { expect } from '@jest/globals';
 import { defaultGlobalDefaults } from '../../default-global-configuration-values';

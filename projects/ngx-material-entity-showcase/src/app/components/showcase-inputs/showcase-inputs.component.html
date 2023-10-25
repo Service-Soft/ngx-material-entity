@@ -1,13 +1,15 @@
+<!-- eslint-disable angular/no-call-expression -->
+ 
 <div class="container">
     <br>
-    <form class="row" *ngIf="loaded">
+    <form *ngIf="loaded" class="row">
         <ngx-mat-entity-input
             *ngFor="let key of keys"
             [entity]="testEntity"
             [propertyKey]="key"
             [hideOmitForCreate]="true"
             [isReadOnly]="isReadOnly"
-            class="col-lg-{{EntityUtilities.getWidth(testEntity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(testEntity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(testEntity, key, 'sm')}}"
+            [class]="EntityUtilities.getWidthClasses(testEntity, key)"
         >
         </ngx-mat-entity-input>
         <hr style="margin-top: 10px;">
@@ -16,14 +18,14 @@
         <button type="button" mat-raised-button (click)="toggleReadOnly()">Toggle Read Only</button>
     </form>
     
-    <form class="row" *ngIf="!loaded">
+    <form *ngIf="!loaded" class="row">
         <ngx-mat-entity-input
             *ngFor="let key of keys"
             [entity]="testEntity"
             [propertyKey]="key"
             [hideOmitForCreate]="true"
             [isReadOnly]="isReadOnly"
-            class="col-lg-{{EntityUtilities.getWidth(testEntity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(testEntity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(testEntity, key, 'sm')}}"
+            [class]="EntityUtilities.getWidthClasses(testEntity, key)"
         >
         </ngx-mat-entity-input>
         <hr style="margin-top: 10px;">

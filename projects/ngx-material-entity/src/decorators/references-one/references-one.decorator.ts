@@ -6,7 +6,6 @@ import { ReferencesOneDecoratorConfig } from './references-one-decorator.data';
 
 /**
  * Decorator for setting and getting references one property metadata.
- *
  * @param metadata - The metadata of the references one property.
  * @returns The method that defines the metadata.
  */

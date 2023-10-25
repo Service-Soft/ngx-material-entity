@@ -81,7 +81,6 @@ export abstract class PropertyDecoratorConfigInternal<ValueType> implements Prop
 
     /**
      * Converts the default value to a function or undefined.
-     *
      * @param value - The default value provided by the metadata.
      * @returns A function that returns a default value or undefined.
      */
@@ -97,7 +96,6 @@ export abstract class PropertyDecoratorConfigInternal<ValueType> implements Prop
 
     /**
      * Converts the given boolean or boolean function to a boolean function.
-     *
      * @param value - The value to convert.
      * @returns A function that resolves to a boolean.
      */

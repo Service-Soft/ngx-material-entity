@@ -1,15 +1,16 @@
+<!-- eslint-disable angular/no-call-expression -->
 <input #fileInput
     type="file" hidden
     [multiple]="metadata.multiple"
-    [accept]="FileUtilities.getAcceptString(metadata.allowedMimeTypes)"
+    [accept]="acceptString"
     (change)="setFileFromInput($event)"
 >
 
 <mat-form-field floatLabel="always">
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-chip-grid #chipGrid
-        [(ngModel)]="filenames" name="file" #model="ngModel"
-        [required]="metadata.required(entity)"
+        #model="ngModel" name="file" [required]="metadata.required(entity)"
+        [(ngModel)]="filenames"
     >
         <mat-chip-row *ngFor="let name of filenames" (removed)="removeFile(name)">
             {{name}}
@@ -17,10 +18,10 @@
                 <i class="fas fa-download"></i>
             </span>
             <button *ngIf="!isReadOnly" type="button" matChipRemove>
-                <i class="{{metadata.deleteIcon}}"></i>
+                <i [class]="metadata.deleteIcon"></i>
             </button>
         </mat-chip-row>
-        <input [matChipInputFor]="chipGrid" [readonly]="true" hidden>
+        <input hidden [matChipInputFor]="chipGrid" [readonly]="true">
     </mat-chip-grid>
     <button *ngIf="downloadAllEnabled()" type="button" class="ngx-mat-grey" mat-icon-button matSuffix (click)="downloadAll()">
         <i class="fas fa-file-zipper"></i>

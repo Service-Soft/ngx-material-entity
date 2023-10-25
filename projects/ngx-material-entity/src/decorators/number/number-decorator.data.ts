@@ -4,9 +4,9 @@ import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type NumberDropdownValues =
     DropdownValue<number | undefined>[]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     | ((entity: any) => DropdownValue<number | undefined>[])
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     | ((entity: any) => Promise<DropdownValue<number | undefined>[]>)
 
 /**

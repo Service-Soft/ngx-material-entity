@@ -4,9 +4,9 @@ import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type StringDropdownValues =
     DropdownValue<string | undefined>[]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     | ((entity: any) => DropdownValue<string | undefined>[])
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     | ((entity: any) => Promise<DropdownValue<string | undefined>[]>)
 
 /**
@@ -89,7 +89,11 @@ export interface AutocompleteStringDecoratorConfig extends StringDecoratorConfig
     /**
      * A regex used for validation.
      */
-    regex?: RegExp
+    regex?: RegExp,
+    /**
+     * Whether or not valid inputs should be restricted to the autocomplete options.
+     */
+    restrictToOptions?: boolean
 }
 
 /**
@@ -112,13 +116,11 @@ export interface PasswordStringDecoratorConfig extends StringDecoratorConfig {
     regex?: RegExp,
     /**
      * Whether or not the password needs to be retyped.
-     *
      * @default true
      */
     needsConfirmation?: boolean,
     /**
      * The display name of the confirmation password input.
-     *
      * @default 'Confirm Password'
      */
     confirmationDisplayName?: string

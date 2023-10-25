@@ -2,12 +2,12 @@ import { BaseBuilder } from '../../../classes/base.builder';
 import { getConfigValue } from '../../../functions/get-config-value.function';
 import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
-import { CreateDialogData } from '../table-data';
+import { CreateData } from '../table-data';
 
 /**
- * The internal CreateDialogData. Requires all default values the user can leave out.
+ * The internal CreateData. Requires all default values the user can leave out.
  */
-export class CreateDialogDataInternal implements CreateDialogData {
+export class CreateDataInternal implements CreateData {
     // eslint-disable-next-line jsdoc/require-jsdoc
     title: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -35,23 +35,23 @@ export class CreateDialogDataInternal implements CreateDialogData {
 }
 
 /**
- * The Builder for the CreateDialogData. Sets default values.
+ * The Builder for the CreateData. Sets default values.
  */
-export class CreateDialogDataBuilder extends BaseBuilder<CreateDialogDataInternal, CreateDialogData> {
+export class CreateDataBuilder extends BaseBuilder<CreateDataInternal, CreateData> {
 
-    constructor(globalConfig: NgxGlobalDefaultValues, data?: CreateDialogData) {
+    constructor(globalConfig: NgxGlobalDefaultValues, data?: CreateData) {
         super(globalConfig, data);
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
-    protected generateBaseData(data?: CreateDialogData): CreateDialogDataInternal {
+    protected generateBaseData(data?: CreateData): CreateDataInternal {
         // eslint-disable-next-line max-len
         const confirmCreateDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, data?.confirmCreateDialogData)
             .withDefault('confirmButtonLabel', this.globalConfig.createLabel)
             .withDefault('text', this.globalConfig.confirmCreateText)
             .withDefault('title', this.globalConfig.createLabel)
             .getResult();
-        return new CreateDialogDataInternal(
+        return new CreateDataInternal(
             getConfigValue(this.globalConfig.createLabel, data?.title),
             getConfigValue(this.globalConfig.createLabel, data?.createButtonLabel),
             getConfigValue(this.globalConfig.cancelLabel, data?.cancelButtonLabel),

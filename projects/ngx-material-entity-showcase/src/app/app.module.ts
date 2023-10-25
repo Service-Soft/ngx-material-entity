@@ -15,7 +15,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TestRandomInputComponent } from './components/custom-input-component/custom-input.component';
 
-const DATE_FORMATS: MatDateFormats = {
+const DateFormats: MatDateFormats = {
     parse: {
         dateInput: 'DD.MM.YYYY'
     },
@@ -27,7 +27,7 @@ const DATE_FORMATS: MatDateFormats = {
     }
 };
 
-const NGX_ENTITY_DEFAULTS: Partial<NgxGlobalDefaultValues> = {
+const NgxEntityDefaults: Partial<NgxGlobalDefaultValues> = {
     // saveLabel: 'Default Save',
     // searchLabel: 'Default Search'
 };
@@ -38,25 +38,25 @@ const NGX_ENTITY_DEFAULTS: Partial<NgxGlobalDefaultValues> = {
         TestRandomInputComponent
     ],
     imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
         AppRoutingModule,
-        NgxMatNavigationNavbarModule,
-        NgxMatNavigationFooterModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        FormsModule,
         HttpClientModule,
-        MatNativeDateModule,
+        MatButtonModule,
         MatFormFieldModule,
         MatInputModule,
-        MatButtonModule,
-        FormsModule,
-        MatSliderModule
+        MatNativeDateModule,
+        MatSliderModule,
+        NgxMatNavigationFooterModule,
+        NgxMatNavigationNavbarModule
     ],
     providers: [
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-        { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS },
+        { provide: MAT_DATE_FORMATS, useValue: DateFormats },
         {
             provide: NGX_GLOBAL_DEFAULT_VALUES,
-            useValue: NGX_ENTITY_DEFAULTS
+            useValue: NgxEntityDefaults
         }
     ],
     bootstrap: [AppComponent]

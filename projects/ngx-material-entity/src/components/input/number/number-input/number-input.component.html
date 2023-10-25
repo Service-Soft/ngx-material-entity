@@ -1,17 +1,18 @@
+<!-- eslint-disable angular/no-call-expression -->
 <mat-form-field>
     <mat-label>{{metadata.displayName}}</mat-label>
     <input
+        #model="ngModel"
         matInput
         type="number"
-        [(ngModel)]="propertyValue"
-        [name]="key.toString() + uuid"
-        #model="ngModel"
+        number
+        [name]="name"
         [required]="metadata.required(entity)"
         [min]="metadata.min ?? null"
         [max]="metadata.max ?? null"
-        (ngModelChange)="emitChange()"
         [disabled]="isReadOnly"
-        number
+        [(ngModel)]="propertyValue"
+        (ngModelChange)="emitChange()"
     >
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>

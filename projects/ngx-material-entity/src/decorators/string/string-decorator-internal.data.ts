@@ -9,7 +9,7 @@ export class DropdownStringDecoratorConfigInternal extends PropertyDecoratorConf
     implements DropdownStringDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown';
-    // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line jsdoc/require-jsdoc, typescript/no-explicit-any
     dropdownValues: ((entity: any) => Promise<DropdownValue<string | undefined>[]>);
 
     constructor(data: DropdownStringDecoratorConfig) {
@@ -18,12 +18,12 @@ export class DropdownStringDecoratorConfigInternal extends PropertyDecoratorConf
         this.dropdownValues = this.dropdownValuesToFunction(data.dropdownValues);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     private dropdownValuesToFunction(dropdownValues: StringDropdownValues): (entity: any) => Promise<DropdownValue<string | undefined>[]> {
         if (Array.isArray(dropdownValues)) {
             return async () => dropdownValues;
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line typescript/no-explicit-any
         return async (e: any) => await dropdownValues(e);
     }
 }
@@ -85,6 +85,8 @@ export class AutocompleteStringDecoratorConfigInternal
     maxLength?: number;
     // eslint-disable-next-line jsdoc/require-jsdoc
     regex?: RegExp;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    restrictToOptions?: boolean;
 
     constructor(data: AutocompleteStringDecoratorConfig) {
         super(data);
@@ -93,6 +95,7 @@ export class AutocompleteStringDecoratorConfigInternal
         this.minLength = data.minLength;
         this.maxLength = data.maxLength;
         this.regex = data.regex;
+        this.restrictToOptions = data.restrictToOptions;
     }
 }
 

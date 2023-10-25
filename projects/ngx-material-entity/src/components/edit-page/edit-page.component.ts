@@ -35,7 +35,6 @@ import { PageEditDataBuilder, PageEditDataInternal } from './page-edit-data.buil
 export type PageEditData<EntityType extends BaseEntityType<EntityType>> = Omit<EditEntityData<EntityType>, 'entity' | 'EntityServiceClass'> & {
     /**
      * Whether or not to display a loading spinner while the entity for the page is loaded.
-     *
      * @default true
      */
     displayLoadingSpinner?: boolean,
@@ -49,7 +48,6 @@ export type PageEditData<EntityType extends BaseEntityType<EntityType>> = Omit<E
         confirmUnsavedChangesDialogData?: ConfirmDialogData,
         /**
          * Whether or not leaving with unsaved changes should require a confirm dialog.
-         *
          * @default true
          */
         unsavedChangesRequireConfirmDialog?: boolean
@@ -59,17 +57,17 @@ export type PageEditData<EntityType extends BaseEntityType<EntityType>> = Omit<E
 /**
  * The entity service that needs to be provided in the providers array of the edit page route.
  */
-// eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
+// eslint-disable-next-line max-len, typescript/no-explicit-any, constCase/uppercase
 export const NGX_EDIT_DATA_ENTITY_SERVICE: InjectionToken<EntityService<any>> = new InjectionToken<EntityService<any>>('NGX_EDIT_DATA_ENTITY_SERVICE');
 /**
  * The entity class that needs to be provided in the providers array of the edit page route.
  */
-// eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
+// eslint-disable-next-line max-len, typescript/no-explicit-any, constCase/uppercase
 export const NGX_EDIT_DATA_ENTITY: InjectionToken<EntityClassNewable<any>> = new InjectionToken<EntityClassNewable<any>>('NGX_EDIT_DATA_ENTITY');
 /**
  * The configuration that needs to be provided in the providers array of the edit page route.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line typescript/no-explicit-any, constCase/uppercase
 export const NGX_EDIT_DATA: InjectionToken<PageEditData<any>> = new InjectionToken<PageEditData<any>>('NGX_EDIT_DATA');
 
 /**
@@ -95,21 +93,54 @@ export const NGX_EDIT_DATA: InjectionToken<PageEditData<any>> = new InjectionTok
 })
 export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 
+    /**
+     * Contains HelperMethods around handling Entities and their property-metadata.
+     */
     EntityUtilities: typeof EntityUtilities = EntityUtilities;
 
+    /**
+     * The tabs to display.
+     */
     entityTabs!: EntityTab<EntityType>[];
 
+    /**
+     * The entity that is being edited.
+     */
     entity!: EntityType;
+    /**
+     * The entity before any changes have been made.
+     */
     entityPriorChanges!: EntityType;
 
+    /**
+     * Configuration data for the component.
+     */
     data!: PageEditDataInternal<EntityType>;
 
+    /**
+     * All validation errors of the entity.
+     */
     validationErrors: ValidationError[] = [];
+    /**
+     * Whether or not the entity is valid.
+     */
     isEntityValid: boolean = true;
+    /**
+     * Whether or not the entity is dirty.
+     */
     isEntityDirty: boolean = false;
+    /**
+     * What to display inside the tooltip.
+     */
     tooltipContent: string = '';
 
+    /**
+     * Whether or not the entity is readonly.
+     */
     isEntityReadOnly!: boolean;
+    /**
+     * Whether or not the current user is allowed to delete the entity.
+     */
     allowDelete!: boolean;
 
     private inConfirmNavigation: boolean = false;
@@ -139,7 +170,6 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
 
     /**
      * Checks if the input with the given key is readonly.
-     *
      * @param key - The key for the input to check.
      * @returns Whether or not the input for the key is read only.
      */
@@ -172,7 +202,7 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
             this.isEntityReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
             this.allowDelete = this.data.allowDelete(this.entityPriorChanges);
         });
-        this.entityTabs = EntityUtilities.getEntityTabs(this.entity, false, true);
+        this.entityTabs = EntityUtilities.getEntityTabs(this.entity, this.injector, false, true);
         setTimeout(() => this.checkOffset(), 1);
         setTimeout(() => this.checkIsEntityValid(), 1);
     }
@@ -181,11 +211,7 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
      * Checks if the bottom row should be displayed as fixed.
      */
     @HostListener('window:scroll')
-    onScroll(): void {
-        this.checkOffset();
-    }
-
-    private checkOffset(): void {
+    checkOffset(): void {
         const scrollY: number = window.scrollY;
         const bottomRow: HTMLElement | null = (this.el.nativeElement as HTMLElement).querySelector('.bottom-row');
         const bottomRowContainer: HTMLElement | null = (this.el.nativeElement as HTMLElement).querySelector('.bottom-row-container');
@@ -205,7 +231,6 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
 
     /**
      * Whether the page can be left without confirmation (of unsaved changes).
-     *
      * @returns Whether or not the page can be left without confirmation.
      */
     @HostListener('window:beforeunload')
@@ -314,7 +339,6 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
     /**
      * Opens the confirm dialog for navigating with unsaved changes.
      * This is exposed because the UnsavedChangesGuard needs to access this.
-     *
      * @returns The first observable result of the confirm dialog.
      */
     openConfirmNavigationDialog(): Observable<boolean> {
@@ -334,11 +358,10 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
 
     /**
      * Runs the edit action on the entity.
-     *
      * @param action - The action to run.
      */
     runEditAction(action: EditActionInternal<EntityType>): void {
-        const requireConfirmDialog: boolean = this.injector.runInContext(() => {
+        const requireConfirmDialog: boolean = runInInjectionContext(this.injector, () => {
             return action.requireConfirmDialog(this.entityPriorChanges);
         });
 
@@ -359,7 +382,7 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
     }
 
     private confirmRunEditAction(action: EditActionInternal<EntityType>): void {
-        void this.injector.runInContext(async () => {
+        void runInInjectionContext(this.injector, async () => {
             await action.action(this.entity, this.entityPriorChanges);
             await this.checkEntity();
         });
@@ -367,7 +390,6 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
 
     /**
      * Checks if an EditAction is disabled (e.g. Because the current entry doesn't fullfil the requirements).
-     *
      * @param action - The EditAction to check.
      * @returns Whether or not the Action can be used.
      */

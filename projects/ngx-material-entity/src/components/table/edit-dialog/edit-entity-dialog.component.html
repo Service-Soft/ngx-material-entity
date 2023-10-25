@@ -1,17 +1,19 @@
+<!-- eslint-disable angular/no-call-expression -->
+<!-- eslint-disable angular/cyclomatic-complexity -->
 <div class="mat-dialog-title">
     <div>{{data.editData.title(entityPriorChanges)}}</div>
 
     <div class="actions-container">
-        <button *ngIf="data.editData.actions.length" type="button" [matMenuTriggerFor]="menu" mat-raised-button>
+        <button *ngIf="data.editData.actions.length" type="button" mat-raised-button [matMenuTriggerFor]="menu">
             {{data.editData.actionsLabel}}
         </button>
         <mat-menu #menu="matMenu">
-            <button type="button" *ngFor="let action of data.editData.actions" [disabled]="editActionDisabled(action)" (click)="runEditAction(action)" mat-menu-item>
+            <button *ngFor="let action of data.editData.actions" type="button" mat-menu-item [disabled]="editActionDisabled(action)" (click)="runEditAction(action)">
                 {{action.displayName}}
             </button>
         </mat-menu>
     
-        <button type="button" *ngIf="allowDelete" mat-raised-button (click)="delete()" color="warn" class="delete-button" tabindex="-1">
+        <button *ngIf="allowDelete" type="button" mat-raised-button color="warn" class="delete-button" tabindex="-1" (click)="delete()">
             {{data.editData.deleteButtonLabel}}
         </button>
     </div>
@@ -21,15 +23,15 @@
     <mat-dialog-content>
         <mat-tab-group *ngIf="entityTabs.length > 1" preserveContent>
             <mat-tab *ngFor="let tab of entityTabs" [label]="tab.tabName">
-                <div class="row" *ngFor="let row of tab.rows">
+                <div *ngFor="let row of tab.rows" class="row">
                     <ngx-mat-entity-input
                         *ngFor="let key of row.keys"
                         [entity]="data.entity"
                         [propertyKey]="key"
                         [hideOmitForEdit]="true"
-                        class="col-lg-{{EntityUtilities.getWidth(data.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(data.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(data.entity, key, 'sm')}}"
-                        (inputChangeEvent)="checkEntity()"
+                        [class]="EntityUtilities.getWidthClasses(data.entity, key)"
                         [isReadOnly]="isReadOnly(key)"
+                        (inputChangeEvent)="checkEntity()"
                     >
                     </ngx-mat-entity-input>
                 </div>
@@ -37,18 +39,18 @@
         </mat-tab-group>
     
         <div *ngIf="entityTabs.length <= 1">
-            <span class="no-entity-tabs" *ngIf="!entityTabs.length">
+            <span *ngIf="!entityTabs.length" class="no-entity-tabs">
                 ERROR: No Inputs. Did you correctly assign all values in the model constructor?
             </span>
-            <div class="row" *ngFor="let row of entityTabs[0].rows">
+            <div *ngFor="let row of entityTabs[0].rows" class="row">
                 <ngx-mat-entity-input
                     *ngFor="let key of row.keys"
                     [entity]="data.entity"
                     [propertyKey]="key"
                     [hideOmitForEdit]="true"
-                    class="col-lg-{{EntityUtilities.getWidth(data.entity, key, 'lg')}} col-md-{{EntityUtilities.getWidth(data.entity, key, 'md')}} col-sm-{{EntityUtilities.getWidth(data.entity, key, 'sm')}}"
-                    (inputChangeEvent)="checkEntity()"
+                    [class]="EntityUtilities.getWidthClasses(data.entity, key)"
                     [isReadOnly]="isReadOnly(key)"
+                    (inputChangeEvent)="checkEntity()"
                 >
                 </ngx-mat-entity-input>
             </div>
@@ -57,11 +59,11 @@
     
     <mat-dialog-actions>
         <div class="d-flex align-items-center gap-3" style="margin-top: 10px;">
-            <button type="submit" (click)="edit()" mat-raised-button
+            <button type="submit" mat-raised-button matBadgeColor="warn"
                 [disabled]="isEntityReadOnly || !isEntityValid || !isEntityDirty"
                 [matBadge]="validationErrors.length"
                 [matBadgeHidden]="!validationErrors.length"
-                matBadgeColor="warn"
+                (click)="edit()"
             >
                 {{data.editData.confirmButtonLabel}}
             </button>
@@ -69,7 +71,7 @@
         </div>
 
 
-        <button type="button" mat-raised-button (click)="cancel()" class="cancel-button">
+        <button type="button" mat-raised-button class="cancel-button" (click)="cancel()">
             {{data.editData.cancelButtonLabel}}
         </button>
     </mat-dialog-actions>

@@ -14,8 +14,8 @@ import { DateUtilities } from '../../../../utilities/date.utilities';
 import { EntityUtilities } from '../../../../utilities/entity.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'date-time-input',
     templateUrl: './date-time-input.component.html',
     styleUrls: ['./date-time-input.component.scss']
@@ -56,7 +56,6 @@ export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType
 
     /**
      * Checks if two times are equal. Is needed for the dropdown.
-     *
      * @param time1 - The first time to compare.
      * @param time2 - The second time to compare.
      * @returns Whether or not the time objects are the same.

@@ -11,7 +11,6 @@ import { LodashUtilities } from '../encapsulation/lodash.utilities';
 export abstract class FileUtilities {
     /**
      * Gets the accept value for the html input.
-     *
      * @param mimeTypes - The mimeTypes to get the accept string from.
      * @returns A comma separated string of all the provided mime types.
      */
@@ -26,7 +25,6 @@ export abstract class FileUtilities {
     /* istanbul ignore next */
     /**
      * Reads a url to display the given file.
-     *
      * @param file - The file to get the url from.
      * @returns A promise of the url. Undefined if no file was provided.
      */
@@ -46,7 +44,6 @@ export abstract class FileUtilities {
     /* istanbul ignore next */
     /**
      * Gets a file from the given url.
-     *
      * @param url - The url to get the file from.
      * @param http - The angular HttpClient. Used to fetch files.
      * @returns A promise of the File.
@@ -64,7 +61,6 @@ export abstract class FileUtilities {
     /* istanbul ignore next */
     /**
      * Gets the file data with the blob from the given File Data.
-     *
      * @param data - The File Data to get the file data with blob from.
      * @param http - The angular HttpClient. Used to fetch files.
      * @returns FileDataWithFile.
@@ -94,7 +90,6 @@ export abstract class FileUtilities {
     /* istanbul ignore next */
     /**
      * Downloads a single file from the given File Data.
-     *
      * @param fileData - The file data. Needs to contain a blob.
      */
     static downloadSingleFile(fileData: FileDataWithFile): void {
@@ -105,7 +100,6 @@ export abstract class FileUtilities {
     /* istanbul ignore next */
     /**
      * Downloads a blob.
-     *
      * @param blob - The blob to download.
      * @param name - The name of the downloaded file.
      */
@@ -124,7 +118,6 @@ export abstract class FileUtilities {
     /* istanbul ignore next */
     /**
      * Downloads multiple files as a zip with the given name.
-     *
      * @param name - The name of the zip file to generate.
      * @param multiFileData - The file data array to put in the zip.
      * @param http - The angular HttpClient. Used to fetch files.
@@ -147,7 +140,6 @@ export abstract class FileUtilities {
 
     /**
      * Checks if the given file has a valid mime type.
-     *
      * @param type - The type of the file to check.
      * @param allowedMimeTypes - The allowed mime types.
      * @returns Whether or not the given file has a valid mime type.
@@ -169,7 +161,6 @@ export abstract class FileUtilities {
 
     /**
      * Transform the given value to Megabytes.
-     *
      * @param value - The original value.
      * @param unit - If the value is B, KB or GB.
      * @returns The given value as bytes.

@@ -2,18 +2,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EnvironmentInjector, Inject, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../../default-global-configuration-values';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DateRangeArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
+import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../../default-global-configuration-values';
 import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
 import { NgxGlobalDefaultValues } from '../../../../global-configuration-values';
 import { DateUtilities } from '../../../../utilities/date.utilities';
 import { ArrayTableComponent } from '../array-table.class';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'array-date-range-input',
     templateUrl: './array-date-range-input.component.html',
     styleUrls: ['./array-date-range-input.component.scss']
