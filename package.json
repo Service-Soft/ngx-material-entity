@@ -12,7 +12,7 @@
         "e2e:run": "ts-node ./e2e-stack.ts",
         "cy:run": "cypress run --browser chrome",
         "cy:open": "cypress open",
-        "lint": "eslint ./ --report-unused-disable-directives --max-warnings 0",
+        "lint": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js ./ --report-unused-disable-directives --max-warnings 0",
         "lint:fix": "eslint ./ --fix",
         "stack:only": "concurrently --kill-others 'npm run build:watch' 'run-s waitOn:build api' 'run-s waitOn:build showcase'",
         "clear:dist": "rimraf dist/ngx-material-entity",
