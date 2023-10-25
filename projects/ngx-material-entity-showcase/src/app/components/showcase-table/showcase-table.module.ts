@@ -12,13 +12,13 @@ import { ShowcaseTableComponent } from './showcase-table.component';
 @NgModule({
     imports: [
         CommonModule,
-        NgxMatEntityTableComponent,
-        MatFormFieldModule,
-        ShowcaseTableRoutingModule,
-        MatSlideToggleModule,
         FormsModule,
+        MatButtonModule,
+        MatFormFieldModule,
         MatSelectModule,
-        MatButtonModule
+        MatSlideToggleModule,
+        NgxMatEntityTableComponent,
+        ShowcaseTableRoutingModule
     ],
     declarations: [ShowcaseTableComponent]
 })

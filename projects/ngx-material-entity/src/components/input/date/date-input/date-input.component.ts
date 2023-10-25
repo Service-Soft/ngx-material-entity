@@ -5,8 +5,8 @@ import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum
 import { DateUtilities } from '../../../../utilities/date.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'date-input',
     templateUrl: './date-input.component.html',
     styleUrls: ['./date-input.component.scss']

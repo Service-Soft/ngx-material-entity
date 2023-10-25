@@ -30,8 +30,14 @@ import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from './confirm-d
 })
 export class NgxMatEntityConfirmDialogComponent implements OnInit {
 
+    /**
+     * Whether or not the user needs to tick a checkbox to enable the confirm button.
+     */
     confirm: boolean = false;
 
+    /**
+     * The configuration data of the dialog.
+     */
     data!: ConfirmDialogDataInternal;
 
     constructor(

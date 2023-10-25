@@ -1,11 +1,12 @@
+<!-- eslint-disable angular/no-call-expression -->
 <mat-form-field>
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-select
-        [(ngModel)]="propertyValue"
-        [name]="key.toString() + uuid"
         #model="ngModel"
+        [name]="name"
         [required]="metadata.required(entity)"
         [disabled]="isReadOnly"
+        [(ngModel)]="propertyValue"
         (selectionChange)="emitChange()"
     >
         <mat-option [value]="undefined">-</mat-option>

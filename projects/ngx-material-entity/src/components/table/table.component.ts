@@ -22,7 +22,7 @@ import { EntityUtilities } from '../../utilities/entity.utilities';
 import { SelectionUtilities } from '../../utilities/selection.utilities';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from './create-dialog/create-entity-dialog-data.builder';
+import { CreateEntityDataInternal, CreateEntityDialogDataBuilder } from './create-dialog/create-entity-dialog-data.builder';
 import { NgxMatEntityCreateDialogComponent } from './create-dialog/create-entity-dialog.component';
 import { DisplayColumnValueComponent } from './display-column-value/display-column-value.component';
 import { EditEntityData } from './edit-dialog/edit-entity-data';
@@ -69,22 +69,58 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     @Input()
     tableData!: TableData<EntityType>;
 
+    /**
+     * The internal TableData.
+     */
     data!: TableDataInternal<EntityType>;
 
+    /**
+     * Whether or not the table content is currently loading.
+     */
     isLoading: boolean = true;
+    /**
+     * Whether or not the current user is allowed to create entries for the table.
+     */
     allowCreate!: boolean;
 
     private entityService!: EntityService<EntityType>;
     private readonly onDestroy: Subject<void> = new Subject<void>();
-    @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
-    @ViewChild(MatSort, { static: true }) sort!: MatSort;
-    @ViewChild('filter', { static: true }) filter!: string;
+    /**
+     * The paginator from the html.
+     */
+    @ViewChild(MatPaginator, { static: true })
+    paginator!: MatPaginator;
+    /**
+     * The sort from the html.
+     */
+    @ViewChild(MatSort, { static: true })
+    sort!: MatSort;
+    /**
+     * The filter (search) from the html.
+     */
+    @ViewChild('filter', { static: true })
+    filter!: string;
+    /**
+     * The columns of the table.
+     */
     displayedColumns!: string[];
+    /**
+     * The table dataSource.
+     */
     dataSource: MatTableDataSource<EntityType> = new MatTableDataSource();
+    /**
+     * The selection of the table.
+     */
     selection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
 
+    /**
+     * Provides functionality around material selections inside of tables.
+     */
     SelectionUtilities: typeof SelectionUtilities = SelectionUtilities;
 
+    /**
+     * The internal BaseTableAction. Sets default values.
+     */
     importAction!: BaseTableActionInternal;
 
     constructor(
@@ -122,7 +158,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         }
 
         this.dataSource.sortingDataAccessor = (entity: EntityType, header: string) => {
-            return this.injector.runInContext(() => {
+            return runInInjectionContext(this.injector, () => {
                 return this.data.baseData.displayColumns.find((dp) => dp.displayName === header)?.value(entity) as string;
             });
         };
@@ -148,13 +184,12 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     /**
      * Gets the value to display in the column.
      * Runs in environment context to enable injection.
-     *
      * @param entity - The entity to get the value from.
      * @param displayColumn - The display column to get the value from.
      * @returns The value of the display column.
      */
     getDisplayColumnValue(entity: EntityType, displayColumn: DisplayColumn<EntityType>): unknown {
-        return this.injector.runInContext(() => {
+        return runInInjectionContext(this.injector, () => {
             return displayColumn.value(entity);
         });
     }
@@ -190,7 +225,6 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
 
     /**
      * Edits an entity. This either calls the edit-Method provided by the user or uses a default edit-dialog.
-     *
      * @param entity - The entity that should be updated.
      * @param dCol - The display column. Is needed if a custom component was used that handles the click event differently.
      * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
@@ -218,24 +252,22 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
 
     /**
      * Whether updating the provided entity is allowed.
-     *
      * @param entity - The entity that the user wants to edit.
      * @returns True when the user can edit the provided entity and false otherwise.
      */
     allowUpdate(entity: EntityType): boolean {
-        return this.injector.runInContext(() => {
+        return runInInjectionContext(this.injector, () => {
             return this.data.baseData.allowUpdate(entity);
         });
     }
 
     /**
      * Whether viewing the provided entity is allowed.
-     *
      * @param entity - The entity that the user wants to view.
      * @returns True when the user can view the provided entity and false otherwise.
      */
     allowRead(entity: EntityType): boolean {
-        return this.injector.runInContext(() => {
+        return runInInjectionContext(this.injector, () => {
             return this.data.baseData.allowRead(entity);
         });
     }
@@ -271,33 +303,37 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
 
     /**
      * Creates a new Entity. This either calls the create-Method provided by the user or uses a default create-dialog.
-     *
      * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
      */
     createEntity(): void {
-        this.injector.runInContext(() => {
-            if (this.data.baseData.allowCreate()) {
-                if (!this.data.baseData.EntityClass) {
-                    throw new Error('No "EntityClass" specified for this table');
-                }
-                const entity: EntityType = new this.data.baseData.EntityClass();
-                EntityUtilities.setDefaultValues(entity);
-                if (this.data.baseData.create) {
-                    this.data.baseData.create(entity);
-                }
-                else {
-                    this.createDefault(entity);
-                }
+        if (this.allowCreate) {
+            if (!this.data.baseData.EntityClass) {
+                throw new Error('No "EntityClass" specified for this table');
             }
-        });
+            const entity: EntityType = new this.data.baseData.EntityClass();
+            EntityUtilities.setDefaultValues(entity);
+            if (this.data.baseData.create) {
+                this.data.baseData.create(entity);
+                return;
+            }
+            if (this.data.baseData.defaultCreate == 'page') {
+                this.createDefaultPage();
+                return;
+            }
+            this.createDefaultDialog(entity);
+        }
     }
 
-    private createDefault(entity: EntityType): void {
-        const dialogData: CreateEntityDialogDataInternal<EntityType> = new CreateEntityDialogDataBuilder(
+    private createDefaultPage(): void {
+        void this.router.navigateByUrl(this.entityService.createBaseRoute);
+    }
+
+    private createDefaultDialog(entity: EntityType): void {
+        const dialogData: CreateEntityDataInternal<EntityType> = new CreateEntityDialogDataBuilder(
             {
                 entity: entity,
                 EntityServiceClass: this.data.baseData.EntityServiceClass,
-                createDialogData: this.data.createDialogData
+                createData: this.data.createData
             },
             this.globalConfig
         ).getResult();
@@ -312,11 +348,10 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     /**
      * Runs the TableAction for all selected entries.
      * Also handles confirmation with an additional dialog if configured.
-     *
      * @param action - The TableAction to run.
      */
     runTableAction(action: TableActionInternal<EntityType>): void {
-        const requireConfirmDialog: boolean = this.injector.runInContext(() => {
+        const requireConfirmDialog: boolean = runInInjectionContext(this.injector, () => {
             return action.requireConfirmDialog(this.selection.selected);
         });
 
@@ -337,19 +372,18 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     }
 
     private confirmRunTableAction(action: TableActionInternal<EntityType>): void {
-        void this.injector.runInContext(async () => {
+        void runInInjectionContext(this.injector, async () => {
             await action.action(this.selection.selected);
         });
     }
 
     /**
      * Checks if an TableAction is disabled (e.g. Because no entries have been selected).
-     *
      * @param action - The TableAction to check.
      * @returns Whether or not the Action can be used.
      */
     tableActionDisabled(action: TableActionInternal<EntityType>): boolean {
-        return this.injector.runInContext(() => {
+        return runInInjectionContext(this.injector, () => {
             return !action.enabled(this.selection.selected);
         });
     }
@@ -361,7 +395,6 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
 
     /**
      * Applies the search input to filter the table entries.
-     *
      * @param event - The keyup-event which contains the search-string of the user.
      */
     applyFilter(event: Event): void {

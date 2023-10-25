@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { expect } from '@jest/globals';
 import { Entity } from '../../classes/entity.model';
 import { EntityService } from '../../services/entity.service';
@@ -43,7 +42,7 @@ class TestEntity extends Entity {
                 EntityServiceClass: HasManyEntityService,
                 EntityClass: HasManyEntity
             },
-            createDialogData: {}
+            createData: {}
         },
         RelatedEntityServiceClass: TestEntityService,
         displayName: 'Has Many Entities'
@@ -59,7 +58,7 @@ class TestEntity extends Entity {
 const testEntity: TestEntity = new TestEntity();
 
 test('should have default has many metadata', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     const metadata: HasManyDecoratorConfigInternal<any, any> = EntityUtilities.getPropertyMetadata(testEntity, 'hasManyEntities', DecoratorTypes.HAS_MANY);
     expect(metadata).toBeDefined();
     expect(metadata.defaultWidths).toEqual([12, 12, 12]);

@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-jsdoc */
 import { TableData, exportAsCsvMultiAction, exportAsJsonMultiAction, exportAsXmlMultiAction } from 'ngx-material-entity';
 import { TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';
 import { TestEntityService } from '../../../services/test-entity.service';
@@ -8,18 +9,18 @@ export const defaultTableData: TableData<TestEntity> = {
         displayColumns: [
             {
                 displayName: 'Max and Min Strings',
-                value: (entity: TestEntity) => `${entity.maxLengthStringValue} ${entity.minLengthStringValue}`
+                value: entity => `${entity.maxLengthStringValue} ${entity.minLengthStringValue}`
             },
             {
                 displayName: 'Object',
-                value: (entity: TestEntity) => `#${entity.objectValue.id} ${entity.objectValue.maxLengthStringValue}`
+                value: entity => `#${entity.objectValue.id} ${entity.objectValue.maxLengthStringValue}`
             }
         ],
         EntityClass: TestEntity,
         EntityServiceClass: TestEntityService,
         defaultEdit: 'page'
     },
-    createDialogData: {
+    createData: {
         title: 'Create Test Entity'
     }
 };
@@ -40,7 +41,7 @@ export const defaultTableDataDialog: TableData<TestEntity> = {
         EntityClass: TestEntity,
         EntityServiceClass: TestEntityService
     },
-    createDialogData: {
+    createData: {
         title: 'Create Test Entity'
     }
 };
@@ -96,9 +97,10 @@ export const customTableData: TableData<TestEntity> = {
             }
         ],
         tableActionsLabel: 'Custom Multi Select Label',
-        allowJsonImport: true
+        allowJsonImport: true,
+        defaultCreate: 'page'
     },
-    createDialogData: {
+    createData: {
         title: 'Create Test Entity'
     },
     editData: {
@@ -142,7 +144,7 @@ export const customTableDataReadOnly: TableData<TestEntity> = {
         ],
         tableActionsLabel: 'Custom Multi Select Label'
     },
-    createDialogData: {
+    createData: {
         title: 'Create Test Entity'
     },
     editData: {

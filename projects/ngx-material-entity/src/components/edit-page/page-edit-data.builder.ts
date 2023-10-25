@@ -3,7 +3,7 @@ import { BaseEntityType } from '../../classes/entity.model';
 import { defaultTrue } from '../../functions/default-true.function';
 import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
-import { EditDataInternal, EditDialogDataBuilder } from '../table/edit-dialog/edit-data.builder';
+import { EditDataBuilder, EditDataInternal } from '../table/edit-dialog/edit-data.builder';
 import { EditEntityDataInternal } from '../table/edit-dialog/edit-entity.builder';
 import { PageEditData } from './edit-page.component';
 
@@ -30,7 +30,7 @@ export class PageEditDataBuilder<EntityType extends BaseEntityType<EntityType>>
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected generateBaseData(data: PageEditData<EntityType>): PageEditDataInternal<EntityType> {
-        const editData: EditDataInternal<EntityType> = new EditDialogDataBuilder(this.globalConfig, data.editData)
+        const editData: EditDataInternal<EntityType> = new EditDataBuilder(this.globalConfig, data.editData)
             .withDefault('cancelButtonLabel', this.globalConfig.backLabel)
             .getResult();
         // eslint-disable-next-line max-len

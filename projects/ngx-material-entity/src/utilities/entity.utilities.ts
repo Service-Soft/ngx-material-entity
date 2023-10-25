@@ -1,4 +1,5 @@
 import { HttpClient } from '@angular/common/http';
+import { EnvironmentInjector, runInInjectionContext } from '@angular/core';
 import { DateFilterFn } from '@angular/material/datepicker';
 import { BaseEntityType } from '../classes/entity.model';
 import { DateRangeArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
@@ -69,23 +70,7 @@ export abstract class EntityUtilities {
     static readonly TIME_KEY: string = 'time';
 
     /**
-     * The key for the metadata that saves the date range value on date range properties.
-     */
-    static readonly DATE_RANGE_KEY: string = 'dateRange';
-
-    /**
-     * The key for the metadata that saves the date range start value on date range properties.
-     */
-    static readonly DATE_RANGE_START_KEY: string = 'dateRangeStart';
-
-    /**
-     * The key for the metadata that saves the date range end value on date range properties.
-     */
-    static readonly DATE_RANGE_END_KEY: string = 'dateRangeEnd';
-
-    /**
      * Gets the properties to omit when updating the entity.
-     *
      * @param entity - The entity to get the properties which should be left out for updating from.
      * @returns The properties which should be left out for updating an Entity.
      */
@@ -102,7 +87,6 @@ export abstract class EntityUtilities {
 
     /**
      * Gets the properties to omit when creating new entities.
-     *
      * @param entity - The entity to get the properties which should be left out for creating from.
      * @returns The properties which should be left out for creating a new Entity.
      */
@@ -119,7 +103,6 @@ export abstract class EntityUtilities {
 
     /**
      * Returns the given entity without the values that should be omitted for creation.
-     *
      * @param entity - The entity with all its values.
      * @returns The reduced entity object.
      */
@@ -130,25 +113,26 @@ export abstract class EntityUtilities {
     /**
      * Returns the given entity without the values that should be omitted for updating.
      * This also handles omitting keys for @object or @array values and removes values that haven't been changed by default.
-     *
      * @param entity - The entity with all its values.
      * @param entityPriorChanges - The entity before any changes were applied.
      * @param http - The angular HttpClient. Used to fetch files.
+     * @param injector - An angular environment injector.
      * @returns The reduced entity object.
      */
     static async getWithoutOmitUpdateValues<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         entityPriorChanges: EntityType,
-        http: HttpClient
+        http: HttpClient,
+        injector: EnvironmentInjector
     ): Promise<Partial<EntityType>> {
         const res: Partial<EntityType> = {};
-        for (const key of this.keysOf(entity, false, true)) {
+        for (const key of this.keysOf(entity, injector, false, true)) {
             const metadata: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, key);
             const type: DecoratorTypes = this.getPropertyType(entity, key);
             if (!(await this.isEqual(entity[key], entityPriorChanges[key], metadata, type, http))) {
                 switch (type) {
                     case DecoratorTypes.OBJECT:
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        // eslint-disable-next-line typescript/no-explicit-any
                         (res[key] as object) = LodashUtilities.omit(entity[key] as any, this.getOmitForCreate(entity[key]));
                         break;
                     case DecoratorTypes.ARRAY:
@@ -166,14 +150,13 @@ export abstract class EntityUtilities {
 
     /**
      * Sets all default values on the given entity.
-     *
      * @param entity - The entity to set the default values on.
      */
     static setDefaultValues<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): void {
         for (const key in entity) {
             const metadata: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, key);
             if (metadata.default) {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+                // eslint-disable-next-line typescript/no-unsafe-assignment, typescript/no-explicit-any
                 entity[key] = metadata.default() as any;
             }
         }
@@ -181,7 +164,6 @@ export abstract class EntityUtilities {
 
     /**
      * Gets all properties on the given entity which are files.
-     *
      * @param entity - The entity to check for file properties.
      * @param omit - Whether to leave out values that are omitted for create or delete.
      * @returns The keys of all file properties on the given entity.
@@ -205,7 +187,6 @@ export abstract class EntityUtilities {
 
     /**
      * Gets the metadata included in an property.
-     *
      * @param entity - The entity with the property to get the metadata from.
      * @param propertyKey - The property on the given Entity to get the metadata from.
      * @param type - For secure Typing, defines the returned PropertyConfig.
@@ -219,7 +200,7 @@ export abstract class EntityUtilities {
     >(
         entity: EntityType,
         propertyKey: keyof EntityType,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line typescript/no-unused-vars
         type?: T
     ): DecoratorType<T, CustomMetadataType> {
         const metadata: unknown = ReflectUtilities.getMetadata('metadata', entity, propertyKey);
@@ -231,7 +212,6 @@ export abstract class EntityUtilities {
 
     /**
      * Gets the type of the property-metadata.
-     *
      * @param entity - The entity with the property to get the type from.
      * @param propertyKey - The property on the given Entity to get the type from.
      * @returns The type of the metadata.
@@ -258,7 +238,6 @@ export abstract class EntityUtilities {
 
     /**
      * Sets all property values based on a given entity data-object.
-     *
      * @param target - The target object that needs to be constructed (if called inside an Entity constructor its usually this).
      * @param entity - The data object to get the property values from.
      * @alias new
@@ -271,7 +250,7 @@ export abstract class EntityUtilities {
             let value: unknown = entity ? ReflectUtilities.get(entity, key) : undefined;
             switch (type) {
                 case DecoratorTypes.OBJECT:
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    // eslint-disable-next-line typescript/no-explicit-any
                     const objectMetadata: DefaultObjectDecoratorConfigInternal<any>
                         = this.getPropertyMetadata(target, key, DecoratorTypes.OBJECT);
                     value = new objectMetadata.EntityClass(value as object | undefined);
@@ -280,7 +259,7 @@ export abstract class EntityUtilities {
                     const inputArray: EntityType[] | undefined = value as EntityType[] | undefined;
                     const resArray: EntityType[] = [];
                     if (inputArray) {
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        // eslint-disable-next-line typescript/no-explicit-any
                         const arrayMetadata: EntityArrayDecoratorConfigInternal<any>
                             = this.getPropertyMetadata(target, key, DecoratorTypes.ARRAY);
                         for (const item of inputArray) {
@@ -296,14 +275,13 @@ export abstract class EntityUtilities {
             ReflectUtilities.set(target, key, value);
         }
     }
-    // eslint-disable-next-line @typescript-eslint/member-ordering, jsdoc/require-jsdoc, @typescript-eslint/typedef
+    // eslint-disable-next-line typescript/member-ordering, jsdoc/require-jsdoc, typescript/typedef
     static construct = this.new;
-    // eslint-disable-next-line @typescript-eslint/member-ordering, jsdoc/require-jsdoc, @typescript-eslint/typedef
+    // eslint-disable-next-line typescript/member-ordering, jsdoc/require-jsdoc, typescript/typedef
     static build = this.new;
 
     /**
      * Checks if an entity is "dirty" (if its values have changed).
-     *
      * @param entity - The entity after all changes.
      * @param entityPriorChanges - The entity before the changes.
      * @param http - The angular HttpClient. Used to fetch files.
@@ -323,7 +301,6 @@ export abstract class EntityUtilities {
 
     /**
      * Gets the differences between the two given entities.
-     *
      * @param entity - The entity as is.
      * @param entityPriorChanges - The entity before any changes have been made.
      * @param http - The angular http client, is needed to check if files are equal.
@@ -356,7 +333,6 @@ export abstract class EntityUtilities {
     /**
      * Checks if two given values are equal.
      * It uses the isEqual method from LodashUtilities and extends it with functionality regarding Dates.
-     *
      * @param value - The updated value.
      * @param valuePriorChanges - The value before any changes.
      * @param metadata - The metadata of the property.
@@ -398,7 +374,7 @@ export abstract class EntityUtilities {
             case DecoratorTypes.FILE_DEFAULT:
                 return this.isEqualFile(value, valuePriorChanges, (metadata as DefaultFileDecoratorConfigInternal).multiple, http);
             case DecoratorTypes.CUSTOM:
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                // eslint-disable-next-line typescript/no-explicit-any
                 return this.isEqualCustom(value, valuePriorChanges, metadata as CustomDecoratorConfigInternal<any, any, any, any>);
             default:
                 return LodashUtilities.isEqual(value, valuePriorChanges);
@@ -406,26 +382,46 @@ export abstract class EntityUtilities {
     }
 
     private static isEqualArrayString(value: unknown, valuePriorChanges: unknown): boolean | PromiseLike<boolean> {
-        const stringArray: string[] = LodashUtilities.cloneDeep(value as string[]).sort();
-        const stringArrayPriorChanges: string[] = LodashUtilities.cloneDeep(valuePriorChanges as string[]).sort();
+        let stringArray: string[] | undefined = LodashUtilities.cloneDeep(value as string[] | undefined);
+        if (stringArray) {
+            stringArray = stringArray.sort();
+        }
+        let stringArrayPriorChanges: string[] | undefined = LodashUtilities.cloneDeep(valuePriorChanges as string[] | undefined);
+        if (stringArrayPriorChanges) {
+            stringArrayPriorChanges = stringArrayPriorChanges.sort();
+        }
         return LodashUtilities.isEqual(stringArray, stringArrayPriorChanges);
     }
 
     private static isEqualArrayDate(value: unknown, valuePriorChanges: unknown): boolean {
-        const newValue: Date[] = (value as Date[]).map(v => new Date(v)).sort();
-        const newValuePriorChanges: Date[] = (valuePriorChanges as Date[]).map(v => new Date(v)).sort();
+        let newValue: Date[] | undefined = LodashUtilities.cloneDeep(value as Date[] | undefined);
+        if (newValue) {
+            newValue = newValue.map(v => new Date(v)).sort();
+        }
+        let newValuePriorChanges: Date[] | undefined = LodashUtilities.cloneDeep(valuePriorChanges as Date[] | undefined);
+        if (newValuePriorChanges) {
+            newValuePriorChanges = newValuePriorChanges.map(v => new Date(v)).sort();
+        }
         return LodashUtilities.isEqual(newValue, newValuePriorChanges);
     }
 
     private static isEqualArrayDateRange(value: unknown, valuePriorChanges: unknown, filter?: DateFilterFn<Date>): boolean {
-        const dateRanges: DateRange[] = (value as DateRange[]).sort();
-        const dateRangesPriorChanges: DateRange[] = (valuePriorChanges as DateRange[]).sort();
-        if (dateRanges.length !== dateRangesPriorChanges.length) {
+        let dateRanges: DateRange[] | undefined = LodashUtilities.cloneDeep(value as DateRange[] | undefined);
+        if (dateRanges) {
+            dateRanges = dateRanges.sort();
+        }
+        let dateRangesPriorChanges: DateRange[] | undefined = LodashUtilities.cloneDeep(valuePriorChanges as DateRange[] | undefined);
+        if (dateRangesPriorChanges) {
+            dateRangesPriorChanges = dateRangesPriorChanges.sort();
+        }
+        if (dateRanges?.length !== dateRangesPriorChanges?.length) {
             return false;
         }
-        for (let i: number = 0; i < dateRanges.length; i++) {
-            if (!this.isEqualDateRange(dateRanges[i], dateRangesPriorChanges[i], filter)) {
-                return false;
+        if (dateRanges?.length) {
+            for (let i: number = 0; i < dateRanges?.length; i++) {
+                if (!this.isEqualDateRange(dateRanges?.[i], dateRangesPriorChanges?.[i], filter)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -446,22 +442,35 @@ export abstract class EntityUtilities {
     }
 
     private static isEqualDateRange(value: unknown, valuePriorChanges: unknown, filter?: DateFilterFn<Date>): boolean {
-        const dateRange: DateRange = LodashUtilities.cloneDeep(value) as DateRange;
-        dateRange.start = new Date((value as DateRange).start);
-        dateRange.end = new Date((value as DateRange).end);
-        dateRange.values = DateUtilities.getDatesBetween(
-            dateRange.start,
-            dateRange.end,
-            filter
-        );
-        const dateRangePriorChanges: DateRange = LodashUtilities.cloneDeep(valuePriorChanges) as DateRange;
-        dateRangePriorChanges.start = new Date((valuePriorChanges as DateRange).start);
-        dateRangePriorChanges.end = new Date((valuePriorChanges as DateRange).end);
-        dateRangePriorChanges.values = DateUtilities.getDatesBetween(
-            dateRangePriorChanges.start,
-            dateRangePriorChanges.end,
-            filter
-        );
+        const dateRange: Partial<DateRange> | undefined = LodashUtilities.cloneDeep(value) as Partial<DateRange> | undefined;
+        if (dateRange?.start) {
+            dateRange.start = new Date(dateRange.start);
+        }
+        if (dateRange?.end) {
+            dateRange.end = new Date(dateRange.end);
+        }
+        if (dateRange?.start && dateRange.end) {
+            dateRange.values = DateUtilities.getDatesBetween(
+                dateRange.start,
+                dateRange.end,
+                filter
+            );
+        }
+        // eslint-disable-next-line max-len
+        const dateRangePriorChanges: Partial<DateRange> | undefined = LodashUtilities.cloneDeep(valuePriorChanges) as Partial<DateRange> | undefined;
+        if (dateRangePriorChanges?.start) {
+            dateRangePriorChanges.start = new Date(dateRangePriorChanges.start);
+        }
+        if (dateRangePriorChanges?.end) {
+            dateRangePriorChanges.end = new Date(dateRangePriorChanges.end);
+        }
+        if (dateRangePriorChanges?.start && dateRangePriorChanges.end) {
+            dateRangePriorChanges.values = DateUtilities.getDatesBetween(
+                dateRangePriorChanges.start,
+                dateRangePriorChanges.end,
+                filter
+            );
+        }
         return LodashUtilities.isEqual(dateRange, dateRangePriorChanges);
     }
 
@@ -475,6 +484,9 @@ export abstract class EntityUtilities {
             else {
                 return false;
             }
+        }
+        if (valuePriorChanges == null) {
+            return false;
         }
         const files: FileData[] = multiple ? (value as FileData[]).sort() : [value as FileData].sort();
         const filesPriorChanges: FileData[] = multiple ? (valuePriorChanges as FileData[]).sort() : [valuePriorChanges as FileData].sort();
@@ -504,7 +516,7 @@ export abstract class EntityUtilities {
     private static isEqualCustom(
         value: unknown,
         valuePriorChanges: unknown,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line typescript/no-explicit-any
         metadata: CustomDecoratorConfigInternal<any, any, any, any>
     ): boolean {
         if (!metadata.isEqual(value, valuePriorChanges, metadata)) {
@@ -515,7 +527,6 @@ export abstract class EntityUtilities {
 
     /**
      * Compare function for sorting entity keys by their order value.
-     *
      * @param a - First key of entity.
      * @param b - Second key of entity.
      * @param entity - Current entity (used to get metadata of entity keys).
@@ -542,31 +553,18 @@ export abstract class EntityUtilities {
     }
 
     /**
-     * Gets the bootstrap column values for "lg", "md", "sm".
-     *
+     * Gets the bootstrap column classes for "lg", "md" and "sm".
      * @param entity - Entity to get the bootstrap column values of the key.
      * @param key - Key of the property to get bootstrap column values from.
-     * @param type - Defines for which screen size the column values should be returned.
-     * @returns Bootstrap column value.
+     * @returns Bootstrap column classes.
      */
-    static getWidth<EntityType extends BaseEntityType<EntityType>>(
-        entity: EntityType,
-        key: keyof EntityType, type: 'lg' | 'md' | 'sm'
-    ): number {
+    static getWidthClasses<EntityType extends BaseEntityType<EntityType>>(entity: EntityType, key: keyof EntityType): string {
         const metadata: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, key);
-        switch (type) {
-            case 'lg':
-                return metadata.defaultWidths[0];
-            case 'md':
-                return metadata.defaultWidths[1];
-            case 'sm':
-                return metadata.defaultWidths[2];
-        }
+        return `col-lg-${metadata.defaultWidths[0]} col-md-${metadata.defaultWidths[1]} col-sm-${metadata.defaultWidths[2]}`;
     }
 
     /**
      * Resets all changes on an entity.
-     *
      * @param entity - The entity to reset.
      * @param entityPriorChanges - The entity before any changes.
      */
@@ -588,11 +586,12 @@ export abstract class EntityUtilities {
         tab: number,
         hideOmitForCreate: boolean,
         hideOmitForEdit: boolean,
-        additionalOmitValues: (keyof EntityType)[]
+        additionalOmitValues: (keyof EntityType)[],
+        injector: EnvironmentInjector
     ): EntityRow<EntityType>[] {
         const res: EntityRow<EntityType>[] = [];
 
-        const keys: (keyof EntityType)[] = this.keysOf(entity, hideOmitForCreate, hideOmitForEdit)
+        const keys: (keyof EntityType)[] = this.keysOf(entity, injector, hideOmitForCreate, hideOmitForEdit)
             .filter(k => !additionalOmitValues.includes(k));
         const numberOfRows: number = this.getNumberOfRows<EntityType>(keys, entity, tab);
         for (let i: number = 1; i <= numberOfRows; i++) {
@@ -616,8 +615,8 @@ export abstract class EntityUtilities {
 
     /**
      * Gets the tabs that are used to display the given entity.
-     *
      * @param entity - The entity to get the rows from.
+     * @param injector - An angular environment injector.
      * @param hideOmitForCreate - Whether or not keys with the metadata omitForCreate should be filtered out.
      * @param hideOmitForEdit - Whether or not keys with the metadata omitForUpdate should be filtered out.
      * @param additionalOmitValues - Additional omit values.
@@ -625,17 +624,18 @@ export abstract class EntityUtilities {
      */
     static getEntityTabs<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
+        injector: EnvironmentInjector,
         hideOmitForCreate: boolean = false,
         hideOmitForEdit: boolean = false,
         additionalOmitValues: (keyof EntityType)[] = []
     ): EntityTab<EntityType>[] {
         const res: EntityTab<EntityType>[] = [];
-        const keys: (keyof EntityType)[] = this.keysOf(entity, hideOmitForCreate, hideOmitForEdit)
+        const keys: (keyof EntityType)[] = this.keysOf(entity, injector, hideOmitForCreate, hideOmitForEdit)
             .filter(k => !additionalOmitValues.includes(k));
         const numberOfTabs: number = this.getNumberOfTabs<EntityType>(keys, entity);
 
         // eslint-disable-next-line max-len
-        const firstTabRows: EntityRow<EntityType>[] = this.getEntityRows<EntityType>(entity, -1, hideOmitForCreate, hideOmitForEdit, additionalOmitValues);
+        const firstTabRows: EntityRow<EntityType>[] = this.getEntityRows<EntityType>(entity, -1, hideOmitForCreate, hideOmitForEdit, additionalOmitValues, injector);
         if (firstTabRows.length) {
             const firstTab: EntityTab<EntityType> = {
                 tabName: this.getFirstTabName(entity),
@@ -647,7 +647,7 @@ export abstract class EntityUtilities {
 
         for (let i: number = 2; i <= numberOfTabs; i++) {
             const rows: EntityRow<EntityType>[] = this.getEntityRows<EntityType>(
-                entity, i, hideOmitForCreate, hideOmitForEdit, additionalOmitValues
+                entity, i, hideOmitForCreate, hideOmitForEdit, additionalOmitValues, injector
             );
             if (rows.length) {
                 const tab: EntityTab<EntityType> = {
@@ -707,19 +707,20 @@ export abstract class EntityUtilities {
 
     /**
      * Gets the keys of the provided entity correctly typed.
-     *
      * @param entity - The entity to get the keys of.
+     * @param injector - An angular environment injector.
      * @param hideOmitForCreate - Whether or not keys with the metadata omitForCreate should be filtered out.
      * @param hideOmitForEdit - Whether or not keys with the metadata omitForUpdate should be filtered out.
      * @returns An array of keys of the entity.
      */
     static keysOf<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
+        injector: EnvironmentInjector,
         hideOmitForCreate: boolean = false,
         hideOmitForEdit: boolean = false
     ): (keyof EntityType)[] {
         let keys: (keyof EntityType)[] = ReflectUtilities.ownKeys(entity);
-        const dontDisplayKeys: (keyof EntityType)[] = this.getDontDisplayKeys(entity);
+        const dontDisplayKeys: (keyof EntityType)[] = this.getDontDisplayKeys(entity, injector);
         keys = keys.filter(k => !dontDisplayKeys.includes(k));
         if (hideOmitForCreate) {
             const omitForCreateKeys: (keyof EntityType)[] = this.getOmitForCreate(entity);
@@ -732,11 +733,14 @@ export abstract class EntityUtilities {
         return keys;
     }
 
-    private static getDontDisplayKeys<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): (keyof EntityType)[] {
+    private static getDontDisplayKeys<EntityType extends BaseEntityType<EntityType>>(
+        entity: EntityType,
+        injector: EnvironmentInjector
+    ): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
         for (const key of ReflectUtilities.ownKeys(entity)) {
             const metadata: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, key);
-            if (!metadata.display(entity)) {
+            if (runInInjectionContext(injector, () => !metadata.display(entity))) {
                 res.push(key);
             }
         }

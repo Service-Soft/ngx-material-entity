@@ -1,6 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { HttpClient } from '@angular/common/http';
-import { array, boolean, ConfirmDialogTypes, DecoratorTypes, Entity, EntityService, EntityUtilities, object, string, BaseEntityType, EntityClassNewable } from 'ngx-material-entity';
+import { BaseEntityType, ConfirmDialogTypes, DecoratorTypes, Entity, EntityClassNewable, EntityServiceClassNewable, EntityUtilities, array, boolean, object, string } from 'ngx-material-entity';
 
 class ConfirmDialogDataEntity extends Entity {
     @array({
@@ -277,7 +276,7 @@ export class BaseDataEntity<EntityType extends BaseEntityType<EntityType>> exten
         displayName: 'Base Data Entity Service Class',
         displayStyle: 'line'
     })
-    EntityServiceClass!: new (httpClient: HttpClient) => EntityService<EntityType>;
+    EntityServiceClass!: EntityServiceClassNewable<EntityType>;
 
     @string({
         required: false,

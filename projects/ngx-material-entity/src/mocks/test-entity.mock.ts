@@ -66,10 +66,10 @@ const testEntityData: TestEntity = {
         rowValue1: ''
     } as TestObjectEntity,
     stringChipsArrayValue: ['01234', '56789'],
-    // eslint-disable-next-line @cspell/spellchecker
+    // eslint-disable-next-line cspell/spellchecker
     stringChipsAutocompleteArrayValue: ['ABCDE', 'FGHIJ'],
     stringChipsArrayValueWithConfig: ['01234', '56789'],
-    // eslint-disable-next-line @cspell/spellchecker
+    // eslint-disable-next-line cspell/spellchecker
     stringChipsAutocompleteArrayValueWithConfig: ['ABCDE', 'FGHIJ'],
     orderValue1: '1',
     orderValue2: '2',

@@ -1,17 +1,18 @@
+<!-- eslint-disable angular/no-call-expression -->
 <mat-form-field>
     <mat-label>{{metadata.displayName}}</mat-label>
     <textarea
-        matInput
-        [(ngModel)]="propertyValue"
-        [name]="key.toString() + uuid"
         #model="ngModel"
+        matInput
         cdkTextareaAutosize
         cdkAutosizeMinRows="10"
+        [name]="name"
         [required]="metadata.required(entity)"
         [minlength]="metadata.minLength ?? null"
         [maxlength]="metadata.maxLength ?? null"
-        (ngModelChange)="emitChange()"
         [disabled]="isReadOnly"
+        [(ngModel)]="propertyValue"
+        (ngModelChange)="emitChange()"
     >
     </textarea>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>

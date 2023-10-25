@@ -23,14 +23,12 @@ abstract class FileDecoratorConfig extends PropertyDecoratorConfig<FileData> {
 
     /**
      * The class for the <i> tag used to remove a file from the input.
-     *
      * @default 'fas fa-circle-minus'
      */
     deleteIcon?: string;
 
     /**
      * Whether or not the file should be displayed inside a preview.
-     *
      * @default true
      */
     preview?: boolean;
@@ -48,7 +46,6 @@ abstract class FileDecoratorConfig extends PropertyDecoratorConfig<FileData> {
 
     /**
      * The maximum allowed size of a single file in MB.
-     *
      * @default 10
      */
     maxSize?: number;
@@ -60,7 +57,6 @@ abstract class FileDecoratorConfig extends PropertyDecoratorConfig<FileData> {
 
     /**
      * The maximum allowed size of all files in MB.
-     *
      * @default 100
      */
     maxSizeTotal?: number;
@@ -72,7 +68,6 @@ abstract class FileDecoratorConfig extends PropertyDecoratorConfig<FileData> {
 
     /**
      * Defines whether or not a dropdown box is displayed.
-     *
      * @default
      * true // when multiple is set to true.
      * false // when multiple is set to false.
@@ -98,7 +93,6 @@ export interface ImageFileDecoratorConfig extends FileDecoratorConfig {
     type: 'image',
     /**
      * Specifies allowed File types like image/jpg etc. In a comma separated string.
-     *
      * @default ['image/*']
      */
     allowedMimeTypes?: string[],

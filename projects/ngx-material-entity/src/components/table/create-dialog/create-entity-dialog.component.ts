@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, Inject, Injector, OnInit, runInInjectionContext } from '@angular/core';
+import { Component, EnvironmentInjector, Inject, OnInit, runInInjectionContext } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,8 +16,8 @@ import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confi
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { NgxMatEntityInputModule } from '../../input/input.module';
 import { TooltipComponent } from '../../tooltip/tooltip.component';
-import { CreateEntityDialogData } from './create-entity-dialog-data';
-import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from './create-entity-dialog-data.builder';
+import { CreateEntityData } from './create-entity-dialog-data';
+import { CreateEntityDataInternal, CreateEntityDialogDataBuilder } from './create-entity-dialog-data.builder';
 
 /**
  * The default dialog used to create new entities based on the configuration passed in the MAT_DIALOG_DATA "inputData".
@@ -43,23 +43,44 @@ import { CreateEntityDialogDataBuilder, CreateEntityDialogDataInternal } from '.
     ]
 })
 export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
+    /**
+     * Contains HelperMethods around handling Entities and their property-metadata.
+     */
     EntityUtilities: typeof EntityUtilities = EntityUtilities;
 
+    /**
+     * The tabs of the entity.
+     */
     entityTabs!: EntityTab<EntityType>[];
 
+    /**
+     * The services that handles the entity.
+     */
     entityService!: EntityService<EntityType>;
 
-    data!: CreateEntityDialogDataInternal<EntityType>;
+    /**
+     * The internal configuration data.
+     */
+    data!: CreateEntityDataInternal<EntityType>;
 
+    /**
+     * Whether or not the entity is valid.
+     */
     isEntityValid: boolean = false;
+    /**
+     * The validation errors of the entity.
+     */
     validationErrors: ValidationError[] = [];
+    /**
+     * What to display inside the tooltip.
+     */
     tooltipContent: string = '';
 
     constructor(
         @Inject(MAT_DIALOG_DATA)
-        private readonly inputData: CreateEntityDialogData<EntityType>,
+        private readonly inputData: CreateEntityData<EntityType>,
         public dialogRef: MatDialogRef<NgxMatEntityCreateDialogComponent<EntityType>>,
-        private readonly injector: Injector,
+        private readonly injector: EnvironmentInjector,
         private readonly dialog: MatDialog,
         @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
         protected readonly globalConfig: NgxGlobalDefaultValues
@@ -68,7 +89,7 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
     ngOnInit(): void {
         this.data = new CreateEntityDialogDataBuilder(this.inputData, this.globalConfig).getResult();
         this.dialogRef.disableClose = true;
-        this.entityTabs = EntityUtilities.getEntityTabs(this.data.entity, true);
+        this.entityTabs = EntityUtilities.getEntityTabs(this.data.entity, this.injector, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
         setTimeout(() => this.checkIsEntityValid(), 1);
     }
@@ -90,13 +111,13 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
         if (!this.isEntityValid) {
             return;
         }
-        if (!this.data.createDialogData.createRequiresConfirmDialog) {
+        if (!this.data.createData.createRequiresConfirmDialog) {
             this.confirmCreate();
             return;
         }
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(
             this.globalConfig,
-            this.data.createDialogData.confirmCreateDialogData
+            this.data.createData.confirmCreateDialogData
         )
             .withDefault('text', this.globalConfig.confirmCreateText)
             .withDefault('confirmButtonLabel', this.globalConfig.createLabel)

@@ -1,9 +1,10 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component } from '@angular/core';
+import { Component, EnvironmentInjector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DecoratorTypes, EntityUtilities } from 'ngx-material-entity';
 import { TestEntity, TestEntityMockBuilder } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     selector: 'app-showcase-inputs',
     templateUrl: './showcase-inputs.component.html',
@@ -66,7 +67,8 @@ export class ShowcaseInputsComponent {
 
     constructor(
         private readonly route: ActivatedRoute,
-        private readonly router: Router
+        private readonly router: Router,
+        private readonly injector: EnvironmentInjector
     ) {
         this.route.params.subscribe(params => {
             if ((params as unknown) != null) {
@@ -126,7 +128,7 @@ export class ShowcaseInputsComponent {
 
     private setKeys(types: DecoratorTypes[]): void {
         this.keys = EntityUtilities
-            .keysOf(this.testEntity)
+            .keysOf(this.testEntity, this.injector)
             .filter(k => types.includes(EntityUtilities.getPropertyType(this.testEntity, k)));
     }
 }

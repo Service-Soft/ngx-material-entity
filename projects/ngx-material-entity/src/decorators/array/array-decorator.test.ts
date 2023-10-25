@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { expect } from '@jest/globals';
 import { Entity } from '../../classes/entity.model';
 import { defaultGlobalDefaults } from '../../default-global-configuration-values';
@@ -12,7 +11,7 @@ import { array } from './array.decorator';
 const testEntity: TestEntityWithoutCustomProperties = new TestEntityWithoutCustomPropertiesMockBuilder().testEntity;
 
 test('should have array Metadata', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     let metadata: EntityArrayDecoratorConfigInternal<any> = EntityUtilities.getPropertyMetadata(testEntity, 'entityArrayValue', DecoratorTypes.ARRAY);
     metadata = new EntityArrayDecoratorConfigInternal(metadata, defaultGlobalDefaults);
     expect(metadata).toBeDefined();
@@ -24,7 +23,7 @@ test('should have array Metadata', () => {
     expect(metadata.editDialogData).toBeDefined();
     expect(metadata.editDialogData.title(testEntity)).toEqual('Edit');
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     const customMetadata: EntityArrayDecoratorConfigInternal<any> = EntityUtilities.getPropertyMetadata(testEntity, 'entityArrayValueWithConfig', DecoratorTypes.ARRAY);
     expect(customMetadata).toBeDefined();
     expect(customMetadata.missingErrorMessage).toEqual('custom missing error message');

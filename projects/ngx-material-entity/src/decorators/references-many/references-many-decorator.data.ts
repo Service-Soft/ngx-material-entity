@@ -30,35 +30,30 @@ export interface ReferencesManyDecoratorConfig<EntityType extends BaseEntityType
 
     /**
      * The label for the dropdown input.
-     *
      * @default 'Select'
      */
     dropdownLabel?: string,
 
     /**
      * Whether or not a button that adds all values exists.
-     *
      * @default false
      */
     addAll?: boolean,
 
     /**
      * The label for the add all button.
-     *
      * @default 'Add all'
      */
     addAllButtonLabel?: string,
 
     /**
      * The label for the add button when createInline is true.
-     *
      * @default 'Add'
      */
     addButtonLabel?: string,
 
     /**
      * The label for the remove button when createInline is true.
-     *
      * @default 'Remove'
      */
     removeButtonLabel?: string

@@ -3,7 +3,7 @@ import { DateFilterFn } from '@angular/material/datepicker';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder } from '../../components/confirm-dialog/confirm-dialog-data.builder';
-import { CreateDialogData, DisplayColumn } from '../../components/table/table-data';
+import { CreateData, DisplayColumn } from '../../components/table/table-data';
 import { getConfigValue } from '../../functions/get-config-value.function';
 import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { DateUtilities } from '../../utilities/date.utilities';
@@ -49,7 +49,7 @@ export class EntityArrayDecoratorConfigInternal<EntityType extends BaseEntityTyp
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayColumns: DisplayColumn<EntityType>[];
     // eslint-disable-next-line jsdoc/require-jsdoc
-    createDialogData?: CreateDialogData;
+    createDialogData?: CreateData;
     // eslint-disable-next-line jsdoc/require-jsdoc
     editDialogData: EditArrayItemDialogDataInternal<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -283,6 +283,8 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
     maxLength?: number;
     // eslint-disable-next-line jsdoc/require-jsdoc
     regex?: RegExp;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    restrictToOptions?: boolean;
 
     constructor(data: AutocompleteStringChipsArrayDecoratorConfig, globalConfig: NgxGlobalDefaultValues) {
         super(data);
@@ -294,13 +296,13 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
         this.maxLength = data.maxLength;
         this.minLength = data.minLength;
         this.regex = data.regex;
+        this.restrictToOptions = data.restrictToOptions;
         this.defaultWidths = data.defaultWidths ?? [6, 12, 12];
     }
 }
 
 /**
  * Gets the default dialog data for the error dialog to display when the user tries to add a duplicate value.
- *
  * @param data - The Array Decorator data.
  * @param globalConfig - The global configuration of default values.
  * @returns The dialog data with set default values.

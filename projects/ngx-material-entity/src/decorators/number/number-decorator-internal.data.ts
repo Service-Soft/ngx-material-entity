@@ -28,7 +28,7 @@ export class DropdownNumberDecoratorConfigInternal extends PropertyDecoratorConf
     implements DropdownNumberDecoratorConfig {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown';
-    // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line jsdoc/require-jsdoc, typescript/no-explicit-any
     dropdownValues: ((entity: any) => Promise<DropdownValue<number | undefined>[]>);
 
     constructor(data: DropdownNumberDecoratorConfig) {
@@ -37,12 +37,12 @@ export class DropdownNumberDecoratorConfigInternal extends PropertyDecoratorConf
         this.dropdownValues = this.dropdownValuesToFunction(data.dropdownValues);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     private dropdownValuesToFunction(dropdownValues: NumberDropdownValues): (entity: any) => Promise<DropdownValue<number | undefined>[]> {
         if (Array.isArray(dropdownValues)) {
             return async () => dropdownValues;
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line typescript/no-explicit-any
         return async (e: any) => await dropdownValues(e);
     }
 }
@@ -77,7 +77,6 @@ export class SliderNumberDecoratorConfigInternal extends PropertyDecoratorConfig
 
 /**
  * The default function to format values for the number slider thumb label.
- *
  * @param value - The value of the slider.
  * @returns Just the value without any formatting done.
  */

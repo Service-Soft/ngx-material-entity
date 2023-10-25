@@ -270,7 +270,7 @@ describe('isEntityValid', () => {
     test('DATE_RANGE filter', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
-        tE.customDateRangeValue.start.setDate(1);
+        (tE.customDateRangeValue.start).setDate(1);
         expect(ValidationUtilities.isEntityValid(tE, 'create')).toBe(false);
         tE.customDateRangeValue.start.setDate(2);
         expect(ValidationUtilities.isEntityValid(tE, 'create')).toBe(true);
@@ -427,7 +427,7 @@ describe('isEntityValid', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
         ReflectUtilities.defineMetadata('type', 'invalid type', tE, 'maxLengthStringValue');
-        const expectedEm: string = 'Could not validate the input because the DecoratorType invalid type is not known';
-        expect(() => ValidationUtilities.isEntityValid(tE, 'create')).toThrow(expectedEm);
+        const EXPECTED_EM: string = 'Could not validate the input because the DecoratorType invalid type is not known';
+        expect(() => ValidationUtilities.isEntityValid(tE, 'create')).toThrow(EXPECTED_EM);
     });
 });

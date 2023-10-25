@@ -11,8 +11,8 @@ import { NgxGlobalDefaultValues } from '../../../../global-configuration-values'
 import { DateUtilities } from '../../../../utilities/date.utilities';
 import { ArrayTableComponent } from '../array-table.class';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'array-date-input',
     templateUrl: './array-date-input.component.html',
     styleUrls: ['./array-date-input.component.scss']

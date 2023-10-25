@@ -573,7 +573,7 @@ export interface EntityArrayDecoratorConfig<EntityType extends object> extends A
      * The data for the add-item-dialog.
      * Can be omitted when adding items inline.
      */
-    createDialogData?: CreateDialogData,
+    createDialogData?: CreateData,
 
     /**
      * Whether or not the form for adding items to the array
@@ -1083,7 +1083,7 @@ export interface BaseData<EntityType extends object> {
      * The Class of the service that handles the entities.
      * Needs to be injectable and an extension of the "EntityService"-Class.
      */
-    EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
+    EntityServiceClass: EntityServiceClassNewable<EntityType>,
     /**
      * The Class of the entities to manage.
      */
@@ -1148,7 +1148,7 @@ export interface BaseData<EntityType extends object> {
 /**
  * The data of the default create-dialog.
  */
-export interface CreateDialogData {
+export interface CreateData {
     /**
      * The title of the default create-dialog.
      */
@@ -1224,7 +1224,7 @@ export interface TableData<EntityType extends object> {
      * The data for the default create-dialog.
      * Can be omitted when specifying a custom "create" method inside the baseData.
      */
-    createDialogData?: CreateDialogData,
+    createDialogData?: CreateData,
     /**
      * The data for the default edit-dialog.
      * Can be omitted when specifying a custom "edit" method inside the baseData.

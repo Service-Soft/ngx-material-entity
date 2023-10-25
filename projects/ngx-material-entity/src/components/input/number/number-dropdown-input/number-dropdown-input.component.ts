@@ -5,8 +5,8 @@ import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'number-dropdown-input',
     templateUrl: './number-dropdown-input.component.html',
     styleUrls: ['./number-dropdown-input.component.scss']

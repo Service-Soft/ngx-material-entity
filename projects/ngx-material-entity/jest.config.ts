@@ -4,9 +4,7 @@ const config: Config = {
     preset: 'jest-preset-angular',
     bail: true,
     silent: false,
-    setupFilesAfterEnv: [
-        './jest.setup.ts'
-    ],
+    setupFilesAfterEnv: ['./jest.setup.ts'],
     globalSetup: 'jest-preset-angular/global-setup',
     // coverage
     coveragePathIgnorePatterns: [

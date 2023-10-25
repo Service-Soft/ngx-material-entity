@@ -1,5 +1,6 @@
+/* eslint-disable jsdoc/require-jsdoc */
 import { Component } from '@angular/core';
-import { NavbarRow, NavRoute, DefaultNavRouteDataType } from 'ngx-material-navigation';
+import { DefaultNavRouteDataType, NavRoute, NavbarRow } from 'ngx-material-navigation';
 import { navbarRows } from './routes';
 
 @Component({
@@ -7,7 +8,6 @@ import { navbarRows } from './routes';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
-// eslint-disable-next-line jsdoc/require-jsdoc
 export class AppComponent {
     navbarRows: NavbarRow<NavRoute<DefaultNavRouteDataType>>[] = navbarRows;
 }

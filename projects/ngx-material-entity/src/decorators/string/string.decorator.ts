@@ -6,7 +6,6 @@ import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, Dropdo
 
 /**
  * Decorator for setting and getting string Property metadata.
- *
  * @param metadata - The metadata of the string property.
  * @returns The method that defines the metadata.
  */

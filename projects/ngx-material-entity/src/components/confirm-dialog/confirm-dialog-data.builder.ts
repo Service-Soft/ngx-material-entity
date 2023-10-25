@@ -51,7 +51,7 @@ export class ConfirmDialogDataBuilder extends BaseBuilder<ConfirmDialogDataInter
         super(globalConfig, data);
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+
     protected override generateBaseData(data?: ConfirmDialogData): ConfirmDialogDataInternal {
         return new ConfirmDialogDataInternal(
             getConfigValue(this.globalConfig.defaultConfirmDialogText, data?.text),
@@ -64,7 +64,7 @@ export class ConfirmDialogDataBuilder extends BaseBuilder<ConfirmDialogDataInter
         );
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+
     protected override validateInput(data?: ConfirmDialogData): void {
         if (!data) {
             return;

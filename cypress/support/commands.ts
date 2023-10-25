@@ -2,7 +2,7 @@
 import 'reflect-metadata';
 
 declare global {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
+    // eslint-disable-next-line typescript/no-namespace
     namespace Cypress {
         // eslint-disable-next-line jsdoc/require-jsdoc
         interface Chainable {
@@ -70,11 +70,11 @@ Cypress.Commands.add(
         cy.get('.mdc-tab__text-label').contains('Other properties').click({ force: true });
         cy.getInputByLabel('Object Second Tab Value').click().type('objectSecondTabValue');
 
-        // eslint-disable-next-line @cspell/spellchecker
+        // eslint-disable-next-line cspell/spellchecker
         cy.getInputByLabel('String Chips Array Value').click().type('abcd{enter}efgh{enter}');
         cy.getInputByLabel('String Chips Autocomplete Array Value').click().type('123{enter}456{enter}');
 
-        // eslint-disable-next-line @cspell/spellchecker
+        // eslint-disable-next-line cspell/spellchecker
         cy.getInputByLabel('String Chips Array Value With Config').click().type('abcd{enter}efgh{enter}');
         cy.getInputByLabel('String Chips Autocomplete Array Value With Config').click().type('123{enter}456{enter}');
 

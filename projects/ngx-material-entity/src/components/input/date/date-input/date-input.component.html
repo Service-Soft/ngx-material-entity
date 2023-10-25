@@ -1,17 +1,18 @@
+<!-- eslint-disable angular/no-call-expression -->
 <mat-form-field>
     <mat-label>{{metadata.displayName}}</mat-label>
     <input
-        (ngModelChange)="emitChange()"
-        matInput
-        [(ngModel)]="propertyValue"
-        [name]="key.toString() + uuid"
         #model="ngModel"
+        matInput
+        [name]="name"
         [matDatepicker]="picker"
         [required]="metadata.required(entity)"
         [min]="metadata.min ? metadata.min(propertyValue) : undefined"
         [max]="metadata.max ? metadata.max(propertyValue) : undefined"
         [matDatepickerFilter]="metadata.filter ?? DateUtilities.defaultDateFilter"
         [disabled]="isReadOnly"
+        [(ngModel)]="propertyValue"
+        (ngModelChange)="emitChange()"
     >
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>

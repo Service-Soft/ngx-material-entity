@@ -4,6 +4,7 @@ import { DropdownValue } from '../decorators/base/dropdown-value.interface';
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { defaultTrue } from '../functions/default-true.function';
 
+// eslint-disable-next-line constCase/uppercase
 const DAY_IN_MS: number = 1000 * 60 * 60 * 24;
 
 /**
@@ -23,7 +24,6 @@ export abstract class DateUtilities {
 
     /**
      * Gets the given value as a date value.
-     *
      * @param value - The value to get as a date.
      * @returns The given value as a date.
      */
@@ -33,7 +33,6 @@ export abstract class DateUtilities {
 
     /**
      * Gets the default times used by the DateTime picker when nothing is specified by the user.
-     *
      * @param format - The time format. Defaults to 24.
      * @param minuteSteps - The steps from one time value to the next. Defaults to 30.
      * @returns Times in the 24 hour format from 0:00 until 23:30 in 30 minute steps.
@@ -85,7 +84,6 @@ export abstract class DateUtilities {
 
     /**
      * Gets the Time object from the given date.
-     *
      * @param value - The date to get the time object from.
      * @returns The Time object build from the date value.
      */
@@ -103,7 +101,6 @@ export abstract class DateUtilities {
 
     /**
      * Gets the dates between the two given gates. Does additional filtering based on the provided DateRange metadata.
-     *
      * @param startDate - The start date.
      * @param endDate - The end date.
      * @param filter - The custom filter from the metadata.
@@ -133,7 +130,6 @@ export abstract class DateUtilities {
 
     /**
      * Get all valid times for the dropdown of a datetime property.
-     *
      * @param times - All given times to filter.
      * @param date - The date of the datetime.
      * @param min - The function that defines the minimum time.
@@ -180,14 +176,12 @@ export abstract class DateUtilities {
     /**
      * Checks if the time object has processable hours and minutes properties.
      * Doesn't check custom validators like min/max from the metadata configuration.
-     *
      * @param time - The time to check.
      * @returns Whether or not the time object is unprocessable.
      */
     static timeIsUnprocessable(time?: Time): boolean {
         if (
-            !time
-            || time.hours == null
+            time?.hours == null
             || typeof time.hours !== 'number'
             || Number.isNaN(time.hours)
             || time.minutes == null

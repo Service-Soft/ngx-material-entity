@@ -4,7 +4,6 @@ import { DecoratorType, DecoratorTypes } from './decorator-types.enum';
 
 /**
  * The base decorator for setting metadata on properties.
- *
  * @param metadata - The metadata to define.
  * @param type - The type of metadata.
  * @param metadataKeysToReset - Any metadata keys which values should be set to undefined on reset.

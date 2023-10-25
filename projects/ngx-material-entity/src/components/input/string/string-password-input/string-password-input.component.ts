@@ -7,8 +7,8 @@ import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
 import { EntityUtilities } from '../../../../utilities/entity.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'string-password-input',
     templateUrl: './string-password-input.component.html',
     styleUrls: ['./string-password-input.component.scss']

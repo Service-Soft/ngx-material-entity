@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, EnvironmentInjector, Inject, OnInit } from '@angular/core';
+import { Component, EnvironmentInjector, Inject, OnInit, runInInjectionContext } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
@@ -14,8 +14,8 @@ import { SelectionUtilities } from '../../../../utilities/selection.utilities';
 import { DisplayColumn } from '../../../table/table-data';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'references-many-input',
     templateUrl: './references-many-input.component.html',
     styleUrls: ['./references-many-input.component.scss']
@@ -51,7 +51,6 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
         super.ngOnInit();
         this.metadata = new ReferencesManyDecoratorConfigInternal(this.metadata, this.globalConfig);
         ReflectUtilities.defineMetadata('metadata', this.metadata, this.entity, this.key);
-        this.propertyValue = this.propertyValue ?? [];
         const givenDisplayColumns: string[] = this.metadata.displayColumns.map((v) => v.displayName);
         if (givenDisplayColumns.find(s => s === 'select')) {
             throw new Error(
@@ -60,15 +59,15 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
             );
         }
         this.displayedColumns = this.isReadOnly ? givenDisplayColumns : ['select'].concat(givenDisplayColumns);
-        this.referencedEntitiesDataSource.data = this.propertyValue;
+        this.referencedEntitiesDataSource.data = this.propertyValue ?? [];
 
-        await this.injector.runInContext(async () => {
+        await runInInjectionContext(this.injector, async () => {
             this.allReferencedEntities = await this.metadata.getReferencedEntities() as EntityType[];
         });
 
         this.allDropdownValues = this.metadata.getDropdownValues(LodashUtilities.cloneDeep(this.allReferencedEntities));
         this.dropdownValues = LodashUtilities.cloneDeep(this.allDropdownValues);
-        for (const value of this.propertyValue) {
+        for (const value of this.referencedEntitiesDataSource.data) {
             const foundValue: DropdownValue<string> | undefined = this.dropdownValues.find(v => v.value === value);
             if (foundValue) {
                 this.dropdownValues.splice(this.dropdownValues.indexOf(foundValue), 1);
@@ -79,14 +78,13 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
     /**
      * Gets the value to display in the column.
      * Runs in environment context to enable injection.
-     *
      * @param entityId - The id of the entity to get the value from.
      * @param displayColumn - The display column to get the value from.
      * @returns The value of the display column.
      */
     getDisplayColumnValue(entityId: string, displayColumn: DisplayColumn<EntityType>): unknown {
-        return this.injector.runInContext(() => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        return runInInjectionContext(this.injector, () => {
+            // eslint-disable-next-line typescript/no-unsafe-argument
             return displayColumn.value(this.metadata.getEntityForId(entityId, this.allReferencedEntities));
         });
     }
@@ -103,8 +101,11 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
 
     addAll(): void {
         this.propertyValue = this.allDropdownValues.map(dv => dv.value);
+        if (!this.propertyValue.length) {
+            this.propertyValue = undefined;
+        }
         this.dropdownValues = [];
-        this.referencedEntitiesDataSource.data = this.propertyValue;
+        this.referencedEntitiesDataSource.data = this.propertyValue ?? [];
         this.input = '';
         this.emitChange();
     }
@@ -117,6 +118,9 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
                 this.dropdownValues.push(foundDropdownValue);
             }
         });
+        if (!this.propertyValue?.length) {
+            this.propertyValue = undefined;
+        }
         this.referencedEntitiesDataSource.data = this.propertyValue ?? [];
         this.selection.clear();
         this.emitChange();

@@ -20,6 +20,7 @@ import { EntityUtilities } from '../../utilities/entity.utilities';
  * - ngOnInit: Gets the metadata for the property, be aware of this when overriding this method.
  * - emitChange: Should be called when the input has changed. This is needed to trigger validation and dirty checks.
  */
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     selector: 'ngx-mat-entity-base-input',
     template: ''
@@ -55,6 +56,9 @@ export abstract class NgxMatEntityBaseInputComponent<
     @Input()
     isReadOnly!: boolean;
 
+    /**
+     * Emits when the property value has changed.
+     */
     @Output()
     inputChangeEvent: EventEmitter<void> = new EventEmitter<void>();
 
@@ -66,7 +70,7 @@ export abstract class NgxMatEntityBaseInputComponent<
     get propertyValue(): ValueType | undefined {
         return this.entity[this.key] as ValueType | undefined;
     }
-    // eslint-disable-next-line jsdoc/require-jsdoc
+
     set propertyValue(value: ValueType | undefined) {
         (this.entity[this.key] as ValueType | undefined) = value;
         this.metadata.change?.(this.entity);
@@ -78,12 +82,13 @@ export abstract class NgxMatEntityBaseInputComponent<
     metadata!: DecoratorType<Type, CustomMetadataType>;
 
     /**
-     * A uuid that is used to specify unique name values for inputs.
+     * A unique name for inputs. Includes a uuid.
      */
-    uuid: string = UUIDUtilities.create();
+    name!: string;
 
     ngOnInit(): void {
         this.metadata = EntityUtilities.getPropertyMetadata(this.entity, this.key);
+        this.name = this.key.toString() + UUIDUtilities.create();
     }
 
     /**

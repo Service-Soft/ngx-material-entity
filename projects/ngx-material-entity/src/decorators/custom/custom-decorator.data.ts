@@ -23,7 +23,6 @@ export interface CustomDecoratorConfig<
      * Needed for the edit and create dialogs.
      *
      * TIP: If you need additional data for checking if the value is valid, you can define them as metadata directly on the value.
-     *
      * @default () => true
      */
     isValid?: (value: ValueType, omit?: 'create' | 'update') => boolean,
@@ -32,7 +31,6 @@ export interface CustomDecoratorConfig<
      * Needed for the edit and create dialogs.
      *
      * TIP: If you need additional data for checking if the value is valid, you can define them as metadata directly on the values.
-     *
      * @default (value: ValueType, valuePriorChanges: ValueType) => LodashUtilities.isEqual(value, valuePriorChanges)
      */
     // eslint-disable-next-line max-len

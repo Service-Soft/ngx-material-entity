@@ -81,13 +81,11 @@ export interface DateRangeDateDecoratorConfig extends DateDecoratorConfig<DateRa
     filter?: DateFilterFn<Date>,
     /**
      * The placeholder for the start date of the date range picker.
-     *
      * @default "Start"
      */
     placeholderStart?: string,
     /**
      * The placeholder for the end date of the date range picker.
-     *
      * @default "End"
      */
     placeholderEnd?: string
@@ -105,7 +103,6 @@ export interface DateTimeDateDecoratorConfig extends DateDecoratorConfig<Date> {
     times?: DropdownValue<Time | undefined>[],
     /**
      * The name to use as a label for the time form field.
-     *
      * @default 'Time'
      */
     timeDisplayName?: string,

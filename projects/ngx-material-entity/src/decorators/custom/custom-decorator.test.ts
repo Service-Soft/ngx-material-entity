@@ -12,7 +12,7 @@ export class RandomInputTestEntity {
             random: () => (Math.random() + 1).toString(36).substring(7)
         },
         displayName: 'Random Value',
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line typescript/no-unsafe-assignment, typescript/no-explicit-any
         component: '' as any
     })
     randomValue!: string;
@@ -29,7 +29,7 @@ interface RandomMetadata {
 const randomTe: RandomInputTestEntity = new RandomInputTestEntity({ randomValue: '42' });
 
 test('should have custom Metadata', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     const metadata: CustomDecoratorConfigInternal<any, unknown, Record<string, unknown>, any>
         = EntityUtilities.getPropertyMetadata(randomTe, 'randomValue', DecoratorTypes.CUSTOM);
     expect(JSON.stringify(metadata.customMetadata)).toEqual(JSON.stringify({

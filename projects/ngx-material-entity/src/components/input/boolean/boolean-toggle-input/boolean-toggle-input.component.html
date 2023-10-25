@@ -1,20 +1,21 @@
-<mat-form-field>
+<!-- eslint-disable angular/no-call-expression -->
+<mat-form-field floatLabel="always">
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-slide-toggle
         color="primary"
-        (click)="model.control.markAsTouched(); updatePropertyValue(); emitChange();"
         [disabled]="isReadOnly"
         [checked]="propertyValue"
+        (click)="model.control.markAsTouched(); updatePropertyValue(); emitChange();"
     >
     </mat-slide-toggle>
     <!-- hidden input is needed so that the toggle can be used inside a mat-form-field -->
-    <input matInput hidden
-        [(ngModel)]="propertyValue"
-        [name]="key.toString() + uuid"
-        #model="ngModel"
+    <input #model="ngModel" matInput
+        hidden
+        [name]="name"
         [pattern]="metadata.required(entity) ? 'true' : '[\\s\\S]*'"
         [required]="metadata.required(entity)"
         [disabled]="isReadOnly"
+        [(ngModel)]="propertyValue"
         (ngModelChange)="emitChange()"
     >
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>

@@ -14,6 +14,9 @@ import { TooltipDirective } from '../../directives/tooltip.directive';
     ]
 })
 export class TooltipComponent {
+    /**
+     * What to display inside the tooltip.
+     */
     @Input()
     tooltipContent!: string;
 }

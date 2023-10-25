@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { expect } from '@jest/globals';
 import { Entity } from '../../classes/entity.model';
 import { EntityUtilities } from '../../utilities/entity.utilities';
@@ -72,7 +71,7 @@ const testEntityData: TestEntity = {
 const testEntity: TestEntity = new TestEntity(testEntityData);
 
 test('should have object Metadata', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     const metadata: DefaultObjectDecoratorConfigInternal<any> = EntityUtilities.getPropertyMetadata(testEntity, 'address', DecoratorTypes.OBJECT);
     expect(metadata).toBeDefined();
     expect(metadata.EntityClass).toBe(Address);
