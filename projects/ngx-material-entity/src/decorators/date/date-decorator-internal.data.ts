@@ -1,11 +1,11 @@
 import { Time } from '@angular/common';
 import { DateFilterFn } from '@angular/material/datepicker';
+import { getConfigValue } from '../../functions/get-config-value.function';
 import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { DateUtilities } from '../../utilities/date.utilities';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { DateRange, DateRangeDateDecoratorConfig, DateTimeDateDecoratorConfig, DefaultDateDecoratorConfig } from './date-decorator.data';
-import { getConfigValue } from '../../functions/get-config-value.function';
 
 /**
  * The internal DefaultDateDecoratorConfig. Sets default values.

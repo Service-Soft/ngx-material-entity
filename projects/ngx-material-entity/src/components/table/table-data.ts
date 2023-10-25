@@ -1,7 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Type } from '@angular/core';
-import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
-import { EntityService } from '../../services/entity.service';
+import { BaseEntityType, EntityClassNewable, EntityServiceClassNewable } from '../../classes/entity.model';
 import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
 import { NgxMatEntityBaseDisplayColumnValueComponent } from './display-column-value/base-display-column-value.component';
 
@@ -47,13 +45,11 @@ export interface BaseTableAction {
     action: (() => unknown) | (() => Promise<unknown>),
     /**
      * A method that defines whether or not the action can be used.
-     *
      * @default () => true
      */
     enabled?: () => boolean,
     /**
      * A method that defines whether or not a confirm dialog is needed to run the action.
-     *
      * @default false
      */
     requireConfirmDialog?: () => boolean,
@@ -81,13 +77,11 @@ export interface MultiSelectAction<EntityType extends BaseEntityType<EntityType>
     action: ((selectedEntities: EntityType[]) => unknown) | ((selectedEntities: EntityType[]) => Promise<unknown>),
     /**
      * A method that defines whether or not the action can be used.
-     *
      * @default (selectedEntities: EntityType[]) => !!selectedEntities.length
      */
     enabled?: (selectedEntities: EntityType[]) => boolean,
     /**
      * A method that defines whether or not a confirm dialog is needed to run the action.
-     *
      * @default false
      */
     requireConfirmDialog?: (selectedEntities: EntityType[]) => boolean,
@@ -119,7 +113,7 @@ export interface BaseData<EntityType extends BaseEntityType<EntityType>> {
      * The Class of the service that handles the entities.
      * Needs to be injectable and an extension of the "EntityService"-Class.
      */
-    EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
+    EntityServiceClass: EntityServiceClassNewable<EntityType>,
     /**
      * The Class of the entities to manage.
      */
@@ -136,6 +130,10 @@ export interface BaseData<EntityType extends BaseEntityType<EntityType>> {
      * Whether editing happens in a dialog or a separate page.
      */
     defaultEdit?: 'dialog' | 'page',
+    /**
+     * Whether creating happens in a dialog or a separate page.
+     */
+    defaultCreate?: 'dialog' | 'page',
     /**
      * Takes a custom edit method which runs when you click on a entity.
      * If you don't need any special editing of entries you can also omit this.
@@ -154,25 +152,21 @@ export interface BaseData<EntityType extends BaseEntityType<EntityType>> {
     searchString?: (entity: EntityType) => string,
     /**
      * Defines whether or not the user can add new entities.
-     *
      * @default () => true
      */
     allowCreate?: boolean | (() => boolean),
     /**
      * Defines whether or not the user can view the specific entity.
-     *
      * @default () => true
      */
     allowRead?: boolean | ((entity?: EntityType) => boolean),
     /**
      * Defines whether or not the user can edit the specific entity.
-     *
      * @default () => true
      */
     allowUpdate?: boolean | ((entity?: EntityType) => boolean),
     /**
      * Whether or not the user can delete this specific entity.
-     *
      * @default () => true
      */
     allowDelete?: boolean | ((entity?: EntityType) => boolean),
@@ -187,14 +181,12 @@ export interface BaseData<EntityType extends BaseEntityType<EntityType>> {
     tableActionsLabel?: string,
     /**
      * Whether or not to display a loading spinner while the entities of the table are loaded.
-     *
      * @default true
      */
     displayLoadingSpinner?: boolean,
     /**
      * Whether or not JSON imports are allowed.
      * This adds an table select action.
-     *
      * @default false
      */
     allowJsonImport?: boolean,
@@ -207,7 +199,7 @@ export interface BaseData<EntityType extends BaseEntityType<EntityType>> {
 /**
  * The data of the default create-dialog.
  */
-export interface CreateDialogData {
+export interface CreateData {
     /**
      * The title of the default create-dialog.
      */
@@ -245,13 +237,11 @@ export interface EditAction<EntityType extends BaseEntityType<EntityType>> {
     action: ((entity: EntityType, entityPriorChanges: EntityType) => unknown) | ((entity: EntityType, entityPriorChanges: EntityType) => Promise<unknown>),
     /**
      * A method that defines whether or not the action can be used.
-     *
      * @default () => true
      */
     enabled?: (e: EntityType) => boolean,
     /**
      * A method that defines whether or not a confirm dialog is needed to run the action.
-     *
      * @default false
      */
     requireConfirmDialog?: (e: EntityType) => boolean,
@@ -320,7 +310,7 @@ export interface TableData<EntityType extends BaseEntityType<EntityType>> {
      * The data for the default create-dialog.
      * Can be omitted when specifying a custom "create" method inside the baseData.
      */
-    createDialogData?: CreateDialogData,
+    createData?: CreateData,
     /**
      * The data for the default edit-dialog.
      * Can be omitted when specifying a custom "edit" method inside the baseData.

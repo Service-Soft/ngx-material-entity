@@ -1,12 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { expect } from '@jest/globals';
+import 'zone.js';
 import { Entity } from '../classes/entity.model';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { string } from '../decorators/string/string.decorator';
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../encapsulation/reflect.utilities';
+import { mockInjector } from '../mocks/environment-injector.mock';
 import { HttpClientMock } from '../mocks/http-client.mock';
-import { getDatesBetween, TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder, TestObjectArrayEntity, TestObjectEntity } from '../mocks/test-entity.interface';
+import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder, TestObjectArrayEntity, TestObjectEntity, getDatesBetween } from '../mocks/test-entity.interface';
 import { EntityTab, EntityUtilities } from './entity.utilities';
 
 const builder: TestEntityWithoutCustomPropertiesMockBuilder = new TestEntityWithoutCustomPropertiesMockBuilder();
@@ -17,7 +19,6 @@ const http: HttpClient = new HttpClientMock([]) as unknown as HttpClient;
 
 /**
  * Checks whether or not a given value is an Entity.
- *
  * @param value - The value to check.
  * @returns Whether or not the given value is an Entity.
  */
@@ -126,7 +127,12 @@ describe('getWithoutOmitUpdateValues', () => {
             rowValue2: 'test',
             id: 'id'
         });
-        const res: Partial<TestEntityWithoutCustomProperties> = await EntityUtilities.getWithoutOmitUpdateValues(tE, tEPriorChanges, http);
+        const res: Partial<TestEntityWithoutCustomProperties> = await EntityUtilities.getWithoutOmitUpdateValues(
+            tE,
+            tEPriorChanges,
+            http,
+            mockInjector
+        );
         expect(res).toEqual({
             objectValue: {
                 maxLengthStringValue: 'test',
@@ -156,9 +162,7 @@ describe('getPropertyMetadata', () => {
         expect(EntityUtilities.getPropertyMetadata(testEntityWithoutData, 'omitForCreateValue', DecoratorTypes.STRING)).toBeDefined();
     });
     test('should throw error for parameter without metadata', () => {
-        // eslint-disable-next-line max-len
         const expectedEm: string = `Could not find metadata for property omitForCreateValue on the entity ${JSON.stringify(testEntityWithoutMetadata)}`;
-        // eslint-disable-next-line max-len
         expect(() => EntityUtilities.getPropertyMetadata(testEntityWithoutMetadata, 'omitForCreateValue', DecoratorTypes.STRING)).toThrow(expectedEm);
     });
 });
@@ -168,7 +172,6 @@ describe('getPropertyType', () => {
         expect(EntityUtilities.getPropertyType(testEntity, 'omitForCreateValue')).toBe(DecoratorTypes.STRING);
     });
     test('should throw error for parameter without metadata', () => {
-        // eslint-disable-next-line max-len
         const expectedEm: string = `Could not find type metadata for property omitForCreateValue on the entity ${JSON.stringify(testEntityWithoutMetadata)}`;
         expect(() => EntityUtilities.getPropertyType(testEntityWithoutMetadata, 'omitForCreateValue')).toThrow(expectedEm);
     });
@@ -217,7 +220,7 @@ describe('compareOrder', () => {
     test('should sort entity properties by their order value', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
-        let keys: (keyof TestEntityWithoutCustomProperties)[] = EntityUtilities.keysOf(tE);
+        let keys: (keyof TestEntityWithoutCustomProperties)[] = EntityUtilities.keysOf(tE, mockInjector);
         expect(keys[0]).not.toBe('orderValue1');
         keys = keys.sort((a, b) => EntityUtilities.compareOrder(a, b, tE));
         expect(keys[0]).toBe('orderValue1');
@@ -228,9 +231,7 @@ describe('compareOrder', () => {
 
 describe('getWidth', () => {
     test('should get the default width', () => {
-        expect(EntityUtilities.getWidth(testEntity, 'maxLengthStringValue', 'lg')).toBe(6);
-        expect(EntityUtilities.getWidth(testEntity, 'maxLengthStringValue', 'md')).toBe(6);
-        expect(EntityUtilities.getWidth(testEntity, 'maxLengthStringValue', 'sm')).toBe(12);
+        expect(EntityUtilities.getWidthClasses(testEntity, 'maxLengthStringValue')).toBe('col-lg-6 col-md-6 col-sm-12');
     });
 });
 
@@ -289,7 +290,7 @@ describe('getEntityTabs', () => {
     test('should get two tabs for the entity', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
-        const tabs: EntityTab<TestEntityWithoutCustomProperties>[] = EntityUtilities.getEntityTabs(tE);
+        const tabs: EntityTab<TestEntityWithoutCustomProperties>[] = EntityUtilities.getEntityTabs(tE, mockInjector);
         expect(tabs).toHaveLength(2);
         expect(tabs[0].rows).toHaveLength(2);
         expect(tabs[0].tabName).toBe('Tab 1');
@@ -298,7 +299,7 @@ describe('getEntityTabs', () => {
     test('should get custom tab names on object', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
-        const tabs: EntityTab<TestObjectEntity>[] = EntityUtilities.getEntityTabs(tE.objectValue);
+        const tabs: EntityTab<TestObjectEntity>[] = EntityUtilities.getEntityTabs(tE.objectValue, mockInjector);
         expect(tabs).toHaveLength(2);
         expect(tabs[0].tabName).toBe('Object First Tab Values');
         expect(tabs[1].tabName).toBe('Other properties');
@@ -309,19 +310,19 @@ describe('keysOf', () => {
     test('should get all keys of the entity', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
-        expect(EntityUtilities.keysOf(tE)).toHaveLength(55);
+        expect(EntityUtilities.keysOf(tE, mockInjector)).toHaveLength(55);
     });
     test('should get keys without omitForCreate', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
-        const keysWithoutCreate: (keyof TestEntityWithoutCustomProperties)[] = EntityUtilities.keysOf(tE, true);
+        const keysWithoutCreate: (keyof TestEntityWithoutCustomProperties)[] = EntityUtilities.keysOf(tE, mockInjector, true);
         expect(keysWithoutCreate.includes('omitForCreateValue')).toBe(false);
         expect(keysWithoutCreate.includes('omitForUpdateValue')).toBe(true);
     });
     test('should get keys without omitForUpdate', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
-        const keysWithoutUpdate: (keyof TestEntityWithoutCustomProperties)[] = EntityUtilities.keysOf(tE, false, true);
+        const keysWithoutUpdate: (keyof TestEntityWithoutCustomProperties)[] = EntityUtilities.keysOf(tE, mockInjector, false, true);
         expect(keysWithoutUpdate.includes('omitForUpdateValue')).toBe(false);
         expect(keysWithoutUpdate.includes('omitForCreateValue')).toBe(true);
     });

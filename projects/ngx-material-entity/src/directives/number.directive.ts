@@ -12,7 +12,6 @@ export class NumberDirective {
 
     /**
      * Prevents the default event when a key is pressed that is not a valid number, eg. 'A', 'B', 'C', 'D' etc.
-     *
      * @param e - The keydown event from the user.
      */
     @HostListener('keydown', ['$event'])

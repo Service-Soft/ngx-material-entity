@@ -5,8 +5,8 @@ import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'string-autocomplete-input',
     templateUrl: './string-autocomplete-input.component.html',
     styleUrls: ['./string-autocomplete-input.component.scss']
@@ -25,11 +25,13 @@ export class StringAutocompleteInputComponent<EntityType extends BaseEntityType<
 
     /**
      * Dynamically filters the Autocomplete options when the user inputs something.
-     *
      * @param input - The input of the user.
      */
     filterAutocompleteStrings(input?: string): void {
         const searchString: string = input ?? '';
         this.filteredAutocompleteStrings = this.autocompleteStrings.filter(s => s.toLowerCase().includes(searchString.toLowerCase()));
+        if (!this.filteredAutocompleteStrings.length) {
+            this.filteredAutocompleteStrings = LodashUtilities.cloneDeep(this.autocompleteStrings);
+        }
     }
 }

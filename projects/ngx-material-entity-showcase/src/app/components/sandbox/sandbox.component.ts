@@ -1,7 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { formatDate, formatNumber } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, Injectable, inject } from '@angular/core';
+import { Component, EnvironmentInjector, Injectable, inject } from '@angular/core';
 import { DecoratorTypes, DropdownValue, Entity, EntityService, EntityUtilities, TableData, array, boolean, date, hasMany, number, object, referencesMany, referencesOne, string } from 'ngx-material-entity';
 import { environment } from '../../../environments/environment';
 import { PdfDownloadDisplayValueComponent } from '../pdf-download-display-value/pdf-download-display-value.component';
@@ -12,8 +12,8 @@ import { PdfDownloadDisplayValueComponent } from '../pdf-download-display-value/
 export class PersonService extends EntityService<Person> {
     baseUrl: string = `${environment.apiUrl}/persons`;
 
-    constructor(http: HttpClient) {
-        super(http);
+    constructor(http: HttpClient, injector: EnvironmentInjector) {
+        super(http, injector);
     }
 }
 
@@ -23,12 +23,20 @@ export class PersonService extends EntityService<Person> {
 export class AddressService extends EntityService<Address> {
     baseUrl: string = `${environment.apiUrl}/addresses`;
 
-    constructor(http: HttpClient) {
-        super(http);
+    constructor(http: HttpClient, injector: EnvironmentInjector) {
+        super(http, injector);
     }
 }
 
 class Address extends Entity {
+
+    @string({
+        displayName: 'Form of Address',
+        displayStyle: 'autocomplete',
+        autocompleteValues: ['Mr.', 'Ms.'],
+        restrictToOptions: true
+    })
+    formOfAddress!: string;
 
     @string({
         displayName: 'Street',
@@ -190,7 +198,7 @@ export class Person extends Entity {
                 EntityServiceClass: AddressService,
                 EntityClass: Address
             },
-            createDialogData: {}
+            createData: {}
         },
         RelatedEntityServiceClass: PersonService,
         displayName: 'Addresses',
@@ -232,6 +240,7 @@ function getDropdownValues(entities: Address[]): DropdownValue<string>[] {
     });
 }
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     selector: 'app-sandbox',
     templateUrl: './sandbox.component.html',
@@ -261,7 +270,7 @@ export class SandboxComponent {
             EntityServiceClass: PersonService
             // allowUpdate: () => false
         },
-        createDialogData: {
+        createData: {
             title: 'Create Person'
         },
         editData: {

@@ -6,7 +6,6 @@ import { BaseEntityType } from '../../classes/entity.model';
 
 /**
  * Decorator for setting and getting object property metadata.
- *
  * @param metadata - The metadata of the object property.
  * @returns The method that defines the metadata.
  */

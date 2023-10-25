@@ -31,7 +31,7 @@ import { SelectionUtilities } from '../../utilities/selection.utilities';
 import { ValidationError, ValidationUtilities } from '../../utilities/validation.utilities';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { CreateDialogDataBuilder, CreateDialogDataInternal } from '../table/create-dialog/create-dialog-data.builder';
+import { CreateDataBuilder, CreateDataInternal } from '../table/create-dialog/create-data.builder';
 import { EditActionInternal } from '../table/edit-dialog/edit-data.builder';
 import { DisplayColumn } from '../table/table-data';
 import { BaseTableActionInternal, TableActionInternal } from '../table/table-data.builder';
@@ -44,6 +44,7 @@ import { BaseTableActionInternal, TableActionInternal } from '../table/table-dat
  * that it should be omitted for creating or updating.
  * The last part being mostly relevant if you want to use this component inside an ngFor.
  */
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     selector: 'ngx-mat-entity-input',
     templateUrl: './input.component.html',
@@ -56,6 +57,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     @Input()
     entity?: EntityType;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     internalEntity!: EntityType;
 
     /**
@@ -63,6 +65,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     @Input()
     propertyKey?: keyof EntityType;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     internalPropertyKey!: keyof EntityType;
 
     /**
@@ -70,12 +73,12 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     @Input()
     getValidationErrorMessage?: (model: NgModel) => string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     internalGetValidationErrorMessage!: (model: NgModel) => string;
 
     /**
      * Whether to hide a value if it is omitted for creation.
      * Is used internally for the object property.
-     *
      * @default false
      */
     @Input()
@@ -84,7 +87,6 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * Whether to hide a value if it is omitted for editing.
      * Is used internally for the object property.
-     *
      * @default false
      */
     @Input()
@@ -93,7 +95,6 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * Whether or not an empty value should be valid.
      * Is used internally for the object property.
-     *
      * @default undefined
      */
     @Input()
@@ -102,56 +103,127 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * Whether or not the input should be readonly.
      * In that case it is disabled, but most of the default styling is overwritten.
-     *
      * @default false
      */
     @Input()
     isReadOnly?: boolean;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     internalIsReadOnly!: boolean;
 
+    /**
+     * Emits when the input value has been changed.
+     */
     @Output()
     inputChangeEvent: EventEmitter<void> = new EventEmitter<void>();
 
-    @ViewChild('addArrayItemDialog')
-    addArrayItemDialog!: TemplateRef<unknown>;
-    addArrayItemDialogRef!: MatDialogRef<unknown>;
-
-    @ViewChild('editArrayItemDialog')
-    editArrayItemDialog!: TemplateRef<unknown>;
-    editArrayItemDialogRef!: MatDialogRef<unknown>;
-
+    /**
+     * The type of the decorator for this input.
+     */
     type!: DecoratorTypes;
+    /**
+     * The property metadata received from the decorator.
+     */
     metadata!: PropertyDecoratorConfigInternal<unknown>;
 
+    /**
+     * The metadata of an object property.
+     */
     metadataDefaultObject!: DefaultObjectDecoratorConfigInternal<EntityType>;
+    /**
+     * The object property value.
+     */
     objectProperty!: EntityType;
+    /**
+     * The tabs for the object property.
+     */
     objectPropertyTabs!: EntityTab<EntityType>[];
 
+    @ViewChild('addArrayItemDialog')
+    private readonly addArrayItemDialog!: TemplateRef<unknown>;
+    private addArrayItemDialogRef!: MatDialogRef<unknown>;
+    @ViewChild('editArrayItemDialog')
+    private readonly editArrayItemDialog!: TemplateRef<unknown>;
+    private editArrayItemDialogRef!: MatDialogRef<unknown>;
+    /**
+     * The metadata of an entity array property.
+     */
     metadataEntityArray!: EntityArrayDecoratorConfigInternal<EntityType>;
+    /**
+     * The entity array property value.
+     */
     entityArrayValues!: EntityType[];
+    /**
+     * The current array item to be added or updated.
+     */
     arrayItem!: EntityType;
+    /**
+     * The array item before any changes have been made. Used to check if the form is dirty.
+     */
     arrayItemPriorChanges!: EntityType;
+    /**
+     * The inline tabs for adding an array item.
+     */
     arrayItemInlineTabs!: EntityTab<EntityType>[];
+    /**
+     * The dataSource for the entity array.
+     */
     entityArrayDataSource!: MatTableDataSource<EntityType>;
+    /**
+     * The selection for the entity array.
+     */
     entityArraySelection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
+    /**
+     * The columns to display in the entity array table.
+     */
     entityArrayDisplayedColumns!: string[];
+    /**
+     * Whether or not the array item is valid.
+     */
     isArrayItemValid: boolean = false;
+    /**
+     * Whether or not the array item is dirty.
+     */
     isArrayItemDirty: boolean = false;
-    indexOfEditedArrayItem!: number;
-    addArrayItemDialogData!: CreateDialogDataInternal;
+    /**
+     * The index of the array item that is being edited.
+     */
+    private indexOfEditedArrayItem!: number;
+    /**
+     * Config for the dialog that adds a new array item.
+     */
+    addArrayItemDialogData!: CreateDataInternal;
+    /**
+     * The tabs to display inside the create array item dialog.
+     */
     arrayItemDialogTabs!: EntityTab<EntityType>[];
+    /**
+     * The tabs to display inside the edit array item dialog.
+     */
     editArrayItemDialogData!: EditArrayItemDialogDataInternal<EntityType>;
+    /**
+     * All validation errors for the array item.
+     */
     arrayItemValidationErrors: ValidationError[] = [];
+    /**
+     * What to display inside the array item tooltip.
+     */
     arrayItemTooltipContent: string = '';
 
+    /**
+     * Metadata of a has many property.
+     */
     metadataHasMany!: HasManyDecoratorConfigInternal<EntityType, EntityType>;
+    /**
+     * Whether or not has many is currently loading.
+     */
     hasManyIsLoading: boolean = true;
     /**
      * A setter for the has many paginator.
      * Is needed because the paginator is inside a switch case,
      * which means that at ngOnInit it can't be initialized.
      */
-    @ViewChild(MatPaginator) set hasManyPaginator(paginator: MatPaginator) {
+    @ViewChild(MatPaginator)
+    set hasManyPaginator(paginator: MatPaginator) {
         if (!this.hasManyDataSource.paginator) {
             this.hasManyDataSource.paginator = paginator;
         }
@@ -161,47 +233,116 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * Is needed because the sort is inside a switch case,
      * which means that at ngOnInit it can't be initialized.
      */
-    @ViewChild(MatSort) set hasManySort(sort: MatSort) {
+    @ViewChild(MatSort)
+    private set hasManySort(sort: MatSort) {
         if (!this.hasManyDataSource.sort) {
             this.hasManyDataSource.sort = sort;
         }
     }
     @ViewChild('filter', { static: true })
-    hasManyFilter!: string;
+    private readonly hasManyFilter!: string;
+    /**
+     * The columns of the has many table.
+     */
     displayedHasManyColumns!: string[];
+    /**
+     * The data source of the has many table.
+     */
     hasManyDataSource: MatTableDataSource<EntityType> = new MatTableDataSource();
+    /**
+     * The selection of the has many table.
+     */
     hasManySelection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
+    /**
+     * The has many import action.
+     */
     hasManyImportAction!: BaseTableActionInternal;
     private hasManyEntityService!: EntityService<EntityType>;
     @ViewChild('createHasManyDialog')
-    createHasManyDialog!: TemplateRef<unknown>;
-    createHasManyDialogRef!: MatDialogRef<unknown>;
+    private readonly createHasManyDialog!: TemplateRef<unknown>;
+    private createHasManyDialogRef!: MatDialogRef<unknown>;
     @ViewChild('editHasManyDialog')
-    editHasManyDialog!: TemplateRef<unknown>;
-    editHasManyDialogRef!: MatDialogRef<unknown>;
+    private readonly editHasManyDialog!: TemplateRef<unknown>;
+    private editHasManyDialogRef!: MatDialogRef<unknown>;
+    /**
+     * A single has many entity.
+     */
     hasManyEntity!: EntityType;
+    /**
+     * The single has many entity before any changes have been made. Is used to determine if the form is dirty.
+     */
     hasManyEntityPriorChanges!: EntityType;
+    /**
+     * Whether or not the has many entity is valid.
+     */
     isHasManyEntityValid: boolean = false;
+    /**
+     * All validation errors of the has many entity.
+     */
     hasManyValidationErrors: ValidationError[] = [];
+    /**
+     * What to display inside the has many tooltip.
+     */
     hasManyTooltipContent: string = '';
+    /**
+     * Whether or not the has many entity is dirty.
+     */
     isHasManyEntityDirty: boolean = false;
+    /**
+     * Whether or not the current user is allowed to create a has many entity.
+     */
     hasManyAllowCreate!: boolean;
+    /**
+     * The tabs to display when creating a new has many entity.
+     */
     hasManyCreateTabs!: EntityTab<EntityType>[];
+    /**
+     * The tabs to display when updating a has many entity.
+     */
     hasManyUpdateTabs!: EntityTab<EntityType>[];
     private hasManyCreateBaseUrl!: string;
 
+    /**
+     * The metadata for a references one property.
+     */
     metadataReferencesOne!: ReferencesOneDecoratorConfigInternal<EntityType>;
+    /**
+     * The references one object.
+     */
     referencesOneObject!: EntityType;
+    /**
+     * The tabs to display for the references one entity.
+     */
     referencesOnePropertyTabs!: EntityTab<EntityType>[];
-    referencesOneAllReferencedEntities!: EntityType[];
+    /**
+     * The values that can be possibly referenced.
+     */
+    private referencesOneAllReferencedEntities!: EntityType[];
+    /**
+     * The possible references one dropdown values.
+     */
     referencesOneDropdownValues!: DropdownValue<string>[];
+    /**
+     * A unique input name for the references one property.
+     */
+    referencesOneName!: string;
 
+    /**
+     * The enum Values for all the different DecoratorTypes.
+     */
     readonly DecoratorTypes: typeof DecoratorTypes = DecoratorTypes;
-
+    /**
+     * Contains HelperMethods around handling Entities and their property-metadata.
+     */
     EntityUtilities: typeof EntityUtilities = EntityUtilities;
+    /**
+     * Contains Helper Functions for handling date properties.
+     */
     DateUtilities: typeof DateUtilities = DateUtilities;
+    /**
+     * Provides functionality around material selections inside of tables.
+     */
     SelectionUtilities: typeof SelectionUtilities = SelectionUtilities;
-    referencesOneUUID: string = UUIDUtilities.create();
 
     constructor(
         private readonly dialog: MatDialog,
@@ -216,13 +357,12 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     /**
      * Checks if the input with the given key on the given property is readonly.
-     *
      * @param property - The property on which to check the input.
      * @param key - The key for the input to check.
      * @returns Whether or not the input is readonly.
      */
     isPropertyReadOnly(property: EntityType, key: keyof EntityType): boolean {
-        return this.injector.runInContext(() => {
+        return runInInjectionContext(this.injector, () => {
             if (this.internalIsReadOnly || this.metadataDefaultObject?.isReadOnly(property)) {
                 return true;
             }
@@ -233,7 +373,6 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     /**
      * This is needed for the inputs to work inside an ngFor.
-     *
      * @param index - The index of the element in the ngFor.
      * @returns The index.
      */
@@ -244,7 +383,6 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * Gets the value to display in the column.
      * Runs in environment context to enable injection.
-     *
      * @param entity - The entity to get the value from.
      * @param displayColumn - The display column to get the value from.
      * @returns The value of the display column.
@@ -296,6 +434,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     private initReferencesOne(): void {
         this.metadataReferencesOne = this.metadata as ReferencesOneDecoratorConfigInternal<EntityType>;
+        this.referencesOneName = this.internalPropertyKey.toString() + 'input' + UUIDUtilities.create();
 
         void runInInjectionContext(
             this.injector,
@@ -320,7 +459,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             action: () => this.startImportJson()
         }, this.globalConfig);
 
-        this.injector.runInContext(() => {
+        runInInjectionContext(this.injector, () => {
             this.hasManyAllowCreate = this.metadataHasMany.tableData.baseData.allowCreate();
             this.hasManyEntityService = inject<EntityService<EntityType>>(this.metadataHasMany.tableData.baseData.EntityServiceClass);
             this.hasManyCreateBaseUrl = this.metadataHasMany.createBaseUrl(this.internalEntity, this.metadataHasMany);
@@ -335,7 +474,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         }
 
         this.hasManyDataSource.sortingDataAccessor = (entity: EntityType, header: string) => {
-            return this.injector.runInContext(() => {
+            return runInInjectionContext(this.injector, () => {
                 // eslint-disable-next-line max-len
                 return this.metadataHasMany.tableData.baseData.displayColumns.find((dp) => dp.displayName === header)?.value(entity) as string;
             });
@@ -352,7 +491,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             this.hasManyDataSource.data = entities;
             this.hasManySelection.clear();
         });
-        this.injector.runInContext(() => {
+        runInInjectionContext(this.injector, () => {
             const readBaseUrl: string = this.metadataHasMany.readBaseUrl(this.internalEntity, this.metadataHasMany);
             void this.hasManyEntityService.read(readBaseUrl).then(() => {
                 this.hasManyIsLoading = false;
@@ -388,14 +527,14 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.entityArrayDataSource.data = this.entityArrayValues;
         this.arrayItem = new this.metadataEntityArray.EntityClass();
         this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
-        this.arrayItemInlineTabs = EntityUtilities.getEntityTabs(this.arrayItem, true);
+        this.arrayItemInlineTabs = EntityUtilities.getEntityTabs(this.arrayItem, this.injector, true);
         EntityUtilities.setDefaultValues(this.arrayItem);
 
-        this.addArrayItemDialogData = new CreateDialogDataBuilder(this.globalConfig, this.metadataEntityArray.createDialogData)
+        this.addArrayItemDialogData = new CreateDataBuilder(this.globalConfig, this.metadataEntityArray.createDialogData)
             .withDefault('createButtonLabel', this.globalConfig.addLabel)
             .withDefault('title', this.globalConfig.addArrayItemTitle)
             .getResult();
-        this.arrayItemDialogTabs = EntityUtilities.getEntityTabs(this.arrayItem, true);
+        this.arrayItemDialogTabs = EntityUtilities.getEntityTabs(this.arrayItem, this.injector, true);
 
         this.editArrayItemDialogData = this.metadataEntityArray.editDialogData;
     }
@@ -405,6 +544,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.objectProperty = this.internalEntity[this.internalPropertyKey] as EntityType;
         this.objectPropertyTabs = EntityUtilities.getEntityTabs(
             this.objectProperty,
+            this.injector,
             this.hideOmitForCreate,
             this.hideOmitForEdit,
             this.metadataDefaultObject.omit
@@ -448,13 +588,12 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         // eslint-disable-next-line max-len
         const foundEntity: EntityType | undefined = this.metadataReferencesOne.getEntityForId(this.internalEntity[this.internalPropertyKey] as string, this.referencesOneAllReferencedEntities);
         this.referencesOneObject = new this.metadataReferencesOne.EntityClass(foundEntity);
-        this.referencesOnePropertyTabs = EntityUtilities.getEntityTabs(this.referencesOneObject);
+        this.referencesOnePropertyTabs = EntityUtilities.getEntityTabs(this.referencesOneObject, this.injector);
         this.emitChange();
     }
 
     /**
      * Edits an entity. This either calls the edit-Method provided by the user or uses a default edit-dialog.
-     *
      * @param entity - The entity that should be updated.
      * @param dCol - The display column that was clicked on.
      * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
@@ -479,59 +618,54 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     /**
      * Whether updating the provided entity from the has many property is allowed.
-     *
      * @param entity - A single value of the has many property that the user wants to edit.
      * @returns True when the user can edit the provided entity and false otherwise.
      */
     hasManyAllowUpdate(entity: EntityType): boolean {
-        return this.injector.runInContext(() => {
+        return runInInjectionContext(this.injector, () => {
             return this.metadataHasMany.tableData.baseData.allowUpdate(entity);
         });
     }
 
     /**
      * Whether viewing the provided entity from the has many property is allowed.
-     *
      * @param entity - A single value of the has many property that the user wants to view.
      * @returns True when the user can view the provided entity and false otherwise.
      */
     hasManyAllowRead(entity: EntityType): boolean {
-        return this.injector.runInContext(() => {
+        return runInInjectionContext(this.injector, () => {
             return this.metadataHasMany.tableData.baseData.allowRead(entity);
         });
     }
 
     /**
      * Whether deleting the provided entity from the has many property is allowed.
-     *
      * @param entity - A single value of the has many property that the user wants to delete.
      * @returns True when the user can delete the provided entity and false otherwise.
      */
     hasManyAllowDelete(entity: EntityType): boolean {
-        return this.injector.runInContext(() => {
+        return runInInjectionContext(this.injector, () => {
             return this.metadataHasMany.tableData.baseData.allowDelete(entity);
         });
     }
 
     /**
      * Checks if an EditAction is disabled (e.g. Because the current entry doesn't fullfil the requirements).
-     *
      * @param action - The EditAction to check.
      * @returns Whether or not the Action can be used.
      */
     hasManyEditActionDisabled(action: EditActionInternal<EntityType>): boolean {
-        return this.injector.runInContext(() => {
+        return runInInjectionContext(this.injector, () => {
             return !action.enabled(this.hasManyEntityPriorChanges);
         });
     }
 
     /**
      * Runs the edit action on the entity.
-     *
      * @param action - The action to run.
      */
     hasManyRunEditAction(action: EditActionInternal<EntityType>): void {
-        const requireConfirmDialog: boolean = this.injector.runInContext(() => {
+        const requireConfirmDialog: boolean = runInInjectionContext(this.injector, () => {
             return action.requireConfirmDialog(this.hasManyEntityPriorChanges);
         });
 
@@ -552,7 +686,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     }
 
     private confirmHasManyRunEditAction(action: EditActionInternal<EntityType>): void {
-        void this.injector.runInContext(async () => {
+        void runInInjectionContext(this.injector, async () => {
             await action.action(this.hasManyEntity, this.hasManyEntityPriorChanges);
             await this.checkHasManyEntity();
         });
@@ -565,7 +699,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     private async editHasManyDefaultDialog(entity: EntityType): Promise<void> {
         this.hasManyEntity = LodashUtilities.cloneDeep(entity);
         this.hasManyEntityPriorChanges = LodashUtilities.cloneDeep(this.hasManyEntity);
-        this.hasManyUpdateTabs = EntityUtilities.getEntityTabs(this.hasManyEntity, false, true);
+        this.hasManyUpdateTabs = EntityUtilities.getEntityTabs(this.hasManyEntity, this.injector, false, true);
         await this.checkHasManyEntity();
         this.editHasManyDialogRef = this.dialog.open(
             this.editHasManyDialog,
@@ -667,30 +801,36 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     /**
      * Creates a new Entity. This either calls the create-Method provided by the user or uses a default create-dialog.
-     *
      * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
      */
     createHasManyEntity(): void {
-        this.injector.runInContext(() => {
+        runInInjectionContext(this.injector, () => {
             if (this.metadataHasMany.tableData.baseData.allowCreate()) {
                 if (!this.metadataHasMany.tableData.baseData.EntityClass) {
                     throw new Error('No "EntityClass" specified for this table');
                 }
                 if (this.metadataHasMany.tableData.baseData.create) {
                     this.metadataHasMany.tableData.baseData.create(new this.metadataHasMany.tableData.baseData.EntityClass());
+                    return;
                 }
-                else {
-                    const entity: EntityType = new this.metadataHasMany.tableData.baseData.EntityClass();
-                    EntityUtilities.setDefaultValues(entity);
-                    this.createHasManyDefault(entity);
+                const entity: EntityType = new this.metadataHasMany.tableData.baseData.EntityClass();
+                EntityUtilities.setDefaultValues(entity);
+                if (this.metadataHasMany.tableData.baseData.defaultCreate == 'page') {
+                    this.createHasManyDefaultPage();
+                    return;
                 }
+                this.createHasManyDefaultDialog(entity);
             }
         });
     }
 
-    private createHasManyDefault(entity: EntityType): void {
+    private createHasManyDefaultPage(): void {
+        void this.router.navigateByUrl(this.hasManyEntityService.createBaseRoute);
+    }
+
+    private createHasManyDefaultDialog(entity: EntityType): void {
         this.hasManyEntity = entity;
-        this.hasManyCreateTabs = EntityUtilities.getEntityTabs(this.hasManyEntity, true);
+        this.hasManyCreateTabs = EntityUtilities.getEntityTabs(this.hasManyEntity, this.injector, true);
         this.checkIsHasManyEntityValid('create');
         this.createHasManyDialogRef = this.dialog.open(
             this.createHasManyDialog,
@@ -709,12 +849,12 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         if (!this.isHasManyEntityValid) {
             return;
         }
-        if (!this.metadataHasMany.tableData.createDialogData.createRequiresConfirmDialog) {
+        if (!this.metadataHasMany.tableData.createData.createRequiresConfirmDialog) {
             this.dialogConfirmCreateHasMany();
             return;
         }
         // eslint-disable-next-line max-len
-        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.metadataHasMany.tableData.createDialogData.confirmCreateDialogData)
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.metadataHasMany.tableData.createData.confirmCreateDialogData)
             .withDefault('text', this.globalConfig.confirmCreateText)
             .withDefault('confirmButtonLabel', this.globalConfig.createLabel)
             .withDefault('title', this.globalConfig.createLabel)
@@ -747,7 +887,6 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * Runs the TableAction for all selected entries.
      * Also handles confirmation with an additional dial#og if configured.
-     *
      * @param action - The TableAction to run.
      */
     runHasManyTableAction(action: TableActionInternal<EntityType>): void {
@@ -778,7 +917,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     }
 
     private confirmRunHasManyTableAction(action: TableActionInternal<EntityType>): void {
-        void this.injector.runInContext(async () => {
+        void runInInjectionContext(this.injector, async () => {
             await action.action(this.hasManySelection.selected);
             this.emitChange();
         });
@@ -786,19 +925,17 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     /**
      * Checks if an TableAction is disabled (e.g. Because no entries have been selected).
-     *
      * @param action - The TableAction to check.
      * @returns Whether or not the Action can be used.
      */
     hasManyTableActionDisabled(action: TableActionInternal<EntityType>): boolean {
-        return this.injector.runInContext(() => {
+        return runInInjectionContext(this.injector, () => {
             return !action.enabled(this.hasManySelection.selected);
         });
     }
 
     /**
      * Applies the search input to filter the table entries.
-     *
      * @param event - The keyup-event which contains the search-string of the user.
      */
     applyHasManyFilter(event: Event): void {
@@ -816,7 +953,6 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     /**
      * Checks if the entity is valid.
-     *
      * @param omit - Whether values omitted for create or update should be left out.
      */
     checkIsHasManyEntityValid(omit: 'create' | 'update'): void {
@@ -922,7 +1058,6 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     /**
      * Edits an entity array item.
-     *
      * @param entity - The entity that has been clicked.
      * @param dCol - The display column that was clicked on.
      */

@@ -25,13 +25,11 @@ export interface ConfirmDialogData {
     /**
      * The label of the button that confirms the dialog.
      * In case of the 'delete' Dialog this is the string that is shown on the delete-button.
-     *
      * @default 'Confirm' or 'Delete', depending on the type
      */
     confirmButtonLabel?: string,
     /**
      * The label of the button that closes the dialog without doing anything.
-     *
      * @default 'Cancel'
      */
     cancelButtonLabel?: string,
@@ -41,7 +39,6 @@ export interface ConfirmDialogData {
     title?: string,
     /**
      * Whether or not a checkbox needs to be selected before the user can confirm the dialog.
-     *
      * @default false
      */
     requireConfirmation?: boolean,

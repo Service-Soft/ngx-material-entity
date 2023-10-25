@@ -1,24 +1,25 @@
+<!-- eslint-disable angular/no-call-expression -->
 <mat-form-field>
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-chip-grid #chipGrid
-        [(ngModel)]="propertyValue" [name]="key.toString() + uuid" #model="ngModel"
-        [required]="metadata.required(entity)"
+        #model="ngModel" [name]="name" [required]="metadata.required(entity)"
         [disabled]="isReadOnly"
+        [(ngModel)]="propertyValue"
     >
         <mat-chip-row *ngFor="let value of propertyValue" (removed)="removeStringChipArrayValue(value)">
             {{value}}
             <button type="button" matChipRemove>
-                <i class="{{metadata.deleteIcon}}"></i>
+                <i [class]="metadata.deleteIcon"></i>
             </button>
         </mat-chip-row>
-        <input matInput
+        <input #chipsModel="ngModel"
+            matInput
             [matChipInputFor]="chipGrid"
             [matChipInputAddOnBlur]="true"
-            (matChipInputTokenEnd)="addStringChipArrayValue($event)"
-            [(ngModel)]="chipsInput" [name]="key.toString() + uuid2" #chipsModel="ngModel"
-            [minlength]="metadata.minLength ?? null"
-            [maxlength]="metadata.maxLength ?? null"
+            [name]="uuid2" [minlength]="metadata.minLength ?? null" [maxlength]="metadata.maxLength ?? null"
             [pattern]="metadata.regex ?? '[\\s\\S]*'"
+            [(ngModel)]="chipsInput"
+            (matChipInputTokenEnd)="addStringChipArrayValue($event)"
         />
         <mat-error *ngIf="chipsModel.errors">{{getValidationErrorMessage(chipsModel)}}</mat-error>
     </mat-chip-grid>

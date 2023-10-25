@@ -12,8 +12,8 @@ import { EntityUtilities } from '../../../../utilities/entity.utilities';
 import { FileUtilities } from '../../../../utilities/file.utilities';
 import { NgxMatEntityConfirmDialogComponent } from '../../../confirm-dialog/confirm-dialog.component';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'file-input',
     templateUrl: './file-input.component.html',
     styleUrls: ['./file-input.component.scss']
@@ -50,6 +50,8 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
     @Output()
     fileDataChangeEvent: EventEmitter<FileData | FileData[]> = new EventEmitter<FileData | FileData[]>();
 
+    acceptString!: string;
+
     constructor(private readonly dialog: MatDialog, private readonly http: HttpClient) { }
 
     async ngOnInit(): Promise<void> {
@@ -60,6 +62,7 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
             this.initSingleFile();
         }
         this.fileDataChangeEvent.emit(this.propertyValue);
+        this.acceptString = FileUtilities.getAcceptString(this.metadata.allowedMimeTypes);
     }
 
     private initMultiFile(): void {

@@ -1,6 +1,4 @@
-import { HttpClient } from '@angular/common/http';
-import { BaseEntityType } from '../../../classes/entity.model';
-import { EntityService } from '../../../services/entity.service';
+import { BaseEntityType, EntityServiceClassNewable } from '../../../classes/entity.model';
 import { EditData } from '../table-data';
 
 /**
@@ -14,7 +12,7 @@ export interface EditEntityData<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The Entity Service class used for updating/deleting the entity.
      */
-    EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
+    EntityServiceClass: EntityServiceClassNewable<EntityType>,
     /**
      * The info of the generic edit-dialog.
      */

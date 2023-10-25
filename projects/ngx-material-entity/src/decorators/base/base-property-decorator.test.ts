@@ -9,7 +9,6 @@ import { DecoratorTypes } from './decorator-types.enum';
 
 describe('baseProperty', () => {
     test('id should have base Metadata', () => {
-        // eslint-disable-next-line max-len
         const metadata: DefaultStringDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(new TestEntityWithoutCustomPropertiesMockBuilder().testEntity, 'id', DecoratorTypes.STRING);
         expect(metadata).toBeDefined();
         expect(metadata.display(null)).toBe(false);

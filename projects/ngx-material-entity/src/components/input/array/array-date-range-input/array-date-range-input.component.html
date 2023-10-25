@@ -1,3 +1,4 @@
+<!-- eslint-disable angular/no-call-expression -->
 <div class="mat-elevation-z8 elevation-container">
     <div class="array-headline">
         <b>{{metadata.displayName}}</b>
@@ -7,23 +8,23 @@
             <mat-label>{{metadata.displayName}}</mat-label>
             
             <mat-date-range-input [rangePicker]="picker" [required]="metadata.required(entity)" [dateFilter]="metadata.filter ? metadata.filter : DateUtilities.defaultDateFilter">
-                <input matStartDate
-                    [(ngModel)]="dateRangeStart"
-                    [name]="key.toString() + 'start' + uuid"
-                    #startModel="ngModel"
+                <input #startModel="ngModel"
+                    matStartDate
+                    [name]="name + 'start'"
                     [required]="metadata.required(entity)"
                     [min]="metadata.minStart ? metadata.minStart(input?.start) : undefined"
                     [max]="metadata.maxStart ? metadata.maxStart(input?.start) : undefined"
                     [placeholder]="metadata.placeholderStart"
+                    [(ngModel)]="dateRangeStart"
                 >
-                <input matEndDate
-                    [(ngModel)]="dateRangeEnd"
-                    [name]="key.toString() + 'end' + uuid"
-                    #endModel="ngModel"
+                <input #endModel="ngModel"
+                    matEndDate
+                    [name]="name + 'end'"
                     [required]="metadata.required(entity)"
                     [min]="metadata.minEnd ? metadata.minEnd(input?.end) : undefined"
                     [max]="metadata.maxEnd ? metadata.maxEnd(input?.end) : undefined"
                     [placeholder]="metadata.placeholderEnd"
+                    [(ngModel)]="dateRangeEnd"
                 >
             </mat-date-range-input>
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -51,10 +52,10 @@
         <!-- select Column -->
         <ng-container matColumnDef="select">
             <mat-header-cell *matHeaderCellDef>
-                <mat-checkbox [disabled]="!dataSource.data.length" (change)="$event ? SelectionUtilities.masterToggle(selection, dataSource) : null" [checked]="selection.hasValue() && SelectionUtilities.isAllSelected(selection, dataSource)" [indeterminate]="selection.hasValue() && !SelectionUtilities.isAllSelected(selection, dataSource)"></mat-checkbox>
+                <mat-checkbox [disabled]="!dataSource.data.length" [checked]="selection.hasValue() && SelectionUtilities.isAllSelected(selection, dataSource)" [indeterminate]="selection.hasValue() && !SelectionUtilities.isAllSelected(selection, dataSource)" (change)="$event ? SelectionUtilities.masterToggle(selection, dataSource) : null"></mat-checkbox>
             </mat-header-cell>
             <mat-cell *matCellDef="let entity">
-                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(entity) : null" [checked]="selection.isSelected(entity)"></mat-checkbox>
+                <mat-checkbox [checked]="selection.isSelected(entity)" (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(entity) : null"></mat-checkbox>
             </mat-cell>
         </ng-container>
     
@@ -62,7 +63,7 @@
             <mat-header-cell *matHeaderCellDef>
                 {{dCol.displayName}}
             </mat-header-cell>
-            <mat-cell class="entity" *matCellDef="let entity">
+            <mat-cell *matCellDef="let entity" class="entity">
                 {{getDisplayColumnValue(entity, dCol)}}
             </mat-cell>
         </ng-container>
@@ -71,7 +72,7 @@
         <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     </mat-table>
 
-    <div class="array-error" *ngIf="metadata.required(entity) && !dataSource.data.length">
+    <div *ngIf="metadata.required(entity) && !dataSource.data.length" class="array-error">
         {{metadata.missingErrorMessage}}
     </div>
 </div>

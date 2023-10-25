@@ -6,7 +6,6 @@ import 'reflect-metadata';
 export abstract class ReflectUtilities {
     /**
      * Gets the metadata value for the provided metadata key on the target object or its prototype chain.
-     *
      * @param metadataKey - A key used to store and retrieve metadata.
      * @param target - The target object on which the metadata is defined.
      * @param propertyKey - The property key for the target.
@@ -19,7 +18,6 @@ export abstract class ReflectUtilities {
     /**
      * Returns the string and symbol keys of the own properties of an object. The own properties of an object
      * are those that are defined directly on that object, and are not inherited from the object's prototype.
-     *
      * @param target - Object that contains the own properties.
      * @returns The keys of the given object.
      */
@@ -29,7 +27,6 @@ export abstract class ReflectUtilities {
 
     /**
      * Gets the property of target, equivalent to `target[propertyKey]`.
-     *
      * @param target - Object that contains the property on itself or in its prototype chain.
      * @param propertyKey - The property name.
      * @returns The property of the target of the given key.
@@ -40,7 +37,6 @@ export abstract class ReflectUtilities {
 
     /**
      * Sets the property of target, equivalent to `target[propertyKey] = value`.
-     *
      * @param target - Object that contains the property on itself or in its prototype chain.
      * @param propertyKey - The property name.
      * @param value - The value to set the property to.
@@ -52,7 +48,6 @@ export abstract class ReflectUtilities {
 
     /**
      * Equivalent to `propertyKey in target`.
-     *
      * @param target - Object that contains the property on itself or in its prototype chain.
      * @param propertyKey - Name of the property.
      * @returns Whether or not the given target has the key.
@@ -63,7 +58,6 @@ export abstract class ReflectUtilities {
 
     /**
      * Checks if the targets key entry has a metadata value for the given metadata key.
-     *
      * @returns Whether the metadata is null or not.
      * @param metadataKey - The key of the metadata on the property.
      * @param target - Object that contains the property on itself or in its prototype chain.
@@ -75,7 +69,6 @@ export abstract class ReflectUtilities {
 
     /**
      * Define a unique metadata entry on the target.
-     *
      * @param metadataKey - A key used to store and retrieve metadata.
      * @param metadataValue - A value that contains attached metadata.
      * @param target - The target object on which to define metadata.

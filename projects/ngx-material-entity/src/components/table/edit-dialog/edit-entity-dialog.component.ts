@@ -12,7 +12,6 @@ import { PropertyDecoratorConfigInternal } from '../../../decorators/base/proper
 import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../default-global-configuration-values';
 import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
 import { getValidationErrorsTooltipContent } from '../../../functions/get-validation-errors-tooltip-content.function.ts';
-import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
 import { EntityService } from '../../../services/entity.service';
 import { EntityTab, EntityUtilities } from '../../../utilities/entity.utilities';
 import { ValidationError, ValidationUtilities } from '../../../utilities/validation.utilities';
@@ -23,6 +22,7 @@ import { TooltipComponent } from '../../tooltip/tooltip.component';
 import { EditActionInternal } from './edit-data.builder';
 import { EditEntityData } from './edit-entity-data';
 import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-entity.builder';
+import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
 
 /**
  * The default dialog used to edit an existing entity based on the configuration passed in the MAT_DIALOG_DATA "inputData".
@@ -50,22 +50,55 @@ import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-entity.bui
     ]
 })
 export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
+    /**
+     * Contains HelperMethods around handling Entities and their property-metadata.
+     */
     EntityUtilities: typeof EntityUtilities = EntityUtilities;
 
+    /**
+     * The tabs of the dialog.
+     */
     entityTabs!: EntityTab<EntityType>[];
 
+    /**
+     * The service of the provided entity.
+     */
     entityService!: EntityService<EntityType>;
 
+    /**
+     * The entity before any changes have been applied.
+     */
     entityPriorChanges!: EntityType;
 
+    /**
+     * The internal configuration data.
+     */
     data!: EditEntityDataInternal<EntityType>;
 
+    /**
+     * Whether or not the entity is valid.
+     */
     isEntityValid: boolean = true;
+    /**
+     * Whether or not the entity is dirty.
+     */
     isEntityDirty: boolean = false;
+    /**
+     * The validation errors of the entity.
+     */
     validationErrors: ValidationError[] = [];
+    /**
+     * What to display inside the tooltip.
+     */
     tooltipContent: string = '';
 
+    /**
+     * Whether or not the entity is readonly.
+     */
     isEntityReadOnly!: boolean;
+    /**
+     * Whether or not deleting the entity is allowed for the current user.
+     */
     allowDelete!: boolean;
 
     constructor(
@@ -87,14 +120,13 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
             this.allowDelete = this.data.allowDelete(this.entityPriorChanges);
         });
         this.dialogRef.disableClose = true;
-        this.entityTabs = EntityUtilities.getEntityTabs(this.data.entity, false, true);
+        this.entityTabs = EntityUtilities.getEntityTabs(this.data.entity, this.injector, false, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
         setTimeout(() => this.checkIsEntityValid(), 1);
     }
 
     /**
      * Checks if the input with the given key is readonly.
-     *
      * @param key - The key for the input to check.
      * @returns Whether or not the input for the key is read only.
      */
@@ -195,7 +227,6 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
 
     /**
      * Runs the edit action on the entity.
-     *
      * @param action - The action to run.
      */
     runEditAction(action: EditActionInternal<EntityType>): void {
@@ -228,7 +259,6 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
 
     /**
      * Checks if an EditAction is disabled (e.g. Because the current entry doesn't fullfil the requirements).
-     *
      * @param action - The EditAction to check.
      * @returns Whether or not the Action can be used.
      */

@@ -7,7 +7,6 @@ import { ReferencesManyDecoratorConfig } from './references-many-decorator.data'
 
 /**
  * Decorator for setting and getting references many property metadata.
- *
  * @param metadata - The metadata of the references many property.
  * @returns The method that defines the metadata.
  */

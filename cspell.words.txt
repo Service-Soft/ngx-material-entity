@@ -7,3 +7,5 @@ dont
 navbar
 Lodash
 maxlength
+cyclomatic
+ngsrc

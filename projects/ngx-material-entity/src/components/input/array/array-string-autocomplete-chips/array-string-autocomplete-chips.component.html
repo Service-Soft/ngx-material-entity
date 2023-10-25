@@ -1,3 +1,4 @@
+<!-- eslint-disable angular/no-call-expression -->
 <!-- <mat-form-field>
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-chip-grid #chipList
@@ -37,30 +38,36 @@
 <mat-form-field>
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-chip-grid #chipGrid
-        [(ngModel)]="propertyValue" [name]="key.toString() + uuid" #model="ngModel"
+        #model="ngModel" [name]="name"
         [required]="metadata.required(entity)"
         [disabled]="isReadOnly"
+        [(ngModel)]="propertyValue"
     >
         <mat-chip-row *ngFor="let value of propertyValue" (removed)="removeStringChipArrayValue(value)">
             {{value}}
             <button type="button" matChipRemove>
-                <i class="{{metadata.deleteIcon}}"></i>
+                <i [class]="metadata.deleteIcon"></i>
             </button>
         </mat-chip-row>
-        <input matInput
+        <input #chipsModel="ngModel"
+            #chipsElement
+            matInput
             [matChipInputFor]="chipGrid"
             [matAutocomplete]="auto"
             [matChipInputAddOnBlur]="true"
-            (matChipInputTokenEnd)="addStringChipArrayValue($event)"
-            [(ngModel)]="chipsInput" [name]="key.toString() + uuid2" #chipsModel="ngModel" #chipsElement
+            [name]="uuid2"
             [minlength]="metadata.minLength ?? null"
             [maxlength]="metadata.maxLength ?? null"
             [pattern]="metadata.regex ?? '[\\s\\S]*'"
+            [includedIn]="autocompleteMetadata.restrictToOptions ? autocompleteStrings : undefined"
+            [(ngModel)]="chipsInput"
+            (keyup)="filterAutocompleteStrings(propertyValue)"
+            (matChipInputTokenEnd)="addStringChipArrayValue($event)"
         />
         <mat-error *ngIf="chipsModel.errors">{{getValidationErrorMessage(chipsModel)}}</mat-error>
     </mat-chip-grid>
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event, chipsElement)">
-        <mat-option *ngFor="let value of autocompleteValues" [value]="value">
+        <mat-option *ngFor="let value of filteredAutocompleteStrings" [value]="value">
           {{value}}
         </mat-option>
     </mat-autocomplete>

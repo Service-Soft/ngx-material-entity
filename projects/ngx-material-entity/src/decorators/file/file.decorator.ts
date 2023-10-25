@@ -6,7 +6,6 @@ import { DefaultFileDecoratorConfig, ImageFileDecoratorConfig } from './file-dec
 
 /**
  * Decorator for setting and getting file property metadata.
- *
  * @param metadata - The metadata of the file property.
  * @returns The method that defines the metadata.
  * @throws When an unknown metadata type was provided.
@@ -26,7 +25,7 @@ export function file(metadata: DefaultFileDecoratorConfig | ImageFileDecoratorCo
                 [EntityUtilities.FILENAMES_KEY, EntityUtilities.MULTI_PREVIEW_IMAGES_KEY, EntityUtilities.SINGLE_PREVIEW_IMAGE_KEY]
             );
         default:
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+            // eslint-disable-next-line typescript/no-unsafe-member-access, typescript/no-explicit-any
             throw new Error(`Unknown metadata type ${(metadata as any).type}`);
     }
 }

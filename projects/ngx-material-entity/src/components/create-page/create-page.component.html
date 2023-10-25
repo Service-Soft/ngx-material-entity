@@ -1,0 +1,82 @@
+<!-- eslint-disable angular/no-call-expression -->
+<!-- eslint-disable angular/cyclomatic-complexity -->
+<div *ngIf="!entityTabs && data.displayLoadingSpinner" class="container">
+    <br>
+    <mat-spinner></mat-spinner>
+    <br>
+</div>
+
+<div *ngIf="entityTabs" class="container">
+    <br>
+
+    <!------------>
+    <!-- Header -->
+    <!------------>
+    <div class="header">
+        <div class="cancel-container">
+            <button type="button" mat-raised-button class="back-button" tabindex="-1" [class.unsavedChanges]="hasUnsavedChanges" (click)="navigateBack()">
+                <i class="fas fa-chevron-left"></i>
+                {{data.createData.cancelButtonLabel}}
+                <i *ngIf="hasUnsavedChanges" class="fas fa-warning"></i>
+            </button>
+        </div>
+    </div>
+
+    <h1>{{data.createData.title}}</h1>
+
+    <!----------->
+    <!-- Input -->
+    <!----------->
+    <form>
+        <mat-tab-group *ngIf="entityTabs.length > 1" preserveContent (selectedTabChange)="checkOffset()">
+            <mat-tab *ngFor="let tab of entityTabs" [label]="tab.tabName">
+                <div *ngFor="let row of tab.rows" class="row">
+                    <ngx-mat-entity-input
+                        *ngFor="let key of row.keys"
+                        [entity]="entity"
+                        [propertyKey]="key"
+                        [hideOmitForEdit]="true"
+                        [class]="EntityUtilities.getWidthClasses(entity, key)"
+                        [isReadOnly]="isReadOnly(key)"
+                        (inputChangeEvent)="checkEntity()"
+                    >
+                    </ngx-mat-entity-input>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    
+        <div *ngIf="entityTabs.length <= 1">
+            <span *ngIf="!entityTabs.length" class="no-entity-tabs">
+                ERROR: No Inputs. Did you correctly assign all values in the model constructor?
+            </span>
+            <div *ngFor="let row of entityTabs[0]?.rows" class="row">
+                <ngx-mat-entity-input
+                    *ngFor="let key of row.keys"
+                    [entity]="entity"
+                    [propertyKey]="key"
+                    [hideOmitForEdit]="true"
+                    [class]="EntityUtilities.getWidthClasses(entity, key)"
+                    [isReadOnly]="isReadOnly(key)"
+                    (inputChangeEvent)="checkEntity()"
+                >
+                </ngx-mat-entity-input>
+            </div>
+        </div>
+
+        <div class="bottom-row-container">
+            <div class="bottom-row container" style="margin-top: 10px;">
+                <button type="submit" mat-raised-button matBadgeColor="warn"
+                    [disabled]="!isEntityValid || !isEntityDirty"
+                    [matBadge]="validationErrors.length"
+                    [matBadgeHidden]="!validationErrors.length"
+                    (click)="create()"
+                >
+                    {{data.createData.createButtonLabel}}
+                </button>
+                <ngx-mat-entity-tooltip *ngIf="validationErrors.length" [tooltipContent]="tooltipContent"></ngx-mat-entity-tooltip>
+            </div>
+        </div>
+    </form>
+
+    <br>
+</div>

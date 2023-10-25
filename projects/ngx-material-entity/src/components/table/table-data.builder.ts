@@ -1,17 +1,15 @@
-import { HttpClient } from '@angular/common/http';
 import { Inject } from '@angular/core';
 import { BaseBuilder } from '../../classes/base.builder';
-import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
+import { BaseEntityType, EntityClassNewable, EntityServiceClassNewable } from '../../classes/entity.model';
 import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../default-global-configuration-values';
 import { defaultFalse } from '../../functions/default-false.function';
 import { defaultTrue } from '../../functions/default-true.function';
 import { getConfigValue } from '../../functions/get-config-value.function';
 import { isAsyncFunction } from '../../functions/is-async-function.function';
 import { NgxGlobalDefaultValues } from '../../global-configuration-values';
-import { EntityService } from '../../services/entity.service';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
-import { CreateDialogDataBuilder, CreateDialogDataInternal } from './create-dialog/create-dialog-data.builder';
-import { EditDataInternal, EditDialogDataBuilder } from './edit-dialog/edit-data.builder';
+import { CreateDataBuilder, CreateDataInternal } from './create-dialog/create-data.builder';
+import { EditDataBuilder, EditDataInternal } from './edit-dialog/edit-data.builder';
 import { BaseData, BaseTableAction, DisplayColumn, MultiSelectAction, TableData } from './table-data';
 
 /**
@@ -124,18 +122,18 @@ export class TableDataInternal<EntityType extends BaseEntityType<EntityType>> im
     // eslint-disable-next-line jsdoc/require-jsdoc
     baseData: BaseDataInternal<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    createDialogData: CreateDialogDataInternal;
+    createData: CreateDataInternal;
     // eslint-disable-next-line jsdoc/require-jsdoc
     editData: EditDataInternal<EntityType>;
 
     constructor(
         baseData: BaseDataInternal<EntityType>,
-        createDialogData: CreateDialogDataInternal,
-        editDialogData: EditDataInternal<EntityType>
+        createData: CreateDataInternal,
+        editData: EditDataInternal<EntityType>
     ) {
         this.baseData = baseData;
-        this.createDialogData = createDialogData;
-        this.editData = editDialogData;
+        this.createData = createData;
+        this.editData = editData;
     }
 }
 
@@ -164,13 +162,15 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayColumns: DisplayColumn<EntityType>[];
     // eslint-disable-next-line jsdoc/require-jsdoc
-    EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>;
+    EntityServiceClass: EntityServiceClassNewable<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
     searchLabel: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
     createButtonLabel: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
     defaultEdit: 'dialog' | 'page';
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    defaultCreate: 'dialog' | 'page';
     // eslint-disable-next-line jsdoc/require-jsdoc
     searchString: (entity: EntityType) => string;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -210,6 +210,7 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         this.searchLabel = getConfigValue(globalConfig.searchLabel, data.searchLabel);
         this.createButtonLabel = getConfigValue(globalConfig.createLabel, data.createButtonLabel);
         this.defaultEdit = getConfigValue(globalConfig.defaultEditMethod, data.defaultEdit);
+        this.defaultCreate = getConfigValue(globalConfig.defaultCreateMethod, data.defaultCreate);
         this.searchString = data.searchString ?? defaultSearchFunction;
         if (data.tableActions) {
             this.tableActions = data.tableActions.map(tA => {
@@ -278,9 +279,9 @@ export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected generateBaseData(data: TableData<EntityType>): TableDataInternal<EntityType> {
-        // eslint-disable-next-line max-len
-        const createDialogData: CreateDialogDataInternal = new CreateDialogDataBuilder(this.globalConfig, data.createDialogData).getResult();
-        const editDialogData: EditDataInternal<EntityType> = new EditDialogDataBuilder(this.globalConfig, data.editData).getResult();
+
+        const createDialogData: CreateDataInternal = new CreateDataBuilder(this.globalConfig, data.createData).getResult();
+        const editDialogData: EditDataInternal<EntityType> = new EditDataBuilder(this.globalConfig, data.editData).getResult();
         const baseData: BaseDataInternal<EntityType> = new BaseDataBuilder(data.baseData, this.globalConfig).getResult();
         return new TableDataInternal<EntityType>(
             baseData,
@@ -289,7 +290,7 @@ export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
         );
     }
 
-    // eslint-disable-next-line jsdoc/require-jsdoc
+
     protected override validateInput(data: TableData<EntityType>): void {
         if (data.baseData.tableActions?.length && data.baseData.displayColumns.find(dp => dp.displayName === 'select')) {
             throw new Error(
@@ -326,7 +327,6 @@ export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
  * This will be used if no custom search function is provided by the configuration.
  *
  * It generates a string from an entity which is then used to compare it to the search input.
- *
  * @param entity - An entity that is in the search.
  * @returns The generated string of the given entity used for comparison with the search input.
  */

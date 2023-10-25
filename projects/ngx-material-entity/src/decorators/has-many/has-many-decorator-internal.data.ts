@@ -1,6 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { BaseEntityType } from '../../classes/entity.model';
+import { BaseEntityType, EntityServiceClassNewable } from '../../classes/entity.model';
 import { BaseDataBuilder, BaseDataInternal, TableDataBuilder, TableDataInternal } from '../../components/table/table-data.builder';
 import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
@@ -14,12 +13,12 @@ export class HasManyDecoratorConfigInternal<
     EntityType extends BaseEntityType<EntityType>,
     RelatedBaseEntityType extends BaseEntityType<RelatedBaseEntityType>
 > extends PropertyDecoratorConfigInternal<EntityType> implements HasManyDecoratorConfig<EntityType, RelatedBaseEntityType> {
-    // eslint-disable-next-line jsdoc/require-jsdoc
+
     override omitForCreate: true;
     // eslint-disable-next-line jsdoc/require-jsdoc
     tableData: TableDataInternal<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    RelatedEntityServiceClass: new (httpClient: HttpClient) => EntityService<RelatedBaseEntityType>;
+    RelatedEntityServiceClass: EntityServiceClassNewable<RelatedBaseEntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
     createBaseUrl: (baseEntity: RelatedBaseEntityType, metadata: HasManyDecoratorConfig<EntityType, RelatedBaseEntityType>) => string;
     // eslint-disable-next-line jsdoc/require-jsdoc

@@ -98,7 +98,7 @@ const testEntityData: TestEntity = {
 const testEntity: TestEntity = new TestEntity(testEntityData);
 
 test('should have references many Metadata', () => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    // eslint-disable-next-line typescript/no-unsafe-assignment
     let metadata: ReferencesManyDecoratorConfigInternal<Address> = EntityUtilities.getPropertyMetadata(
         testEntity,
         'addressIds',

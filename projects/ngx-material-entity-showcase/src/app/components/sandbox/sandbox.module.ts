@@ -7,8 +7,8 @@ import { SandboxComponent } from './sandbox.component';
 @NgModule({
     imports: [
         CommonModule,
-        SandboxRoutingModule,
-        NgxMatEntityTableComponent
+        NgxMatEntityTableComponent,
+        SandboxRoutingModule
     ],
     declarations: [SandboxComponent]
 })

@@ -6,7 +6,6 @@ import * as uuid from 'uuid';
 export abstract class UUIDUtilities {
     /**
      * Creates a new v4 uuid.
-     *
      * @returns The created uuid.
      */
     static create(): string {

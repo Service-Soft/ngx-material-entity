@@ -40,7 +40,6 @@ export abstract class ValidationUtilities {
     /**
      * Checks if the values on an entity are valid.
      * Also checks all the validators given by the metadata ("required", "maxLength" etc.).
-     *
      * @param entity - The entity to validate.
      * @param omit - Whether to check for creating or editing validity.
      * @returns Whether or not the entity is valid.
@@ -51,7 +50,6 @@ export abstract class ValidationUtilities {
 
     /**
      * Gets all validation errors on the given entity.
-     *
      * @param entity - The entity to validate.
      * @param omit - What keys not to check. An empty value means no keys are omitted.
      * @returns An array of validation errors on the provided entity.
@@ -89,7 +87,6 @@ export abstract class ValidationUtilities {
 
     /**
      * Validates the property on the given entity with the given key.
-     *
      * @param entity - The entity on which the property to check is.
      * @param key - The key of the property to validate.
      * @param omit - What keys not to check. An empty value means no keys are omitted.
@@ -212,7 +209,7 @@ export abstract class ValidationUtilities {
             case DecoratorTypes.HAS_MANY:
                 break;
             case DecoratorTypes.CUSTOM:
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any, max-len
+                // eslint-disable-next-line typescript/no-explicit-any, max-len
                 const customMetadata: CustomDecoratorConfigInternal<EntityType, any, any, any> = metadata as CustomDecoratorConfigInternal<EntityType, any, any, any>;
                 if (!customMetadata.isValid(entity[key], omit)) {
                     return {
@@ -351,7 +348,7 @@ export abstract class ValidationUtilities {
 
     private static getDateRangeValidationError<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
-        value: DateRange,
+        value: Partial<DateRange>,
         metadata: DateRangeDateDecoratorConfigInternal
     ): ValidationError | undefined {
         if (metadata.required(entity)) {
@@ -362,45 +359,56 @@ export abstract class ValidationUtilities {
                 };
             }
         }
-        value.start = new Date(value.start);
-        value.end = new Date(value.end);
-        if (metadata.minStart && value.start.getTime() < metadata.minStart(value.start).getTime()) {
-            return {
-                property: metadata.displayName,
-                message: `start date needs to be after ${formatDate(metadata.minStart(value.start))}`
-            };
-        }
-        if (metadata.maxStart && value.start.getTime() > metadata.maxStart(value.start).getTime()) {
-            return {
-                property: metadata.displayName,
-                message: `start date needs to be before ${formatDate(metadata.maxStart(value.start))}`
-            };
-        }
-        if (metadata.minEnd && value.end.getTime() < metadata.minEnd(value.end).getTime()) {
-            return {
-                property: metadata.displayName,
-                message: `end date needs to be after ${formatDate(metadata.minEnd(value.end))}`
-            };
-        }
-        if (metadata.maxEnd && value.end.getTime() > metadata.maxEnd(value.end).getTime()) {
-            return {
-                property: metadata.displayName,
-                message: `end date needs to be before ${formatDate(metadata.maxEnd(value.end))}`
-            };
-        }
-        if (metadata.filter) {
-            if (!metadata.filter(value.start)) {
+        if (value.start) {
+            value.start = new Date(value.start);
+            if (metadata.minStart && value.start.getTime() < metadata.minStart(value.start).getTime()) {
                 return {
                     property: metadata.displayName,
-                    message: 'start date invalid'
+                    message: `start date needs to be after ${formatDate(metadata.minStart(value.start))}`
                 };
             }
-            if (!metadata.filter(value.end)) {
+            if (metadata.maxStart && value.start.getTime() > metadata.maxStart(value.start).getTime()) {
                 return {
                     property: metadata.displayName,
-                    message: 'end date invalid'
+                    message: `start date needs to be before ${formatDate(metadata.maxStart(value.start))}`
                 };
             }
+            if (metadata.filter) {
+                if (!metadata.filter(value.start)) {
+                    return {
+                        property: metadata.displayName,
+                        message: 'start date invalid'
+                    };
+                }
+            }
+        }
+
+        if (value.end) {
+            value.end = new Date(value.end);
+            if (metadata.minEnd && value.end.getTime() < metadata.minEnd(value.end).getTime()) {
+                return {
+                    property: metadata.displayName,
+                    message: `end date needs to be after ${formatDate(metadata.minEnd(value.end))}`
+                };
+            }
+            if (metadata.maxEnd && value.end.getTime() > metadata.maxEnd(value.end).getTime()) {
+                return {
+                    property: metadata.displayName,
+                    message: `end date needs to be before ${formatDate(metadata.maxEnd(value.end))}`
+                };
+            }
+            if (metadata.filter) {
+                if (!metadata.filter(value.end)) {
+                    return {
+                        property: metadata.displayName,
+                        message: 'end date invalid'
+                    };
+                }
+            }
+        }
+
+
+        if (metadata.filter && value.values) {
             for (const date of value.values) {
                 if (!metadata.filter(date)) {
                     return {

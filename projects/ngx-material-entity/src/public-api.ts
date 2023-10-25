@@ -7,6 +7,8 @@ export * from './classes/entity.model';
 // components
 export * from './components/confirm-dialog/confirm-dialog-data';
 export * from './components/confirm-dialog/confirm-dialog.component';
+export * from './components/create-page/create-data.route';
+export * from './components/create-page/create-page.component';
 export * from './components/edit-page/edit-data.route';
 export * from './components/edit-page/edit-page.component';
 export * from './components/input/base-input.component';
@@ -26,6 +28,7 @@ export * from './decorators/array/array-decorator.data';
 export * from './decorators/array/array.decorator';
 export * from './decorators/base/decorator-types.enum';
 export * from './decorators/base/dropdown-value.interface';
+// eslint-disable-next-line jsdoc/require-jsdoc
 export { Col, Position } from './decorators/base/property-decorator.data';
 export * from './decorators/boolean/boolean-decorator.data';
 export * from './decorators/boolean/boolean.decorator';

@@ -371,7 +371,7 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
     @array({
         displayName: 'String Chips Autocomplete Array Value',
         itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
-        // eslint-disable-next-line @cspell/spellchecker
+        // eslint-disable-next-line cspell/spellchecker
         autocompleteValues: ['ABCDE', 'FGHIJ']
     })
     stringChipsAutocompleteArrayValue!: string[];
@@ -379,7 +379,7 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
     @array({
         displayName: 'String Chips Autocomplete Array Value With Config',
         itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
-        // eslint-disable-next-line @cspell/spellchecker
+        // eslint-disable-next-line cspell/spellchecker
         autocompleteValues: ['ABCDE', 'FGHIJ'],
         deleteIcon: 'fas fa-trash',
         defaultWidths: [6, 6, 6],
@@ -763,7 +763,7 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
             random: () => (Math.random() + 1).toString(36).substring(7)
         },
         displayName: 'Random Value',
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line typescript/no-unsafe-assignment, typescript/no-explicit-any
         component: undefined as any,
         isValid(value) {
             return value.length <= 5;
@@ -820,10 +820,10 @@ const testEntityData: TestEntityWithoutCustomProperties = {
         rowValue1: ''
     } as TestObjectEntity,
     stringChipsArrayValue: ['01234', '56789'],
-    // eslint-disable-next-line @cspell/spellchecker
+    // eslint-disable-next-line cspell/spellchecker
     stringChipsAutocompleteArrayValue: ['ABCDE', 'FGHIJ'],
     stringChipsArrayValueWithConfig: ['01234', '56789'],
-    // eslint-disable-next-line @cspell/spellchecker
+    // eslint-disable-next-line cspell/spellchecker
     stringChipsAutocompleteArrayValueWithConfig: ['ABCDE', 'FGHIJ'],
     orderValue1: '1',
     orderValue2: '2',
@@ -1018,9 +1018,6 @@ export class TestEntityWithoutCustomPropertiesMockBuilder {
             testEntityWithoutData,
             DateUtilities.getTimeFromDate(testEntity.customDateTimeValue)
         );
-
-        this.setDateRangeMetadata('dateRangeValue', testEntity, testEntityWithoutData);
-        this.setDateRangeMetadata('customDateRangeValue', testEntity, testEntityWithoutData);
     }
 
     private static setMetadata(
@@ -1035,34 +1032,11 @@ export class TestEntityWithoutCustomPropertiesMockBuilder {
             ReflectUtilities.defineMetadata(metadataKey, undefined, testEntityWithoutData, propertyKey);
         }
     }
-
-    private static setDateRangeMetadata(
-        propertyKey: keyof TestEntityWithoutCustomProperties,
-        testEntity: TestEntityWithoutCustomProperties,
-        testEntityWithoutData?: TestEntityWithoutCustomProperties
-    ): void {
-        this.setMetadata(
-            EntityUtilities.DATE_RANGE_END_KEY,
-            testEntity,
-            propertyKey,
-            testEntityWithoutData,
-            new Date((testEntity[propertyKey] as DateRange).end)
-        );
-        this.setMetadata(EntityUtilities.DATE_RANGE_KEY, testEntity, propertyKey, testEntityWithoutData);
-        this.setMetadata(
-            EntityUtilities.DATE_RANGE_START_KEY,
-            testEntity,
-            propertyKey,
-            testEntityWithoutData,
-            new Date((testEntity[propertyKey] as DateRange).start)
-        );
-    }
 }
 
 /**
  * Gets the date objects between the given start and end date.
  * You can additionally provide a filter function to that result.
- *
  * @param startDate - The start date. Is included in the result.
  * @param endDate - The end date. Is included in the result.
  * @param filter - An optional filter function used to further filter the result.
@@ -1073,6 +1047,7 @@ export function getDatesBetween(
     endDate: Date,
     filter?: DateFilterFn<Date>
 ): Date[] {
+    // eslint-disable-next-line constCase/uppercase
     const DAY_IN_MS: number = 1000 * 60 * 60 * 24;
     const res: Date[] = [];
     while (

@@ -1,10 +1,8 @@
-import { HttpClient } from '@angular/common/http';
 import { BaseBuilder } from '../../../classes/base.builder';
-import { BaseEntityType } from '../../../classes/entity.model';
+import { BaseEntityType, EntityServiceClassNewable } from '../../../classes/entity.model';
 import { defaultTrue } from '../../../functions/default-true.function';
 import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
-import { EntityService } from '../../../services/entity.service';
-import { EditDataInternal, EditDialogDataBuilder } from './edit-data.builder';
+import { EditDataBuilder, EditDataInternal } from './edit-data.builder';
 import { EditEntityData } from './edit-entity-data';
 
 /**
@@ -14,7 +12,7 @@ export class EditEntityDataInternal<EntityType extends BaseEntityType<EntityType
     // eslint-disable-next-line jsdoc/require-jsdoc
     entity: EntityType;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>;
+    EntityServiceClass: EntityServiceClassNewable<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
     editData: EditDataInternal<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -24,7 +22,7 @@ export class EditEntityDataInternal<EntityType extends BaseEntityType<EntityType
 
     constructor(
         entity: EntityType,
-        EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
+        EntityServiceClass: EntityServiceClassNewable<EntityType>,
         editData: EditDataInternal<EntityType>,
         allowUpdate: (entity: EntityType) => boolean,
         allowDelete: (entity: EntityType) => boolean
@@ -49,7 +47,7 @@ export class EditEntityDataBuilder<EntityType extends BaseEntityType<EntityType>
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected generateBaseData(data: EditEntityData<EntityType>): EditEntityDataInternal<EntityType> {
-        const editDialogData: EditDataInternal<EntityType> = new EditDialogDataBuilder(this.globalConfig, data.editData).getResult();
+        const editDialogData: EditDataInternal<EntityType> = new EditDataBuilder(this.globalConfig, data.editData).getResult();
         return new EditEntityDataInternal<EntityType>(
             data.entity,
             data.EntityServiceClass,

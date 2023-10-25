@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',

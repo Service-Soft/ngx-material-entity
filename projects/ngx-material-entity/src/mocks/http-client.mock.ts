@@ -1,8 +1,8 @@
 /* eslint-disable jsdoc/require-jsdoc */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable typescript/no-unsafe-assignment */
+/* eslint-disable typescript/no-unsafe-member-access */
+/* eslint-disable typescript/no-explicit-any */
+/* eslint-disable typescript/no-unused-vars */
 import { Observable, of } from 'rxjs';
 import { ReflectUtilities } from '../encapsulation/reflect.utilities';
 
@@ -42,7 +42,6 @@ export class HttpClientMock {
 
     /**
      * Gets an id from a request url. Expects the id to be the value after the last slash.
-     *
      * @param url - The url to read the id from.
      * @returns The id of the given url.
      */
@@ -82,7 +81,6 @@ export class HttpClientErrorMock {
 
     /**
      * Gets an id from a request url. Expects the id to be the value after the last slash.
-     *
      * @param url - The url to read the id from.
      * @returns The id of the given url.
      */

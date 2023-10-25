@@ -6,10 +6,10 @@ import { defaultFalse } from '../../../functions/default-false.function';
 import { defaultTrue } from '../../../functions/default-true.function';
 import { getConfigValue } from '../../../functions/get-config-value.function';
 import { isAsyncFunction } from '../../../functions/is-async-function.function';
-import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
 import { ConfirmDialogData } from '../../confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { EditAction, EditData } from '../table-data';
+import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
 
 /**
  * The internal edit action.
@@ -112,9 +112,9 @@ export class EditDataInternal<EntityType extends BaseEntityType<EntityType>> imp
 }
 
 /**
- * The Builder for the EditDialogData. Sets default values.
+ * The Builder for the EditData. Sets default values.
  */
-export class EditDialogDataBuilder<EntityType extends BaseEntityType<EntityType>>
+export class EditDataBuilder<EntityType extends BaseEntityType<EntityType>>
     extends BaseBuilder<EditDataInternal<EntityType>, EditData<EntityType>> {
 
     constructor(globalConfig: NgxGlobalDefaultValues, data?: EditData<EntityType>) {

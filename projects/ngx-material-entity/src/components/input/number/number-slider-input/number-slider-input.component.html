@@ -1,7 +1,7 @@
+<!-- eslint-disable angular/no-call-expression -->
 <mat-slider
     id="slider"
     color="primary"
-    (click)="model.control.markAsTouched()"
     [min]="metadata.min ?? null"
     [max]="metadata.max ?? null"
     [step]="metadata.step"
@@ -9,25 +9,26 @@
     [displayWith]="metadata.formatThumbLabelValue"
     [showTickMarks]="metadata.showTickMarks"
     [disabled]="isReadOnly"
+    (click)="model.control.markAsTouched()"
 >
     <input matSliderThumb
-        (valueChange)="updatePropertyValue($event)"
         [disabled]="isReadOnly"
+        (valueChange)="updatePropertyValue($event)"
     >
 </mat-slider>
 
 <mat-form-field floatLabel="always">
     <mat-label>{{metadata.displayName}}</mat-label>
     <!-- hidden input is needed so that the slider can be used inside a mat-form-field -->
-    <input matInput style="opacity: 0%;"
-        [(ngModel)]="propertyValue"
-        [name]="key.toString() + uuid"
-        #model="ngModel"
+    <input #model="ngModel" matInput
+        style="opacity: 0%;"
+        [name]="name"
         [required]="metadata.required(entity)"
         [min]="metadata.min ?? null"
         [max]="metadata.max ?? null"
-        (ngModelChange)="emitChange()"
         [disabled]="isReadOnly"
+        [(ngModel)]="propertyValue"
+        (ngModelChange)="emitChange()"
     >
     
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>

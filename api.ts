@@ -1,7 +1,11 @@
-import { Application, NextFunction, Request, Response, RequestHandler } from 'express';
-import * as jsonServer from 'json-server';
+import { Application, NextFunction, Request, RequestHandler, Response } from 'express';
+import jsonServer from 'json-server';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { ApiData, apiData } from './api-data';
 import { LodashUtilities } from './projects/ngx-material-entity/src/encapsulation/lodash.utilities';
+const __filename: string = fileURLToPath(import.meta.url);
+const __dirname: string = path.dirname(__filename);
 
 const data: ApiData = LodashUtilities.cloneDeep(apiData);
 
@@ -26,11 +30,11 @@ const getFile: RequestHandler = (req: Request, res: Response, next: NextFunction
 };
 const middlewares: RequestHandler[] = jsonServer.defaults().concat(reset, getFile);
 
-const port: number = 3000;
+const PORT: number = 3000;
 
 server.use(middlewares);
 server.use(router);
-server.listen(port, () => {
+server.listen(PORT, () => {
     // eslint-disable-next-line no-console
-    console.log(`JSON Server is running on port ${port}`);
+    console.log(`JSON Server is running on port ${PORT}`);
 });

@@ -1,22 +1,23 @@
-<mat-form-field>
+<!-- eslint-disable angular/no-call-expression -->
+<mat-form-field floatLabel="always">
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-checkbox
         color="primary"
-        (click)="model.control.markAsTouched(); updatePropertyValue(); emitChange();"
         [disabled]="isReadOnly"
         [class.disabled]="isReadOnly"
         [class.mat-checkbox-disabled]="false"
         [checked]="propertyValue"
+        (click)="model.control.markAsTouched(); updatePropertyValue(); emitChange();"
     >
     </mat-checkbox>
     <!-- hidden input is needed so that the checkbox can be used inside a mat-form-field -->
-    <input matInput hidden
-        [(ngModel)]="propertyValue"
-        [name]="key.toString() + uuid"
-        #model="ngModel"
+    <input #model="ngModel" matInput
+        hidden
+        [name]="name"
         [pattern]="metadata.required(entity) ? 'true' : '[\\s\\S]*'"
         [required]="metadata.required(entity)"
         [disabled]="isReadOnly"
+        [(ngModel)]="propertyValue"
     >
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>

@@ -1,12 +1,12 @@
 <div [class.file-input]="metadata.dragAndDrop" [class.mat-elevation-z8]="metadata.dragAndDrop">
     <file-input
-        (fileDataChangeEvent)="refreshFileData($event)"
         [propertyValue]="propertyValue"
         [metadata]="metadata"
         [getValidationErrorMessage]="getValidationErrorMessage"
         [isReadOnly]="isReadOnly"
         [entity]="entity"
         [key]="key"
+        (fileDataChangeEvent)="refreshFileData($event)"
     >
     </file-input>
 </div>

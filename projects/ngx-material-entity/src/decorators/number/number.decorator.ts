@@ -5,7 +5,6 @@ import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInte
 
 /**
  * Decorator for setting and getting number property metadata.
- *
  * @param metadata - The metadata of the number property.
  * @returns The method that defines the metadata.
  */

@@ -58,9 +58,9 @@ export type DecoratorType<T, CustomMetadataType extends Record<string, unknown>>
     : T extends DecoratorTypes.BOOLEAN_CHECKBOX ? CheckboxBooleanDecoratorConfigInternal
     : T extends DecoratorTypes.BOOLEAN_TOGGLE ? ToggleBooleanDecoratorConfigInternal
     : T extends DecoratorTypes.BOOLEAN_DROPDOWN ? DropdownBooleanDecoratorConfigInternal
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     : T extends DecoratorTypes.OBJECT ? DefaultObjectDecoratorConfigInternal<any>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     : T extends DecoratorTypes.ARRAY ? EntityArrayDecoratorConfigInternal<any>
     : T extends DecoratorTypes.ARRAY_DATE ? DateArrayDecoratorConfigInternal
     : T extends DecoratorTypes.ARRAY_DATE_TIME ? DateTimeArrayDecoratorConfigInternal
@@ -72,12 +72,12 @@ export type DecoratorType<T, CustomMetadataType extends Record<string, unknown>>
     : T extends DecoratorTypes.DATE_TIME ? DateTimeDateDecoratorConfigInternal
     : T extends DecoratorTypes.FILE_DEFAULT ? DefaultFileDecoratorConfigInternal
     : T extends DecoratorTypes.FILE_IMAGE ? ImageFileDecoratorConfigInternal
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     : T extends DecoratorTypes.REFERENCES_MANY ? ReferencesManyDecoratorConfigInternal<any>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     : T extends DecoratorTypes.REFERENCES_ONE ? ReferencesOneDecoratorConfigInternal<any>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     : T extends DecoratorTypes.HAS_MANY ? HasManyDecoratorConfigInternal<any, any>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line typescript/no-explicit-any
     : T extends DecoratorTypes.CUSTOM ? CustomDecoratorConfigInternal<any, any, CustomMetadataType, any>
     : never;

@@ -11,7 +11,6 @@ export type Zip = JSZip;
 export abstract class JSZipUtilities {
     /**
      * Generates a new JSZip object that is correctly typed.
-     *
      * @returns A new JSZip object.
      */
     static new(): Zip {

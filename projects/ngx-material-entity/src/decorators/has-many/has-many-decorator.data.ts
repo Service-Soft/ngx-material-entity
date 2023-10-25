@@ -1,7 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { BaseEntityType } from '../../classes/entity.model';
+import { BaseEntityType, EntityServiceClassNewable } from '../../classes/entity.model';
 import { TableData } from '../../components/table/table-data';
-import { EntityService } from '../../services/entity.service';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 
 /**
@@ -26,16 +24,14 @@ export interface HasManyDecoratorConfig<
      * This is used to generate the create and read base urls, eg. "customers/{id}/invoices".
      * If you want to override that behavior you can provide a custom createBaseUrl and readBaseUrl function.
      */
-    RelatedEntityServiceClass: new (httpClient: HttpClient) => EntityService<RelatedBaseEntityType>,
+    RelatedEntityServiceClass: EntityServiceClassNewable<RelatedBaseEntityType>,
     /**
      * A function that generates a base url for create requests.
-     *
      * @default `{baseEntityUrl}/{id}/{lastHasManyEntityUrlSegment}`
      */
     createBaseUrl?: (baseEntity: RelatedBaseEntityType, metadata: HasManyDecoratorConfig<EntityType, RelatedBaseEntityType>) => string,
     /**
      * A function that generates a base url for read requests.
-     *
      * @default `{baseEntityUrl}/{id}/{lastHasManyEntityUrlSegment}`
      */
     readBaseUrl?: (baseEntity: RelatedBaseEntityType, metadata: HasManyDecoratorConfig<EntityType, RelatedBaseEntityType>) => string

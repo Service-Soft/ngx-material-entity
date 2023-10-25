@@ -9,7 +9,6 @@ import { CustomDecoratorConfig } from './custom-decorator.data';
 
 /**
  * The default function to use for checking if the value is dirty.
- *
  * @param value - The current value.
  * @param valuePriorChanges - The value before any changes.
  * @returns Whether or not the provided value has been changed.

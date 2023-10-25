@@ -5,13 +5,13 @@ import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { FileData } from '../../../../decorators/file/file-decorator.data';
 import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
-import { placeholder } from '../../../../mocks/placeholder-data.png';
+import { PLACEHOLDER } from '../../../../mocks/placeholder-data.png';
 import { EntityUtilities } from '../../../../utilities/entity.utilities';
 import { FileUtilities } from '../../../../utilities/file.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'file-image-input',
     templateUrl: './file-image-input.component.html',
     styleUrls: ['./file-image-input.component.scss']
@@ -34,7 +34,7 @@ export class FileImageInputComponent<EntityType extends BaseEntityType<EntityTyp
     }
 
     imageIndex: number = 0;
-    placeHolder: string = placeholder;
+    placeHolder: string = PLACEHOLDER;
 
     constructor(private readonly http: HttpClient) {
         super();

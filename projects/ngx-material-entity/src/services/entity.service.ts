@@ -1,4 +1,5 @@
 import { HttpClient } from '@angular/common/http';
+import { EnvironmentInjector } from '@angular/core';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { BaseEntityType } from '../classes/entity.model';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
@@ -29,13 +30,17 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
     abstract readonly baseUrl: string;
 
     /**
-     * The route segment that comes before the id when editing an entity in a separate page.
+     * The default route segment that comes before the id when editing an entity in a separate page, if no extra route has been provided.
      */
     readonly editBaseRoute: string = 'entities';
 
     /**
+     * The complete route that is used to create an entity in a separate page, if no extra route has been provided.
+     */
+    readonly createBaseRoute: string = 'entities/create';
+
+    /**
      * The key which holds the id value.
-     *
      * @default 'id'
      */
     readonly idKey: keyof EntityType = 'id' as keyof EntityType;
@@ -52,27 +57,27 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
      * you might send a lot of unnecessary requests.
      * Therefore the findById method tries to look in the already existing entities first,
      * IF the entities have been requested in the last READ_EXPIRATION_IN_MS milliseconds.
-     *
      * @default 900000 (5 minutes)
      */
     protected readonly READ_EXPIRATION_IN_MS: number = 900000;
 
     /**
      * Gets the entities in an array from the internal entitiesSubject.
-     *
      * @returns The current entities in form of an array.
      */
     get entities(): EntityType[] {
         return this.entitiesSubject.value;
     }
 
+    /**
+     * The last time that the entities have been requested from the api.
+     */
     lastRead?: Date;
 
-    constructor(protected readonly http: HttpClient) {}
+    constructor(protected readonly http: HttpClient, protected readonly injector: EnvironmentInjector) {}
 
     /**
      * Creates a new Entity and pushes it to the entities array.
-     *
      * @param entity - The data of the entity to create.
      * All values that should be omitted will be removed from it inside this method.
      * @param baseUrl - The base url to send the post request to.
@@ -94,7 +99,6 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
     /* istanbul ignore next */
     /**
      * Imports everything from the provided json file.
-     *
      * @param file - The json file to import from.
      * @returns All entities that have been imported.
      */
@@ -113,7 +117,6 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
      * Creates the entity with form data when the entity contains files in contrast to creating it with a normal json body.
      * All file values are stored inside their respective property key and their name.
      * Form data is able to handle setting multiple files to the same key.
-     *
      * @param body - The body Of the request.
      * @param filePropertyKeys - All property keys that are files and need to be added to the form data.
      * @param entity - The entity to create. This is needed in addition to the body because the body doesn't contain any metadata.
@@ -156,7 +159,6 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
 
     /**
      * Creates the entity with a normal json body in contrast to creating it with form data when the entity contains files.
-     *
      * @param body - The body Of the request.
      * @param baseUrl - The base url to send the post request to.
      * This can be used if you want to create an entity belonging to another, like "customers/{id}/invoices".
@@ -178,7 +180,6 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
 
     /**
      * Gets all existing entities and pushes them to the entities array.
-     *
      * @param baseUrl - The base url for the request. Defaults to the baseUrl on the service.
      * @returns A Promise of all received Entities.
      */
@@ -191,7 +192,6 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
 
     /**
      * Tries to find an entity with the given id.
-     *
      * @param id - The id of the entity to find.
      * @returns The found entity.
      */
@@ -207,7 +207,6 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
 
     /**
      * Updates a specific Entity.
-     *
      * @param entity - The updated Entity
      * All values that should be omitted will be removed from it inside this method.
      * @param entityPriorChanges - The current Entity.
@@ -226,14 +225,12 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
 
     /**
      * Builds the update request body from the given entity before and after its changes.
-     *
      * @param entity - The entity with changed values.
      * @param entityPriorChanges - The entity before any changes.
      * @returns A partial of only the changed values.
      */
     protected async entityToUpdateRequestBody(entity: EntityType, entityPriorChanges: EntityType): Promise<Partial<EntityType>> {
-        const body: Partial<EntityType> = await EntityUtilities.getWithoutOmitUpdateValues(entity, entityPriorChanges, this.http);
-        return LodashUtilities.omitBy(body, LodashUtilities.isNil);
+        return await EntityUtilities.getWithoutOmitUpdateValues(entity, entityPriorChanges, this.http, this.injector);
     }
 
     // TODO: Find a way to use blobs with jest
@@ -242,7 +239,6 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
      * Updates the entity with form data when the entity contains files in contrast to creating it with a normal json body.
      * All file values are stored inside their respective property key and their name.
      * Form data is able to handle setting multiple files to the same key.
-     *
      * @param body - The request body. Already contains only properties that have changed.
      * @param filePropertyKeys - The keys of all properties which are files and need to separately be appended to the form data.
      * @param entity - The original entity. Is needed to get the metadata of all the files.
@@ -255,7 +251,7 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
         id: EntityType[keyof EntityType]
     ): Promise<void> {
         const formData: FormData = new FormData();
-        formData.append('body', JSON.stringify(body));
+        formData.append('body', JSON.stringify(LodashUtilities.omit(body, filePropertyKeys)));
         for (const key of filePropertyKeys) {
             if (EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT).multiple) {
                 const fileDataValues: FileData[] = body[key] as FileData[];
@@ -287,16 +283,12 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
 
     /**
      * Updates the entity with a normal json body in contrast to updating it with form data when the entity contains files.
-     *
      * @param body - The body of the Request. Has already removed all unnecessary values.
      * @param id - The id of the entity to update.
      */
     protected async updateWithJson(body: Partial<EntityType>, id: EntityType[keyof EntityType]): Promise<void> {
         const updatedEntity: EntityType | undefined = await firstValueFrom(
-            this.http.patch<EntityType | undefined>(
-                `${this.baseUrl}/${id}`,
-                LodashUtilities.omitBy(body, LodashUtilities.isNil)
-            )
+            this.http.patch<EntityType | undefined>(`${this.baseUrl}/${id}`, body)
         );
         if (!updatedEntity) {
             // eslint-disable-next-line no-console
@@ -315,7 +307,6 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
 
     /**
      * Deletes a specific Entity.
-     *
      * @param entity - The entity to delete.
      */
     async delete(entity: EntityType): Promise<void> {

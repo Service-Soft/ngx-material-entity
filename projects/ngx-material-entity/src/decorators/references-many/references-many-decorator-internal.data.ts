@@ -47,7 +47,6 @@ export class ReferencesManyDecoratorConfigInternal<EntityType extends BaseEntity
 
 /**
  * The default function to use when trying to get the referenced entity for the given id.
- *
  * @param entityId - The id of the referenced entity.
  * @param allReferencedEntities - All referenced entities.
  * @returns The entity that has the given id.

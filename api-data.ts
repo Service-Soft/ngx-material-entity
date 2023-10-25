@@ -7,6 +7,7 @@ function getDatesBetween(
     endDate: Date,
     filter?: DateFilterFn<Date>
 ): Date[] {
+    // eslint-disable-next-line constCase/uppercase
     const DAY_IN_MS: number = 1000 * 60 * 60 * 24;
     const res: Date[] = [];
     while (
@@ -52,10 +53,10 @@ const testEntityData: TestEntityWithoutCustomPropertiesInterface = {
         rowValue2: 'rowValue2'
     },
     stringChipsArrayValue: ['01234', '56789'],
-    // eslint-disable-next-line @cspell/spellchecker
+    // eslint-disable-next-line cspell/spellchecker
     stringChipsAutocompleteArrayValue: ['ABCDE', 'FGHIJ'],
     stringChipsArrayValueWithConfig: ['01234', '56789'],
-    // eslint-disable-next-line @cspell/spellchecker
+    // eslint-disable-next-line cspell/spellchecker
     stringChipsAutocompleteArrayValueWithConfig: ['ABCDE', 'FGHIJ'],
     orderValue1: '1',
     orderValue2: '2',

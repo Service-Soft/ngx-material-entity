@@ -1,7 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { SelectionModel } from '@angular/cdk/collections';
 import { HttpClient } from '@angular/common/http';
-import { Component, EnvironmentInjector, OnInit } from '@angular/core';
+import { Component, EnvironmentInjector, OnInit, runInInjectionContext } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { BaseEntityType } from '../../../classes/entity.model';
@@ -19,6 +19,7 @@ type ArrayTableType = DecoratorTypes.ARRAY | DecoratorTypes.ARRAY_DATE
 /**
  * The base component needed for all arrays that are displayed as a table.
  */
+// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     selector: 'ngx-mat-entity-array-table',
     template: ''
@@ -54,15 +55,12 @@ export abstract class ArrayTableComponent<ValueType, EntityType extends BaseEnti
     /**
      * Gets the value to display in the column.
      * Runs in environment context to enable injection.
-     *
      * @param entity - The entity to get the value from.
      * @param displayColumn - The display column to get the value from.
      * @returns The value of the display column.
      */
     getDisplayColumnValue(entity: ValueType, displayColumn: DisplayColumn<ValueType>): unknown {
-        return this.injector.runInContext(() => {
-            return displayColumn.value(entity);
-        });
+        return runInInjectionContext(this.injector, () => displayColumn.value(entity));
     }
 
     /**

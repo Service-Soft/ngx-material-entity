@@ -10,7 +10,6 @@ const CSV_SEPARATOR: string = ';';
 
 /**
  * A multi select action that imports the data from a json file.
- *
  * @param EntityServiceClass - The entity class that handles importing the file.
  */
 export function importFromJsonMultiAction<EntityType extends BaseEntityType<EntityType>>(
@@ -33,7 +32,6 @@ export function importFromJsonMultiAction<EntityType extends BaseEntityType<Enti
 
 /**
  * A multi select action that exports the data as a json file.
- *
  * @param selectedEntities - The selected entities to export.
  */
 export function exportAsJsonMultiAction<EntityType extends BaseEntityType<EntityType>>(selectedEntities: EntityType[]): void {
@@ -44,7 +42,6 @@ export function exportAsJsonMultiAction<EntityType extends BaseEntityType<Entity
 /**
  * A multi select action that exports the data as a csv file.
  * Object values get stringified.
- *
  * @param selectedEntities - The selected entities to export.
  */
 export function exportAsCsvMultiAction<EntityType extends BaseEntityType<EntityType>>(selectedEntities: EntityType[]): void {
@@ -55,7 +52,6 @@ export function exportAsCsvMultiAction<EntityType extends BaseEntityType<EntityT
 /**
  * A multi select action that exports the data as a xml file.
  * Object values get stringified.
- *
  * @param selectedEntities - The selected entities to export.
  */
 export function exportAsXmlMultiAction<EntityType extends BaseEntityType<EntityType>>(selectedEntities: EntityType[]): void {

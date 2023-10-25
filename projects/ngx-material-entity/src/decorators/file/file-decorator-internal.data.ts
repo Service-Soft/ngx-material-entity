@@ -150,7 +150,6 @@ export class ImageFileDecoratorConfigInternal extends PropertyDecoratorConfigInt
 /**
  * Gets the default dialog data for the error dialog to display
  * when the user tries to add a file with a wrong type.
- *
  * @param data - The File Decorator data.
  * @returns The dialog data with set default values.
  */
@@ -170,7 +169,6 @@ function getDefaultMimeTypeErrorDialogData(data: DefaultFileDecoratorConfig | Im
 /**
  * Gets the default dialog data for the error dialog to display
  * when the user tries to add a single file that is bigger than the allowed maxSize.
- *
  * @param data - The File Decorator data.
  * @returns The dialog data with set default values.
  */
@@ -190,7 +188,6 @@ function getDefaultMaxSizeErrorDialogData(data: DefaultFileDecoratorConfig | Ima
 /**
  * Gets the default dialog data for the error dialog to display
  * when the user tries to add a single file that is bigger than the allowed maxSize.
- *
  * @param data - The File Decorator data.
  * @returns The dialog data with set default values.
  */

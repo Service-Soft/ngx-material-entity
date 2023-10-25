@@ -7,7 +7,6 @@ import { DateRangeDateDecoratorConfig, DateTimeDateDecoratorConfig, DefaultDateD
 
 /**
  * Decorator for setting and getting date property metadata.
- *
  * @param metadata - The metadata of the date property.
  * @returns The method that defines the metadata.
  */
@@ -27,8 +26,7 @@ export function date(
     else {
         return baseProperty(
             new DateRangeDateDecoratorConfigInternal(metadata, needsUpdateGlobalDefaults),
-            DecoratorTypes.DATE_RANGE,
-            [EntityUtilities.DATE_RANGE_END_KEY, EntityUtilities.DATE_RANGE_KEY, EntityUtilities.DATE_RANGE_START_KEY]
+            DecoratorTypes.DATE_RANGE
         );
     }
 }

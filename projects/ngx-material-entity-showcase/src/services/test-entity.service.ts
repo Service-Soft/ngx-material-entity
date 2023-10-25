@@ -1,20 +1,18 @@
-/* eslint-disable jsdoc/require-jsdoc */
+
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { EnvironmentInjector, Injectable } from '@angular/core';
 import { EntityService } from 'ngx-material-entity';
 import { TestEntity } from '../../../ngx-material-entity/src/mocks/test-entity.mock';
 import { environment } from '../environments/environment';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class TestEntityService extends EntityService<TestEntity> {
     override readonly baseUrl: string = `${environment.apiUrl}/testEntities`;
 
     override readonly editBaseRoute: string = 'test-entities';
 
-    constructor(http: HttpClient) {
-        super(http);
+    constructor(http: HttpClient, injector: EnvironmentInjector) {
+        super(http, injector);
     }
 
     protected override async createWithFormData(body: Omit<TestEntity, keyof TestEntity>): Promise<TestEntity> {

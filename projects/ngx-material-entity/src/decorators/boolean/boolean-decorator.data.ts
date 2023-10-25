@@ -18,13 +18,11 @@ export interface DropdownBooleanDecoratorConfig extends BooleanDecoratorConfig {
     displayStyle: 'dropdown',
     /**
      * The name of the true value if displayStyle dropdown is used.
-     *
      * @default 'Yes'
      */
     dropdownTrue?: string,
     /**
      * The name of the false value if displayStyle dropdown is used.
-     *
      * @default 'No'
      */
     dropdownFalse?: string

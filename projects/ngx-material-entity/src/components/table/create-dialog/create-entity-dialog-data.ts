@@ -1,12 +1,10 @@
-import { HttpClient } from '@angular/common/http';
-import { BaseEntityType } from '../../../classes/entity.model';
-import { EntityService } from '../../../services/entity.service';
-import { CreateDialogData } from '../table-data';
+import { BaseEntityType, EntityServiceClassNewable } from '../../../classes/entity.model';
+import { CreateData } from '../table-data';
 
 /**
- * The Definition of the Create Entity Dialog Data.
+ * The Definition of the Create Entity Data.
  */
-export interface CreateEntityDialogData<EntityType extends BaseEntityType<EntityType>> {
+export interface CreateEntityData<EntityType extends BaseEntityType<EntityType>> {
     /**
      * An empty entity that is used as the data model.
      */
@@ -14,9 +12,9 @@ export interface CreateEntityDialogData<EntityType extends BaseEntityType<Entity
     /**
      * The Entity Service class used for the create request.
      */
-    EntityServiceClass: new (httpClient: HttpClient) => EntityService<EntityType>,
+    EntityServiceClass: EntityServiceClassNewable<EntityType>,
     /**
-     * The info of the generic create-dialog.
+     * The info of the generic create-dialog or page.
      */
-    createDialogData?: CreateDialogData
+    createData?: CreateData
 }
