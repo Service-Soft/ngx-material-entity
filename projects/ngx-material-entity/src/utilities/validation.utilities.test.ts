@@ -1,4 +1,5 @@
 import { expect } from '@jest/globals';
+import { PropertyDecoratorConfigInternal } from '../decorators/base/property-decorator-internal.data';
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../encapsulation/reflect.utilities';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder, getDatesBetween } from '../mocks/test-entity.interface';
@@ -98,6 +99,17 @@ describe('isEntityValid', () => {
         expect(ValidationUtilities.isEntityValid(testEntity, 'create')).toBe(false);
         testEntity.regexAutocompleteStringValue = '54321';
         expect(ValidationUtilities.isEntityValid(testEntity, 'create')).toBe(true);
+    });
+    test('STRING_AUTOCOMPLETE restrictToValues', () => {
+        const currentMetadata: PropertyDecoratorConfigInternal<unknown> = ReflectUtilities.getMetadata('metadata', testEntity, 'regexAutocompleteStringValue') as PropertyDecoratorConfigInternal<unknown>;
+        ReflectUtilities.defineMetadata('metadata', { ...currentMetadata, restrictToOptions: true }, testEntity, 'regexAutocompleteStringValue');
+
+        testEntity.regexAutocompleteStringValue = '54321';
+        expect(ValidationUtilities.isEntityValid(testEntity, 'create')).toBe(false);
+        testEntity.regexAutocompleteStringValue = '1234';
+        expect(ValidationUtilities.isEntityValid(testEntity, 'create')).toBe(true);
+
+        ReflectUtilities.defineMetadata('metadata', { ...currentMetadata, restrictToOptions: false }, testEntity, 'regexAutocompleteStringValue');
     });
 
     // STRING_TEXTBOX
