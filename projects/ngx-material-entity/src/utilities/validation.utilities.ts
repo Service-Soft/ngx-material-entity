@@ -11,7 +11,7 @@ import { DefaultFileDecoratorConfigInternal } from '../decorators/file/file-deco
 import { FileData } from '../decorators/file/file-decorator.data';
 import { DefaultNumberDecoratorConfigInternal } from '../decorators/number/number-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../decorators/object/object-decorator-internal.data';
-import { DefaultStringDecoratorConfigInternal, PasswordStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../decorators/string/string-decorator-internal.data';
+import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, PasswordStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../decorators/string/string-decorator-internal.data';
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../encapsulation/reflect.utilities';
 import { DateUtilities } from './date.utilities';
@@ -131,10 +131,14 @@ export abstract class ValidationUtilities {
             case DecoratorTypes.STRING_DROPDOWN:
                 break;
             case DecoratorTypes.STRING:
-            case DecoratorTypes.STRING_AUTOCOMPLETE:
                 const entityString: string = entity[key] as string;
                 const stringMetadata: DefaultStringDecoratorConfigInternal = metadata as DefaultStringDecoratorConfigInternal;
                 return this.getStringValidationError(entityString, stringMetadata);
+            case DecoratorTypes.STRING_AUTOCOMPLETE:
+                const entityAutocompleteString: string = entity[key] as string;
+                // eslint-disable-next-line max-len
+                const stringAutocompleteMetadata: AutocompleteStringDecoratorConfigInternal = metadata as AutocompleteStringDecoratorConfigInternal;
+                return this.getAutocompleteStringValidationError(entityAutocompleteString, stringAutocompleteMetadata);
             case DecoratorTypes.STRING_TEXTBOX:
                 const entityTextbox: string = entity[key] as string;
                 const textboxMetadata: TextboxStringDecoratorConfigInternal = metadata as TextboxStringDecoratorConfigInternal;
@@ -255,6 +259,37 @@ export abstract class ValidationUtilities {
             return {
                 property: metadata.displayName,
                 message: 'invalid'
+            };
+        }
+        return undefined;
+    }
+
+    private static getAutocompleteStringValidationError(
+        value: string,
+        metadata: AutocompleteStringDecoratorConfigInternal
+    ): ValidationError | undefined {
+        if (metadata.maxLength && value.length > metadata.maxLength) {
+            return {
+                property: metadata.displayName,
+                message: `needs to be smaller than ${metadata.maxLength} characters`
+            };
+        }
+        if (metadata.minLength && value.length < metadata.minLength) {
+            return {
+                property: metadata.displayName,
+                message: `needs to be bigger than ${metadata.minLength} characters`
+            };
+        }
+        if (metadata.regex && !value.match(metadata.regex)) {
+            return {
+                property: metadata.displayName,
+                message: 'invalid'
+            };
+        }
+        if (metadata.restrictToOptions == true && !metadata.autocompleteValues.includes(value)) {
+            return {
+                property: metadata.displayName,
+                message: 'Needs to be one of the provided values'
             };
         }
         return undefined;
