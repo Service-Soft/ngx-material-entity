@@ -7,8 +7,16 @@
         [disabled]="isReadOnly"
         [(ngModel)]="propertyValue"
         (selectionChange)="emitChange()"
+        (opened)="selectSearchInput.focus()"
     >
-        <mat-option *ngFor="let value of dropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
+        <mat-form-field class="select-search-input">
+            <!-- eslint-disable-next-line angular/no-any -->
+            <input #selectSearchInput matInput (keyup)="filterDropdownValues($any($event.target).value)">
+            <i matSuffix class="fas fa-search"></i>
+        </mat-form-field>
+        <mat-option *ngIf="!metadata.required(entity)">-</mat-option>
+        <mat-option *ngIf="shouldDisplayCurrentValue" [value]="currentDropdownValue?.value">{{currentDropdownValue?.displayName}}</mat-option>
+        <mat-option *ngFor="let value of filteredDropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
     </mat-select>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>

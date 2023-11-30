@@ -18,11 +18,11 @@ export class IncludedInValidatorDirective implements Validator {
     includedIn!: unknown[] | undefined;
 
     // eslint-disable-next-line jsdoc/require-jsdoc
-    validate(control: AbstractControl): ValidationErrors | null {
-        if (!this.includedIn?.length) {
+    validate(control: AbstractControl<unknown>): ValidationErrors | null {
+        if (!this.includedIn?.length || !(Boolean(control.value))) {
             return null;
         }
-        // eslint-disable-next-line typescript/no-unsafe-assignment
+
         return this.includedIn.includes(control.value) ? null : { includedIn: { value: control.value, validValues: this.includedIn } };
     }
 }

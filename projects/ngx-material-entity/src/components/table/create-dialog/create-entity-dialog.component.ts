@@ -91,14 +91,14 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
         this.dialogRef.disableClose = true;
         this.entityTabs = EntityUtilities.getEntityTabs(this.data.entity, this.injector, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
-        setTimeout(() => this.checkIsEntityValid(), 1);
+        setTimeout(() => void this.checkIsEntityValid(), 1);
     }
 
     /**
      * Checks if the entity is valid.
      */
-    checkIsEntityValid(): void {
-        this.validationErrors = ValidationUtilities.getEntityValidationErrors(this.data.entity, 'create');
+    async checkIsEntityValid(): Promise<void> {
+        this.validationErrors = await ValidationUtilities.getEntityValidationErrors(this.data.entity, this.injector, 'create');
         this.tooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.validationErrors));
         this.isEntityValid = this.validationErrors.length === 0;
     }

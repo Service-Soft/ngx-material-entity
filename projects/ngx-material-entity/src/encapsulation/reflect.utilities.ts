@@ -22,7 +22,11 @@ export abstract class ReflectUtilities {
      * @returns The keys of the given object.
      */
     static ownKeys<T extends object>(target: T): (keyof T)[] {
-        return Reflect.ownKeys(target) as (keyof T)[];
+        const res: (keyof T)[] = [];
+        for (const key in target) {
+            res.push(key);
+        }
+        return res;
     }
 
     /**

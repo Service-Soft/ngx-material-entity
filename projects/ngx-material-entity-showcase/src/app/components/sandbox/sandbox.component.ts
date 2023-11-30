@@ -267,7 +267,13 @@ export class SandboxComponent {
                 }
             ],
             EntityClass: Person,
-            EntityServiceClass: PersonService
+            EntityServiceClass: PersonService,
+            dynamicRowStyleClasses: (entity: Person) => {
+                if (entity.firstName === 'Jane') {
+                    return ['red'];
+                }
+                return [];
+            }
             // allowUpdate: () => false
         },
         createData: {

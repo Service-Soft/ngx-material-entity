@@ -23,11 +23,13 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 export class ReferencesManyInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.REFERENCES_MANY, string[]> implements OnInit {
 
-    allReferencedEntities: EntityType[] = [];
+    private allReferencedEntities: EntityType[] = [];
 
-    allDropdownValues: DropdownValue<string>[] = [];
+    private allDropdownValues: DropdownValue<string>[] = [];
 
     dropdownValues: DropdownValue<string>[] = [];
+
+    filteredDropdownValues: DropdownValue<string>[] = [];
 
     input: string = '';
 
@@ -38,6 +40,15 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
     selection: SelectionModel<string> = new SelectionModel<string>(true, []);
 
     SelectionUtilities: typeof SelectionUtilities = SelectionUtilities;
+
+    get currentDropdownValue(): DropdownValue<string> | undefined {
+        return LodashUtilities.cloneDeep(this.dropdownValues ?? [])
+            .find(v => v.value === this.input);
+    }
+
+    get shouldDisplayCurrentValue(): boolean {
+        return !!this.currentDropdownValue && !(!!this.filteredDropdownValues.find(v => v.value === this.currentDropdownValue?.value));
+    }
 
     constructor(
         private readonly injector: EnvironmentInjector,
@@ -73,6 +84,18 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
                 this.dropdownValues.splice(this.dropdownValues.indexOf(foundValue), 1);
             }
         }
+        this.filteredDropdownValues = LodashUtilities.cloneDeep(this.dropdownValues);
+    }
+
+    /**
+     * Filters the dropdown values.
+     * @param searchInput - The search input to filter for.
+     */
+    filterDropdownValues(searchInput: string): void {
+        const filter: string = searchInput.toLowerCase();
+        this.filteredDropdownValues = LodashUtilities.cloneDeep(this.dropdownValues).filter(option => {
+            return option.displayName.toLowerCase().includes(filter) || option.value.toLowerCase().includes(filter);
+        });
     }
 
     /**
@@ -94,6 +117,7 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
         this.propertyValue.push(LodashUtilities.cloneDeep(this.input));
         const foundDropdownValue: DropdownValue<string> = this.dropdownValues.find(v => v.value === this.input) as DropdownValue<string>;
         this.dropdownValues.splice(this.dropdownValues.indexOf(foundDropdownValue), 1);
+        this.filteredDropdownValues = LodashUtilities.cloneDeep(this.dropdownValues);
         this.referencedEntitiesDataSource.data = this.propertyValue;
         this.input = '';
         this.emitChange();
@@ -105,6 +129,7 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
             this.propertyValue = undefined;
         }
         this.dropdownValues = [];
+        this.filteredDropdownValues = LodashUtilities.cloneDeep(this.dropdownValues);
         this.referencedEntitiesDataSource.data = this.propertyValue ?? [];
         this.input = '';
         this.emitChange();
@@ -118,11 +143,13 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
                 this.dropdownValues.push(foundDropdownValue);
             }
         });
+        this.filteredDropdownValues = LodashUtilities.cloneDeep(this.dropdownValues);
         if (!this.propertyValue?.length) {
             this.propertyValue = undefined;
         }
         this.referencedEntitiesDataSource.data = this.propertyValue ?? [];
         this.selection.clear();
+        this.input = '';
         this.emitChange();
     }
 }

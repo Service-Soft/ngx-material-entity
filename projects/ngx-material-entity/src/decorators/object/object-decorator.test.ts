@@ -72,15 +72,15 @@ const testEntity: TestEntity = new TestEntity(testEntityData);
 
 test('should have object Metadata', () => {
     // eslint-disable-next-line typescript/no-explicit-any
-    const metadata: DefaultObjectDecoratorConfigInternal<any> = EntityUtilities.getPropertyMetadata(testEntity, 'address', DecoratorTypes.OBJECT);
+    const metadata: DefaultObjectDecoratorConfigInternal<any> | undefined = EntityUtilities.getPropertyMetadata(testEntity, 'address', DecoratorTypes.OBJECT);
     expect(metadata).toBeDefined();
-    expect(metadata.EntityClass).toBe(Address);
+    expect(metadata?.EntityClass).toBe(Address);
 });
 test('should have metadata on the object', () => {
-    const streetMetadata: DefaultStringDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity.address, 'street', DecoratorTypes.STRING);
-    const numberMetadata: DefaultStringDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity.address, 'number', DecoratorTypes.STRING);
-    const postcodeMetadata: DefaultStringDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity.address, 'postcode', DecoratorTypes.STRING);
-    const cityMetadata: DefaultStringDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity.address, 'city', DecoratorTypes.STRING);
+    const streetMetadata: DefaultStringDecoratorConfigInternal | undefined = EntityUtilities.getPropertyMetadata(testEntity.address, 'street', DecoratorTypes.STRING);
+    const numberMetadata: DefaultStringDecoratorConfigInternal | undefined = EntityUtilities.getPropertyMetadata(testEntity.address, 'number', DecoratorTypes.STRING);
+    const postcodeMetadata: DefaultStringDecoratorConfigInternal | undefined = EntityUtilities.getPropertyMetadata(testEntity.address, 'postcode', DecoratorTypes.STRING);
+    const cityMetadata: DefaultStringDecoratorConfigInternal | undefined = EntityUtilities.getPropertyMetadata(testEntity.address, 'city', DecoratorTypes.STRING);
     expect(streetMetadata).toBeDefined();
     expect(numberMetadata).toBeDefined();
     expect(postcodeMetadata).toBeDefined();

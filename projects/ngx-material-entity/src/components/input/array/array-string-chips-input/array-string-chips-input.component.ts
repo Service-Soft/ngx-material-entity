@@ -1,5 +1,6 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
+import { NgModel } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
@@ -27,10 +28,17 @@ export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<En
      * it contains values, we can set it to undefined when the last element is removed
      * (removeStringChipArrayValue). That way we can use the "required" validator.
      * @param event - The event that fires when a new chip is completed.
+     * @param invalid - Whether or not the input is invalid.
      */
-    addStringChipArrayValue(event: MatChipInputEvent): void {
-        const value: string = (event.value || '').trim();
-        this.validateAndSetPropertyValue(value);
+    addStringChipArrayValue(event: MatChipInputEvent, invalid: boolean): void {
+        if (invalid || !event.value) {
+            return;
+        }
+
+        const value: string = event.value.trim();
+        this.propertyValue = this.propertyValue ?? [];
+        this.propertyValue.push(value);
+
         event.chipInput?.clear();
         this.chipsInput = '';
 
@@ -53,19 +61,9 @@ export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<En
         this.emitChange();
     }
 
-    protected validateAndSetPropertyValue(value: string): void {
-        if (value) {
-            if (this.metadata.minLength && value.length < this.metadata.minLength) {
-                return;
-            }
-            if (this.metadata.maxLength && value.length > this.metadata.maxLength) {
-                return;
-            }
-            if (this.metadata.regex && !value.match(this.metadata.regex)) {
-                return;
-            }
-            this.propertyValue = this.propertyValue ?? [];
-            this.propertyValue.push(value);
+    setValidationErrors(model: NgModel, chipsModel: NgModel): void {
+        if (chipsModel.errors) {
+            model.control.setErrors(chipsModel.errors);
         }
     }
 }

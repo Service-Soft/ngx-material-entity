@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Component, OnInit } from '@angular/core';
+import { Component, EnvironmentInjector, OnInit, runInInjectionContext } from '@angular/core';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
@@ -14,13 +14,19 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 export class StringAutocompleteInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.STRING_AUTOCOMPLETE, string> implements OnInit {
 
-    autocompleteStrings!: string[];
+    autocompleteStrings: string[] = [];
     filteredAutocompleteStrings!: string[];
 
-    override ngOnInit(): void {
+    constructor(private readonly injector: EnvironmentInjector) {
+        super();
+    }
+
+    override async ngOnInit(): Promise<void> {
         super.ngOnInit();
-        this.autocompleteStrings = this.metadata.autocompleteValues;
-        this.filteredAutocompleteStrings = LodashUtilities.cloneDeep(this.autocompleteStrings);
+        await runInInjectionContext(this.injector, async () => {
+            this.autocompleteStrings = await this.metadata.autocompleteValues(this.entity);
+            this.filteredAutocompleteStrings = LodashUtilities.cloneDeep(this.autocompleteStrings);
+        });
     }
 
     /**

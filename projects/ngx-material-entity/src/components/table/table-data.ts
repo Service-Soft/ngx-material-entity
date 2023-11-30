@@ -28,6 +28,11 @@ export interface DisplayColumn<EntityType extends BaseEntityType<EntityType>> {
 }
 
 /**
+ * Dynamic css class that should be applied based on a condition.
+ */
+export type DynamicStyleClasses<EntityType extends BaseEntityType<EntityType>> = (entity: EntityType) => string[];
+
+/**
  * A table action that will run regardless if something has been selected in the table.
  */
 export interface BaseTableAction {
@@ -193,7 +198,13 @@ export interface BaseData<EntityType extends BaseEntityType<EntityType>> {
     /**
      * Data to customize the json import action.
      */
-    importActionData?: Omit<BaseTableAction, 'action' | 'requireConfirmDialog' | 'type'>
+    importActionData?: Omit<BaseTableAction, 'action' | 'requireConfirmDialog' | 'type'>,
+    /**
+     * Configuration for css classes that should be applied to table rows based on a condition.
+     * This could be used to eg. Set the background color to green when an item has the status completed etc.
+     * INFO: You need to use ng-deep or apply the styling in the styles.scss.
+     */
+    dynamicRowStyleClasses?: DynamicStyleClasses<EntityType>
 }
 
 /**

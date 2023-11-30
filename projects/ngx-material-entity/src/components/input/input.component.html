@@ -318,10 +318,17 @@
                 [disabled]="internalIsReadOnly"
                 [required]="metadata.required(entity)"
                 [(ngModel)]="internalEntity[internalPropertyKey]"
-                (ngModelChange)="setReferencesOneObject()"
+                (selectionChange)="setReferencesOneObject()"
+                (opened)="selectSearchInput.focus()"
             >
+                <mat-form-field class="select-search-input">
+                    <!-- eslint-disable-next-line angular/no-any -->
+                    <input #selectSearchInput matInput (keyup)="filterReferencesOneValues($any($event.target).value)">
+                    <i matSuffix class="fas fa-search"></i>
+                </mat-form-field>
                 <mat-option *ngIf="!metadata.required(entity)">-</mat-option>
-                <mat-option *ngFor="let value of referencesOneDropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
+                <mat-option *ngIf="shouldDisplayCurrentReferencesOneDropdownValue" [value]="currentReferencesOneDropdownValue?.value">{{currentReferencesOneDropdownValue?.displayName}}</mat-option>
+                <mat-option *ngFor="let value of filteredReferencesOneDropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
             </mat-select>
             <mat-error>{{internalGetValidationErrorMessage(inputModel)}}</mat-error>
         </mat-form-field>

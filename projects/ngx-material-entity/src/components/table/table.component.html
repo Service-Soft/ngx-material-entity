@@ -54,7 +54,7 @@
                     (change)="$event ? SelectionUtilities.masterToggle(selection, dataSource) : null">
                 </mat-checkbox>
             </mat-header-cell>
-            <mat-cell *matCellDef="let entity" class="entity">
+            <mat-cell *matCellDef="let entity" class="entity" [dynamicStyleClasses]="data.baseData.dynamicRowStyleClasses" [entity]="entity">
                 <mat-checkbox [checked]="selection.isSelected(entity)"
                     (click)="$event.stopPropagation()"
                     (change)="$event ? selection.toggle(entity) : null">
@@ -68,6 +68,7 @@
             </mat-header-cell>
             <mat-cell *matCellDef="let entity" class="entity"
                 [class.enabled]="!dCol.disableClick && (allowUpdate(entity) || allowRead(entity))"
+                [dynamicStyleClasses]="data.baseData.dynamicRowStyleClasses" [entity]="entity"
                 (click)="editEntity(entity, dCol)"
             >
                 <ng-container *ngIf="dCol.Component">

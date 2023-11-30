@@ -98,14 +98,13 @@ const testEntityData: TestEntity = {
 const testEntity: TestEntity = new TestEntity(testEntityData);
 
 test('should have references many Metadata', () => {
-    // eslint-disable-next-line typescript/no-unsafe-assignment
-    let metadata: ReferencesManyDecoratorConfigInternal<Address> = EntityUtilities.getPropertyMetadata(
+    let metadata: ReferencesManyDecoratorConfigInternal<Address> | undefined = EntityUtilities.getPropertyMetadata(
         testEntity,
         'addressIds',
         DecoratorTypes.REFERENCES_MANY
     );
-    metadata = new ReferencesManyDecoratorConfigInternal(metadata, defaultGlobalDefaults);
     expect(metadata).toBeDefined();
+    metadata = new ReferencesManyDecoratorConfigInternal(metadata as ReferencesManyDecoratorConfigInternal<Address>, defaultGlobalDefaults);
     expect(metadata.getReferencedEntities).toEqual(getReferencedEntities);
     expect(metadata.getDropdownValues).toEqual(getDropdownValues);
     expect(metadata.addAll).toEqual(false);

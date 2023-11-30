@@ -129,6 +129,6 @@ export class ShowcaseInputsComponent {
     private setKeys(types: DecoratorTypes[]): void {
         this.keys = EntityUtilities
             .keysOf(this.testEntity, this.injector)
-            .filter(k => types.includes(EntityUtilities.getPropertyType(this.testEntity, k)));
+            .filter(k => types.includes(EntityUtilities.getPropertyType(this.testEntity, k) as DecoratorTypes));
     }
 }
