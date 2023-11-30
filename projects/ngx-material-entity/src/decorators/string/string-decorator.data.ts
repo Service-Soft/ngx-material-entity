@@ -9,6 +9,14 @@ export type StringDropdownValues =
     // eslint-disable-next-line typescript/no-explicit-any
     | ((entity: any) => Promise<DropdownValue<string | undefined>[]>)
 
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type StringAutocompleteValues =
+    string[]
+    // eslint-disable-next-line typescript/no-explicit-any
+    | ((entity: any) => string[])
+    // eslint-disable-next-line typescript/no-explicit-any
+    | ((entity: any) => Promise<string[]>)
+
 /**
  * Definition for the @string metadata.
  */
@@ -77,7 +85,7 @@ export interface AutocompleteStringDecoratorConfig extends StringDecoratorConfig
     /**
      * The autocomplete values.
      */
-    autocompleteValues: string[],
+    autocompleteValues: StringAutocompleteValues,
     /**
      * The minimum required length of the string.
      */
@@ -119,6 +127,11 @@ export interface PasswordStringDecoratorConfig extends StringDecoratorConfig {
      * @default true
      */
     needsConfirmation?: boolean,
+    /**
+     * Whether or not the password strength should be displayed.
+     * @default true
+     */
+    displayPasswordStrength?: boolean,
     /**
      * The display name of the confirmation password input.
      * @default 'Confirm Password'

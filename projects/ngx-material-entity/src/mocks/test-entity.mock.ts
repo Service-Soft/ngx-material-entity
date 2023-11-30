@@ -213,7 +213,8 @@ const testEntityData: TestEntity = {
         }
     ],
     randomValue: '42',
-    referencesManyIds: ['1']
+    referencesManyIds: ['1'],
+    notDecoratedValue: '42'
 };
 
 /**

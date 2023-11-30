@@ -1,6 +1,7 @@
 import { Time } from '@angular/common';
+import { EnvironmentInjector } from '@angular/core';
 import { BaseEntityType } from '../classes/entity.model';
-import { EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
+import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../decorators/base/property-decorator-internal.data';
 import { ToggleBooleanDecoratorConfigInternal } from '../decorators/boolean/boolean-decorator-internal.data';
@@ -41,26 +42,33 @@ export abstract class ValidationUtilities {
      * Checks if the values on an entity are valid.
      * Also checks all the validators given by the metadata ("required", "maxLength" etc.).
      * @param entity - The entity to validate.
+     * @param injector - An angular environment injector.
      * @param omit - Whether to check for creating or editing validity.
      * @returns Whether or not the entity is valid.
      */
-    static isEntityValid<EntityType extends BaseEntityType<EntityType>>(entity: EntityType, omit?: 'create' | 'update'): boolean {
-        return this.getEntityValidationErrors(entity, omit).length === 0;
+    static async isEntityValid<EntityType extends BaseEntityType<EntityType>>(
+        entity: EntityType,
+        injector: EnvironmentInjector,
+        omit?: 'create' | 'update'
+    ): Promise<boolean> {
+        return (await this.getEntityValidationErrors(entity, injector, omit)).length === 0;
     }
 
     /**
      * Gets all validation errors on the given entity.
      * @param entity - The entity to validate.
+     * @param injector - An angular environment injector.
      * @param omit - What keys not to check. An empty value means no keys are omitted.
      * @returns An array of validation errors on the provided entity.
      */
-    static getEntityValidationErrors<EntityType extends BaseEntityType<EntityType>>(
+    static async getEntityValidationErrors<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
+        injector: EnvironmentInjector,
         omit?: 'create' | 'update'
-    ): ValidationError[] {
+    ): Promise<ValidationError[]> {
         const res: ValidationError[] = [];
-        for (const key in entity) {
-            const err: ValidationError | undefined = this.getPropertyValidationError(entity, key, omit);
+        for (const key of EntityUtilities.keysOf(entity, injector)) {
+            const err: ValidationError | undefined = await this.getPropertyValidationError(entity, key, omit);
             if (err) {
                 res.push(err);
             }
@@ -93,13 +101,21 @@ export abstract class ValidationUtilities {
      * @returns A validation error when the property is not valid, undefined otherwise.
      * @throws When the type of the property is not known.
      */
-    static getPropertyValidationError<EntityType extends BaseEntityType<EntityType>>(
+    static async getPropertyValidationError<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         key: keyof EntityType,
         omit?: 'create' | 'update'
-    ): ValidationError | undefined {
-        const type: DecoratorTypes = EntityUtilities.getPropertyType(entity, key);
-        const metadata: PropertyDecoratorConfigInternal<unknown> = EntityUtilities.getPropertyMetadata(entity, key, type);
+    ): Promise<ValidationError | undefined> {
+        const type: DecoratorTypes | undefined = EntityUtilities.getPropertyType(entity, key);
+        if (type == null) {
+            return undefined;
+        }
+        const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = EntityUtilities.getPropertyMetadata(entity, key, type);
+
+        // istanbul ignore next
+        if (metadata == null) {
+            return undefined;
+        }
 
         if (metadata.omitForCreate && omit === 'create') {
             return undefined;
@@ -138,7 +154,7 @@ export abstract class ValidationUtilities {
                 const entityAutocompleteString: string = entity[key] as string;
                 // eslint-disable-next-line max-len
                 const stringAutocompleteMetadata: AutocompleteStringDecoratorConfigInternal = metadata as AutocompleteStringDecoratorConfigInternal;
-                return this.getAutocompleteStringValidationError(entityAutocompleteString, stringAutocompleteMetadata);
+                return this.getAutocompleteStringValidationError(entity, entityAutocompleteString, stringAutocompleteMetadata);
             case DecoratorTypes.STRING_TEXTBOX:
                 const entityTextbox: string = entity[key] as string;
                 const textboxMetadata: TextboxStringDecoratorConfigInternal = metadata as TextboxStringDecoratorConfigInternal;
@@ -164,7 +180,7 @@ export abstract class ValidationUtilities {
                         !(metadata as DefaultObjectDecoratorConfigInternal<EntityType>).omit.includes(parameterKey)
                         && !(!metadata.required(entity) && (value == null || value == ''))
                     ) {
-                        const err: ValidationError | undefined = this.getPropertyValidationError(entityObject, parameterKey, omit);
+                        const err: ValidationError | undefined = await this.getPropertyValidationError(entityObject, parameterKey, omit);
                         if (err) {
                             return {
                                 property: metadata.displayName,
@@ -174,8 +190,13 @@ export abstract class ValidationUtilities {
                     }
                 }
                 break;
-            case DecoratorTypes.ARRAY_STRING_CHIPS:
             case DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS:
+                const stringAutocompleteArray: string[] = entity[key] as string[];
+                // eslint-disable-next-line max-len
+                const stringAutocompleteArrayMetadata: AutocompleteStringChipsArrayDecoratorConfigInternal = metadata as AutocompleteStringChipsArrayDecoratorConfigInternal;
+                // eslint-disable-next-line max-len
+                return await this.getArrayStringAutocompleteChipsValidationError(entity, stringAutocompleteArrayMetadata, stringAutocompleteArray);
+            case DecoratorTypes.ARRAY_STRING_CHIPS:
             case DecoratorTypes.ARRAY_DATE:
             case DecoratorTypes.ARRAY_DATE_TIME:
             case DecoratorTypes.ARRAY_DATE_RANGE:
@@ -228,6 +249,31 @@ export abstract class ValidationUtilities {
         return undefined;
     }
 
+    private static async getArrayStringAutocompleteChipsValidationError<EntityType extends BaseEntityType<EntityType>>(
+        entity: EntityType,
+        metadata: AutocompleteStringChipsArrayDecoratorConfigInternal,
+        stringAutocompleteArray: string[]
+    ): Promise<ValidationError | undefined> {
+        if (metadata.required(entity) && !stringAutocompleteArray.length) {
+            return {
+                property: metadata.displayName,
+                message: 'no items in array'
+            };
+        }
+        if (metadata.restrictToOptions == true) {
+            const autocompleteValues: string[] = await metadata.autocompleteValues(entity);
+            for (const value of stringAutocompleteArray) {
+                if (!autocompleteValues.includes(value)) {
+                    return {
+                        property: metadata.displayName,
+                        message: `The value "${value}" needs to be one of the provided values`
+                    };
+                }
+            }
+        }
+        return undefined;
+    }
+
     private static getBooleanValidationError<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         value: boolean,
@@ -264,10 +310,11 @@ export abstract class ValidationUtilities {
         return undefined;
     }
 
-    private static getAutocompleteStringValidationError(
+    private static async getAutocompleteStringValidationError<EntityType extends BaseEntityType<EntityType>>(
+        entity: EntityType,
         value: string,
         metadata: AutocompleteStringDecoratorConfigInternal
-    ): ValidationError | undefined {
+    ): Promise<ValidationError | undefined> {
         if (metadata.maxLength && value.length > metadata.maxLength) {
             return {
                 property: metadata.displayName,
@@ -286,7 +333,7 @@ export abstract class ValidationUtilities {
                 message: 'invalid'
             };
         }
-        if (metadata.restrictToOptions == true && !metadata.autocompleteValues.includes(value)) {
+        if (metadata.restrictToOptions == true && !(await metadata.autocompleteValues(entity)).includes(value)) {
             return {
                 property: metadata.displayName,
                 message: 'Needs to be one of the provided values'

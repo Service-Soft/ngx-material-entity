@@ -5,6 +5,7 @@
         #model="ngModel" [name]="name" [required]="metadata.required(entity)"
         [disabled]="isReadOnly"
         [(ngModel)]="propertyValue"
+        (ngModelChange)="setValidationErrors(model, chipsModel)"
     >
         <mat-chip-row *ngFor="let value of propertyValue" (removed)="removeStringChipArrayValue(value)">
             {{value}}
@@ -16,12 +17,13 @@
             matInput
             [matChipInputFor]="chipGrid"
             [matChipInputAddOnBlur]="true"
-            [name]="uuid2" [minlength]="metadata.minLength ?? null" [maxlength]="metadata.maxLength ?? null"
+            [name]="uuid2"
+            [minlength]="metadata.minLength ?? null"
+            [maxlength]="metadata.maxLength ?? null"
             [pattern]="metadata.regex ?? '[\\s\\S]*'"
             [(ngModel)]="chipsInput"
-            (matChipInputTokenEnd)="addStringChipArrayValue($event)"
+            (matChipInputTokenEnd)="addStringChipArrayValue($event, !!chipsModel.errors)"
         />
-        <mat-error *ngIf="chipsModel.errors">{{getValidationErrorMessage(chipsModel)}}</mat-error>
     </mat-chip-grid>
-    <mat-error *ngIf="!chipsModel.errors">{{getValidationErrorMessage(model)}}</mat-error>
+    <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>

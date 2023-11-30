@@ -166,7 +166,8 @@ export interface TestEntityWithoutCustomPropertiesInterface {
     imageDragDropValue: FileData,
     customImageValues: FileData[],
     randomValue: string,
-    referencesManyIds: string[]
+    referencesManyIds: string[],
+    notDecoratedValue: string
 }
 
 export class TestEntityWithoutCustomProperties extends Entity implements TestEntityWithoutCustomPropertiesInterface {
@@ -380,10 +381,11 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         displayName: 'String Chips Autocomplete Array Value With Config',
         itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
         // eslint-disable-next-line cspell/spellchecker
-        autocompleteValues: ['ABCDE', 'FGHIJ'],
+        autocompleteValues: () => ['ABCDE', 'FGHIJ'],
         deleteIcon: 'fas fa-trash',
         defaultWidths: [6, 6, 6],
-        allowDuplicates: true
+        allowDuplicates: true,
+        restrictToOptions: true
     })
     stringChipsAutocompleteArrayValueWithConfig!: string[];
 
@@ -771,6 +773,8 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
     })
     randomValue!: string;
 
+    notDecoratedValue!: string;
+
     constructor(entity?: TestEntityWithoutCustomProperties) {
         super();
         EntityUtilities.new(this, entity);
@@ -967,7 +971,8 @@ const testEntityData: TestEntityWithoutCustomProperties = {
         }
     ],
     referencesManyIds: ['1'],
-    randomValue: '42'
+    randomValue: '42',
+    notDecoratedValue: '42'
 };
 
 /**

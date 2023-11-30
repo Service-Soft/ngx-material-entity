@@ -12,6 +12,7 @@ import { PropertyDecoratorConfigInternal } from '../../../decorators/base/proper
 import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../default-global-configuration-values';
 import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
 import { getValidationErrorsTooltipContent } from '../../../functions/get-validation-errors-tooltip-content.function.ts';
+import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
 import { EntityService } from '../../../services/entity.service';
 import { EntityTab, EntityUtilities } from '../../../utilities/entity.utilities';
 import { ValidationError, ValidationUtilities } from '../../../utilities/validation.utilities';
@@ -22,7 +23,6 @@ import { TooltipComponent } from '../../tooltip/tooltip.component';
 import { EditActionInternal } from './edit-data.builder';
 import { EditEntityData } from './edit-entity-data';
 import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-entity.builder';
-import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
 
 /**
  * The default dialog used to edit an existing entity based on the configuration passed in the MAT_DIALOG_DATA "inputData".
@@ -122,7 +122,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
         this.dialogRef.disableClose = true;
         this.entityTabs = EntityUtilities.getEntityTabs(this.data.entity, this.injector, false, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
-        setTimeout(() => this.checkIsEntityValid(), 1);
+        setTimeout(() => void this.checkIsEntityValid(), 1);
     }
 
     /**
@@ -132,7 +132,11 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      */
     isReadOnly(key: keyof EntityType): boolean {
         return runInInjectionContext(this.injector, () => {
-            const metadata: PropertyDecoratorConfigInternal<unknown> = EntityUtilities.getPropertyMetadata(this.data.entity, key);
+            // eslint-disable-next-line max-len
+            const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = EntityUtilities.getPropertyMetadata(this.data.entity, key);
+            if (!metadata) {
+                throw new Error(`No metadata was found for the key "${String(key)}"`);
+            }
             return this.isEntityReadOnly || metadata.isReadOnly(this.data.entity);
         });
     }
@@ -141,12 +145,12 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      * Checks if the entity has become invalid or dirty.
      */
     async checkEntity(): Promise<void> {
-        this.checkIsEntityValid();
+        await this.checkIsEntityValid();
         this.isEntityDirty = await EntityUtilities.isDirty(this.data.entity, this.entityPriorChanges, this.http);
     }
 
-    private checkIsEntityValid(): void {
-        this.validationErrors = ValidationUtilities.getEntityValidationErrors(this.data.entity, 'update');
+    private async checkIsEntityValid(): Promise<void> {
+        this.validationErrors = await ValidationUtilities.getEntityValidationErrors(this.data.entity, this.injector, 'update');
         this.tooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.validationErrors));
         this.isEntityValid = this.validationErrors.length === 0;
     }

@@ -175,7 +175,10 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
      */
     isReadOnly(key: keyof EntityType): boolean {
         return runInInjectionContext(this.injector, () => {
-            const metadata: PropertyDecoratorConfigInternal<unknown> = EntityUtilities.getPropertyMetadata(this.entity, key);
+            const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = EntityUtilities.getPropertyMetadata(this.entity, key);
+            if (!metadata) {
+                throw new Error(`No metadata was found for the key "${String(key)}"`);
+            }
             return this.isEntityReadOnly || metadata.isReadOnly(this.entity);
         });
     }
@@ -204,7 +207,7 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
         });
         this.entityTabs = EntityUtilities.getEntityTabs(this.entity, this.injector, false, true);
         setTimeout(() => this.checkOffset(), 1);
-        setTimeout(() => this.checkIsEntityValid(), 1);
+        setTimeout(() => void this.checkIsEntityValid(), 1);
     }
 
     /**
@@ -242,12 +245,12 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
      * Checks if the entity has become invalid or dirty.
      */
     async checkEntity(): Promise<void> {
-        this.checkIsEntityValid();
+        await this.checkIsEntityValid();
         this.isEntityDirty = await EntityUtilities.isDirty(this.entity, this.entityPriorChanges, this.http);
     }
 
-    private checkIsEntityValid(): void {
-        this.validationErrors = ValidationUtilities.getEntityValidationErrors(this.entity, 'update');
+    private async checkIsEntityValid(): Promise<void> {
+        this.validationErrors = await ValidationUtilities.getEntityValidationErrors(this.entity, this.injector, 'update');
         this.tooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.validationErrors));
         this.isEntityValid = this.validationErrors.length === 0;
     }

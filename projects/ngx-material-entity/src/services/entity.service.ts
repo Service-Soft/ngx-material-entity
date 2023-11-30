@@ -7,6 +7,7 @@ import { FileData } from '../decorators/file/file-decorator.data';
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { EntityUtilities } from '../utilities/entity.utilities';
 import { FileUtilities } from '../utilities/file.utilities';
+import { DefaultFileDecoratorConfigInternal } from '../decorators/file/file-decorator-internal.data';
 
 /**
  * A generic EntityService class.
@@ -133,7 +134,8 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
         const formData: FormData = new FormData();
         formData.append('body', JSON.stringify(LodashUtilities.omit(body, filePropertyKeys)));
         for (const key of filePropertyKeys) {
-            if (EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT).multiple) {
+            // eslint-disable-next-line max-len
+            if ((EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT) as DefaultFileDecoratorConfigInternal).multiple) {
                 const fileDataValues: FileData[] = body[key] as FileData[];
                 for (const value of fileDataValues) {
                     formData.append(key as string, (await FileUtilities.getFileData(value, this.http)).file, value.name);
@@ -253,7 +255,8 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
         const formData: FormData = new FormData();
         formData.append('body', JSON.stringify(LodashUtilities.omit(body, filePropertyKeys)));
         for (const key of filePropertyKeys) {
-            if (EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT).multiple) {
+            // eslint-disable-next-line max-len
+            if ((EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT) as DefaultFileDecoratorConfigInternal).multiple) {
                 const fileDataValues: FileData[] = body[key] as FileData[];
                 for (const value of fileDataValues) {
                     formData.append(key as string, (await FileUtilities.getFileData(value, this.http)).file, value.name);

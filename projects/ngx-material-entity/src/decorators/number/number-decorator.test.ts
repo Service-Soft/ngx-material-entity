@@ -60,24 +60,24 @@ const testEntityData: TestEntity = {
 const testEntity: TestEntity = new TestEntity(testEntityData);
 
 test('number should have number Metadata', () => {
-    const metadata: DefaultNumberDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity, 'number', DecoratorTypes.NUMBER);
+    const metadata: DefaultNumberDecoratorConfigInternal | undefined = EntityUtilities.getPropertyMetadata(testEntity, 'number', DecoratorTypes.NUMBER);
     expect(metadata).toBeDefined();
-    expect(metadata.displayStyle).toBe('line');
+    expect(metadata?.displayStyle).toBe('line');
 });
 test('should have numberSlider Metadata', () => {
-    const metadata: SliderNumberDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity, 'numberSlider', DecoratorTypes.NUMBER_SLIDER);
+    const metadata: SliderNumberDecoratorConfigInternal | undefined = EntityUtilities.getPropertyMetadata(testEntity, 'numberSlider', DecoratorTypes.NUMBER_SLIDER);
     expect(metadata).toBeDefined();
-    expect(metadata.displayStyle).toBe('slider');
-    expect(JSON.stringify(metadata.formatThumbLabelValue)).toEqual(JSON.stringify(((value: number) => value)));
+    expect(metadata?.displayStyle).toBe('slider');
+    expect(JSON.stringify(metadata?.formatThumbLabelValue)).toEqual(JSON.stringify(((value: number) => value)));
 });
 test('default format thumb label value should just return the value without any changes', () => {
     expect(defaultFormatThumbLabelValue(42)).toEqual('42');
 });
 test('should have numberDropdown Metadata', async () => {
-    const metadata: DropdownNumberDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(testEntity, 'numberDropdown', DecoratorTypes.NUMBER_DROPDOWN);
+    const metadata: DropdownNumberDecoratorConfigInternal | undefined = EntityUtilities.getPropertyMetadata(testEntity, 'numberDropdown', DecoratorTypes.NUMBER_DROPDOWN);
     expect(metadata).toBeDefined();
-    expect(metadata.displayStyle).toBe('dropdown');
-    expect(await metadata.dropdownValues(testEntity)).toEqual([
+    expect(metadata?.displayStyle).toBe('dropdown');
+    expect(await metadata?.dropdownValues(testEntity)).toEqual([
         { displayName: '1', value: 1 },
         { displayName: '5', value: 5 },
         { displayName: '10', value: 10 },
@@ -85,14 +85,14 @@ test('should have numberDropdown Metadata', async () => {
         { displayName: '20', value: 20 }
     ]);
 
-    const metadata2: DropdownNumberDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(
+    const metadata2: DropdownNumberDecoratorConfigInternal | undefined = EntityUtilities.getPropertyMetadata(
         testEntity,
         'numberDropdownWithFunction',
         DecoratorTypes.NUMBER_DROPDOWN
     );
     expect(metadata2).toBeDefined();
-    expect(metadata2.displayStyle).toBe('dropdown');
-    expect(await metadata2.dropdownValues(testEntity)).toEqual([
+    expect(metadata2?.displayStyle).toBe('dropdown');
+    expect(await metadata2?.dropdownValues(testEntity)).toEqual([
         { displayName: '1', value: 1 },
         { displayName: '5', value: 5 },
         { displayName: '10', value: 10 },

@@ -7,6 +7,7 @@ import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 import { DateRange } from '../date/date-decorator.data';
+import { StringAutocompleteValues } from '../string/string-decorator.data';
 
 /**
  * Interface definition for the @array metadata.
@@ -323,7 +324,7 @@ export interface AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecora
     /**
      * The autocomplete values.
      */
-    autocompleteValues: string[],
+    autocompleteValues: StringAutocompleteValues,
     /**
      * The minimum required length of the string.
      */
@@ -338,6 +339,7 @@ export interface AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecora
     regex?: RegExp,
     /**
      * Whether or not valid inputs should be restricted to the autocomplete options.
+     * @default false
      */
     restrictToOptions?: boolean
 }

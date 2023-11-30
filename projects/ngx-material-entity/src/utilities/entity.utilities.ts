@@ -76,9 +76,9 @@ export abstract class EntityUtilities {
      */
     static getOmitForUpdate<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
-        for (const key of ReflectUtilities.ownKeys(entity)) {
-            const metadata: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, key);
-            if (metadata.omitForUpdate) {
+        for (const key in entity) {
+            const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = this.getPropertyMetadata(entity, key);
+            if (!metadata || metadata.omitForUpdate) {
                 res.push(key);
             }
         }
@@ -92,9 +92,9 @@ export abstract class EntityUtilities {
      */
     static getOmitForCreate<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
-        for (const key of ReflectUtilities.ownKeys(entity)) {
-            const metadata: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, key);
-            if (metadata.omitForCreate) {
+        for (const key in entity) {
+            const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = this.getPropertyMetadata(entity, key);
+            if (!metadata || metadata.omitForCreate) {
                 res.push(key);
             }
         }
@@ -127,8 +127,8 @@ export abstract class EntityUtilities {
     ): Promise<Partial<EntityType>> {
         const res: Partial<EntityType> = {};
         for (const key of this.keysOf(entity, injector, false, true)) {
-            const metadata: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, key);
-            const type: DecoratorTypes = this.getPropertyType(entity, key);
+            const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = this.getPropertyMetadata(entity, key);
+            const type: DecoratorTypes | undefined = this.getPropertyType(entity, key);
             if (!(await this.isEqual(entity[key], entityPriorChanges[key], metadata, type, http))) {
                 switch (type) {
                     case DecoratorTypes.OBJECT:
@@ -154,8 +154,8 @@ export abstract class EntityUtilities {
      */
     static setDefaultValues<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): void {
         for (const key in entity) {
-            const metadata: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, key);
-            if (metadata.default) {
+            const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = this.getPropertyMetadata(entity, key);
+            if (metadata?.default) {
                 // eslint-disable-next-line typescript/no-unsafe-assignment, typescript/no-explicit-any
                 entity[key] = metadata.default() as any;
             }
@@ -173,10 +173,11 @@ export abstract class EntityUtilities {
         omit?: 'create' | 'update'
     ): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
-        for (const key of ReflectUtilities.ownKeys(entity)) {
-            const type: DecoratorTypes = this.getPropertyType(entity, key);
+        for (const key in entity) {
+            const type: DecoratorTypes | undefined = this.getPropertyType(entity, key);
             if (type === DecoratorTypes.FILE_DEFAULT || type === DecoratorTypes.FILE_IMAGE) {
-                const metadata: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, key);
+                // eslint-disable-next-line max-len
+                const metadata: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, key) as PropertyDecoratorConfigInternal<unknown>;
                 if (!(metadata.omitForCreate && omit === 'create') && !(metadata.omitForUpdate && omit === 'update')) {
                     res.push(key);
                 }
@@ -202,12 +203,12 @@ export abstract class EntityUtilities {
         propertyKey: keyof EntityType,
         // eslint-disable-next-line typescript/no-unused-vars
         type?: T
-    ): DecoratorType<T, CustomMetadataType> {
+    ): DecoratorType<T, CustomMetadataType> | undefined {
         const metadata: unknown = ReflectUtilities.getMetadata('metadata', entity, propertyKey);
-        if (metadata == null) {
-            throw new Error(`Could not find metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`);
-        }
-        return metadata as DecoratorType<T, CustomMetadataType>;
+        // if (metadata == null) {
+        //     throw new Error(`Could not find metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`);
+        // }
+        return metadata as DecoratorType<T, CustomMetadataType> | undefined;
     }
 
     /**
@@ -219,21 +220,8 @@ export abstract class EntityUtilities {
      */
     static getPropertyType<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType, propertyKey: keyof EntityType
-    ): DecoratorTypes {
-        try {
-            const propertyType: unknown = ReflectUtilities.getMetadata('type', entity, propertyKey);
-            if (propertyType == null) {
-                throw new Error(
-                    `Could not find type metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`
-                );
-            }
-            return propertyType as DecoratorTypes;
-        }
-        catch (error) {
-            throw new Error(
-                `Could not find type metadata for property ${String(propertyKey)} on the entity ${JSON.stringify(entity)}`
-            );
-        }
+    ): DecoratorTypes | undefined {
+        return ReflectUtilities.getMetadata('type', entity, propertyKey) as DecoratorTypes | undefined;
     }
 
     /**
@@ -246,13 +234,14 @@ export abstract class EntityUtilities {
      */
     static new<EntityType extends BaseEntityType<EntityType>>(target: EntityType, entity?: EntityType): void {
         for (const key in target) {
-            const type: DecoratorTypes = this.getPropertyType(target, key);
+            const type: DecoratorTypes | undefined = this.getPropertyType(target, key);
             let value: unknown = entity ? ReflectUtilities.get(entity, key) : undefined;
             switch (type) {
                 case DecoratorTypes.OBJECT:
                     // eslint-disable-next-line typescript/no-explicit-any
                     const objectMetadata: DefaultObjectDecoratorConfigInternal<any>
-                        = this.getPropertyMetadata(target, key, DecoratorTypes.OBJECT);
+                        // eslint-disable-next-line typescript/no-explicit-any
+                        = this.getPropertyMetadata(target, key, DecoratorTypes.OBJECT) as DefaultObjectDecoratorConfigInternal<any>;
                     value = new objectMetadata.EntityClass(value as object | undefined);
                     break;
                 case DecoratorTypes.ARRAY:
@@ -261,7 +250,8 @@ export abstract class EntityUtilities {
                     if (inputArray) {
                         // eslint-disable-next-line typescript/no-explicit-any
                         const arrayMetadata: EntityArrayDecoratorConfigInternal<any>
-                            = this.getPropertyMetadata(target, key, DecoratorTypes.ARRAY);
+                            // eslint-disable-next-line typescript/no-explicit-any
+                            = this.getPropertyMetadata(target, key, DecoratorTypes.ARRAY) as EntityArrayDecoratorConfigInternal<any>;
                         for (const item of inputArray) {
                             const itemWithMetadata: EntityType = new arrayMetadata.EntityClass(item) as EntityType;
                             resArray.push(itemWithMetadata);
@@ -312,9 +302,9 @@ export abstract class EntityUtilities {
         http: HttpClient
     ): Promise<Difference<EntityType>[]> {
         const res: Difference<EntityType>[] = [];
-        for (const key of ReflectUtilities.ownKeys(entity)) {
-            const metadata: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, key);
-            const type: DecoratorTypes = this.getPropertyType(entity, key);
+        for (const key in entity) {
+            const type: DecoratorTypes | undefined = this.getPropertyType(entity, key);
+            const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = this.getPropertyMetadata(entity, key);
             if (!(await this.isEqual(entity[key], entityPriorChanges[key], metadata, type, http))) {
                 res.push({
                     key: key,
@@ -343,8 +333,8 @@ export abstract class EntityUtilities {
     static async isEqual(
         value: unknown,
         valuePriorChanges: unknown,
-        metadata: PropertyDecoratorConfigInternal<unknown>,
-        type: DecoratorTypes,
+        metadata: PropertyDecoratorConfigInternal<unknown> | undefined,
+        type: DecoratorTypes | undefined,
         http: HttpClient
     ): Promise<boolean> {
         switch (type) {
@@ -537,8 +527,12 @@ export abstract class EntityUtilities {
         b: keyof EntityType,
         entity: EntityType
     ): number {
-        const metadataA: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, a);
-        const metadataB: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, b);
+        const metadataA: PropertyDecoratorConfigInternal<unknown> | undefined = this.getPropertyMetadata(entity, a);
+        const metadataB: PropertyDecoratorConfigInternal<unknown> | undefined = this.getPropertyMetadata(entity, b);
+
+        if (!metadataA || !metadataB) {
+            return 0;
+        }
 
         if (metadataA.position.order === -1) {
             if (metadataB.position.order === -1) {
@@ -557,9 +551,13 @@ export abstract class EntityUtilities {
      * @param entity - Entity to get the bootstrap column values of the key.
      * @param key - Key of the property to get bootstrap column values from.
      * @returns Bootstrap column classes.
+     * @throws When no metadata for the given key was found.
      */
     static getWidthClasses<EntityType extends BaseEntityType<EntityType>>(entity: EntityType, key: keyof EntityType): string {
-        const metadata: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, key);
+        const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = this.getPropertyMetadata(entity, key);
+        if (!metadata) {
+            throw new Error(`Could not get metadata for property "${key.toString()}"`);
+        }
         return `col-lg-${metadata.defaultWidths[0]} col-md-${metadata.defaultWidths[1]} col-sm-${metadata.defaultWidths[2]}`;
     }
 
@@ -669,8 +667,8 @@ export abstract class EntityUtilities {
         tab: number
     ): (keyof EntityType)[] {
         return keys
-            .filter(k => this.getPropertyMetadata(entity, k).position.row === row)
-            .filter(k => this.getPropertyMetadata(entity, k).position.tab === tab)
+            .filter(k => this.getPropertyMetadata(entity, k)?.position.row === row)
+            .filter(k => this.getPropertyMetadata(entity, k)?.position.tab === tab)
             .sort((a, b) => this.compareOrder(a, b, entity));
     }
 
@@ -679,29 +677,30 @@ export abstract class EntityUtilities {
         entity: EntityType,
         tab: number
     ): number {
-        return keys
-            .filter(k => this.getPropertyMetadata(entity, k).position.tab === tab)
-            .map(k => this.getPropertyMetadata(entity, k).position.row)
+        return (keys
+            .filter(k => this.getPropertyMetadata(entity, k)?.position.tab === tab)
+            .map(k => this.getPropertyMetadata(entity, k)?.position.row) as number[])
             .sort((a, b) => (a > b ? -1 : 1))[0];
     }
 
     private static getNumberOfTabs<EntityType extends BaseEntityType<EntityType>>(keys: (keyof EntityType)[], entity: EntityType): number {
-        return keys
-            .map(k => this.getPropertyMetadata(entity, k).position.tab)
+        return (keys
+            .filter(k => this.getPropertyMetadata(entity, k) != null)
+            .map(k => this.getPropertyMetadata(entity, k)?.position.tab) as number[])
             .sort((a, b) => (a > b ? -1 : 1))[0];
     }
 
     private static getTabName<EntityType extends BaseEntityType<EntityType>>(entity: EntityType, tab: number): string {
         const providedTabName: string | undefined = ReflectUtilities.ownKeys(entity)
             .map(k => this.getPropertyMetadata(entity, k))
-            .find(m => m.position.tab === tab && m.position.tabName)?.position.tabName;
+            .find(m => m?.position.tab === tab && m.position.tabName)?.position.tabName;
         return providedTabName ?? `Tab ${tab}`;
     }
 
     private static getFirstTabName<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): string {
         const providedTabName: string | undefined = ReflectUtilities.ownKeys(entity)
             .map(k => this.getPropertyMetadata(entity, k))
-            .find(m => m.position.tabName && m.position.tab === -1)?.position.tabName;
+            .find(m => m?.position.tabName && m.position.tab === -1)?.position.tabName;
         return providedTabName ?? 'Tab 1';
     }
 
@@ -738,9 +737,9 @@ export abstract class EntityUtilities {
         injector: EnvironmentInjector
     ): (keyof EntityType)[] {
         const res: (keyof EntityType)[] = [];
-        for (const key of ReflectUtilities.ownKeys(entity)) {
-            const metadata: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, key);
-            if (runInInjectionContext(injector, () => !metadata.display(entity))) {
+        for (const key in entity) {
+            const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = this.getPropertyMetadata(entity, key);
+            if (runInInjectionContext(injector, () => !metadata || !metadata.display(entity))) {
                 res.push(key);
             }
         }

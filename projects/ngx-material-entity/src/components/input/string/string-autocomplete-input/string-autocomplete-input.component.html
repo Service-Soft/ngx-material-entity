@@ -1,5 +1,5 @@
 <!-- eslint-disable angular/no-call-expression -->
-<mat-form-field>
+<mat-form-field *ngIf="autocompleteStrings.length">
     <mat-label>{{metadata.displayName}}</mat-label>
     <input
         #model="ngModel"
