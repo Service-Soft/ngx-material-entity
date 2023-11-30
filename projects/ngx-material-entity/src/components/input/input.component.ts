@@ -321,7 +321,11 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * The possible references one dropdown values.
      */
-    referencesOneDropdownValues!: DropdownValue<string>[];
+    private referencesOneDropdownValues!: DropdownValue<string>[];
+    /**
+     * The filtered dropdown values that get displayed in the references one dropdown input.
+     */
+    filteredReferencesOneDropdownValues!: DropdownValue<string>[];
     /**
      * A unique input name for the references one property.
      */
@@ -343,6 +347,27 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * Provides functionality around material selections inside of tables.
      */
     SelectionUtilities: typeof SelectionUtilities = SelectionUtilities;
+
+    // eslint-disable-next-line jsdoc/require-returns
+    /**
+     * Gets the currently selected dropdown value for references one.
+     * Is needed so that the dropdown value will still be displayed,
+     * even when the filter method removes the value from the selectable dropdown values.
+     */
+    get currentReferencesOneDropdownValue(): DropdownValue<string> | undefined {
+        return LodashUtilities.cloneDeep(this.referencesOneDropdownValues ?? [])
+            .find(v => v.value === this.internalEntity[this.internalPropertyKey]);
+    }
+
+    // eslint-disable-next-line jsdoc/require-returns
+    /**
+     * Whether or not the currently selected references one value should be shown,
+     * although it would have been filtered out by the search.
+     */
+    get shouldDisplayCurrentReferencesOneDropdownValue(): boolean {
+        return !!this.currentReferencesOneDropdownValue
+            && !(!!this.filteredReferencesOneDropdownValues.find(v => v.value === this.currentReferencesOneDropdownValue?.value));
+    }
 
     constructor(
         private readonly dialog: MatDialog,
@@ -366,7 +391,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             if (this.internalIsReadOnly || this.metadataDefaultObject?.isReadOnly(property)) {
                 return true;
             }
-            const metadata: PropertyDecoratorConfigInternal<unknown> = EntityUtilities.getPropertyMetadata(property, key);
+            const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = EntityUtilities.getPropertyMetadata(property, key);
+            if (!metadata) {
+                throw new Error(`No metadata was found for the key "${String(key)}"`);
+            }
             return metadata.isReadOnly(property);
         });
     }
@@ -405,14 +433,23 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.internalGetValidationErrorMessage = this.getValidationErrorMessage ?? this.defaultGetValidationErrorMessage;
         this.internalIsReadOnly = this.isReadOnly ?? false;
 
-        this.type = EntityUtilities.getPropertyType(this.internalEntity, this.internalPropertyKey);
+        const foundType: DecoratorTypes | undefined = EntityUtilities.getPropertyType(this.internalEntity, this.internalPropertyKey);
+        if (foundType == null) {
+            throw new Error(`No type was found for the key "${String(this.internalPropertyKey)}"`);
+        }
+        this.type = foundType;
         if (this.validEmpty === true) {
             // eslint-disable-next-line max-len
             const currentMetadata: PropertyDecoratorConfigInternal<unknown> = ReflectUtilities.getMetadata('metadata', this.internalEntity, this.internalPropertyKey) as PropertyDecoratorConfigInternal<unknown>;
             // eslint-disable-next-line max-len
             ReflectUtilities.defineMetadata('metadata', { ...currentMetadata, required: defaultFalse }, this.internalEntity, this.internalPropertyKey);
         }
-        this.metadata = EntityUtilities.getPropertyMetadata(this.internalEntity, this.internalPropertyKey, this.type);
+        // eslint-disable-next-line max-len
+        const foundMetadata: PropertyDecoratorConfigInternal<unknown> | undefined = EntityUtilities.getPropertyMetadata(this.internalEntity, this.internalPropertyKey, this.type);
+        if (!foundMetadata) {
+            throw new Error(`No metadata was found for the key "${String(this.internalPropertyKey)}"`);
+        }
+        this.metadata = foundMetadata;
 
         switch (this.type) {
             case DecoratorTypes.OBJECT:
@@ -442,9 +479,21 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 this.referencesOneAllReferencedEntities = await this.metadataReferencesOne.getReferencedEntities();
                 // eslint-disable-next-line max-len
                 this.referencesOneDropdownValues = this.metadataReferencesOne.getDropdownValues(LodashUtilities.cloneDeep(this.referencesOneAllReferencedEntities));
+                this.filteredReferencesOneDropdownValues = LodashUtilities.cloneDeep(this.referencesOneDropdownValues);
                 this.setReferencesOneObject();
             })
         );
+    }
+
+    /**
+     * Filters the references one dropdown values.
+     * @param searchInput - The search input to filter for.
+     */
+    filterReferencesOneValues(searchInput: string): void {
+        const filter: string = searchInput.toLowerCase();
+        this.filteredReferencesOneDropdownValues = LodashUtilities.cloneDeep(this.referencesOneDropdownValues).filter(option => {
+            return option.displayName.toLowerCase().includes(filter) || option.value.toLowerCase().includes(filter);
+        });
     }
 
     private initHasMany(): void {
@@ -804,7 +853,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
      */
     createHasManyEntity(): void {
-        runInInjectionContext(this.injector, () => {
+        void runInInjectionContext(this.injector, async () => {
             if (this.metadataHasMany.tableData.baseData.allowCreate()) {
                 if (!this.metadataHasMany.tableData.baseData.EntityClass) {
                     throw new Error('No "EntityClass" specified for this table');
@@ -819,7 +868,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                     this.createHasManyDefaultPage();
                     return;
                 }
-                this.createHasManyDefaultDialog(entity);
+                await this.createHasManyDefaultDialog(entity);
             }
         });
     }
@@ -828,10 +877,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         void this.router.navigateByUrl(this.hasManyEntityService.createBaseRoute);
     }
 
-    private createHasManyDefaultDialog(entity: EntityType): void {
+    private async createHasManyDefaultDialog(entity: EntityType): Promise<void> {
         this.hasManyEntity = entity;
         this.hasManyCreateTabs = EntityUtilities.getEntityTabs(this.hasManyEntity, this.injector, true);
-        this.checkIsHasManyEntityValid('create');
+        await this.checkIsHasManyEntityValid('create');
         this.createHasManyDialogRef = this.dialog.open(
             this.createHasManyDialog,
             {
@@ -947,7 +996,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * Checks if the entity is valid for updating and if it is dirty.
      */
     async checkHasManyEntity(): Promise<void> {
-        this.checkIsHasManyEntityValid('update');
+        await this.checkIsHasManyEntityValid('update');
         this.isHasManyEntityDirty = await EntityUtilities.isDirty(this.hasManyEntity, this.hasManyEntityPriorChanges, this.http);
     }
 
@@ -955,8 +1004,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * Checks if the entity is valid.
      * @param omit - Whether values omitted for create or update should be left out.
      */
-    checkIsHasManyEntityValid(omit: 'create' | 'update'): void {
-        this.hasManyValidationErrors = ValidationUtilities.getEntityValidationErrors(this.hasManyEntity, omit);
+    async checkIsHasManyEntityValid(omit: 'create' | 'update'): Promise<void> {
+        this.hasManyValidationErrors = await ValidationUtilities.getEntityValidationErrors(this.hasManyEntity, this.injector, omit);
         // eslint-disable-next-line max-len
         this.hasManyTooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.hasManyValidationErrors));
         this.isHasManyEntityValid = this.hasManyValidationErrors.length === 0;
@@ -965,8 +1014,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * Checks whether the array item is valid and if the array item is dirty.
      */
-    checkArrayItem(): void {
-        this.checkIsArrayItemValid();
+    async checkArrayItem(): Promise<void> {
+        await this.checkIsArrayItemValid();
         void this.checkIsArrayItemDirty();
     }
 
@@ -980,8 +1029,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * Checks if the arrayItem is valid.
      */
-    checkIsArrayItemValid(): void {
-        this.arrayItemValidationErrors = ValidationUtilities.getEntityValidationErrors(this.arrayItem, 'create');
+    async checkIsArrayItemValid(): Promise<void> {
+        this.arrayItemValidationErrors = await ValidationUtilities.getEntityValidationErrors(this.arrayItem, this.injector, 'create');
         // eslint-disable-next-line max-len
         this.arrayItemTooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.arrayItemValidationErrors));
         this.isArrayItemValid = this.arrayItemValidationErrors.length === 0;
@@ -1000,6 +1049,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * or in a separate dialog if it is set to false.
      */
     async addEntity(): Promise<void> {
+        await this.checkIsArrayItemValid();
         if (this.metadataEntityArray.createInline) {
             if (!this.metadataEntityArray.allowDuplicates) {
                 for (const v of this.entityArrayValues) {
@@ -1017,7 +1067,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             this.entityArrayDataSource.data = this.entityArrayValues;
             EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
             EntityUtilities.setDefaultValues(this.arrayItem);
-            this.checkIsArrayItemValid();
+            await this.checkIsArrayItemValid();
             this.emitChange();
         }
         else {
@@ -1029,30 +1079,29 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                     restoreFocus: false
                 }
             );
-            this.checkIsArrayItemValid();
         }
     }
 
     /**
      * Adds the array item defined in the dialog.
      */
-    addArrayItem(): void {
+    async addArrayItem(): Promise<void> {
         if (!this.isArrayItemValid) {
             return;
         }
         this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
         this.entityArrayDataSource.data = this.entityArrayValues;
 
-        this.closeAddArrayItemDialog();
+        await this.closeAddArrayItemDialog();
     }
 
     /**
      * Cancels adding the array item defined in the dialog.
      */
-    closeAddArrayItemDialog(): void {
+    async closeAddArrayItemDialog(): Promise<void> {
         this.addArrayItemDialogRef.close();
         EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
-        this.checkIsArrayItemValid();
+        await this.checkIsArrayItemValid();
         this.emitChange();
     }
 
@@ -1061,7 +1110,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * @param entity - The entity that has been clicked.
      * @param dCol - The display column that was clicked on.
      */
-    editArrayItem(entity: EntityType, dCol: DisplayColumn<EntityType>): void {
+    async editArrayItem(entity: EntityType, dCol: DisplayColumn<EntityType>): Promise<void> {
         if (dCol.disableClick === true) {
             return;
         }
@@ -1069,7 +1118,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.arrayItem = new this.metadataEntityArray.EntityClass(entity);
         this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
 
-        this.checkArrayItem();
+        await this.checkArrayItem();
 
         this.editArrayItemDialogRef = this.dialog.open(
             this.editArrayItemDialog,
@@ -1088,17 +1137,17 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.entityArrayValues[this.indexOfEditedArrayItem] = LodashUtilities.cloneDeep(this.arrayItem);
         this.entityArrayDataSource.data = this.entityArrayValues;
 
-        this.closeEditArrayItemDialog();
+        void this.closeEditArrayItemDialog();
     }
 
     /**
      * Closes the edit array item dialog and resets changes.
      */
-    closeEditArrayItemDialog(): void {
+    async closeEditArrayItemDialog(): Promise<void> {
         this.editArrayItemDialogRef.close();
         this.arrayItem = new this.metadataEntityArray.EntityClass();
         this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
-        this.checkArrayItem();
+        await this.checkArrayItem();
         this.emitChange();
     }
 

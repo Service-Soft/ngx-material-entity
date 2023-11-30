@@ -30,16 +30,16 @@ const randomTe: RandomInputTestEntity = new RandomInputTestEntity({ randomValue:
 
 test('should have custom Metadata', () => {
     // eslint-disable-next-line typescript/no-explicit-any
-    const metadata: CustomDecoratorConfigInternal<any, unknown, Record<string, unknown>, any>
+    const metadata: CustomDecoratorConfigInternal<any, unknown, Record<string, unknown>, any> | undefined
         = EntityUtilities.getPropertyMetadata(randomTe, 'randomValue', DecoratorTypes.CUSTOM);
-    expect(JSON.stringify(metadata.customMetadata)).toEqual(JSON.stringify({
+    expect(JSON.stringify(metadata?.customMetadata)).toEqual(JSON.stringify({
         random: () => (Math.random() + 1).toString(36).substring(7)
     }));
-    expect(JSON.stringify(metadata.isValid)).toEqual(JSON.stringify(defaultTrue));
-    expect(JSON.stringify(metadata.isEqual)).toEqual(JSON.stringify(defaultIsEqual));
+    expect(JSON.stringify(metadata?.isValid)).toEqual(JSON.stringify(defaultTrue));
+    expect(JSON.stringify(metadata?.isEqual)).toEqual(JSON.stringify(defaultIsEqual));
 
-    expect(metadata.isValid(randomTe, 'create')).toBe(true);
-    expect(metadata.isEqual(randomTe, randomTe, metadata)).toBe(true);
+    expect(metadata?.isValid(randomTe, 'create')).toBe(true);
+    expect(metadata?.isEqual(randomTe, randomTe, metadata)).toBe(true);
 });
 
 function defaultIsEqual<ValueType>(value: ValueType, valuePriorChanges: ValueType): boolean {

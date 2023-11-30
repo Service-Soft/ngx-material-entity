@@ -48,27 +48,27 @@ const booleanTestEntityData: BooleanTestEntity = {
 const booleanTestEntity: BooleanTestEntity = new BooleanTestEntity(booleanTestEntityData);
 
 test('should have boolean Metadata', () => {
-    const metadata: CheckboxBooleanDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(booleanTestEntity, 'booleanCheckbox', DecoratorTypes.BOOLEAN_CHECKBOX);
+    const metadata: CheckboxBooleanDecoratorConfigInternal | undefined = EntityUtilities.getPropertyMetadata(booleanTestEntity, 'booleanCheckbox', DecoratorTypes.BOOLEAN_CHECKBOX);
     expect(metadata).toBeDefined();
-    expect(metadata.displayStyle).toBe('checkbox');
+    expect(metadata?.displayStyle).toBe('checkbox');
 });
 test('should have booleanDropdown Metadata', () => {
-    let metadata: DropdownBooleanDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(booleanTestEntity, 'booleanDropdown', DecoratorTypes.BOOLEAN_DROPDOWN);
-    metadata = new DropdownBooleanDecoratorConfigInternal(metadata, defaultGlobalDefaults);
+    let metadata: DropdownBooleanDecoratorConfigInternal | undefined = EntityUtilities.getPropertyMetadata(booleanTestEntity, 'booleanDropdown', DecoratorTypes.BOOLEAN_DROPDOWN);
     expect(metadata).toBeDefined();
+    metadata = new DropdownBooleanDecoratorConfigInternal(metadata as DropdownBooleanDecoratorConfigInternal, defaultGlobalDefaults);
     expect(metadata.displayStyle).toBe('dropdown');
     expect(metadata.dropdownFalse).toBe('No');
     expect(metadata.dropdownTrue).toBe('Yes');
 });
 test('should have custom booleanDropdown Metadata', () => {
-    const metadata: DropdownBooleanDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(booleanTestEntity, 'customBooleanDropdown', DecoratorTypes.BOOLEAN_DROPDOWN);
+    const metadata: DropdownBooleanDecoratorConfigInternal | undefined = EntityUtilities.getPropertyMetadata(booleanTestEntity, 'customBooleanDropdown', DecoratorTypes.BOOLEAN_DROPDOWN);
     expect(metadata).toBeDefined();
-    expect(metadata.displayStyle).toBe('dropdown');
-    expect(metadata.dropdownFalse).toBe('private customer');
-    expect(metadata.dropdownTrue).toBe('business');
+    expect(metadata?.displayStyle).toBe('dropdown');
+    expect(metadata?.dropdownFalse).toBe('private customer');
+    expect(metadata?.dropdownTrue).toBe('business');
 });
 test('should have booleanToggle Metadata', () => {
-    const metadata: ToggleBooleanDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(booleanTestEntity, 'booleanToggle', DecoratorTypes.BOOLEAN_TOGGLE);
+    const metadata: ToggleBooleanDecoratorConfigInternal | undefined = EntityUtilities.getPropertyMetadata(booleanTestEntity, 'booleanToggle', DecoratorTypes.BOOLEAN_TOGGLE);
     expect(metadata).toBeDefined();
-    expect(metadata.displayStyle).toBe('toggle');
+    expect(metadata?.displayStyle).toBe('toggle');
 });

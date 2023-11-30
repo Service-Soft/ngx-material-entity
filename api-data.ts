@@ -200,7 +200,8 @@ const testEntityData: TestEntityWithoutCustomPropertiesInterface = {
         }
     ],
     referencesManyIds: ['1'],
-    randomValue: '42'
+    randomValue: '42',
+    notDecoratedValue: '42'
 };
 
 interface Address {
@@ -286,6 +287,7 @@ export const apiData: ApiData = {
         personData,
         {
             ...personData,
+            id: '2',
             firstName: 'Jane'
         }
     ],
@@ -307,6 +309,7 @@ export const apiData: ApiData = {
         addressData,
         {
             ...addressData,
+            id: '2',
             street: 'ABC Street'
         }
     ]

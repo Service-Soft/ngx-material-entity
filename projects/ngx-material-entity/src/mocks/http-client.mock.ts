@@ -28,7 +28,7 @@ export class HttpClientMock {
     patch(url: string, body: any): Observable<any> {
         const id: string = this.getIdFromUrl(url);
         const res: any = this.exampleData[this.exampleData.findIndex((e) => e.id === id)];
-        for (const key of ReflectUtilities.ownKeys(body)) {
+        for (const key in body) {
             if (res[key] != null) {
                 res[key] = body[key];
             }
@@ -67,7 +67,7 @@ export class HttpClientErrorMock {
     patch(url: string, body: any): Observable<any> {
         const id: string = this.getIdFromUrl(url);
         const res: any = this.exampleData[this.exampleData.findIndex((e) => e.id === id)];
-        for (const key of ReflectUtilities.ownKeys(body)) {
+        for (const key in body) {
             if (res[key] != null) {
                 res[key] = body[key];
             }

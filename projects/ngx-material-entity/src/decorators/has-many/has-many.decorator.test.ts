@@ -59,7 +59,7 @@ const testEntity: TestEntity = new TestEntity();
 
 test('should have default has many metadata', () => {
     // eslint-disable-next-line typescript/no-explicit-any
-    const metadata: HasManyDecoratorConfigInternal<any, any> = EntityUtilities.getPropertyMetadata(testEntity, 'hasManyEntities', DecoratorTypes.HAS_MANY);
+    const metadata: HasManyDecoratorConfigInternal<any, any> | undefined = EntityUtilities.getPropertyMetadata(testEntity, 'hasManyEntities', DecoratorTypes.HAS_MANY);
     expect(metadata).toBeDefined();
-    expect(metadata.defaultWidths).toEqual([12, 12, 12]);
+    expect(metadata?.defaultWidths).toEqual([12, 12, 12]);
 });

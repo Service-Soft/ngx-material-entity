@@ -9,14 +9,14 @@ import { DecoratorTypes } from './decorator-types.enum';
 
 describe('baseProperty', () => {
     test('id should have base Metadata', () => {
-        const metadata: DefaultStringDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(new TestEntityWithoutCustomPropertiesMockBuilder().testEntity, 'id', DecoratorTypes.STRING);
+        const metadata: DefaultStringDecoratorConfigInternal | undefined = EntityUtilities.getPropertyMetadata(new TestEntityWithoutCustomPropertiesMockBuilder().testEntity, 'id', DecoratorTypes.STRING);
         expect(metadata).toBeDefined();
-        expect(metadata.display(null)).toBe(false);
-        expect(metadata.displayName).toBe('ID');
-        expect(metadata.omitForCreate).toBe(true);
-        expect(metadata.omitForUpdate).toBe(true);
-        expect(metadata.required).toBe(defaultTrue);
-        expect(metadata.change).toBe(undefined);
+        expect(metadata?.display(null)).toBe(false);
+        expect(metadata?.displayName).toBe('ID');
+        expect(metadata?.omitForCreate).toBe(true);
+        expect(metadata?.omitForUpdate).toBe(true);
+        expect(metadata?.required).toBe(defaultTrue);
+        expect(metadata?.change).toBe(undefined);
     });
 
     test('should throw error for incorrect order metadata', () => {

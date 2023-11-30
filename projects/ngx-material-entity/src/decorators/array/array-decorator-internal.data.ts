@@ -11,6 +11,7 @@ import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { DateRange } from '../date/date-decorator.data';
+import { StringAutocompleteValues } from '../string/string-decorator.data';
 import { ArrayDecoratorConfig, AutocompleteStringChipsArrayDecoratorConfig, DateArrayDecoratorConfig, DateRangeArrayDecoratorConfig, DateTimeArrayDecoratorConfig, EditArrayItemDialogData, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from './array-decorator.data';
 
 /**
@@ -267,8 +268,8 @@ export class StringChipsArrayDecoratorConfigInternal extends PropertyDecoratorCo
  */
 export class AutocompleteStringChipsArrayDecoratorConfigInternal
     extends PropertyDecoratorConfigInternal<string[]> implements AutocompleteStringChipsArrayDecoratorConfig {
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    autocompleteValues: string[];
+    // eslint-disable-next-line jsdoc/require-jsdoc, typescript/no-explicit-any
+    autocompleteValues: (entity: any) => Promise<string[]>;
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.STRING_AUTOCOMPLETE;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -288,7 +289,7 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
 
     constructor(data: AutocompleteStringChipsArrayDecoratorConfig, globalConfig: NgxGlobalDefaultValues) {
         super(data);
-        this.autocompleteValues = data.autocompleteValues;
+        this.autocompleteValues = this.autocompleteValuesToFunction(data.autocompleteValues);
         this.deleteIcon = data.deleteIcon ?? 'fas fa-circle-minus';
         this.itemType = data.itemType;
         this.allowDuplicates = data.allowDuplicates ?? false;
@@ -298,6 +299,15 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
         this.regex = data.regex;
         this.restrictToOptions = data.restrictToOptions;
         this.defaultWidths = data.defaultWidths ?? [6, 12, 12];
+    }
+
+    // eslint-disable-next-line typescript/no-explicit-any
+    private autocompleteValuesToFunction(autocompleteValues: StringAutocompleteValues): (entity: any) => Promise<string[]> {
+        if (Array.isArray(autocompleteValues)) {
+            return async () => autocompleteValues;
+        }
+        // eslint-disable-next-line typescript/no-explicit-any
+        return async (e: any) => await autocompleteValues(e);
     }
 }
 

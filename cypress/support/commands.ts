@@ -76,7 +76,8 @@ Cypress.Commands.add(
 
         // eslint-disable-next-line cspell/spellchecker
         cy.getInputByLabel('String Chips Array Value With Config').click().type('abcd{enter}efgh{enter}');
-        cy.getInputByLabel('String Chips Autocomplete Array Value With Config').click().type('123{enter}456{enter}');
+        // eslint-disable-next-line cspell/spellchecker
+        cy.getInputByLabel('String Chips Autocomplete Array Value With Config').click().type('ABCDE{enter}FGHIJ{enter}');
 
         cy.getInputByLabel('Array Object Value').click().type('arrayObjectValue');
         cy.get('.mdc-tab__text-label').eq(5).click({ force: true });

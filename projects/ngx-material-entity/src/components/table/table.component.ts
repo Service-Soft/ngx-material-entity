@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 import { Subject, firstValueFrom, takeUntil } from 'rxjs';
 import { BaseEntityType, Entity } from '../../classes/entity.model';
 import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../default-global-configuration-values';
+import { DynamicStyleClassDirective } from '../../directives/dynamic-style-class.directive';
 import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
 import { EntityUtilities } from '../../utilities/entity.utilities';
@@ -58,7 +59,8 @@ import { BaseTableActionInternal, TableActionInternal, TableDataBuilder, TableDa
         MatProgressSpinnerModule,
         NgxMatEntityCreateDialogComponent,
         NgxMatEntityEditDialogComponent,
-        DisplayColumnValueComponent
+        DisplayColumnValueComponent,
+        DynamicStyleClassDirective
     ]
 })
 export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity>> implements OnInit, OnDestroy {

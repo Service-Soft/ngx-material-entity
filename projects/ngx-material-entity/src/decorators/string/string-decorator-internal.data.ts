@@ -1,6 +1,6 @@
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
-import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, DropdownStringDecoratorConfig, PasswordStringDecoratorConfig, StringDropdownValues, TextboxStringDecoratorConfig } from './string-decorator.data';
+import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, DropdownStringDecoratorConfig, PasswordStringDecoratorConfig, StringAutocompleteValues, StringDropdownValues, TextboxStringDecoratorConfig } from './string-decorator.data';
 
 /**
  * The internal DropdownStringDecoratorConfig. Sets default values.
@@ -77,8 +77,8 @@ export class AutocompleteStringDecoratorConfigInternal
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'autocomplete';
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    autocompleteValues: string[];
+    // eslint-disable-next-line jsdoc/require-jsdoc, typescript/no-explicit-any
+    autocompleteValues: (entity: any) => Promise<string[]>;
     // eslint-disable-next-line jsdoc/require-jsdoc
     minLength?: number;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -91,11 +91,20 @@ export class AutocompleteStringDecoratorConfigInternal
     constructor(data: AutocompleteStringDecoratorConfig) {
         super(data);
         this.displayStyle = data.displayStyle;
-        this.autocompleteValues = data.autocompleteValues;
+        this.autocompleteValues = this.autocompleteValuesToFunction(data.autocompleteValues);
         this.minLength = data.minLength;
         this.maxLength = data.maxLength;
         this.regex = data.regex;
         this.restrictToOptions = data.restrictToOptions;
+    }
+
+    // eslint-disable-next-line typescript/no-explicit-any
+    private autocompleteValuesToFunction(autocompleteValues: StringAutocompleteValues): (entity: any) => Promise<string[]> {
+        if (Array.isArray(autocompleteValues)) {
+            return async () => autocompleteValues;
+        }
+        // eslint-disable-next-line typescript/no-explicit-any
+        return async (e: any) => await autocompleteValues(e);
     }
 }
 
@@ -116,6 +125,8 @@ export class PasswordStringDecoratorConfigInternal
     needsConfirmation: boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
     confirmationDisplayName: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    displayPasswordStrength: boolean;
 
     constructor(data: PasswordStringDecoratorConfig) {
         super(data);
@@ -125,6 +136,7 @@ export class PasswordStringDecoratorConfigInternal
         this.regex = data.regex;
         this.needsConfirmation = data.needsConfirmation ?? true;
         this.confirmationDisplayName = data.confirmationDisplayName ?? 'Confirm Password';
+        this.displayPasswordStrength = data.displayPasswordStrength ?? true;
         this.defaultWidths = data.defaultWidths ?? [12, 12, 12];
     }
 }

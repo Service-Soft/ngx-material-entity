@@ -50,6 +50,11 @@ export * from './decorators/references-one/references-one-decorator.data';
 export * from './decorators/references-one/references-one.decorator';
 export * from './decorators/string/string-decorator.data';
 export * from './decorators/string/string.decorator';
+// directives
+export * from './directives/included-in.directive';
+export * from './directives/number.directive';
+export * from './directives/tooltip.directive';
+export * from './directives/dynamic-style-class.directive';
 // functions
 export * from './functions/get-validation-error-message.function';
 export * from './functions/get-validation-errors-tooltip-content.function.ts';

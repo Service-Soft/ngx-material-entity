@@ -14,7 +14,7 @@ import { EntityTab, EntityUtilities } from './entity.utilities';
 const builder: TestEntityWithoutCustomPropertiesMockBuilder = new TestEntityWithoutCustomPropertiesMockBuilder();
 const testEntity: TestEntityWithoutCustomProperties = builder.testEntity;
 const testEntityWithoutData: TestEntityWithoutCustomProperties = builder.testEntityWithoutData;
-const testEntityWithoutMetadata: TestEntityWithoutCustomProperties = builder.testEntityData;
+// const testEntityWithoutMetadata: TestEntityWithoutCustomProperties = builder.testEntityData;
 const http: HttpClient = new HttpClientMock([]) as unknown as HttpClient;
 
 /**
@@ -33,43 +33,43 @@ function valueIsEntity(value: unknown): value is Entity {
 
 describe('new', () => {
     test('should define all values for testEntity', async () => {
-        for (const key of ReflectUtilities.ownKeys(testEntity)) {
-            const value: unknown = ReflectUtilities.get(testEntity, key);
+        for (const key in testEntity) {
+            const value: unknown = ReflectUtilities.get(testEntity, key as keyof TestEntityWithoutCustomProperties);
             expect(value).toBeDefined();
             if (key == ('optionalObjectValue' as keyof TestEntityWithoutCustomProperties)) {
                 if (valueIsEntity(value)) {
-                    for (const k of ReflectUtilities.ownKeys(value)) {
+                    for (const k in value) {
                         if (k == ('rowValue1' as keyof TestEntityWithoutCustomProperties)) {
-                            expect(ReflectUtilities.get(value, k)).toBe('');
+                            expect(ReflectUtilities.get(value, k as keyof Entity)).toBe('');
                         }
                         else {
-                            expect(ReflectUtilities.get(value, k)).toBeUndefined();
+                            expect(ReflectUtilities.get(value, k as keyof Entity)).toBeUndefined();
                         }
                     }
                 }
             }
             else {
                 if (valueIsEntity(value)) {
-                    for (const k of ReflectUtilities.ownKeys(value)) {
-                        expect(ReflectUtilities.get(value, k)).toBeDefined();
+                    for (const k in value) {
+                        expect(ReflectUtilities.get(value, k as keyof Entity)).toBeDefined();
                     }
                 }
             }
         }
     });
     test('should not define any values for testEntityWithoutData', () => {
-        for (const key of ReflectUtilities.ownKeys(testEntityWithoutData)) {
-            const value: unknown = ReflectUtilities.get(testEntityWithoutData, key);
+        for (const key in testEntityWithoutData) {
+            const value: unknown = ReflectUtilities.get(testEntityWithoutData, key as keyof Entity);
             if (valueIsEntity(value)) {
-                for (const k of ReflectUtilities.ownKeys(value)) {
-                    expect(ReflectUtilities.get(value, k)).toBeUndefined();
+                for (const k in value) {
+                    expect(ReflectUtilities.get(value, k as keyof Entity)).toBeUndefined();
                 }
             }
             else if (LodashUtilities.isArray(value)) {
-                expect(ReflectUtilities.get(testEntityWithoutData, key)).toEqual([]);
+                expect(ReflectUtilities.get(testEntityWithoutData, key as keyof Entity)).toEqual([]);
             }
             else {
-                expect(ReflectUtilities.get(testEntityWithoutData, key)).toBeUndefined();
+                expect(ReflectUtilities.get(testEntityWithoutData, key as keyof Entity)).toBeUndefined();
             }
         }
     });
@@ -77,8 +77,8 @@ describe('new', () => {
 
 describe('getOmitForCreate', () => {
     test('should get correct omitForCreate values from metadata', async () => {
-        expect(EntityUtilities.getOmitForCreate(testEntity)).toEqual(['id', 'omitForCreateValue', 'customFileValues']);
-        expect(EntityUtilities.getOmitForCreate(testEntityWithoutData)).toEqual(['id', 'omitForCreateValue', 'customFileValues']);
+        expect(EntityUtilities.getOmitForCreate(testEntity)).toEqual(['id', 'omitForCreateValue', 'customFileValues', 'notDecoratedValue']);
+        expect(EntityUtilities.getOmitForCreate(testEntityWithoutData)).toEqual(['id', 'omitForCreateValue', 'customFileValues', 'notDecoratedValue']);
     });
 });
 
@@ -105,8 +105,8 @@ describe('getFileProperties', () => {
 
 describe('getOmitForUpdate', () => {
     test('should get correct omitForUpdate values from metadata', async () => {
-        expect(EntityUtilities.getOmitForUpdate(testEntity)).toEqual(['id', 'omitForUpdateValue', 'customFileValues']);
-        expect(EntityUtilities.getOmitForUpdate(testEntityWithoutData)).toEqual(['id', 'omitForUpdateValue', 'customFileValues']);
+        expect(EntityUtilities.getOmitForUpdate(testEntity)).toEqual(['id', 'omitForUpdateValue', 'customFileValues', 'notDecoratedValue']);
+        expect(EntityUtilities.getOmitForUpdate(testEntityWithoutData)).toEqual(['id', 'omitForUpdateValue', 'customFileValues', 'notDecoratedValue']);
     });
 });
 
@@ -161,9 +161,8 @@ describe('getPropertyMetadata', () => {
         expect(EntityUtilities.getPropertyMetadata(testEntity, 'omitForCreateValue', DecoratorTypes.STRING)).toBeDefined();
         expect(EntityUtilities.getPropertyMetadata(testEntityWithoutData, 'omitForCreateValue', DecoratorTypes.STRING)).toBeDefined();
     });
-    test('should throw error for parameter without metadata', () => {
-        const expectedEm: string = `Could not find metadata for property omitForCreateValue on the entity ${JSON.stringify(testEntityWithoutMetadata)}`;
-        expect(() => EntityUtilities.getPropertyMetadata(testEntityWithoutMetadata, 'omitForCreateValue', DecoratorTypes.STRING)).toThrow(expectedEm);
+    test('should return undefined for parameter without metadata', () => {
+        expect(EntityUtilities.getPropertyMetadata(testEntity, 'notDecoratedValue')).toBe(undefined);
     });
 });
 
@@ -171,9 +170,8 @@ describe('getPropertyType', () => {
     test('should return correct type', () => {
         expect(EntityUtilities.getPropertyType(testEntity, 'omitForCreateValue')).toBe(DecoratorTypes.STRING);
     });
-    test('should throw error for parameter without metadata', () => {
-        const expectedEm: string = `Could not find type metadata for property omitForCreateValue on the entity ${JSON.stringify(testEntityWithoutMetadata)}`;
-        expect(() => EntityUtilities.getPropertyType(testEntityWithoutMetadata, 'omitForCreateValue')).toThrow(expectedEm);
+    test('should return undefined for parameter without metadata', () => {
+        expect(EntityUtilities.getPropertyType(testEntity, 'notDecoratedValue')).toBe(undefined);
     });
 });
 
@@ -227,11 +225,16 @@ describe('compareOrder', () => {
         expect(keys[1]).toBe('orderValue2');
         expect(keys[2]).toBe('orderValue3');
     });
+    test('should be equal if a not decorated value is passed', () => {
+        expect(EntityUtilities.compareOrder('notDecoratedValue', 'booleanCheckboxValue', testEntity)).toBe(0);
+    });
 });
 
 describe('getWidth', () => {
     test('should get the default width', () => {
         expect(EntityUtilities.getWidthClasses(testEntity, 'maxLengthStringValue')).toBe('col-lg-6 col-md-6 col-sm-12');
+        const EXPECTED_EM: string = 'Could not get metadata for property "notDecoratedValue"';
+        expect(() => EntityUtilities.getWidthClasses(testEntity, 'notDecoratedValue')).toThrow(EXPECTED_EM);
     });
 });
 

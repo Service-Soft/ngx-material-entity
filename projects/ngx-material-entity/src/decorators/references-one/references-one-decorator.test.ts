@@ -94,30 +94,30 @@ const testEntity: TestEntity = new TestEntity(testEntityData);
 
 describe('referencesOne', () => {
     test('should have references many Metadata', () => {
-        const metadata: ReferencesOneDecoratorConfigInternal<Address>
+        const metadata: ReferencesOneDecoratorConfigInternal<Address> | undefined
             = EntityUtilities.getPropertyMetadata(
                 testEntity,
                 'addressId',
                 DecoratorTypes.REFERENCES_ONE
-            ) as ReferencesOneDecoratorConfigInternal<Address>;
+            );
         expect(metadata).toBeDefined();
-        expect(metadata.getReferencedEntities).toEqual(getReferencedEntities);
-        expect(metadata.getDropdownValues).toEqual(getDropdownValues);
-        expect(metadata.EntityClass).toEqual(Address);
-        expect(metadata.defaultWidths).toEqual([12, 12, 12]);
-        expect(metadata.getEntityForId).toEqual(defaultGetEntityForId);
+        expect(metadata?.getReferencedEntities).toEqual(getReferencedEntities);
+        expect(metadata?.getDropdownValues).toEqual(getDropdownValues);
+        expect(metadata?.EntityClass).toEqual(Address);
+        expect(metadata?.defaultWidths).toEqual([12, 12, 12]);
+        expect(metadata?.getEntityForId).toEqual(defaultGetEntityForId);
     });
 
     test('should return correct values for getReferencedEntities and getDropdownValues', async () => {
-        const metadata: ReferencesOneDecoratorConfigInternal<Address>
+        const metadata: ReferencesOneDecoratorConfigInternal<Address> | undefined
             = EntityUtilities.getPropertyMetadata(
                 testEntity,
                 'addressId',
                 DecoratorTypes.REFERENCES_ONE
-            ) as ReferencesOneDecoratorConfigInternal<Address>;
-        const referencedEntities: Address[] = await metadata.getReferencedEntities();
+            );
+        const referencedEntities: Address[] = (await metadata?.getReferencedEntities()) ?? [];
         expect(referencedEntities).toEqual([{ id: '1', street: 'Example Street', number: '42', postcode: '12345', city: 'Example City' }]);
-        const dropdownValues: DropdownValue<string>[] = metadata.getDropdownValues(referencedEntities);
+        const dropdownValues: DropdownValue<string>[] | undefined = metadata?.getDropdownValues(referencedEntities);
         expect(dropdownValues).toEqual([{
             displayName: 'Example Street 42, 12345 Example City',
             value: '1'
@@ -125,14 +125,14 @@ describe('referencesOne', () => {
     });
 
     test('should return correct values for default getEntityForId method', async () => {
-        const metadata: ReferencesOneDecoratorConfigInternal<Address>
+        const metadata: ReferencesOneDecoratorConfigInternal<Address> | undefined
             = EntityUtilities.getPropertyMetadata(
                 testEntity,
                 'addressId',
                 DecoratorTypes.REFERENCES_ONE
-            ) as ReferencesOneDecoratorConfigInternal<Address>;
-        const referencedEntities: Address[] = await metadata.getReferencedEntities();
-        const entityForId: Address = metadata.getEntityForId('1', referencedEntities);
+            );
+        const referencedEntities: Address[] = (await metadata?.getReferencedEntities()) ?? [];
+        const entityForId: Address | undefined = metadata?.getEntityForId('1', referencedEntities);
         expect(entityForId).toEqual({ id: '1', street: 'Example Street', number: '42', postcode: '12345', city: 'Example City' });
     });
 });

@@ -31,7 +31,7 @@ describe('getTimeFromDate', () => {
 describe('getValidTimesForDropdown', () => {
     test('getValidTimesForDropdown', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
-        const metadata: DateTimeDateDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(tE, 'customDateTimeValue', DecoratorTypes.DATE_TIME);
+        const metadata: DateTimeDateDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(tE, 'customDateTimeValue', DecoratorTypes.DATE_TIME) as DateTimeDateDecoratorConfigInternal;
         const result: DropdownValue<Time | undefined>[] = DateUtilities.getValidTimesForDropdown(
             metadata.times,
             tE.customDateTimeValue,

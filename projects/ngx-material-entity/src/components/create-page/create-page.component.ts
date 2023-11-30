@@ -166,7 +166,7 @@ export class NgxMatEntityCreatePageComponent<EntityType extends BaseEntityType<E
         this.entity = new this.EntityClass();
         EntityUtilities.setDefaultValues(this.entity);
         this.entityPriorChanges = LodashUtilities.cloneDeep(this.entity);
-        this.checkIsEntityValid();
+        void this.checkIsEntityValid();
 
         this.entityTabs = EntityUtilities.getEntityTabs(this.entity, this.injector, true, false);
         setTimeout(() => this.checkOffset(), 1);
@@ -208,12 +208,12 @@ export class NgxMatEntityCreatePageComponent<EntityType extends BaseEntityType<E
      * Checks if the entity has become invalid or dirty.
      */
     async checkEntity(): Promise<void> {
-        this.checkIsEntityValid();
+        await this.checkIsEntityValid();
         this.isEntityDirty = await EntityUtilities.isDirty(this.entity, this.entityPriorChanges, this.http);
     }
 
-    private checkIsEntityValid(): void {
-        this.validationErrors = ValidationUtilities.getEntityValidationErrors(this.entity, 'create');
+    private async checkIsEntityValid(): Promise<void> {
+        this.validationErrors = await ValidationUtilities.getEntityValidationErrors(this.entity, this.injector, 'create');
         this.tooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.validationErrors));
         this.isEntityValid = this.validationErrors.length === 0;
     }
@@ -294,7 +294,10 @@ export class NgxMatEntityCreatePageComponent<EntityType extends BaseEntityType<E
      */
     isReadOnly(key: keyof EntityType): boolean {
         return runInInjectionContext(this.injector, () => {
-            const metadata: PropertyDecoratorConfigInternal<unknown> = EntityUtilities.getPropertyMetadata(this.entity, key);
+            const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = EntityUtilities.getPropertyMetadata(this.entity, key);
+            if (!metadata) {
+                throw new Error(`No metadata was found for the key "${String(key)}"`);
+            }
             return metadata.isReadOnly(this.entity);
         });
     }
