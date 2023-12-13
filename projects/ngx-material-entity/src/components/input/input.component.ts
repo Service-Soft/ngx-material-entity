@@ -439,12 +439,12 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         }
         this.type = foundType;
         if (this.validEmpty === true) {
-            // eslint-disable-next-line max-len
+
             const currentMetadata: PropertyDecoratorConfigInternal<unknown> = ReflectUtilities.getMetadata('metadata', this.internalEntity, this.internalPropertyKey) as PropertyDecoratorConfigInternal<unknown>;
-            // eslint-disable-next-line max-len
+
             ReflectUtilities.defineMetadata('metadata', { ...currentMetadata, required: defaultFalse }, this.internalEntity, this.internalPropertyKey);
         }
-        // eslint-disable-next-line max-len
+
         const foundMetadata: PropertyDecoratorConfigInternal<unknown> | undefined = EntityUtilities.getPropertyMetadata(this.internalEntity, this.internalPropertyKey, this.type);
         if (!foundMetadata) {
             throw new Error(`No metadata was found for the key "${String(this.internalPropertyKey)}"`);
@@ -477,7 +477,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             this.injector,
             (async () => {
                 this.referencesOneAllReferencedEntities = await this.metadataReferencesOne.getReferencedEntities();
-                // eslint-disable-next-line max-len
+
                 this.referencesOneDropdownValues = this.metadataReferencesOne.getDropdownValues(LodashUtilities.cloneDeep(this.referencesOneAllReferencedEntities));
                 this.filteredReferencesOneDropdownValues = LodashUtilities.cloneDeep(this.referencesOneDropdownValues);
                 this.setReferencesOneObject();
@@ -524,7 +524,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
         this.hasManyDataSource.sortingDataAccessor = (entity: EntityType, header: string) => {
             return runInInjectionContext(this.injector, () => {
-                // eslint-disable-next-line max-len
+
                 return this.metadataHasMany.tableData.baseData.displayColumns.find((dp) => dp.displayName === header)?.value(entity) as string;
             });
         };
@@ -613,7 +613,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     }
 
     private importJson(file: File): void {
-        // eslint-disable-next-line max-len
+
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.hasManyImportAction.confirmDialogData)
             .withDefault('text', this.metadataHasMany.tableData.baseData.importActionData.confirmDialogData?.text )
             .withDefault('title', this.hasManyImportAction.displayName)
@@ -634,7 +634,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * Sets the references one object using the input id.
      */
     setReferencesOneObject(): void {
-        // eslint-disable-next-line max-len
+
         const foundEntity: EntityType | undefined = this.metadataReferencesOne.getEntityForId(this.internalEntity[this.internalPropertyKey] as string, this.referencesOneAllReferencedEntities);
         this.referencesOneObject = new this.metadataReferencesOne.EntityClass(foundEntity);
         this.referencesOnePropertyTabs = EntityUtilities.getEntityTabs(this.referencesOneObject, this.injector);
@@ -761,7 +761,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         const res: number = await firstValueFrom(this.editHasManyDialogRef.afterClosed()) as number;
         if (res === 0) {
             const data: EntityType[] = this.hasManyDataSource.data;
-            // eslint-disable-next-line max-len
+
             data[this.hasManyDataSource.data.findIndex((e) => e[this.hasManyEntityService.idKey] === entity[this.hasManyEntityService.idKey])] = entity;
             this.hasManyDataSource.data = data;
             this.hasManySelection.clear();
@@ -780,7 +780,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             this.dialogConfirmEditHasMany();
             return;
         }
-        // eslint-disable-next-line max-len
+
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.metadataHasMany.tableData.editData.confirmEditDialogData)
             .withDefault('text', this.globalConfig.confirmSaveText)
             .withDefault('confirmButtonLabel', this.globalConfig.saveLabel)
@@ -814,7 +814,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             this.confirmDeleteHasManyEntity();
             return;
         }
-        // eslint-disable-next-line max-len
+
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.metadataHasMany.tableData.editData.confirmDeleteDialogData)
             .withDefault('text', this.globalConfig.confirmDeleteText)
             .withDefault('type', 'delete')
@@ -902,7 +902,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             this.dialogConfirmCreateHasMany();
             return;
         }
-        // eslint-disable-next-line max-len
+
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.metadataHasMany.tableData.createData.confirmCreateDialogData)
             .withDefault('text', this.globalConfig.confirmCreateText)
             .withDefault('confirmButtonLabel', this.globalConfig.createLabel)
@@ -947,7 +947,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             this.confirmRunHasManyTableAction(action);
             return;
         }
-        // eslint-disable-next-line max-len
+
         const defaultText: string[] = action.type === 'multi-select' ? this.globalConfig.confirmMultiSelectActionText(this.hasManySelection.selected) : this.globalConfig.confirmBaseActionText;
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, action.confirmDialogData)
             .withDefault('text', defaultText)
@@ -1006,7 +1006,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     async checkIsHasManyEntityValid(omit: 'create' | 'update'): Promise<void> {
         this.hasManyValidationErrors = await ValidationUtilities.getEntityValidationErrors(this.hasManyEntity, this.injector, omit);
-        // eslint-disable-next-line max-len
+
         this.hasManyTooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.hasManyValidationErrors));
         this.isHasManyEntityValid = this.hasManyValidationErrors.length === 0;
     }
@@ -1031,7 +1031,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     async checkIsArrayItemValid(): Promise<void> {
         this.arrayItemValidationErrors = await ValidationUtilities.getEntityValidationErrors(this.arrayItem, this.injector, 'create');
-        // eslint-disable-next-line max-len
+
         this.arrayItemTooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.arrayItemValidationErrors));
         this.isArrayItemValid = this.arrayItemValidationErrors.length === 0;
     }

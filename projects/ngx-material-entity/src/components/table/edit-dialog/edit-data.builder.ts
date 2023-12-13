@@ -41,7 +41,7 @@ export class EditActionInternal<EntityType extends BaseEntityType<EntityType>> i
             .getResult();
     }
 
-    // eslint-disable-next-line max-len
+
     private functionToAsync(originalFunction: ((e: EntityType, ePriorChanges: EntityType) => unknown) | ((e: EntityType, ePriorChanges: EntityType) => Promise<unknown>)): (e: EntityType, ePriorChanges: EntityType) => Promise<unknown> {
         if (isAsyncFunction(originalFunction)) {
             return originalFunction as (e: EntityType) => Promise<unknown>;

@@ -12,6 +12,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 // eslint-disable-next-line angular/prefer-standalone-component
 @Component({
+    // eslint-disable-next-line angular/component-selector
     selector: 'file-image-input',
     templateUrl: './file-image-input.component.html',
     styleUrls: ['./file-image-input.component.scss']

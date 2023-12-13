@@ -1,11 +1,7 @@
 import { Application, NextFunction, Request, RequestHandler, Response } from 'express';
 import jsonServer from 'json-server';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { ApiData, apiData } from './api-data';
 import { LodashUtilities } from './projects/ngx-material-entity/src/encapsulation/lodash.utilities';
-const __filename: string = fileURLToPath(import.meta.url);
-const __dirname: string = path.dirname(__filename);
 
 const data: ApiData = LodashUtilities.cloneDeep(apiData);
 

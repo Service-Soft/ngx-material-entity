@@ -132,7 +132,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      */
     isReadOnly(key: keyof EntityType): boolean {
         return runInInjectionContext(this.injector, () => {
-            // eslint-disable-next-line max-len
+
             const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = EntityUtilities.getPropertyMetadata(this.data.entity, key);
             if (!metadata) {
                 throw new Error(`No metadata was found for the key "${String(key)}"`);
@@ -167,7 +167,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
             this.confirmEdit();
             return;
         }
-        // eslint-disable-next-line max-len
+
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.editData.confirmEditDialogData)
             .withDefault('text', this.globalConfig.confirmSaveText)
             .withDefault('confirmButtonLabel', this.globalConfig.saveLabel)
@@ -198,7 +198,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
             this.confirmDelete();
             return;
         }
-        // eslint-disable-next-line max-len
+
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.editData.confirmDeleteDialogData)
             .withDefault('text', this.globalConfig.confirmDeleteText)
             .withDefault('type', 'delete')

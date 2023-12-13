@@ -87,7 +87,7 @@ export abstract class NgxMatEntityBaseInputComponent<
     name!: string;
 
     ngOnInit(): void {
-        // eslint-disable-next-line max-len
+
         const foundMetadata: DecoratorType<Type, CustomMetadataType> | undefined = EntityUtilities.getPropertyMetadata(this.entity, this.key);
         if (!foundMetadata) {
             throw new Error(`No metadata was found for the key "${String(this.key)}"`);

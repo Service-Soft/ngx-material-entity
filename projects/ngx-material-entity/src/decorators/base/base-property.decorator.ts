@@ -16,7 +16,7 @@ export function baseProperty<
     return function (target: object, propertyKey: string) {
         ReflectUtilities.defineMetadata('metadata', metadata, target, propertyKey as keyof object);
         ReflectUtilities.defineMetadata('type', type, target, propertyKey as keyof object);
-        // eslint-disable-next-line max-len
+
         ReflectUtilities.defineMetadata(EntityUtilities.METADATA_KEYS_TO_RESET_KEY, metadataKeysToReset, target, propertyKey as keyof object);
     };
 }

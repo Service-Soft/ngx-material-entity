@@ -6,6 +6,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 // eslint-disable-next-line angular/prefer-standalone-component
 @Component({
+    // eslint-disable-next-line angular/component-selector
     selector: 'number-slider-input',
     templateUrl: './number-slider-input.component.html',
     styleUrls: ['./number-slider-input.component.scss']

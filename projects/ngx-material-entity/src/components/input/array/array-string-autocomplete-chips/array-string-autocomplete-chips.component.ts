@@ -9,6 +9,7 @@ import { ArrayStringChipsInputComponent } from '../array-string-chips-input/arra
 
 // eslint-disable-next-line angular/prefer-standalone-component
 @Component({
+    // eslint-disable-next-line angular/component-selector
     selector: 'array-string-autocomplete-chips',
     templateUrl: './array-string-autocomplete-chips.component.html',
     styleUrls: ['./array-string-autocomplete-chips.component.scss']

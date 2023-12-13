@@ -24,33 +24,62 @@ export class TooltipDirective implements OnDestroy {
 
     private closeListeners: Listener[] = [];
 
+    private openedByClick: boolean = false;
+
     constructor(
         private readonly el: ElementRef,
         private readonly renderer: Renderer2
     ) {}
 
     /**
+     * Toggles the tooltip.
+     */
+    @HostListener('click')
+    onClick(): void {
+        if (!this.tooltipElement) {
+            this.showTooltip();
+            this.registerCloseListeners();
+            this.openedByClick = true;
+            return;
+        }
+        this.hideTooltip();
+        this.removeCloseListeners();
+    }
+
+    /**
      * Shows the tooltip.
      */
     @HostListener('mouseenter')
-    @HostListener('click')
     onMouseEnter(): void {
         if (!this.tooltipElement) {
             this.showTooltip();
             this.registerCloseListeners();
+            return;
         }
-        else {
-            this.hideTooltip();
-            this.removeCloseListeners();
+        if (this.openedByClick) {
+            return;
         }
+        this.hideTooltip();
+        this.removeCloseListeners();
     }
 
     /**
      * Hides the tooltip.
      */
     @HostListener('mouseleave')
-    @HostListener('window:resize')
     onMouseLeave(): void {
+        if (this.openedByClick) {
+            return;
+        }
+        this.hideTooltip();
+        this.removeCloseListeners();
+    }
+
+    /**
+     * Hides the tooltip.
+     */
+    @HostListener('window:resize')
+    onResize(): void {
         this.hideTooltip();
         this.removeCloseListeners();
     }
@@ -104,6 +133,7 @@ export class TooltipDirective implements OnDestroy {
             listener();
         }
         this.closeListeners = [];
+        this.openedByClick = false;
     }
 
     ngOnDestroy(): void {

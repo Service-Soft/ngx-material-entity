@@ -1,6 +1,6 @@
 {
     "name": "ngx-material-entity",
-    "version": "16.0.8",
+    "version": "16.0.9",
     "license": "MIT",
     "keywords": [
         "angular",
@@ -8,7 +8,6 @@
         "crud",
         "entity"
     ],
-    "type": "module",
     "peerDependencies": {
         "@angular/animations": "16",
         "@angular/cdk": "16",

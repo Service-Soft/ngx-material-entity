@@ -31,7 +31,6 @@ import { PageEditDataBuilder, PageEditDataInternal } from './page-edit-data.buil
 /**
  * The data that needs to be provided for a route to be able to edit a entity.
  */
-// eslint-disable-next-line max-len
 export type PageEditData<EntityType extends BaseEntityType<EntityType>> = Omit<EditEntityData<EntityType>, 'entity' | 'EntityServiceClass'> & {
     /**
      * Whether or not to display a loading spinner while the entity for the page is loaded.
@@ -57,17 +56,17 @@ export type PageEditData<EntityType extends BaseEntityType<EntityType>> = Omit<E
 /**
  * The entity service that needs to be provided in the providers array of the edit page route.
  */
-// eslint-disable-next-line max-len, typescript/no-explicit-any, constCase/uppercase
+// eslint-disable-next-line typescript/no-explicit-any
 export const NGX_EDIT_DATA_ENTITY_SERVICE: InjectionToken<EntityService<any>> = new InjectionToken<EntityService<any>>('NGX_EDIT_DATA_ENTITY_SERVICE');
 /**
  * The entity class that needs to be provided in the providers array of the edit page route.
  */
-// eslint-disable-next-line max-len, typescript/no-explicit-any, constCase/uppercase
+// eslint-disable-next-line typescript/no-explicit-any
 export const NGX_EDIT_DATA_ENTITY: InjectionToken<EntityClassNewable<any>> = new InjectionToken<EntityClassNewable<any>>('NGX_EDIT_DATA_ENTITY');
 /**
  * The configuration that needs to be provided in the providers array of the edit page route.
  */
-// eslint-disable-next-line typescript/no-explicit-any, constCase/uppercase
+// eslint-disable-next-line typescript/no-explicit-any
 export const NGX_EDIT_DATA: InjectionToken<PageEditData<any>> = new InjectionToken<PageEditData<any>>('NGX_EDIT_DATA');
 
 /**
@@ -267,7 +266,7 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
             this.confirmEdit();
             return;
         }
-        // eslint-disable-next-line max-len
+
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.editData.confirmEditDialogData)
             .withDefault('text', this.globalConfig.confirmSaveText)
             .withDefault('confirmButtonLabel', this.globalConfig.saveLabel)
@@ -298,7 +297,7 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
             this.confirmDelete();
             return;
         }
-        // eslint-disable-next-line max-len
+
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.editData.confirmDeleteDialogData)
             .withDefault('text', this.globalConfig.confirmDeleteText)
             .withDefault('type', 'delete')
