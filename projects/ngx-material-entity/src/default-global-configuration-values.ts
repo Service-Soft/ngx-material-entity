@@ -94,7 +94,6 @@ export const needsUpdateGlobalDefaults: NgxGlobalDefaultValues = {
 /**
  * The internal values consisting of default ones and values provided by the user in NGX_GLOBAL_DEFAULT_VALUES.
  */
-// eslint-disable-next-line constCase/uppercase
 export const NGX_INTERNAL_GLOBAL_DEFAULT_VALUES: InjectionToken<NgxGlobalDefaultValues> = new InjectionToken<NgxGlobalDefaultValues>(
     'NGX_INTERNAL_GLOBAL_DEFAULT_VALUES',
     {

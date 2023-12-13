@@ -9,6 +9,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 // eslint-disable-next-line angular/prefer-standalone-component
 @Component({
+    // eslint-disable-next-line angular/component-selector
     selector: 'array-string-chips-input',
     templateUrl: './array-string-chips-input.component.html',
     styleUrls: ['./array-string-chips-input.component.scss']

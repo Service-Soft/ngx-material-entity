@@ -13,6 +13,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 // eslint-disable-next-line angular/prefer-standalone-component
 @Component({
+    // eslint-disable-next-line angular/component-selector
     selector: 'date-range-input',
     templateUrl: './date-range-input.component.html',
     styleUrls: ['./date-range-input.component.scss']

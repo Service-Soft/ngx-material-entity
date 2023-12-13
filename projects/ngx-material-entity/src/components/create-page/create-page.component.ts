@@ -28,7 +28,6 @@ import { PageCreateDataBuilder, PageCreateDataInternal } from './page-create-dat
 /**
  * The data that needs to be provided for a route to be able to create a entity.
  */
-// eslint-disable-next-line max-len
 export type PageCreateData<EntityType extends BaseEntityType<EntityType>> = Omit<CreateEntityData<EntityType>, 'entity' | 'EntityServiceClass'> & {
     /**
      * Whether or not to display a loading spinner while the data for the page is loaded.
@@ -54,17 +53,17 @@ export type PageCreateData<EntityType extends BaseEntityType<EntityType>> = Omit
 /**
  * The entity service that needs to be provided in the providers array of the create page route.
  */
-// eslint-disable-next-line max-len, typescript/no-explicit-any, constCase/uppercase
+// eslint-disable-next-line typescript/no-explicit-any
 export const NGX_CREATE_DATA_ENTITY_SERVICE: InjectionToken<EntityService<any>> = new InjectionToken<EntityService<any>>('NGX_CREATE_DATA_ENTITY_SERVICE');
 /**
  * The entity class that needs to be provided in the providers array of the create page route.
  */
-// eslint-disable-next-line max-len, typescript/no-explicit-any, constCase/uppercase
+// eslint-disable-next-line typescript/no-explicit-any
 export const NGX_CREATE_DATA_ENTITY: InjectionToken<EntityClassNewable<any>> = new InjectionToken<EntityClassNewable<any>>('NGX_CREATE_DATA_ENTITY');
 /**
  * The configuration that needs to be provided in the providers array of the create page route.
  */
-// eslint-disable-next-line typescript/no-explicit-any, constCase/uppercase
+// eslint-disable-next-line typescript/no-explicit-any
 export const NGX_CREATE_DATA: InjectionToken<PageCreateData<any>> = new InjectionToken<PageCreateData<any>>('NGX_CREATE_DATA');
 
 /**
@@ -159,7 +158,7 @@ export class NgxMatEntityCreatePageComponent<EntityType extends BaseEntityType<E
         this.data = new PageCreateDataBuilder(this.inputData, this.globalConfig).getResult();
         if (this.data == null) {
             this.confirmNavigateBack();
-            // eslint-disable-next-line max-len
+
             throw new Error('No create data was provided for "NGX_CREATE_DATA". You need to provide a value in your routes providers array.');
         }
 
@@ -230,7 +229,7 @@ export class NgxMatEntityCreatePageComponent<EntityType extends BaseEntityType<E
             this.confirmCreate();
             return;
         }
-        // eslint-disable-next-line max-len
+
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.createData.confirmCreateDialogData)
             .withDefault('text', this.globalConfig.confirmCreateText)
             .withDefault('confirmButtonLabel', this.globalConfig.createLabel)

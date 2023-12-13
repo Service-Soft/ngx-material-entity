@@ -4,7 +4,6 @@ import { NgModel } from '@angular/forms';
 /**
  * Provider for the default getValidationErrorMessage.
  */
-// eslint-disable-next-line constCase/uppercase
 export const NGX_GET_VALIDATION_ERROR_MESSAGE: InjectionToken<() => string> = new InjectionToken(
     'Provider for the default getValidationErrorMessage.',
     {

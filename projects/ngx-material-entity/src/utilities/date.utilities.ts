@@ -4,7 +4,7 @@ import { DropdownValue } from '../decorators/base/dropdown-value.interface';
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { defaultTrue } from '../functions/default-true.function';
 
-// eslint-disable-next-line constCase/uppercase
+
 const DAY_IN_MS: number = 1000 * 60 * 60 * 24;
 
 /**

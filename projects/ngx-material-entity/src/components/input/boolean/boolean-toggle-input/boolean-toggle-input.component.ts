@@ -6,6 +6,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 // eslint-disable-next-line angular/prefer-standalone-component
 @Component({
+    // eslint-disable-next-line angular/component-selector
     selector: 'boolean-toggle-input',
     templateUrl: './boolean-toggle-input.component.html',
     styleUrls: ['./boolean-toggle-input.component.scss']

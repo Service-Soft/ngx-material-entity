@@ -6,6 +6,7 @@ import { customTableData, customTableDataReadOnly, defaultTableData, defaultTabl
 
 // eslint-disable-next-line angular/prefer-standalone-component
 @Component({
+
     selector: 'app-showcase-table',
     templateUrl: './showcase-table.component.html',
     styleUrls: ['./showcase-table.component.scss']

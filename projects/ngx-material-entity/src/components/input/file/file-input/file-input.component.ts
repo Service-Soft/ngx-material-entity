@@ -14,6 +14,7 @@ import { NgxMatEntityConfirmDialogComponent } from '../../../confirm-dialog/conf
 
 // eslint-disable-next-line angular/prefer-standalone-component
 @Component({
+    // eslint-disable-next-line angular/component-selector
     selector: 'file-input',
     templateUrl: './file-input.component.html',
     styleUrls: ['./file-input.component.scss']
@@ -207,7 +208,7 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
 
     async downloadAll(): Promise<void> {
         if ((this.propertyValue as FileData[]).length) {
-            // eslint-disable-next-line max-len
+
             void FileUtilities.downloadMultipleFiles(this.metadata.displayName, LodashUtilities.cloneDeep(this.propertyValue as FileData[]), this.http);
         }
     }

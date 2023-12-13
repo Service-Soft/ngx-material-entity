@@ -8,6 +8,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 // eslint-disable-next-line angular/prefer-standalone-component
 @Component({
+    // eslint-disable-next-line angular/component-selector
     selector: 'number-dropdown-input',
     templateUrl: './number-dropdown-input.component.html',
     styleUrls: ['./number-dropdown-input.component.scss']
