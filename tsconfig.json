@@ -4,9 +4,9 @@
         // these options are overrides used only by ts-node
         "esm": true,
         "experimentalSpecifierResolution": "node",
-        // "compilerOptions": {
-        //     "module": "commonjs"
-        // }
+        "compilerOptions": {
+            "module": "commonjs"
+        }
     },
     "compilerOptions": {
         "baseUrl": "./",
