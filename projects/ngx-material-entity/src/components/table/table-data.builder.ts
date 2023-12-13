@@ -92,7 +92,7 @@ export class MultiSelectActionInternal<EntityType extends BaseEntityType<EntityT
             .getResult();
     }
 
-    // eslint-disable-next-line max-len
+
     private functionToAsync(originalFunction: ((selectedEntities: EntityType[]) => unknown) | ((selectedEntities: EntityType[]) => Promise<unknown>)): (selectedEntities: EntityType[]) => Promise<unknown> {
         if (isAsyncFunction(originalFunction)) {
             return originalFunction as (selectedEntities: EntityType[]) => Promise<unknown>;
@@ -217,7 +217,7 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         this.searchString = data.searchString ?? defaultSearchFunction;
         if (data.tableActions) {
             this.tableActions = data.tableActions.map(tA => {
-                // eslint-disable-next-line max-len
+
                 return tA.type === 'default' ? new BaseTableActionInternal(tA, globalConfig) : new MultiSelectActionInternal(tA, globalConfig);
             });
         }

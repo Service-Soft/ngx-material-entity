@@ -8,7 +8,6 @@
         "crud",
         "entity"
     ],
-    "type": "module",
     "peerDependencies": {
         "@angular/animations": "16",
         "@angular/cdk": "16",

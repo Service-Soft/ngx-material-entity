@@ -7,7 +7,7 @@ import { UnsavedChangesGuard } from '../../services/unsaved-changes.guard';
  * The definition for a route to use with the "NgxMatEntityCreatePageComponent".
  */
 export interface CreateDataRoute extends Route {
-    // eslint-disable-next-line max-len, jsdoc/require-jsdoc
+    // eslint-disable-next-line jsdoc/require-jsdoc
     loadComponent: () => Type<unknown> | Observable<Type<unknown> | DefaultExport<Type<unknown>>> | Promise<Type<unknown> | DefaultExport<Type<unknown>>>,
     // eslint-disable-next-line jsdoc/require-jsdoc
     providers: (Provider | EnvironmentProviders)[],

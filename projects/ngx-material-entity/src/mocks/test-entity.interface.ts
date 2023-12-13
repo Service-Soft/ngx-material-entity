@@ -913,7 +913,7 @@ const testEntityData: TestEntityWithoutCustomProperties = {
     customDateRangeValue: {
         start: new Date(2022, 0, 2, 0, 0, 0, 0),
         end: new Date(2022, 0, 20, 0, 0, 0, 0),
-        // eslint-disable-next-line max-len
+
         values: getDatesBetween(new Date(2022, 0, 2, 0, 0, 0, 0), new Date(2022, 0, 20, 0, 0, 0, 0), (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1)
     },
     dateTimeValue: new Date(2022, 0, 1, 8, 30, 0, 0),
@@ -1052,7 +1052,7 @@ export function getDatesBetween(
     endDate: Date,
     filter?: DateFilterFn<Date>
 ): Date[] {
-    // eslint-disable-next-line constCase/uppercase
+
     const DAY_IN_MS: number = 1000 * 60 * 60 * 24;
     const res: Date[] = [];
     while (

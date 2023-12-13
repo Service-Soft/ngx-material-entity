@@ -6,6 +6,7 @@ import { NgxMatEntityBaseDisplayColumnValueComponent } from './base-display-colu
  * The component that displays the custom display column value.
  */
 @Component({
+    // eslint-disable-next-line angular/component-selector
     selector: 'display-column-value',
     templateUrl: './display-column-value.component.html',
     styleUrls: ['./display-column-value.component.scss'],

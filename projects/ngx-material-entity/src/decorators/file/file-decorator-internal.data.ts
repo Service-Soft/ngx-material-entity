@@ -156,7 +156,7 @@ export class ImageFileDecoratorConfigInternal extends PropertyDecoratorConfigInt
 function getDefaultMimeTypeErrorDialogData(data: DefaultFileDecoratorConfig | ImageFileDecoratorConfig): ConfirmDialogData {
     return {
         type: data.mimeTypeErrorDialog?.type ?? 'info-only',
-        // eslint-disable-next-line max-len
+
         text: data.mimeTypeErrorDialog?.text ?? (data.multiple ? ['One of the uploaded files has the wrong type.'] : ['The uploaded file has the wrong type.']),
         title: data.mimeTypeErrorDialog?.title ?? (data.multiple ? 'Error adding files' : 'Error adding file'),
         confirmButtonLabel: data.mimeTypeErrorDialog?.confirmButtonLabel,
@@ -175,7 +175,7 @@ function getDefaultMimeTypeErrorDialogData(data: DefaultFileDecoratorConfig | Im
 function getDefaultMaxSizeErrorDialogData(data: DefaultFileDecoratorConfig | ImageFileDecoratorConfig): ConfirmDialogData {
     return {
         type: data.mimeTypeErrorDialog?.type ?? 'info-only',
-        // eslint-disable-next-line max-len
+
         text: data.mimeTypeErrorDialog?.text ?? (data.multiple ? ['One of the uploaded files is too big'] : ['The uploaded files is too big']),
         title: data.mimeTypeErrorDialog?.title ?? (data.multiple ? 'Error adding files' : 'Error adding file'),
         confirmButtonLabel: data.mimeTypeErrorDialog?.confirmButtonLabel,

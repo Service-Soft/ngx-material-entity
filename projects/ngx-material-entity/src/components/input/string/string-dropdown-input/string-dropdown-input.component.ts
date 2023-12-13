@@ -8,6 +8,7 @@ import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 
 // eslint-disable-next-line angular/prefer-standalone-component
 @Component({
+    // eslint-disable-next-line angular/component-selector
     selector: 'string-dropdown-input',
     templateUrl: './string-dropdown-input.component.html',
     styleUrls: ['./string-dropdown-input.component.scss']

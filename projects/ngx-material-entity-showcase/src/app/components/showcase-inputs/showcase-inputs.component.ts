@@ -6,6 +6,7 @@ import { TestEntity, TestEntityMockBuilder } from '../../../../../ngx-material-e
 
 // eslint-disable-next-line angular/prefer-standalone-component
 @Component({
+
     selector: 'app-showcase-inputs',
     templateUrl: './showcase-inputs.component.html',
     styleUrls: ['./showcase-inputs.component.scss']

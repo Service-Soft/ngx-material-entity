@@ -45,7 +45,7 @@ export class CreateDataBuilder extends BaseBuilder<CreateDataInternal, CreateDat
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected generateBaseData(data?: CreateData): CreateDataInternal {
-        // eslint-disable-next-line max-len
+
         const confirmCreateDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, data?.confirmCreateDialogData)
             .withDefault('confirmButtonLabel', this.globalConfig.createLabel)
             .withDefault('text', this.globalConfig.confirmCreateText)

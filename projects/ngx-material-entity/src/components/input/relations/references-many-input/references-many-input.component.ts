@@ -16,6 +16,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 // eslint-disable-next-line angular/prefer-standalone-component
 @Component({
+    // eslint-disable-next-line angular/component-selector
     selector: 'references-many-input',
     templateUrl: './references-many-input.component.html',
     styleUrls: ['./references-many-input.component.scss']

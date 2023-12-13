@@ -152,7 +152,6 @@ export abstract class ValidationUtilities {
                 return this.getStringValidationError(entityString, stringMetadata);
             case DecoratorTypes.STRING_AUTOCOMPLETE:
                 const entityAutocompleteString: string = entity[key] as string;
-                // eslint-disable-next-line max-len
                 const stringAutocompleteMetadata: AutocompleteStringDecoratorConfigInternal = metadata as AutocompleteStringDecoratorConfigInternal;
                 return this.getAutocompleteStringValidationError(entity, entityAutocompleteString, stringAutocompleteMetadata);
             case DecoratorTypes.STRING_TEXTBOX:
@@ -192,9 +191,7 @@ export abstract class ValidationUtilities {
                 break;
             case DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS:
                 const stringAutocompleteArray: string[] = entity[key] as string[];
-                // eslint-disable-next-line max-len
                 const stringAutocompleteArrayMetadata: AutocompleteStringChipsArrayDecoratorConfigInternal = metadata as AutocompleteStringChipsArrayDecoratorConfigInternal;
-                // eslint-disable-next-line max-len
                 return await this.getArrayStringAutocompleteChipsValidationError(entity, stringAutocompleteArrayMetadata, stringAutocompleteArray);
             case DecoratorTypes.ARRAY_STRING_CHIPS:
             case DecoratorTypes.ARRAY_DATE:
@@ -202,7 +199,6 @@ export abstract class ValidationUtilities {
             case DecoratorTypes.ARRAY_DATE_RANGE:
             case DecoratorTypes.ARRAY:
                 const entityArray: unknown[] = entity[key] as unknown[];
-                // eslint-disable-next-line max-len
                 const arrayMetadata: EntityArrayDecoratorConfigInternal<EntityType> = metadata as EntityArrayDecoratorConfigInternal<EntityType>;
                 if (arrayMetadata.required(entity) && !entityArray.length) {
                     return {
@@ -234,7 +230,7 @@ export abstract class ValidationUtilities {
             case DecoratorTypes.HAS_MANY:
                 break;
             case DecoratorTypes.CUSTOM:
-                // eslint-disable-next-line typescript/no-explicit-any, max-len
+                // eslint-disable-next-line typescript/no-explicit-any
                 const customMetadata: CustomDecoratorConfigInternal<EntityType, any, any, any> = metadata as CustomDecoratorConfigInternal<EntityType, any, any, any>;
                 if (!customMetadata.isValid(entity[key], omit)) {
                     return {

@@ -6,7 +6,7 @@ import { CreateDataBuilder, CreateDataInternal } from '../table/create-dialog/cr
 import { CreateEntityDataInternal } from '../table/create-dialog/create-entity-dialog-data.builder';
 import { PageCreateData } from './create-page.component';
 
-// eslint-disable-next-line jsdoc/require-jsdoc, max-len
+// eslint-disable-next-line jsdoc/require-jsdoc
 export type PageCreateDataInternal<EntityType extends BaseEntityType<EntityType>> = Omit<CreateEntityDataInternal<EntityType>, 'entity' | 'EntityServiceClass'> & {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayLoadingSpinner: boolean,
@@ -32,7 +32,7 @@ export class PageCreateDataBuilder<EntityType extends BaseEntityType<EntityType>
         const createData: CreateDataInternal = new CreateDataBuilder(this.globalConfig, data.createData)
             .withDefault('cancelButtonLabel', this.globalConfig.backLabel)
             .getResult();
-        // eslint-disable-next-line max-len
+
         const confirmUnsavedChangesDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, data.createData?.confirmUnsavedChangesDialogData)
             .withDefault('title', this.globalConfig.confirmUnsavedChangesTitle)
             .withDefault('text', this.globalConfig.confirmUnsavedChangesText)

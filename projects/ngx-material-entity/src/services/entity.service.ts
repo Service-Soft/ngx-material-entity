@@ -134,7 +134,7 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
         const formData: FormData = new FormData();
         formData.append('body', JSON.stringify(LodashUtilities.omit(body, filePropertyKeys)));
         for (const key of filePropertyKeys) {
-            // eslint-disable-next-line max-len
+
             if ((EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT) as DefaultFileDecoratorConfigInternal).multiple) {
                 const fileDataValues: FileData[] = body[key] as FileData[];
                 for (const value of fileDataValues) {
@@ -255,7 +255,7 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
         const formData: FormData = new FormData();
         formData.append('body', JSON.stringify(LodashUtilities.omit(body, filePropertyKeys)));
         for (const key of filePropertyKeys) {
-            // eslint-disable-next-line max-len
+
             if ((EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT) as DefaultFileDecoratorConfigInternal).multiple) {
                 const fileDataValues: FileData[] = body[key] as FileData[];
                 for (const value of fileDataValues) {

@@ -176,7 +176,6 @@ export abstract class EntityUtilities {
         for (const key in entity) {
             const type: DecoratorTypes | undefined = this.getPropertyType(entity, key);
             if (type === DecoratorTypes.FILE_DEFAULT || type === DecoratorTypes.FILE_IMAGE) {
-                // eslint-disable-next-line max-len
                 const metadata: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, key) as PropertyDecoratorConfigInternal<unknown>;
                 if (!(metadata.omitForCreate && omit === 'create') && !(metadata.omitForUpdate && omit === 'update')) {
                     res.push(key);
@@ -446,7 +445,6 @@ export abstract class EntityUtilities {
                 filter
             );
         }
-        // eslint-disable-next-line max-len
         const dateRangePriorChanges: Partial<DateRange> | undefined = LodashUtilities.cloneDeep(valuePriorChanges) as Partial<DateRange> | undefined;
         if (dateRangePriorChanges?.start) {
             dateRangePriorChanges.start = new Date(dateRangePriorChanges.start);
@@ -632,7 +630,6 @@ export abstract class EntityUtilities {
             .filter(k => !additionalOmitValues.includes(k));
         const numberOfTabs: number = this.getNumberOfTabs<EntityType>(keys, entity);
 
-        // eslint-disable-next-line max-len
         const firstTabRows: EntityRow<EntityType>[] = this.getEntityRows<EntityType>(entity, -1, hideOmitForCreate, hideOmitForEdit, additionalOmitValues, injector);
         if (firstTabRows.length) {
             const firstTab: EntityTab<EntityType> = {

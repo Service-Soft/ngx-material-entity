@@ -6,6 +6,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 // eslint-disable-next-line angular/prefer-standalone-component
 @Component({
+    // eslint-disable-next-line angular/component-selector
     selector: 'string-textbox-input',
     templateUrl: './string-textbox-input.component.html',
     styleUrls: ['./string-textbox-input.component.scss']

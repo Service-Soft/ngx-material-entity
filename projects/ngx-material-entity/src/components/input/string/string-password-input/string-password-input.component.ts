@@ -15,6 +15,7 @@ export enum PasswordStrength {
 
 // eslint-disable-next-line angular/prefer-standalone-component
 @Component({
+    // eslint-disable-next-line angular/component-selector
     selector: 'string-password-input',
     templateUrl: './string-password-input.component.html',
     styleUrls: ['./string-password-input.component.scss']
