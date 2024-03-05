@@ -23,7 +23,7 @@ import { EntityUtilities } from '../../utilities/entity.utilities';
 import { SelectionUtilities } from '../../utilities/selection.utilities';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { CreateEntityDataInternal, CreateEntityDialogDataBuilder } from './create-dialog/create-entity-dialog-data.builder';
+import { CreateEntityDataInternal, CreateEntityDialogDataBuilder } from './create-dialog/create-entity-data.builder';
 import { NgxMatEntityCreateDialogComponent } from './create-dialog/create-entity-dialog.component';
 import { DisplayColumnValueComponent } from './display-column-value/display-column-value.component';
 import { EditEntityData } from './edit-dialog/edit-entity-data';

@@ -87,5 +87,5 @@
     <mat-spinner *ngIf="isLoading && data.baseData.displayLoadingSpinner">
     </mat-spinner>
 
-    <mat-paginator [length]="dataSource.filteredData.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>
+    <mat-paginator style="padding-top: 10px; padding-bottom: 10px;" [length]="dataSource.filteredData.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>
 </div>

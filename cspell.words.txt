@@ -9,3 +9,4 @@ Lodash
 maxlength
 cyclomatic
 ngsrc
+localstorage

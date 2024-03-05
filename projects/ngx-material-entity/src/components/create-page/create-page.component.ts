@@ -20,7 +20,7 @@ import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { NgxMatEntityInputModule } from '../input/input.module';
-import { CreateEntityData } from '../table/create-dialog/create-entity-dialog-data';
+import { CreateEntityData } from '../table/create-dialog/create-entity-data';
 import { CreateData } from '../table/table-data';
 import { TooltipComponent } from '../tooltip/tooltip.component';
 import { PageCreateDataBuilder, PageCreateDataInternal } from './page-create-data.builder';
