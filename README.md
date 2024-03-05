@@ -57,7 +57,7 @@ NgxMaterialEntity aims to have a fast way to get started with a lot of default o
 - [NgxMatEntityTable Configuration](#ngxmatentitytable-configuration)
   - [Display Columns](#display-columns)
   - [Multiselect Actions](#multiselect-actions)
-  - [Edit in seperate page](#edit-in-seperate-page)
+  - [Edit/Create in seperate page](#editcreate-in-seperate-page)
     - [1. In the base data entry of your table config add `defaultEdit: 'page'`](#1-in-the-base-data-entry-of-your-table-config-add-defaultedit-page)
     - [2. Add the route on which the entity should be edited:](#2-add-the-route-on-which-the-entity-should-be-edited)
     - [3. Use a custom route (optional)](#3-use-a-custom-route-optional)
@@ -1279,10 +1279,11 @@ export interface MultiSelectAction<EntityType extends object> {
     confirmDialogData?: ConfirmDialogData
 }
 ```
-## Edit in seperate page
+## Edit/Create in seperate page
 When handling entities that have a lot of properties, you might don't want to edit everything inside a dialog but in a separate page.
 
-For that case, this library has a generic edit page. It works flawlessly with the table component, but you need to adjust some things:
+For that case, this library has a generic edit page. It works flawlessly with the table component, but you need to adjust some things.
+The same procedure can also be used to define a create page.
 
 ### 1. In the base data entry of your table config add `defaultEdit: 'page'`
 ### 2. Add the route on which the entity should be edited:

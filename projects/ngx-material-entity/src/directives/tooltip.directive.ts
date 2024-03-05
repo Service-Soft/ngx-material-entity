@@ -33,12 +33,18 @@ export class TooltipDirective implements OnDestroy {
 
     /**
      * Toggles the tooltip.
+     * @param event - The click event, is used to stop the propagation that would trigger the global click listener.
      */
-    @HostListener('click')
-    onClick(): void {
+    @HostListener('click', ['$event'])
+    onClick(event: Event): void {
+        event.stopPropagation();
         if (!this.tooltipElement) {
             this.showTooltip();
             this.registerCloseListeners();
+            this.openedByClick = true;
+            return;
+        }
+        if (!this.openedByClick) {
             this.openedByClick = true;
             return;
         }
@@ -59,8 +65,6 @@ export class TooltipDirective implements OnDestroy {
         if (this.openedByClick) {
             return;
         }
-        this.hideTooltip();
-        this.removeCloseListeners();
     }
 
     /**

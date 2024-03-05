@@ -14,7 +14,7 @@ export * from './components/edit-page/edit-page.component';
 export * from './components/input/base-input.component';
 export * from './components/input/input.component';
 export * from './components/input/input.module';
-export * from './components/table/create-dialog/create-entity-dialog-data';
+export * from './components/table/create-dialog/create-entity-data';
 export * from './components/table/create-dialog/create-entity-dialog.component';
 export * from './components/table/default.actions';
 export * from './components/table/display-column-value/base-display-column-value.component';
@@ -51,10 +51,10 @@ export * from './decorators/references-one/references-one.decorator';
 export * from './decorators/string/string-decorator.data';
 export * from './decorators/string/string.decorator';
 // directives
+export * from './directives/dynamic-style-class.directive';
 export * from './directives/included-in.directive';
 export * from './directives/number.directive';
 export * from './directives/tooltip.directive';
-export * from './directives/dynamic-style-class.directive';
 // functions
 export * from './functions/get-validation-error-message.function';
 export * from './functions/get-validation-errors-tooltip-content.function.ts';

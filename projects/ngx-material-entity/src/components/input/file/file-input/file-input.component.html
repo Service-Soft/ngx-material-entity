@@ -27,7 +27,7 @@
         <i class="fas fa-file-zipper"></i>
     </button>
     <button type="button" class="ngx-mat-grey" mat-icon-button matSuffix [disabled]="isReadOnly" (click)="fileInput.click()">
-        <i class="fas fa-upload"></i>
+        <i class="fas" [class.fa-plus-circle]="metadata.multiple" [class.fa-upload]="!metadata.multiple"></i>
     </button>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>

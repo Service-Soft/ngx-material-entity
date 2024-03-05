@@ -132,7 +132,7 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
     }
 
     private async setMultiFile(files: File[]): Promise<void> {
-        const data: FileData[] = [];
+        this.propertyValue = this.propertyValue ?? [];
         for (const file of files) {
             const fileData: FileData = {
                 file: file,
@@ -140,10 +140,9 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
                 type: file.type,
                 size: file.size
             };
-            data.push(fileData);
+            (this.propertyValue as FileData[]).push(fileData);
         }
-        this.propertyValue = LodashUtilities.cloneDeep(data);
-        this.filenames = this.propertyValue.map(f => f.name);
+        this.filenames = (this.propertyValue as FileData[]).map(f => f.name);
     }
 
     private async setSingleFile(file: File): Promise<void> {

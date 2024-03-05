@@ -16,8 +16,8 @@ import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confi
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { NgxMatEntityInputModule } from '../../input/input.module';
 import { TooltipComponent } from '../../tooltip/tooltip.component';
-import { CreateEntityData } from './create-entity-dialog-data';
-import { CreateEntityDataInternal, CreateEntityDialogDataBuilder } from './create-entity-dialog-data.builder';
+import { CreateEntityData } from './create-entity-data';
+import { CreateEntityDataInternal, CreateEntityDialogDataBuilder } from './create-entity-data.builder';
 
 /**
  * The default dialog used to create new entities based on the configuration passed in the MAT_DIALOG_DATA "inputData".

@@ -25,7 +25,10 @@ mat-spinner {
 }
 
 .mat-column-select {
-    flex: 0 0 75px;
+    flex: 0 0 48px;
+    padding-left: 0px;
+    padding-right: 0px;
+    justify-content: center;
 }
 
 .enabled:hover {

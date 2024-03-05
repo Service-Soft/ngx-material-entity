@@ -206,6 +206,7 @@ const testEntityData: TestEntityWithoutCustomPropertiesInterface = {
 
 interface Address {
     id: string,
+    formOfAddress: string,
     street: string,
     number: string,
     postcode: string,
@@ -235,6 +236,7 @@ const personData: Person = {
     lastName: 'Smith',
     addressObject: {
         id: '2',
+        formOfAddress: 'Mr.',
         city: 'Test City',
         street: 'Test Street',
         number: '1',
@@ -254,6 +256,7 @@ const personData: Person = {
 
 const addressData: Address = {
     id: '1',
+    formOfAddress: 'Mr.',
     street: 'Example Street',
     number: '42',
     postcode: '12345',

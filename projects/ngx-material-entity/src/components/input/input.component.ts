@@ -55,18 +55,14 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * The entity on which the property exists. Used in conjunction with the "propertyKey"
      * to determine the property for which the input should be generated.
      */
-    @Input()
-    entity?: EntityType;
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    internalEntity!: EntityType;
+    @Input( { required: true })
+    entity!: EntityType;
 
     /**
      * The name of the property to generate the input for. Used in conjunction with the "entity".
      */
-    @Input()
-    propertyKey?: keyof EntityType;
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    internalPropertyKey!: keyof EntityType;
+    @Input({ required: true })
+    propertyKey!: keyof EntityType;
 
     /**
      * (optional) A custom function to generate the error-message for invalid inputs.
@@ -356,7 +352,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     get currentReferencesOneDropdownValue(): DropdownValue<string> | undefined {
         return LodashUtilities.cloneDeep(this.referencesOneDropdownValues ?? [])
-            .find(v => v.value === this.internalEntity[this.internalPropertyKey]);
+            .find(v => v.value === this.entity[this.propertyKey]);
     }
 
     // eslint-disable-next-line jsdoc/require-returns
@@ -420,34 +416,24 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     }
 
     ngOnInit(): void {
-        if (!this.entity) {
-            throw new Error('Missing required Input data "entity"');
-        }
-        this.internalEntity = this.entity;
-
-        if (this.propertyKey == null) {
-            throw new Error('Missing required Input data "propertyKey"');
-        }
-        this.internalPropertyKey = this.propertyKey;
-
         this.internalGetValidationErrorMessage = this.getValidationErrorMessage ?? this.defaultGetValidationErrorMessage;
         this.internalIsReadOnly = this.isReadOnly ?? false;
 
-        const foundType: DecoratorTypes | undefined = EntityUtilities.getPropertyType(this.internalEntity, this.internalPropertyKey);
+        const foundType: DecoratorTypes | undefined = EntityUtilities.getPropertyType(this.entity, this.propertyKey);
         if (foundType == null) {
-            throw new Error(`No type was found for the key "${String(this.internalPropertyKey)}"`);
+            throw new Error(`No type was found for the key "${String(this.propertyKey)}"`);
         }
         this.type = foundType;
         if (this.validEmpty === true) {
 
-            const currentMetadata: PropertyDecoratorConfigInternal<unknown> = ReflectUtilities.getMetadata('metadata', this.internalEntity, this.internalPropertyKey) as PropertyDecoratorConfigInternal<unknown>;
+            const currentMetadata: PropertyDecoratorConfigInternal<unknown> = ReflectUtilities.getMetadata('metadata', this.entity, this.propertyKey) as PropertyDecoratorConfigInternal<unknown>;
 
-            ReflectUtilities.defineMetadata('metadata', { ...currentMetadata, required: defaultFalse }, this.internalEntity, this.internalPropertyKey);
+            ReflectUtilities.defineMetadata('metadata', { ...currentMetadata, required: defaultFalse }, this.entity, this.propertyKey);
         }
 
-        const foundMetadata: PropertyDecoratorConfigInternal<unknown> | undefined = EntityUtilities.getPropertyMetadata(this.internalEntity, this.internalPropertyKey, this.type);
+        const foundMetadata: PropertyDecoratorConfigInternal<unknown> | undefined = EntityUtilities.getPropertyMetadata(this.entity, this.propertyKey, this.type);
         if (!foundMetadata) {
-            throw new Error(`No metadata was found for the key "${String(this.internalPropertyKey)}"`);
+            throw new Error(`No metadata was found for the key "${String(this.propertyKey)}"`);
         }
         this.metadata = foundMetadata;
 
@@ -471,7 +457,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     private initReferencesOne(): void {
         this.metadataReferencesOne = this.metadata as ReferencesOneDecoratorConfigInternal<EntityType>;
-        this.referencesOneName = this.internalPropertyKey.toString() + 'input' + UUIDUtilities.create();
+        this.referencesOneName = this.propertyKey.toString() + 'input' + UUIDUtilities.create();
 
         void runInInjectionContext(
             this.injector,
@@ -501,7 +487,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             this.metadata as HasManyDecoratorConfigInternal<EntityType, EntityType>,
             this.globalConfig
         );
-        ReflectUtilities.defineMetadata('metadata', this.metadata, this.internalEntity, this.internalPropertyKey);
+        ReflectUtilities.defineMetadata('metadata', this.metadata, this.entity, this.propertyKey);
         this.metadataHasMany = this.metadata as HasManyDecoratorConfigInternal<EntityType, EntityType>;
         this.hasManyImportAction = new BaseTableActionInternal({
             ...this.metadataHasMany.tableData.baseData.importActionData,
@@ -511,7 +497,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         runInInjectionContext(this.injector, () => {
             this.hasManyAllowCreate = this.metadataHasMany.tableData.baseData.allowCreate();
             this.hasManyEntityService = inject<EntityService<EntityType>>(this.metadataHasMany.tableData.baseData.EntityServiceClass);
-            this.hasManyCreateBaseUrl = this.metadataHasMany.createBaseUrl(this.internalEntity, this.metadataHasMany);
+            this.hasManyCreateBaseUrl = this.metadataHasMany.createBaseUrl(this.entity, this.metadataHasMany);
         });
 
         const givenDisplayColumns: string[] = this.metadataHasMany.tableData.baseData.displayColumns.map((v) => v.displayName);
@@ -541,7 +527,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             this.hasManySelection.clear();
         });
         runInInjectionContext(this.injector, () => {
-            const readBaseUrl: string = this.metadataHasMany.readBaseUrl(this.internalEntity, this.metadataHasMany);
+            const readBaseUrl: string = this.metadataHasMany.readBaseUrl(this.entity, this.metadataHasMany);
             void this.hasManyEntityService.read(readBaseUrl).then(() => {
                 this.hasManyIsLoading = false;
             });
@@ -553,12 +539,12 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             this.metadata as EntityArrayDecoratorConfigInternal<EntityType>,
             this.globalConfig
         );
-        ReflectUtilities.defineMetadata('metadata', this.metadata, this.internalEntity, this.internalPropertyKey);
+        ReflectUtilities.defineMetadata('metadata', this.metadata, this.entity, this.propertyKey);
         this.metadataEntityArray = this.metadata as EntityArrayDecoratorConfigInternal<EntityType>;
-        if (this.internalEntity[this.internalPropertyKey] == null) {
-            (this.internalEntity[this.internalPropertyKey] as EntityType[]) = [];
+        if (this.entity[this.propertyKey] == null) {
+            (this.entity[this.propertyKey] as EntityType[]) = [];
         }
-        this.entityArrayValues = this.internalEntity[this.internalPropertyKey] as EntityType[];
+        this.entityArrayValues = this.entity[this.propertyKey] as EntityType[];
         if (!this.metadataEntityArray.createInline && !this.metadataEntityArray.createDialogData) {
             this.metadataEntityArray.createDialogData = {
                 title: 'Add'
@@ -590,7 +576,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     private initObjectInput(): void {
         this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfigInternal<EntityType>;
-        this.objectProperty = this.internalEntity[this.internalPropertyKey] as EntityType;
+        this.objectProperty = this.entity[this.propertyKey] as EntityType;
         this.objectPropertyTabs = EntityUtilities.getEntityTabs(
             this.objectProperty,
             this.injector,
@@ -635,7 +621,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     setReferencesOneObject(): void {
 
-        const foundEntity: EntityType | undefined = this.metadataReferencesOne.getEntityForId(this.internalEntity[this.internalPropertyKey] as string, this.referencesOneAllReferencedEntities);
+        const foundEntity: EntityType | undefined = this.metadataReferencesOne.getEntityForId(this.entity[this.propertyKey] as string, this.referencesOneAllReferencedEntities);
         this.referencesOneObject = new this.metadataReferencesOne.EntityClass(foundEntity);
         this.referencesOnePropertyTabs = EntityUtilities.getEntityTabs(this.referencesOneObject, this.injector);
         this.emitChange();
