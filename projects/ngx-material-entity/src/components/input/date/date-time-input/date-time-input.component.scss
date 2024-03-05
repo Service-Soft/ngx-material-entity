@@ -5,8 +5,6 @@ mat-form-field {
 .date-time {
     display: flex;
     align-items: baseline;
-
-    .timepicker {
-        margin-left: 10px;
-    }
+    flex-wrap: wrap;
+    column-gap: 10px;
 }

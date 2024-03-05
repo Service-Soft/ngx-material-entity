@@ -11,6 +11,12 @@ mat-form-field {
     justify-content: space-between;
     margin-bottom: 10px;
     margin-top: 5px;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    button {
+        flex-grow: 1;
+    }
 }
 
 .elevation-container {
@@ -28,22 +34,27 @@ mat-table {
     border: 1px solid #E0E0E0;
     border-radius: 5px;
     padding-top: 5px;
-    padding-bottom: 25px;
+    padding-bottom: 5px;
 }
 
 .mat-column-select {
-    flex: 0 0 75px;
+    flex: 0 0 48px;
+    padding-left: 0px;
+    padding-right: 0px;
+    justify-content: center;
 }
 
 .array-error {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: -25.8px;
+    margin-top: -6px;
     border: 1px solid #E0E0E0;
     background-color: #F8D3D7;
     color: #721C24;
-    height: 25.8px;
+    height: fit-content;
+    padding-left: 4px;
+    padding-right: 4px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
@@ -51,8 +62,6 @@ mat-table {
 .date-time {
     display: flex;
     align-items: baseline;
-
-    .timepicker {
-        margin-left: 10px;
-    }
+    flex-wrap: wrap;
+    column-gap: 10px;
 }

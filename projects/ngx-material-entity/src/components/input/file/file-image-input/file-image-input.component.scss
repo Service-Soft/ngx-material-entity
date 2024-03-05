@@ -1,4 +1,4 @@
-$dot-diameter: 25px;
+$dot-diameter: 30px;
 
 .file-input {
     margin-top: 15px;
@@ -14,39 +14,8 @@ $dot-diameter: 25px;
     padding-top: 15px;
     padding-bottom: 15px;
 
-    .prev-button {
-        font-size: 100px;
-        margin-left: 5px;
-        color: rgba(0, 0, 0, .54);
-    }
-
-    .next-button {
-        font-size: 100px;
-        margin-right: 5px;
-        color: rgba(0, 0, 0, .54);
-    }
-
-    .prev-button:hover,
-    .next-button:hover {
-        cursor: pointer;
-        color: rgba(0, 0, 0, .7);
-        transition: all 500ms ease;
-    }
-
-    .prev-button.disabled,
-    .next-button.disabled {
-        color: rgba(0, 0, 0, .26);
-    }
-
-    .prev-button.disabled:hover,
-    .next-button.disabled:hover {
-        color: rgba(0, 0, 0, .26);
-        transition: none;
-        cursor: default;
-    }
-
     img {
-        max-width: calc(100% - 100px);
+        max-width: 100%;
         max-height: 100%;
         margin-left: auto;
         margin-right: auto;
@@ -60,40 +29,57 @@ $dot-diameter: 25px;
     justify-content: center;
     column-gap: 5px;
 
-    button {
+    .left-button, .right-button {
+        font-size: $dot-diameter;
+        color: rgba(black, .38);
+    }
+
+    .left-button:hover, .right-button:hover {
+        color: rgba(0, 0, 0, .54);
+        cursor: pointer;
+        transition: all 300ms ease;
+    }
+
+    .left-button.disabled,
+    .right-button.disabled {
+        color: rgba(0, 0, 0, .26);
+    }
+
+    .left-button.disabled:hover,
+    .right-button.disabled:hover {
+        color: rgba(0, 0, 0, .26);
+        transition: none;
+        cursor: default;
+    }
+
+    .dot {
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 0px;
-        height: auto;
-        width: auto;
+        height: $dot-diameter;
+        width: $dot-diameter;
+        min-width: $dot-diameter;
+        background-color: rgba(black, .38);
+        border-radius: 50%;
 
-        .dot {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: $dot-diameter;
-            width: $dot-diameter;
-            min-width: $dot-diameter;
-            background-color: rgba(black, .38);
-            border-radius: 50%;
-
-            .image-index {
-                color: white;
-                font-size: calc($dot-diameter * 0.8);
-                font-weight: 600;
-            }
-        }
-
-        .dot.selected {
-            background-color: rgba(black, .54);
+        .image-index {
+            color: white;
+            font-size: calc($dot-diameter * 0.8);
+            font-weight: 600;
         }
     }
 
-    button:hover {
-        .dot {
-            background-color: rgba(0, 0, 0, .54);
-            transition: all 300ms ease;
-        }
+    .dot.selected {
+        background-color: rgba(black, .54);
+    }
+
+    .dot:hover {
+        background-color: rgba(0, 0, 0, .54);
+        cursor: pointer;
+        transition: all 300ms ease;
+    }
+
+    .dot.disabled:hover {
+        cursor: default;
     }
 }
