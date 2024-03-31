@@ -26,11 +26,15 @@ jobs:
                   npm run lint
             # runs jest tests
             - name: Jest
+              env:
+                NODE_OPTIONS: "--max_old_space_size=4096"
               run: |
                   cd $GITHUB_WORKSPACE
                   npm run test
             # runs cypress e2e tests
             - name: Cypress
+              env:
+                NODE_OPTIONS: "--max_old_space_size=4096"
               run: |
                   cd $GITHUB_WORKSPACE
                   npm run e2e:run
