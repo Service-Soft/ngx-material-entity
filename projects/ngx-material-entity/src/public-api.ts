@@ -13,7 +13,6 @@ export * from './components/edit-page/edit-data.route';
 export * from './components/edit-page/edit-page.component';
 export * from './components/input/base-input.component';
 export * from './components/input/input.component';
-export * from './components/input/input.module';
 export * from './components/table/create-dialog/create-entity-data';
 export * from './components/table/create-dialog/create-entity-dialog.component';
 export * from './components/table/default.actions';

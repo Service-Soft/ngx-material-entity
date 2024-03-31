@@ -1,23 +1,38 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, EnvironmentInjector, Inject, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTableModule } from '@angular/material/table';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DateRangeArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
-import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../../default-global-configuration-values';
 import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
-import { NgxGlobalDefaultValues } from '../../../../global-configuration-values';
+import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../../../global-configuration-values';
 import { DateUtilities } from '../../../../utilities/date.utilities';
 import { ArrayTableComponent } from '../array-table.class';
-
-// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'array-date-range-input',
     templateUrl: './array-date-range-input.component.html',
-    styleUrls: ['./array-date-range-input.component.scss']
+    styleUrls: ['./array-date-range-input.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatFormFieldModule,
+        MatDatepickerModule,
+        FormsModule,
+        MatTableModule,
+        MatCheckboxModule,
+        MatButtonModule,
+        NgFor
+    ]
 })
 export class ArrayDateRangeInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends ArrayTableComponent<DateRange, EntityType, DecoratorTypes.ARRAY_DATE_RANGE> implements OnInit {
@@ -31,7 +46,7 @@ export class ArrayDateRangeInputComponent<EntityType extends BaseEntityType<Enti
         matDialog: MatDialog,
         injector: EnvironmentInjector,
         http: HttpClient,
-        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         private readonly globalConfig: NgxGlobalDefaultValues
     ) {
         super(matDialog, injector, http);

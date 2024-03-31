@@ -1,22 +1,30 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, Inject, OnInit } from '@angular/core';
-import { DateFilterFn } from '@angular/material/datepicker';
+import { FormsModule } from '@angular/forms';
+import { DateFilterFn, MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DateRangeDateDecoratorConfigInternal } from '../../../../decorators/date/date-decorator-internal.data';
 import { DateRange } from '../../../../decorators/date/date-decorator.data';
-import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../../default-global-configuration-values';
 import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
-import { NgxGlobalDefaultValues } from '../../../../global-configuration-values';
+import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../../../global-configuration-values';
 import { DateUtilities } from '../../../../utilities/date.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
-
-// eslint-disable-next-line angular/prefer-standalone-component
+import { NgFor, NgIf } from '@angular/common';
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'date-range-input',
     templateUrl: './date-range-input.component.html',
-    styleUrls: ['./date-range-input.component.scss']
+    styleUrls: ['./date-range-input.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        MatDatepickerModule,
+        FormsModule,
+        NgFor,
+        NgIf
+    ]
 })
 export class DateRangeInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.DATE_RANGE, DateRange> implements OnInit {
@@ -27,7 +35,7 @@ export class DateRangeInputComponent<EntityType extends BaseEntityType<EntityTyp
     defaultDateFilter: DateFilterFn<Date | null | undefined> = DateUtilities.defaultDateFilter;
 
     constructor(
-        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         private readonly globalConfig: NgxGlobalDefaultValues
     ) {
         super();

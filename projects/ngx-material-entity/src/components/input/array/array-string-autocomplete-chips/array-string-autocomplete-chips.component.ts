@@ -1,18 +1,31 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { NgFor } from '@angular/common';
 import { Component, EnvironmentInjector, OnInit, runInInjectionContext } from '@angular/core';
-import { NgModel } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { FormsModule, NgModel } from '@angular/forms';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { AutocompleteStringChipsArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
+import { IncludedInValidatorDirective } from '../../../../directives/included-in.directive';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 import { ArrayStringChipsInputComponent } from '../array-string-chips-input/array-string-chips-input.component';
-
-// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'array-string-autocomplete-chips',
     templateUrl: './array-string-autocomplete-chips.component.html',
-    styleUrls: ['./array-string-autocomplete-chips.component.scss']
+    styleUrls: ['./array-string-autocomplete-chips.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        MatChipsModule,
+        FormsModule,
+        MatAutocompleteModule,
+        IncludedInValidatorDirective,
+        MatInputModule,
+        NgFor
+    ]
 })
 export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntityType<EntityType>>
     extends ArrayStringChipsInputComponent<EntityType> implements OnInit {

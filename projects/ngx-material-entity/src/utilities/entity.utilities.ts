@@ -615,7 +615,7 @@ export abstract class EntityUtilities {
      * @param injector - An angular environment injector.
      * @param hideOmitForCreate - Whether or not keys with the metadata omitForCreate should be filtered out.
      * @param hideOmitForEdit - Whether or not keys with the metadata omitForUpdate should be filtered out.
-     * @param additionalOmitValues - Additional omit values.
+     * @param additionalOmitKeys - Additional omit values.
      * @returns The sorted Tabs containing the rows and the keys to display in that row.
      */
     static getEntityTabs<EntityType extends BaseEntityType<EntityType>>(
@@ -623,14 +623,14 @@ export abstract class EntityUtilities {
         injector: EnvironmentInjector,
         hideOmitForCreate: boolean = false,
         hideOmitForEdit: boolean = false,
-        additionalOmitValues: (keyof EntityType)[] = []
+        additionalOmitKeys: (keyof EntityType)[] = []
     ): EntityTab<EntityType>[] {
         const res: EntityTab<EntityType>[] = [];
         const keys: (keyof EntityType)[] = this.keysOf(entity, injector, hideOmitForCreate, hideOmitForEdit)
-            .filter(k => !additionalOmitValues.includes(k));
+            .filter(k => !additionalOmitKeys.includes(k));
         const numberOfTabs: number = this.getNumberOfTabs<EntityType>(keys, entity);
 
-        const firstTabRows: EntityRow<EntityType>[] = this.getEntityRows<EntityType>(entity, -1, hideOmitForCreate, hideOmitForEdit, additionalOmitValues, injector);
+        const firstTabRows: EntityRow<EntityType>[] = this.getEntityRows<EntityType>(entity, -1, hideOmitForCreate, hideOmitForEdit, additionalOmitKeys, injector);
         if (firstTabRows.length) {
             const firstTab: EntityTab<EntityType> = {
                 tabName: this.getFirstTabName(entity),
@@ -642,7 +642,7 @@ export abstract class EntityUtilities {
 
         for (let i: number = 2; i <= numberOfTabs; i++) {
             const rows: EntityRow<EntityType>[] = this.getEntityRows<EntityType>(
-                entity, i, hideOmitForCreate, hideOmitForEdit, additionalOmitValues, injector
+                entity, i, hideOmitForCreate, hideOmitForEdit, additionalOmitKeys, injector
             );
             if (rows.length) {
                 const tab: EntityTab<EntityType> = {

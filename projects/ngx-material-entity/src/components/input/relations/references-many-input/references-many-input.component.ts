@@ -1,25 +1,41 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { SelectionModel } from '@angular/cdk/collections';
+import { NgFor, NgIf } from '@angular/common';
 import { Component, EnvironmentInjector, Inject, OnInit, runInInjectionContext } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
 import { ReferencesManyDecoratorConfigInternal } from '../../../../decorators/references-many/references-many-decorator-internal.data';
-import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../../default-global-configuration-values';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
-import { NgxGlobalDefaultValues } from '../../../../global-configuration-values';
+import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../../../global-configuration-values';
 import { SelectionUtilities } from '../../../../utilities/selection.utilities';
 import { DisplayColumn } from '../../../table/table-data';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
-
-// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'references-many-input',
     templateUrl: './references-many-input.component.html',
-    styleUrls: ['./references-many-input.component.scss']
+    styleUrls: ['./references-many-input.component.scss'],
+    standalone: true,
+    imports: [
+        MatInputModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        NgIf,
+        MatTableModule,
+        MatCheckboxModule,
+        NgFor,
+        MatButtonModule
+    ]
 })
 export class ReferencesManyInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.REFERENCES_MANY, string[]> implements OnInit {
@@ -53,7 +69,7 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
 
     constructor(
         private readonly injector: EnvironmentInjector,
-        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         private readonly globalConfig: NgxGlobalDefaultValues
     ) {
         super();

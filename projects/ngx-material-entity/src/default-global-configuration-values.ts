@@ -1,6 +1,5 @@
 /* istanbul ignore file */
-import { InjectionToken, inject } from '@angular/core';
-import { NGX_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from './global-configuration-values';
+import { NgxGlobalDefaultValues } from './global-configuration-values';
 
 /**
  * The default configuration values of the library.
@@ -90,20 +89,3 @@ export const needsUpdateGlobalDefaults: NgxGlobalDefaultValues = {
     selectLabel: CONFIG_NEEDS_UPDATE_KEY,
     addAllLabel: CONFIG_NEEDS_UPDATE_KEY
 };
-
-/**
- * The internal values consisting of default ones and values provided by the user in NGX_GLOBAL_DEFAULT_VALUES.
- */
-export const NGX_INTERNAL_GLOBAL_DEFAULT_VALUES: InjectionToken<NgxGlobalDefaultValues> = new InjectionToken<NgxGlobalDefaultValues>(
-    'NGX_INTERNAL_GLOBAL_DEFAULT_VALUES',
-    {
-        providedIn: 'root',
-        factory: () => {
-            const userValues: Partial<NgxGlobalDefaultValues> = inject(NGX_GLOBAL_DEFAULT_VALUES);
-            return {
-                ...defaultGlobalDefaults,
-                ...userValues
-            };
-        }
-    }
-);

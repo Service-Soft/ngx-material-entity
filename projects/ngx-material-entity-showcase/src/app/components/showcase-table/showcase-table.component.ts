@@ -1,15 +1,29 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { EntityUtilities, TableData } from 'ngx-material-entity';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { EntityUtilities, NgxMatEntityTableComponent, TableData } from 'ngx-material-entity';
 import { TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';
 import { customTableData, customTableDataReadOnly, defaultTableData, defaultTableDataDialog } from './table-configs.data';
-
-// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
 
     selector: 'app-showcase-table',
     templateUrl: './showcase-table.component.html',
-    styleUrls: ['./showcase-table.component.scss']
+    styleUrls: ['./showcase-table.component.scss'],
+    standalone: true,
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatSlideToggleModule,
+        NgxMatEntityTableComponent
+    ]
 })
 export class ShowcaseTableComponent {
 

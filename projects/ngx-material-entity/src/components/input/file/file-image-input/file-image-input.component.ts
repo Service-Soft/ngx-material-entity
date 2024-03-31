@@ -1,4 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { BaseEntityType } from '../../../../classes/entity.model';
@@ -9,13 +10,17 @@ import { PLACEHOLDER } from '../../../../mocks/placeholder-data.png';
 import { EntityUtilities } from '../../../../utilities/entity.utilities';
 import { FileUtilities } from '../../../../utilities/file.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
-
-// eslint-disable-next-line angular/prefer-standalone-component
+import { FileInputComponent } from '../file-input/file-input.component';
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'file-image-input',
     templateUrl: './file-image-input.component.html',
-    styleUrls: ['./file-image-input.component.scss']
+    styleUrls: ['./file-image-input.component.scss'],
+    standalone: true,
+    imports: [
+        FileInputComponent,
+        NgIf
+    ]
 })
 export class FileImageInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.FILE_IMAGE, FileData | FileData[]> implements OnInit {
