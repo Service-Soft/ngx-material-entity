@@ -28,13 +28,11 @@ jobs:
             - name: Jest
               run: |
                   cd $GITHUB_WORKSPACE
-                  export NODE_OPTIONS="--max_old_space_size=4096"
                   npm run test
             # runs cypress e2e tests
             - name: Cypress
               run: |
                   cd $GITHUB_WORKSPACE
-                  export NODE_OPTIONS="--max_old_space_size=4096"
                   npm run e2e:run
             # updates codecov for the badge
             - name: update codecov
