@@ -16,6 +16,7 @@ mat-spinner {
 .bottom-row {
     display: flex;
     align-items: center;
+    margin-top: 10px;
     column-gap: 10px;
 }
 
@@ -34,12 +35,6 @@ mat-spinner {
     background-color: white;
     // box-shadow: 0 0 5px -1px #0003, 0 0 8px 5px #00000024, 0 0 14px 8px #0000001f;
 
-}
-
-.no-entity-tabs {
-    padding: 10px;
-    background-color: red;
-    color: whitesmoke;
 }
 
 .header {

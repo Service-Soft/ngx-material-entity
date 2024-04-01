@@ -1,23 +1,36 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { NgModel } from '@angular/forms';
+import { FormsModule, NgModel } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DefaultFileDecoratorConfigInternal, FileDataWithFile, ImageFileDecoratorConfigInternal } from '../../../../decorators/file/file-decorator-internal.data';
 import { FileData } from '../../../../decorators/file/file-decorator.data';
+import { DragDropDirective } from '../../../../directives/drag-drop.directive';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
 import { EntityUtilities } from '../../../../utilities/entity.utilities';
 import { FileUtilities } from '../../../../utilities/file.utilities';
 import { NgxMatEntityConfirmDialogComponent } from '../../../confirm-dialog/confirm-dialog.component';
-
-// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'file-input',
     templateUrl: './file-input.component.html',
-    styleUrls: ['./file-input.component.scss']
+    styleUrls: ['./file-input.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        MatChipsModule,
+        FormsModule,
+        NgIf,
+        NgFor,
+        DragDropDirective,
+        MatButtonModule
+    ]
 })
 export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
 

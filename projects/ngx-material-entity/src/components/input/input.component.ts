@@ -1,11 +1,21 @@
 import { SelectionModel } from '@angular/cdk/collections';
+import { NgFor, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, EnvironmentInjector, EventEmitter, Inject, Input, OnInit, Output, TemplateRef, ViewChild, inject, runInInjectionContext } from '@angular/core';
-import { NgModel } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
+import { FormsModule, NgModel } from '@angular/forms';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { BaseEntityType } from '../../classes/entity.model';
@@ -16,14 +26,13 @@ import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-
 import { HasManyDecoratorConfigInternal } from '../../decorators/has-many/has-many-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal } from '../../decorators/object/object-decorator-internal.data';
 import { ReferencesOneDecoratorConfigInternal } from '../../decorators/references-one/references-one-decorator-internal.data';
-import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../default-global-configuration-values';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../../encapsulation/reflect.utilities';
 import { UUIDUtilities } from '../../encapsulation/uuid.utilities';
 import { defaultFalse } from '../../functions/default-false.function';
 import { NGX_GET_VALIDATION_ERROR_MESSAGE } from '../../functions/get-validation-error-message.function';
 import { getValidationErrorsTooltipContent } from '../../functions/get-validation-errors-tooltip-content.function.ts';
-import { NgxGlobalDefaultValues } from '../../global-configuration-values';
+import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
 import { DateUtilities } from '../../utilities/date.utilities';
 import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
@@ -32,9 +41,34 @@ import { ValidationError, ValidationUtilities } from '../../utilities/validation
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { CreateDataBuilder, CreateDataInternal } from '../table/create-dialog/create-data.builder';
+import { DisplayColumnValueComponent } from '../table/display-column-value/display-column-value.component';
 import { EditActionInternal } from '../table/edit-dialog/edit-data.builder';
 import { DisplayColumn } from '../table/table-data';
 import { BaseTableActionInternal, TableActionInternal } from '../table/table-data.builder';
+import { TooltipComponent } from '../tooltip/tooltip.component';
+import { ArrayDateInputComponent } from './array/array-date-input/array-date-input.component';
+import { ArrayDateRangeInputComponent } from './array/array-date-range-input/array-date-range-input.component';
+import { ArrayDateTimeInputComponent } from './array/array-date-time-input/array-date-time-input.component';
+import { ArrayStringAutocompleteChipsComponent } from './array/array-string-autocomplete-chips/array-string-autocomplete-chips.component';
+import { ArrayStringChipsInputComponent } from './array/array-string-chips-input/array-string-chips-input.component';
+import { BooleanCheckboxInputComponent } from './boolean/boolean-checkbox-input/boolean-checkbox-input.component';
+import { BooleanDropdownInputComponent } from './boolean/boolean-dropdown-input/boolean-dropdown-input.component';
+import { BooleanToggleInputComponent } from './boolean/boolean-toggle-input/boolean-toggle-input.component';
+import { CustomInputComponent } from './custom/custom.component';
+import { DateInputComponent } from './date/date-input/date-input.component';
+import { DateRangeInputComponent } from './date/date-range-input/date-range-input.component';
+import { DateTimeInputComponent } from './date/date-time-input/date-time-input.component';
+import { FileDefaultInputComponent } from './file/file-default-input/file-default-input.component';
+import { FileImageInputComponent } from './file/file-image-input/file-image-input.component';
+import { NumberDropdownInputComponent } from './number/number-dropdown-input/number-dropdown-input.component';
+import { NumberInputComponent } from './number/number-input/number-input.component';
+import { NumberSliderInputComponent } from './number/number-slider-input/number-slider-input.component';
+import { ReferencesManyInputComponent } from './relations/references-many-input/references-many-input.component';
+import { StringAutocompleteInputComponent } from './string/string-autocomplete-input/string-autocomplete-input.component';
+import { StringDropdownInputComponent } from './string/string-dropdown-input/string-dropdown-input.component';
+import { StringInputComponent } from './string/string-input/string-input.component';
+import { StringPasswordInputComponent } from './string/string-password-input/string-password-input.component';
+import { StringTextboxInputComponent } from './string/string-textbox-input/string-textbox-input.component';
 
 /**
  * The default input component. It gets the metadata of the property from the given @Input "entity" and @Input "propertyKey"
@@ -44,11 +78,56 @@ import { BaseTableActionInternal, TableActionInternal } from '../table/table-dat
  * that it should be omitted for creating or updating.
  * The last part being mostly relevant if you want to use this component inside an ngFor.
  */
-// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     selector: 'ngx-mat-entity-input',
     templateUrl: './input.component.html',
-    styleUrls: ['./input.component.scss']
+    styleUrls: ['./input.component.scss'],
+    standalone: true,
+    imports: [
+        DisplayColumnValueComponent,
+        NgIf,
+        NgSwitch,
+        NgSwitchCase,
+        NgSwitchDefault,
+        NgFor,
+        MatTabsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        MatDialogModule,
+        MatBadgeModule,
+        MatInputModule,
+        MatMenuModule,
+        MatPaginatorModule,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        MatCheckboxModule,
+        MatButtonModule,
+        TooltipComponent,
+        StringInputComponent,
+        StringTextboxInputComponent,
+        StringAutocompleteInputComponent,
+        StringDropdownInputComponent,
+        StringPasswordInputComponent,
+        BooleanCheckboxInputComponent,
+        BooleanToggleInputComponent,
+        BooleanDropdownInputComponent,
+        NumberInputComponent,
+        NumberDropdownInputComponent,
+        NumberSliderInputComponent,
+        ArrayDateInputComponent,
+        ArrayDateRangeInputComponent,
+        ArrayDateTimeInputComponent,
+        ArrayStringAutocompleteChipsComponent,
+        ArrayStringChipsInputComponent,
+        DateInputComponent,
+        DateRangeInputComponent,
+        DateTimeInputComponent,
+        FileDefaultInputComponent,
+        FileImageInputComponent,
+        ReferencesManyInputComponent,
+        CustomInputComponent
+    ]
 })
 export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
     /**
@@ -371,7 +450,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         private readonly router: Router,
         @Inject(NGX_GET_VALIDATION_ERROR_MESSAGE)
         protected readonly defaultGetValidationErrorMessage: (model: NgModel) => string,
-        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         protected readonly globalConfig: NgxGlobalDefaultValues,
         private readonly http: HttpClient
     ) {}

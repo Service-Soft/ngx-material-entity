@@ -4,8 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../default-global-configuration-values';
-import { NgxGlobalDefaultValues } from '../../global-configuration-values';
+import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { ConfirmDialogData } from './confirm-dialog-data';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from './confirm-dialog-data.builder';
 
@@ -44,7 +43,7 @@ export class NgxMatEntityConfirmDialogComponent implements OnInit {
         private readonly dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent>,
         @Inject(MAT_DIALOG_DATA)
         private readonly inputData: ConfirmDialogData,
-        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         protected readonly globalConfig: NgxGlobalDefaultValues
     ) {}
 

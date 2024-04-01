@@ -1,17 +1,29 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { NgFor, NgIf } from '@angular/common';
 import { Component, EnvironmentInjector, OnInit, runInInjectionContext } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
-import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
-
-// eslint-disable-next-line angular/prefer-standalone-component
+import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'string-dropdown-input',
     templateUrl: './string-dropdown-input.component.html',
-    styleUrls: ['./string-dropdown-input.component.scss']
+    styleUrls: ['./string-dropdown-input.component.scss'],
+    standalone: true,
+    imports: [
+        MatInputModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        NgIf,
+        NgFor
+    ]
 })
 export class StringDropdownInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.STRING_DROPDOWN, string> implements OnInit {

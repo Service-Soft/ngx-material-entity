@@ -1,6 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { NgFor, NgIf } from '@angular/common';
-import { Component, EnvironmentInjector, Inject, Input, OnDestroy, OnInit, ViewChild, inject, runInInjectionContext } from '@angular/core';
+import { Component, EnvironmentInjector, Inject, Input, OnInit, ViewChild, inject, runInInjectionContext } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -13,11 +13,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Subject, firstValueFrom, takeUntil } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { BaseEntityType, Entity } from '../../classes/entity.model';
-import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../default-global-configuration-values';
 import { DynamicStyleClassDirective } from '../../directives/dynamic-style-class.directive';
-import { NgxGlobalDefaultValues } from '../../global-configuration-values';
+import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { SelectionUtilities } from '../../utilities/selection.utilities';
@@ -63,7 +62,7 @@ import { BaseTableActionInternal, TableActionInternal, TableDataBuilder, TableDa
         DynamicStyleClassDirective
     ]
 })
-export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity>> implements OnInit, OnDestroy {
+export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity>> implements OnInit {
 
     /**
      * The configuration for the component.
@@ -86,7 +85,6 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     allowCreate!: boolean;
 
     private entityService!: EntityService<EntityType>;
-    private readonly onDestroy: Subject<void> = new Subject<void>();
     /**
      * The paginator from the html.
      */
@@ -129,7 +127,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         private readonly dialog: MatDialog,
         private readonly injector: EnvironmentInjector,
         private readonly router: Router,
-        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         private readonly globalConfig: NgxGlobalDefaultValues
     ) {}
 
@@ -174,7 +172,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         this.dataSource.filter = this.filter;
         this.dataSource.paginator = this.paginator;
 
-        this.entityService.entitiesSubject.pipe(takeUntil(this.onDestroy)).subscribe((entities) => {
+        this.entityService.entitiesSubject.subscribe((entities) => {
             this.dataSource.data = entities;
             this.selection.clear();
         });
@@ -388,11 +386,6 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         return runInInjectionContext(this.injector, () => {
             return !action.enabled(this.selection.selected);
         });
-    }
-
-    ngOnDestroy(): void {
-        this.onDestroy.next(undefined);
-        this.onDestroy.complete();
     }
 
     /**

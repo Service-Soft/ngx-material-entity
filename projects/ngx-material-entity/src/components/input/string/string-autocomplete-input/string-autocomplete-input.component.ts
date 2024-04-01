@@ -1,16 +1,30 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { NgFor, NgIf } from '@angular/common';
 import { Component, EnvironmentInjector, OnInit, runInInjectionContext } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
+import { IncludedInValidatorDirective } from '../../../../directives/included-in.directive';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
-
-// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'string-autocomplete-input',
     templateUrl: './string-autocomplete-input.component.html',
-    styleUrls: ['./string-autocomplete-input.component.scss']
+    styleUrls: ['./string-autocomplete-input.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        FormsModule,
+        IncludedInValidatorDirective,
+        NgIf,
+        NgFor
+    ]
 })
 export class StringAutocompleteInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.STRING_AUTOCOMPLETE, string> implements OnInit {

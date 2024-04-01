@@ -4,7 +4,8 @@ import { Directive, EventEmitter, HostListener, Output } from '@angular/core';
  * Adds drag and drop functionality to an element.
  */
 @Directive({
-    selector: '[dragDrop]'
+    selector: '[dragDrop]',
+    standalone: true
 })
 export class DragDropDirective {
     /**

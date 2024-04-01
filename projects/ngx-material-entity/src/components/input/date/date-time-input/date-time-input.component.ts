@@ -1,25 +1,35 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { Time } from '@angular/common';
+import { NgFor, Time } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { DateFilterFn } from '@angular/material/datepicker';
+import { FormsModule } from '@angular/forms';
+import { DateFilterFn, MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
 import { DateTimeDateDecoratorConfigInternal } from '../../../../decorators/date/date-decorator-internal.data';
-import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../../default-global-configuration-values';
 import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
 import { defaultTrue } from '../../../../functions/default-true.function';
-import { NgxGlobalDefaultValues } from '../../../../global-configuration-values';
+import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../../../global-configuration-values';
 import { DateUtilities } from '../../../../utilities/date.utilities';
 import { EntityUtilities } from '../../../../utilities/entity.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
-
-// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'date-time-input',
     templateUrl: './date-time-input.component.html',
-    styleUrls: ['./date-time-input.component.scss']
+    styleUrls: ['./date-time-input.component.scss'],
+    standalone: true,
+    imports: [
+        MatInputModule,
+        MatFormFieldModule,
+        MatDatepickerModule,
+        FormsModule,
+        MatSelectModule,
+        NgFor
+    ]
 })
 export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.DATE_TIME, Date> implements OnInit {
@@ -39,7 +49,7 @@ export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType
     defaultDateFilter: DateFilterFn<Date | null | undefined> = defaultTrue;
 
     constructor(
-        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         private readonly globalConfig: NgxGlobalDefaultValues
     ) {
         super();

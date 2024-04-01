@@ -9,7 +9,8 @@ const config: Config = {
     // coverage
     coveragePathIgnorePatterns: [
         '/node_modules/',
-        '/mocks/'
+        '/mocks/',
+        '/src/default-global-configuration-values.ts'
     ],
     collectCoverage: true,
     coverageDirectory: '../../coverage',

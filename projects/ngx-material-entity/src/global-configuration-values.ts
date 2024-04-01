@@ -1,5 +1,6 @@
 /* istanbul ignore file */
-import { InjectionToken } from '@angular/core';
+import { InjectionToken, inject } from '@angular/core';
+import { defaultGlobalDefaults } from './default-global-configuration-values';
 
 /**
  * All configurable default values.
@@ -199,6 +200,23 @@ export const NGX_GLOBAL_DEFAULT_VALUES: InjectionToken<Partial<NgxGlobalDefaultV
         providedIn: 'root',
         factory: () => {
             return {};
+        }
+    }
+);
+
+/**
+ * The internal values consisting of default ones and values provided by the user in NGX_GLOBAL_DEFAULT_VALUES.
+ */
+export const NGX_COMPLETE_GLOBAL_DEFAULT_VALUES: InjectionToken<NgxGlobalDefaultValues> = new InjectionToken<NgxGlobalDefaultValues>(
+    'NGX_COMPLETE_GLOBAL_DEFAULT_VALUES',
+    {
+        providedIn: 'root',
+        factory: () => {
+            const userValues: Partial<NgxGlobalDefaultValues> = inject(NGX_GLOBAL_DEFAULT_VALUES);
+            return {
+                ...defaultGlobalDefaults,
+                ...userValues
+            };
         }
     }
 );
