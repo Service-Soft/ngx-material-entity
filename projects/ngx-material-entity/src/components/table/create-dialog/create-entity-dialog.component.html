@@ -1,44 +1,11 @@
-<!-- eslint-disable angular/cyclomatic-complexity -->
-<!-- eslint-disable angular/no-call-expression -->
- 
 <div class="mat-dialog-title">
     <div>{{data.createData.title}}</div>
 </div>
 
 <form>
     <mat-dialog-content>
-        <mat-tab-group *ngIf="entityTabs.length > 1" preserveContent>
-            <mat-tab *ngFor="let tab of entityTabs" [label]="tab.tabName">
-                <div *ngFor="let row of tab.rows" class="row">
-                    <ngx-mat-entity-input
-                        *ngFor="let key of row.keys"
-                        [entity]="data.entity"
-                        [propertyKey]="key"
-                        [hideOmitForCreate]="true"
-                        [class]="EntityUtilities.getWidthClasses(data.entity, key)"
-                        (inputChangeEvent)="checkIsEntityValid()"
-                    >
-                    </ngx-mat-entity-input>
-                </div>
-            </mat-tab>
-        </mat-tab-group>
-    
-        <div *ngIf="entityTabs.length <= 1">
-            <span *ngIf="!entityTabs.length" class="no-entity-tabs">
-                ERROR: No Inputs. Did you correctly assign all values in the model constructor?
-            </span>
-            <div *ngFor="let row of entityTabs[0]?.rows" class="row">
-                <ngx-mat-entity-input
-                    *ngFor="let key of row.keys"
-                    [entity]="data.entity"
-                    [propertyKey]="key"
-                    [hideOmitForCreate]="true"
-                    [class]="EntityUtilities.getWidthClasses(data.entity, key)"
-                    (inputChangeEvent)="checkIsEntityValid()"
-                >
-                </ngx-mat-entity-input>
-            </div>
-        </div>
+        <ngx-mat-entity-form [hideOmitForCreate]="true" [entity]="data.entity" (formChange)="checkIsEntityValid()">
+        </ngx-mat-entity-form>
     </mat-dialog-content>
     
     <mat-dialog-actions>

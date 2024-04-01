@@ -5,21 +5,19 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTabsModule } from '@angular/material/tabs';
 import { Observable, first, map } from 'rxjs';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
-import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../default-global-configuration-values';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { getValidationErrorsTooltipContent } from '../../functions/get-validation-errors-tooltip-content.function.ts';
-import { NgxGlobalDefaultValues } from '../../global-configuration-values';
+import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
-import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
+import { EntityUtilities } from '../../utilities/entity.utilities';
 import { ValidationError, ValidationUtilities } from '../../utilities/validation.utilities';
 import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { NgxMatEntityInputModule } from '../input/input.module';
+import { NgxMatEntityFormComponent } from '../form/form.component';
 import { CreateEntityData } from '../table/create-dialog/create-entity-data';
 import { CreateData } from '../table/table-data';
 import { TooltipComponent } from '../tooltip/tooltip.component';
@@ -79,11 +77,10 @@ export const NGX_CREATE_DATA: InjectionToken<PageCreateData<any>> = new Injectio
         NgIf,
         NgFor,
         MatButtonModule,
-        MatTabsModule,
-        NgxMatEntityInputModule,
         MatProgressSpinnerModule,
         MatBadgeModule,
-        TooltipComponent
+        TooltipComponent,
+        NgxMatEntityFormComponent
     ]
 })
 export class NgxMatEntityCreatePageComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
@@ -92,11 +89,6 @@ export class NgxMatEntityCreatePageComponent<EntityType extends BaseEntityType<E
      * Contains HelperMethods around handling Entities and their property-metadata.
      */
     EntityUtilities: typeof EntityUtilities = EntityUtilities;
-
-    /**
-     * The tabs to display.
-     */
-    entityTabs!: EntityTab<EntityType>[];
 
     /**
      * The entity to create.
@@ -130,6 +122,11 @@ export class NgxMatEntityCreatePageComponent<EntityType extends BaseEntityType<E
      */
     tooltipContent: string = '';
 
+    /**
+     * Whether or not the page has been loaded.
+     */
+    isLoaded: boolean = false;
+
     private inConfirmNavigation: boolean = false;
 
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -150,11 +147,11 @@ export class NgxMatEntityCreatePageComponent<EntityType extends BaseEntityType<E
         private readonly http: HttpClient,
         private readonly el: ElementRef,
         private readonly renderer: Renderer2,
-        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         protected readonly globalConfig: NgxGlobalDefaultValues
     ) { }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         this.data = new PageCreateDataBuilder(this.inputData, this.globalConfig).getResult();
         if (this.data == null) {
             this.confirmNavigateBack();
@@ -165,9 +162,9 @@ export class NgxMatEntityCreatePageComponent<EntityType extends BaseEntityType<E
         this.entity = new this.EntityClass();
         EntityUtilities.setDefaultValues(this.entity);
         this.entityPriorChanges = LodashUtilities.cloneDeep(this.entity);
-        void this.checkIsEntityValid();
+        await this.checkIsEntityValid();
 
-        this.entityTabs = EntityUtilities.getEntityTabs(this.entity, this.injector, true, false);
+        this.isLoaded = true;
         setTimeout(() => this.checkOffset(), 1);
         // setTimeout(() => this.checkEntity(), 1);
     }

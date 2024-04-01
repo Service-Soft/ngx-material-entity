@@ -1,13 +1,12 @@
 import { Inject } from '@angular/core';
 import { BaseBuilder } from '../../classes/base.builder';
 import { BaseEntityType, EntityClassNewable, EntityServiceClassNewable } from '../../classes/entity.model';
-import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../default-global-configuration-values';
 import { defaultFalse } from '../../functions/default-false.function';
 import { defaultDynamicStyleClasses } from '../../functions/default-style-classes.function';
 import { defaultTrue } from '../../functions/default-true.function';
 import { getConfigValue } from '../../functions/get-config-value.function';
 import { isAsyncFunction } from '../../functions/is-async-function.function';
-import { NgxGlobalDefaultValues } from '../../global-configuration-values';
+import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { CreateDataBuilder, CreateDataInternal } from './create-dialog/create-data.builder';
 import { EditDataBuilder, EditDataInternal } from './edit-dialog/edit-data.builder';
@@ -32,7 +31,7 @@ export class BaseTableActionInternal implements BaseTableAction {
 
     constructor(
         data: BaseTableAction,
-        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         protected readonly globalConfig: NgxGlobalDefaultValues
     ) {
         this.displayName = data.displayName;
@@ -80,7 +79,7 @@ export class MultiSelectActionInternal<EntityType extends BaseEntityType<EntityT
 
     constructor(
         data: MultiSelectAction<EntityType>,
-        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         protected readonly globalConfig: NgxGlobalDefaultValues
     ) {
         this.displayName = data.displayName;
@@ -203,7 +202,7 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
 
     constructor(
         data: BaseData<EntityType>,
-        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         protected readonly globalConfig: NgxGlobalDefaultValues
     ) {
         this.title = data.title;

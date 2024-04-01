@@ -1,8 +1,8 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { formatDate, formatNumber } from '@angular/common';
+import { CommonModule, formatDate, formatNumber } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, EnvironmentInjector, Injectable, inject } from '@angular/core';
-import { DecoratorTypes, DropdownValue, Entity, EntityService, EntityUtilities, TableData, array, boolean, date, hasMany, number, object, referencesMany, referencesOne, string } from 'ngx-material-entity';
+import { DecoratorTypes, DropdownValue, Entity, EntityService, EntityUtilities, NgxMatEntityTableComponent, TableData, array, boolean, date, hasMany, number, object, referencesMany, referencesOne, string } from 'ngx-material-entity';
 import { environment } from '../../../environments/environment';
 import { PdfDownloadDisplayValueComponent } from '../pdf-download-display-value/pdf-download-display-value.component';
 
@@ -239,12 +239,15 @@ function getDropdownValues(entities: Address[]): DropdownValue<string>[] {
         };
     });
 }
-
-// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     selector: 'app-sandbox',
     templateUrl: './sandbox.component.html',
-    styleUrls: ['./sandbox.component.scss']
+    styleUrls: ['./sandbox.component.scss'],
+    standalone: true,
+    imports: [
+        CommonModule,
+        NgxMatEntityTableComponent
+    ]
 })
 export class SandboxComponent {
     tableConfig: TableData<Person> = {

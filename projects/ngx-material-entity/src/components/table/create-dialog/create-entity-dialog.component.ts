@@ -1,20 +1,17 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, EnvironmentInjector, Inject, OnInit, runInInjectionContext } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatTabsModule } from '@angular/material/tabs';
 import { BaseEntityType } from '../../../classes/entity.model';
-import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../default-global-configuration-values';
 import { getValidationErrorsTooltipContent } from '../../../functions/get-validation-errors-tooltip-content.function.ts';
-import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
+import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../../global-configuration-values';
 import { EntityService } from '../../../services/entity.service';
-import { EntityTab, EntityUtilities } from '../../../utilities/entity.utilities';
+import { EntityUtilities } from '../../../utilities/entity.utilities';
 import { ValidationError, ValidationUtilities } from '../../../utilities/validation.utilities';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
-import { NgxMatEntityInputModule } from '../../input/input.module';
+import { NgxMatEntityFormComponent } from '../../form/form.component';
 import { TooltipComponent } from '../../tooltip/tooltip.component';
 import { CreateEntityData } from './create-entity-data';
 import { CreateEntityDataInternal, CreateEntityDialogDataBuilder } from './create-entity-data.builder';
@@ -33,13 +30,11 @@ import { CreateEntityDataInternal, CreateEntityDialogDataBuilder } from './creat
     imports: [
         NgFor,
         NgIf,
-        NgxMatEntityInputModule,
         MatDialogModule,
-        FormsModule,
         MatButtonModule,
-        MatTabsModule,
         MatBadgeModule,
-        TooltipComponent
+        TooltipComponent,
+        NgxMatEntityFormComponent
     ]
 })
 export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
@@ -47,11 +42,6 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
      * Contains HelperMethods around handling Entities and their property-metadata.
      */
     EntityUtilities: typeof EntityUtilities = EntityUtilities;
-
-    /**
-     * The tabs of the entity.
-     */
-    entityTabs!: EntityTab<EntityType>[];
 
     /**
      * The services that handles the entity.
@@ -82,14 +72,13 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
         public dialogRef: MatDialogRef<NgxMatEntityCreateDialogComponent<EntityType>>,
         private readonly injector: EnvironmentInjector,
         private readonly dialog: MatDialog,
-        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         protected readonly globalConfig: NgxGlobalDefaultValues
     ) {}
 
     ngOnInit(): void {
         this.data = new CreateEntityDialogDataBuilder(this.inputData, this.globalConfig).getResult();
         this.dialogRef.disableClose = true;
-        this.entityTabs = EntityUtilities.getEntityTabs(this.data.entity, this.injector, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
         setTimeout(() => void this.checkIsEntityValid(), 1);
     }

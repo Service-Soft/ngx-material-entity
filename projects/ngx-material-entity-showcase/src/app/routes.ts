@@ -24,7 +24,7 @@ export const navbarRows: NavbarRow[] = [
                 route: {
                     title: 'Home',
                     path: 'home',
-                    loadChildren: () => import('./components/home/home.module').then(m => m.HomeModule)
+                    loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent)
                 },
                 collapse: 'md'
             },
@@ -35,7 +35,7 @@ export const navbarRows: NavbarRow[] = [
                 route: {
                     title: 'Sandbox',
                     path: 'sandbox',
-                    loadChildren: () => import('./components/sandbox/sandbox.module').then(m => m.SandboxModule)
+                    loadComponent: () => import('./components/sandbox/sandbox.component').then(m => m.SandboxComponent)
                 },
                 collapse: 'md'
             },
@@ -46,7 +46,7 @@ export const navbarRows: NavbarRow[] = [
                 route: {
                     title: 'Table',
                     path: 'table',
-                    loadChildren: () => import('./components/showcase-table/showcase-table.module').then(m => m.ShowcaseTableModule)
+                    loadComponent: () => import('./components/showcase-table/showcase-table.component').then(m => m.ShowcaseTableComponent)
                 },
                 position: 'center',
                 collapse: 'md'
@@ -122,7 +122,7 @@ export const navbarRows: NavbarRow[] = [
 
 const inputRoute: Route = {
     path: 'inputs/:type',
-    loadChildren: () => import('./components/showcase-inputs/showcase-inputs.module').then(m => m.ShowcaseInputsModule)
+    loadComponent: () => import('./components/showcase-inputs/showcase-inputs.component').then(m => m.ShowcaseInputsComponent)
 };
 
 const editTestEntityData: PageEditData<TestEntity> = {

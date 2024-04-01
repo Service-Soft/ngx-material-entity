@@ -1,7 +1,6 @@
 import { Inject } from '@angular/core';
 import { BaseBuilder } from '../../../classes/base.builder';
 import { BaseEntityType } from '../../../classes/entity.model';
-import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../default-global-configuration-values';
 import { defaultFalse } from '../../../functions/default-false.function';
 import { defaultTrue } from '../../../functions/default-true.function';
 import { getConfigValue } from '../../../functions/get-config-value.function';
@@ -9,7 +8,7 @@ import { isAsyncFunction } from '../../../functions/is-async-function.function';
 import { ConfirmDialogData } from '../../confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { EditAction, EditData } from '../table-data';
-import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
+import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../../global-configuration-values';
 
 /**
  * The internal edit action.
@@ -29,7 +28,7 @@ export class EditActionInternal<EntityType extends BaseEntityType<EntityType>> i
 
     constructor(
         data: EditAction<EntityType>,
-        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         protected readonly globalConfig: NgxGlobalDefaultValues
     ) {
         this.displayName = data.displayName;
@@ -95,7 +94,7 @@ export class EditDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         confirmEditDialogData: ConfirmDialogData,
         actionsLabel: string,
         actions: EditAction<EntityType>[],
-        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         globalConfig: NgxGlobalDefaultValues
     ) {
         this.title = title;

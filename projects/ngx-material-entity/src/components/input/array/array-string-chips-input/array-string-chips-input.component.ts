@@ -1,18 +1,27 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { NgFor } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { NgModel } from '@angular/forms';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { FormsModule, NgModel } from '@angular/forms';
+import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { UUIDUtilities } from '../../../../encapsulation/uuid.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
-
-// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'array-string-chips-input',
     templateUrl: './array-string-chips-input.component.html',
-    styleUrls: ['./array-string-chips-input.component.scss']
+    styleUrls: ['./array-string-chips-input.component.scss'],
+    standalone: true,
+    imports: [
+        MatFormFieldModule,
+        MatChipsModule,
+        FormsModule,
+        MatInputModule,
+        NgFor
+    ]
 })
 export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.ARRAY_STRING_CHIPS, string[]> implements OnInit {

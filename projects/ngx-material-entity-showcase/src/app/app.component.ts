@@ -2,7 +2,6 @@
 import { Component } from '@angular/core';
 import { DefaultNavRouteDataType, NavRoute, NavbarRow } from 'ngx-material-navigation';
 import { navbarRows } from './routes';
-
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',

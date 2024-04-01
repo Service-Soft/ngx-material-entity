@@ -1,24 +1,21 @@
 import { NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, EnvironmentInjector, Inject, OnInit, runInInjectionContext } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatTabsModule } from '@angular/material/tabs';
 import { BaseEntityType } from '../../../classes/entity.model';
 import { PropertyDecoratorConfigInternal } from '../../../decorators/base/property-decorator-internal.data';
-import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../../default-global-configuration-values';
 import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
 import { getValidationErrorsTooltipContent } from '../../../functions/get-validation-errors-tooltip-content.function.ts';
-import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
+import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../../global-configuration-values';
 import { EntityService } from '../../../services/entity.service';
 import { EntityTab, EntityUtilities } from '../../../utilities/entity.utilities';
 import { ValidationError, ValidationUtilities } from '../../../utilities/validation.utilities';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
-import { NgxMatEntityInputModule } from '../../input/input.module';
+import { NgxMatEntityFormComponent } from '../../form/form.component';
 import { TooltipComponent } from '../../tooltip/tooltip.component';
 import { EditActionInternal } from './edit-data.builder';
 import { EditEntityData } from './edit-entity-data';
@@ -38,15 +35,13 @@ import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-entity.bui
     imports: [
         NgIf,
         NgFor,
-        NgxMatEntityInputModule,
         MatDialogModule,
-        FormsModule,
         MatButtonModule,
-        MatTabsModule,
         NgxMatEntityConfirmDialogComponent,
         MatMenuModule,
         MatBadgeModule,
-        TooltipComponent
+        TooltipComponent,
+        NgxMatEntityFormComponent
     ]
 })
 export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
@@ -108,7 +103,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
         private readonly injector: EnvironmentInjector,
         private readonly dialog: MatDialog,
         private readonly http: HttpClient,
-        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         private readonly globalConfig: NgxGlobalDefaultValues
     ) {}
 

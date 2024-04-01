@@ -6,22 +6,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, first, map } from 'rxjs';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
-import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
-import { NGX_INTERNAL_GLOBAL_DEFAULT_VALUES } from '../../default-global-configuration-values';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { getValidationErrorsTooltipContent } from '../../functions/get-validation-errors-tooltip-content.function.ts';
-import { NgxGlobalDefaultValues } from '../../global-configuration-values';
+import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
-import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
+import { EntityUtilities } from '../../utilities/entity.utilities';
 import { ValidationError, ValidationUtilities } from '../../utilities/validation.utilities';
 import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { NgxMatEntityInputModule } from '../input/input.module';
+import { NgxMatEntityFormComponent } from '../form/form.component';
 import { EditActionInternal } from '../table/edit-dialog/edit-data.builder';
 import { EditEntityData } from '../table/edit-dialog/edit-entity-data';
 import { EditData } from '../table/table-data';
@@ -82,12 +79,11 @@ export const NGX_EDIT_DATA: InjectionToken<PageEditData<any>> = new InjectionTok
         NgIf,
         NgFor,
         MatButtonModule,
-        MatTabsModule,
-        NgxMatEntityInputModule,
         MatProgressSpinnerModule,
         MatMenuModule,
         MatBadgeModule,
-        TooltipComponent
+        TooltipComponent,
+        NgxMatEntityFormComponent
     ]
 })
 export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
@@ -96,11 +92,6 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
      * Contains HelperMethods around handling Entities and their property-metadata.
      */
     EntityUtilities: typeof EntityUtilities = EntityUtilities;
-
-    /**
-     * The tabs to display.
-     */
-    entityTabs!: EntityTab<EntityType>[];
 
     /**
      * The entity that is being edited.
@@ -142,6 +133,11 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
      */
     allowDelete!: boolean;
 
+    /**
+     * Whether or not the page has been loaded.
+     */
+    isLoaded: boolean = false;
+
     private inConfirmNavigation: boolean = false;
 
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -163,24 +159,9 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
         private readonly http: HttpClient,
         private readonly el: ElementRef,
         private readonly renderer: Renderer2,
-        @Inject(NGX_INTERNAL_GLOBAL_DEFAULT_VALUES)
+        @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         protected readonly globalConfig: NgxGlobalDefaultValues
     ) { }
-
-    /**
-     * Checks if the input with the given key is readonly.
-     * @param key - The key for the input to check.
-     * @returns Whether or not the input for the key is read only.
-     */
-    isReadOnly(key: keyof EntityType): boolean {
-        return runInInjectionContext(this.injector, () => {
-            const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = EntityUtilities.getPropertyMetadata(this.entity, key);
-            if (!metadata) {
-                throw new Error(`No metadata was found for the key "${String(key)}"`);
-            }
-            return this.isEntityReadOnly || metadata.isReadOnly(this.entity);
-        });
-    }
 
     async ngOnInit(): Promise<void> {
         this.data = new PageEditDataBuilder(this.inputData, this.globalConfig).getResult();
@@ -204,7 +185,7 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
             this.isEntityReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
             this.allowDelete = this.data.allowDelete(this.entityPriorChanges);
         });
-        this.entityTabs = EntityUtilities.getEntityTabs(this.entity, this.injector, false, true);
+        this.isLoaded = true;
         setTimeout(() => this.checkOffset(), 1);
         setTimeout(() => void this.checkIsEntityValid(), 1);
     }

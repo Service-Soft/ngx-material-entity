@@ -3,13 +3,12 @@ import { Component, ComponentRef, OnInit, Type, ViewContainerRef } from '@angula
 import { BaseEntityType } from '../../../classes/entity.model';
 import { DecoratorTypes } from '../../../decorators/base/decorator-types.enum';
 import { NgxMatEntityBaseInputComponent } from '../base-input.component';
-
-// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'custom-input',
     templateUrl: './custom.component.html',
-    styleUrls: ['./custom.component.scss']
+    styleUrls: ['./custom.component.scss'],
+    standalone: true
 })
 export class CustomInputComponent<
     EntityType extends BaseEntityType<EntityType>,

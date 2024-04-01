@@ -1,15 +1,23 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { CommonModule } from '@angular/common';
 import { Component, EnvironmentInjector } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DecoratorTypes, EntityUtilities } from 'ngx-material-entity';
+import { DecoratorTypes, EntityUtilities, NgxMatEntityInputComponent } from 'ngx-material-entity';
 import { TestEntity, TestEntityMockBuilder } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';
-
-// eslint-disable-next-line angular/prefer-standalone-component
 @Component({
 
     selector: 'app-showcase-inputs',
     templateUrl: './showcase-inputs.component.html',
-    styleUrls: ['./showcase-inputs.component.scss']
+    styleUrls: ['./showcase-inputs.component.scss'],
+    standalone: true,
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatButtonModule,
+        NgxMatEntityInputComponent
+    ]
 })
 export class ShowcaseInputsComponent {
 
