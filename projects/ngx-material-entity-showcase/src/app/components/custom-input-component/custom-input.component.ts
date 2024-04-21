@@ -1,6 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { Component, OnInit } from '@angular/core';
 import { DecoratorTypes, NgxMatEntityBaseInputComponent } from 'ngx-material-entity';
+
 import { RandomMetadata, TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';
 
 // eslint-disable-next-line angular/prefer-standalone-component

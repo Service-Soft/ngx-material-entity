@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
@@ -19,6 +20,7 @@ import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../.
 import { SelectionUtilities } from '../../../../utilities/selection.utilities';
 import { DisplayColumn } from '../../../table/table-data';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
+
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'references-many-input',

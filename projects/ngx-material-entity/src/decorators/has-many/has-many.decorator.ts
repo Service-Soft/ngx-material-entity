@@ -1,9 +1,9 @@
+import { HasManyDecoratorConfigInternal } from './has-many-decorator-internal.data';
+import { HasManyDecoratorConfig } from './has-many-decorator.data';
 import { BaseEntityType } from '../../classes/entity.model';
 import { needsUpdateGlobalDefaults } from '../../default-global-configuration-values';
 import { baseProperty } from '../base/base-property.decorator';
 import { DecoratorTypes } from '../base/decorator-types.enum';
-import { HasManyDecoratorConfigInternal } from './has-many-decorator-internal.data';
-import { HasManyDecoratorConfig } from './has-many-decorator.data';
 
 /**
  * Decorator for setting and getting has many property metadata.

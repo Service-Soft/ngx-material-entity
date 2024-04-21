@@ -1,4 +1,5 @@
 import { expect } from '@jest/globals';
+
 import { defaultDynamicStyleClasses } from './default-style-classes.function';
 
 test('should return  []', () => {

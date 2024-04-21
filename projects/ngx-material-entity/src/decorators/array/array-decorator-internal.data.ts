@@ -1,5 +1,7 @@
 import { Time } from '@angular/common';
 import { DateFilterFn } from '@angular/material/datepicker';
+
+import { ArrayDecoratorConfig, AutocompleteStringChipsArrayDecoratorConfig, DateArrayDecoratorConfig, DateRangeArrayDecoratorConfig, DateTimeArrayDecoratorConfig, EditArrayItemDialogData, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from './array-decorator.data';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder } from '../../components/confirm-dialog/confirm-dialog-data.builder';
@@ -12,7 +14,6 @@ import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { DateRange } from '../date/date-decorator.data';
 import { StringAutocompleteValues } from '../string/string-decorator.data';
-import { ArrayDecoratorConfig, AutocompleteStringChipsArrayDecoratorConfig, DateArrayDecoratorConfig, DateRangeArrayDecoratorConfig, DateTimeArrayDecoratorConfig, EditArrayItemDialogData, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from './array-decorator.data';
 
 /**
  * The internal dialog data for the entities array edit dialog.

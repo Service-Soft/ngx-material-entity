@@ -1,6 +1,8 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { DateFilterFn } from '@angular/material/datepicker';
 import { firstValueFrom, of } from 'rxjs';
+
+import { RandomMetadata } from './test-entity.mock';
 import { Entity } from '../classes/entity.model';
 import { array } from '../decorators/array/array.decorator';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
@@ -19,7 +21,6 @@ import { ReflectUtilities } from '../encapsulation/reflect.utilities';
 import { DateUtilities } from '../utilities/date.utilities';
 import { EntityUtilities } from '../utilities/entity.utilities';
 import { FileUtilities } from '../utilities/file.utilities';
-import { RandomMetadata } from './test-entity.mock';
 
 /**
  * An Entity used to Test the @object decorator on the TestEntity class.
@@ -130,6 +131,7 @@ export interface TestEntityWithoutCustomPropertiesInterface {
     maxNumberValue: number,
     numberSliderValue: number,
     objectValue: TestObjectEntity,
+    dropdownObjectValue: TestObjectEntity,
     optionalObjectValue?: TestObjectEntity,
     stringChipsArrayValue: string[],
     stringChipsAutocompleteArrayValue: string[],
@@ -344,6 +346,25 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         EntityClass: TestObjectEntity
     })
     objectValue!: TestObjectEntity;
+
+    @object({
+        displayName: 'Dropdown Object Value',
+        displayStyle: 'dropdown',
+        EntityClass: TestObjectEntity,
+        dropdownValues: [
+            {
+                displayName: 'Test Object #1',
+                value: new TestObjectEntity({
+                    id: '1',
+                    maxLengthStringValue: '1234',
+                    secondTabStringValue: '12345',
+                    rowValue1: 'rowValue1',
+                    rowValue2: 'rowValue2'
+                })
+            }
+        ]
+    })
+    dropdownObjectValue!: TestObjectEntity;
 
     @object({
         displayStyle: 'inline',
@@ -814,6 +835,13 @@ const testEntityData: TestEntityWithoutCustomProperties = {
     maxNumberValue: 5,
     numberSliderValue: 12,
     objectValue: {
+        id: '1',
+        maxLengthStringValue: '1234',
+        secondTabStringValue: '12345',
+        rowValue1: 'rowValue1',
+        rowValue2: 'rowValue2'
+    },
+    dropdownObjectValue: {
         id: '1',
         maxLengthStringValue: '1234',
         secondTabStringValue: '12345',

@@ -1,12 +1,13 @@
 import { expect } from '@jest/globals';
 import { firstValueFrom, of } from 'rxjs';
+
+import { ReferencesManyDecoratorConfigInternal, defaultGetEntityForId } from './references-many-decorator-internal.data';
+import { referencesMany } from './references-many.decorator';
 import { defaultGlobalDefaults } from '../../default-global-configuration-values';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { string } from '../string/string.decorator';
-import { ReferencesManyDecoratorConfigInternal, defaultGetEntityForId } from './references-many-decorator-internal.data';
-import { referencesMany } from './references-many.decorator';
 
 class Address {
     @string({

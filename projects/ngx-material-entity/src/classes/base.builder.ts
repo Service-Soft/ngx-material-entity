@@ -1,6 +1,6 @@
+import { BaseEntityType } from './entity.model';
 import { CONFIG_NEEDS_UPDATE_KEY } from '../default-global-configuration-values';
 import { NgxGlobalDefaultValues } from '../global-configuration-values';
-import { BaseEntityType } from './entity.model';
 
 /**
  * The abstract BaseBuilder class.
@@ -33,7 +33,7 @@ export abstract class BaseBuilder<InternalType extends InputType, InputType exte
      * Used to validate the user input in the constructor.
      * @param data - The user input.
      */
-    // eslint-disable-next-line typescript/no-unused-vars
+    // eslint-disable-next-line unusedImports/no-unused-vars
     protected validateInput(data?: InputType): void {
         // By default, no validation is done
     }

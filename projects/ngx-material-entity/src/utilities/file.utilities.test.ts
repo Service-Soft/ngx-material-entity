@@ -1,4 +1,5 @@
 import { expect } from '@jest/globals';
+
 import { FileUtilities } from './file.utilities';
 
 describe('getAcceptString', () => {

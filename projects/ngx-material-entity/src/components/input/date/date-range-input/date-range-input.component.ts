@@ -1,8 +1,10 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { NgFor, NgIf } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DateFilterFn, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
+
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DateRangeDateDecoratorConfigInternal } from '../../../../decorators/date/date-decorator-internal.data';
@@ -11,7 +13,7 @@ import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
 import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../../../global-configuration-values';
 import { DateUtilities } from '../../../../utilities/date.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
-import { NgFor, NgIf } from '@angular/common';
+
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'date-range-input',

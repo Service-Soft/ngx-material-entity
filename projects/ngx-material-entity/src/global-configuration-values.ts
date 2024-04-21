@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 import { InjectionToken, inject } from '@angular/core';
+
 import { defaultGlobalDefaults } from './default-global-configuration-values';
 
 /**
@@ -92,15 +93,25 @@ export interface NgxGlobalDefaultValues {
      */
     confirmUnsavedChangesLabel: string,
     /**
+     * The label for the button to close a dialog without changes.
+     * @default 'Close'
+     */
+    confirmUnsavedChangesDialogLabel: string,
+    /**
      * The title for confirming to leave without changes.
      * @default 'Unsaved Changes'
      */
     confirmUnsavedChangesTitle: string,
     /**
-     * The text for confirming to leave without changes.
+     * The text for confirming to leave a page without changes.
      * @default ['You have unsaved changes that will be deleted when you leave this page.', 'Continue?']
      */
     confirmUnsavedChangesText: string[],
+    /**
+     * The text for confirming to leave a dialog without changes.
+     * @default ['You have unsaved changes that will be deleted when you close this dialog.', 'Continue?']
+     */
+    confirmUnsavedChangesDialogText: string[],
     /**
      * The title for the add array item dialog.
      * @default 'Add to array'

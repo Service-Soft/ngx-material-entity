@@ -2,6 +2,7 @@
 import { NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { FileData } from '../../../../decorators/file/file-decorator.data';
@@ -11,6 +12,7 @@ import { EntityUtilities } from '../../../../utilities/entity.utilities';
 import { FileUtilities } from '../../../../utilities/file.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 import { FileInputComponent } from '../file-input/file-input.component';
+
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'file-image-input',

@@ -1,12 +1,13 @@
 import { expect } from '@jest/globals';
+
+import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal } from './array-decorator-internal.data';
+import { array } from './array.decorator';
 import { Entity } from '../../classes/entity.model';
 import { defaultGlobalDefaults } from '../../default-global-configuration-values';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../../mocks/test-entity.interface';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DefaultStringDecoratorConfigInternal } from '../string/string-decorator-internal.data';
-import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal } from './array-decorator-internal.data';
-import { array } from './array.decorator';
 
 const testEntity: TestEntityWithoutCustomProperties = new TestEntityWithoutCustomPropertiesMockBuilder().testEntity;
 

@@ -1,11 +1,12 @@
 import { expect } from '@jest/globals';
+
+import { EntityUtilities } from './entity.utilities';
+import { ValidationError, ValidationUtilities } from './validation.utilities';
 import { PropertyDecoratorConfigInternal } from '../decorators/base/property-decorator-internal.data';
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../encapsulation/reflect.utilities';
 import { mockInjector } from '../mocks/environment-injector.mock';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder, getDatesBetween } from '../mocks/test-entity.interface';
-import { EntityUtilities } from './entity.utilities';
-import { ValidationError, ValidationUtilities } from './validation.utilities';
 
 const builder: TestEntityWithoutCustomPropertiesMockBuilder = new TestEntityWithoutCustomPropertiesMockBuilder();
 const testEntity: TestEntityWithoutCustomProperties = builder.testEntity;
@@ -195,6 +196,13 @@ describe('isEntityValid', () => {
         tE.objectValue.maxLengthStringValue = '12345';
         expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(false);
         tE.objectValue.maxLengthStringValue = '1234';
+        expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(true);
+    });
+
+    // OBJECT_DROPDOWN
+    test('OBJECT_DROPDOWN', async () => {
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
         expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(true);
     });
 

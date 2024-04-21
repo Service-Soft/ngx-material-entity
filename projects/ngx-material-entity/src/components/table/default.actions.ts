@@ -1,4 +1,5 @@
 import { Type, inject } from '@angular/core';
+
 import { BaseEntityType } from '../../classes/entity.model';
 import { Js2XmlUtilities } from '../../encapsulation/js-2-xml.utilities';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';

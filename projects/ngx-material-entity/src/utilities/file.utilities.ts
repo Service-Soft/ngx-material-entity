@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+
 import { FileDataWithFile } from '../decorators/file/file-decorator-internal.data';
 import { FileData } from '../decorators/file/file-decorator.data';
 import { JSZipUtilities, Zip } from '../encapsulation/jszip.utilities';

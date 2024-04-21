@@ -1,5 +1,5 @@
 <div class="container">
     <br>
-    <ngx-mat-entity-table [tableData]="tableConfig"></ngx-mat-entity-table>
+    <ngx-mat-entity-table [tableData]="tableConfig" (unsavedDialogChanges)="unsavedChanges = $event"></ngx-mat-entity-table>
     <br>
 </div>

@@ -7,8 +7,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { EntityUtilities, NgxMatEntityTableComponent, TableData } from 'ngx-material-entity';
-import { TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';
+
 import { customTableData, customTableDataReadOnly, defaultTableData, defaultTableDataDialog } from './table-configs.data';
+import { TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';
+
 @Component({
 
     selector: 'app-showcase-table',

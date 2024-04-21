@@ -1,4 +1,8 @@
 import { Inject } from '@angular/core';
+
+import { CreateDataBuilder, CreateDataInternal } from './create-dialog/create-data.builder';
+import { EditDataBuilder, EditDataInternal } from './edit-dialog/edit-data.builder';
+import { BaseData, BaseTableAction, DisplayColumn, DynamicStyleClasses, MultiSelectAction, TableData } from './table-data';
 import { BaseBuilder } from '../../classes/base.builder';
 import { BaseEntityType, EntityClassNewable, EntityServiceClassNewable } from '../../classes/entity.model';
 import { defaultFalse } from '../../functions/default-false.function';
@@ -8,9 +12,6 @@ import { getConfigValue } from '../../functions/get-config-value.function';
 import { isAsyncFunction } from '../../functions/is-async-function.function';
 import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
-import { CreateDataBuilder, CreateDataInternal } from './create-dialog/create-data.builder';
-import { EditDataBuilder, EditDataInternal } from './edit-dialog/edit-data.builder';
-import { BaseData, BaseTableAction, DisplayColumn, DynamicStyleClasses, MultiSelectAction, TableData } from './table-data';
 
 /**
  * The internal BaseTableAction. Sets default values.

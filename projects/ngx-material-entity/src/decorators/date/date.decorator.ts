@@ -1,9 +1,9 @@
+import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from './date-decorator-internal.data';
+import { DateRangeDateDecoratorConfig, DateTimeDateDecoratorConfig, DefaultDateDecoratorConfig } from './date-decorator.data';
 import { needsUpdateGlobalDefaults } from '../../default-global-configuration-values';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { baseProperty } from '../base/base-property.decorator';
 import { DecoratorTypes } from '../base/decorator-types.enum';
-import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from './date-decorator-internal.data';
-import { DateRangeDateDecoratorConfig, DateTimeDateDecoratorConfig, DefaultDateDecoratorConfig } from './date-decorator.data';
 
 /**
  * Decorator for setting and getting date property metadata.

@@ -1,5 +1,14 @@
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
+import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export type ObjectDropdownValues<EntityType extends BaseEntityType<EntityType>> =
+    DropdownValue<EntityType | undefined>[]
+    // eslint-disable-next-line typescript/no-explicit-any
+    | ((entity: any) => DropdownValue<EntityType | undefined>[])
+    // eslint-disable-next-line typescript/no-explicit-any
+    | ((entity: any) => Promise<DropdownValue<EntityType | undefined>[]>)
 
 /**
  * Definition for the @object metadata.
@@ -16,7 +25,7 @@ abstract class ObjectDecoratorConfig<EntityType extends BaseEntityType<EntityTyp
      * The objects properties are added as input fields in an section of the entity.
      * Useful if the object only contains a few properties (e.g. A address on a user).
      */
-    displayStyle!: 'inline';
+    displayStyle!: 'dropdown' | 'inline';
 
     /**
      * Some properties of the objects entity class that should be omitted.
@@ -30,4 +39,17 @@ abstract class ObjectDecoratorConfig<EntityType extends BaseEntityType<EntityTyp
 export interface DefaultObjectDecoratorConfig<EntityType extends BaseEntityType<EntityType>> extends ObjectDecoratorConfig<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'inline'
+}
+
+/**
+ * The configuration options for a dropdown object property.
+ */
+export interface DropdownObjectDecoratorConfig<EntityType extends BaseEntityType<EntityType>> extends ObjectDecoratorConfig<EntityType> {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    displayStyle: 'dropdown',
+    /**
+     * The values of the dropdown, consisting of a name to display and the actual value.
+     * Can also receive a function to determine the values.
+     */
+    dropdownValues: ObjectDropdownValues<EntityType>
 }

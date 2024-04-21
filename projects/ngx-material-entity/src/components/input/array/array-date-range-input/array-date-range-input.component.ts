@@ -9,6 +9,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
+
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DateRangeArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
@@ -17,6 +18,7 @@ import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
 import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../../../global-configuration-values';
 import { DateUtilities } from '../../../../utilities/date.utilities';
 import { ArrayTableComponent } from '../array-table.class';
+
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'array-date-range-input',

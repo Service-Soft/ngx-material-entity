@@ -1,7 +1,8 @@
 import { Type } from '@angular/core';
+
+import { NgxMatEntityBaseDisplayColumnValueComponent } from './display-column-value/base-display-column-value.component';
 import { BaseEntityType, EntityClassNewable, EntityServiceClassNewable } from '../../classes/entity.model';
 import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
-import { NgxMatEntityBaseDisplayColumnValueComponent } from './display-column-value/base-display-column-value.component';
 
 /**
  * The Definition of a Column inside the table.
@@ -230,7 +231,15 @@ export interface CreateData {
     /**
      * The data used to generate a confirmation dialog for the create action.
      */
-    confirmCreateDialogData?: ConfirmDialogData
+    confirmCreateDialogData?: ConfirmDialogData,
+    /**
+     * Whether or not cancelling with unsaved changes should require a confirm dialog.
+     */
+    unsavedChangesRequireConfirmDialog?: boolean,
+    /**
+     * The data used to generate a confirmation dialog for the cancel with unsaved changes action.
+     */
+    confirmUnsavedChangesDialogData?: ConfirmDialogData
 }
 
 /**
@@ -297,6 +306,14 @@ export interface EditData<EntityType extends BaseEntityType<EntityType>> {
      * The data used to generate a confirmation dialog for the edit action.
      */
     confirmEditDialogData?: ConfirmDialogData,
+    /**
+     * Whether or not cancelling with unsaved changes should require a confirm dialog.
+     */
+    unsavedChangesRequireConfirmDialog?: boolean,
+    /**
+     * The data used to generate a confirmation dialog for the cancel with unsaved changes action.
+     */
+    confirmUnsavedChangesDialogData?: ConfirmDialogData,
     /**
      * The label of the actions button.
      */

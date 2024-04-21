@@ -5,7 +5,7 @@ import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigIntern
 import { DefaultFileDecoratorConfigInternal, ImageFileDecoratorConfigInternal } from '../file/file-decorator-internal.data';
 import { HasManyDecoratorConfigInternal } from '../has-many/has-many-decorator-internal.data';
 import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal, SliderNumberDecoratorConfigInternal } from '../number/number-decorator-internal.data';
-import { DefaultObjectDecoratorConfigInternal } from '../object/object-decorator-internal.data';
+import { DefaultObjectDecoratorConfigInternal, DropdownObjectDecoratorConfigInternal } from '../object/object-decorator-internal.data';
 import { ReferencesManyDecoratorConfigInternal } from '../references-many/references-many-decorator-internal.data';
 import { ReferencesOneDecoratorConfigInternal } from '../references-one/references-one-decorator-internal.data';
 import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal, PasswordStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../string/string-decorator-internal.data';
@@ -26,6 +26,7 @@ export enum DecoratorTypes {
     BOOLEAN_TOGGLE = 'booleanToggle',
     BOOLEAN_DROPDOWN = 'booleanDropdown',
     OBJECT = 'object',
+    OBJECT_DROPDOWN = 'objectDropdown',
     ARRAY = 'array',
     ARRAY_DATE = 'arrayDate',
     ARRAY_DATE_TIME = 'arrayDateTime',
@@ -60,6 +61,8 @@ export type DecoratorType<T, CustomMetadataType extends Record<string, unknown>>
     : T extends DecoratorTypes.BOOLEAN_DROPDOWN ? DropdownBooleanDecoratorConfigInternal
     // eslint-disable-next-line typescript/no-explicit-any
     : T extends DecoratorTypes.OBJECT ? DefaultObjectDecoratorConfigInternal<any>
+    // eslint-disable-next-line typescript/no-explicit-any
+    : T extends DecoratorTypes.OBJECT_DROPDOWN ? DropdownObjectDecoratorConfigInternal<any>
     // eslint-disable-next-line typescript/no-explicit-any
     : T extends DecoratorTypes.ARRAY ? EntityArrayDecoratorConfigInternal<any>
     : T extends DecoratorTypes.ARRAY_DATE ? DateArrayDecoratorConfigInternal
