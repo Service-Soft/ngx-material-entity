@@ -235,14 +235,14 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * The currently selected object as a drop down value.
      */
     get currentObjectDropdownValue(): DropdownValue<EntityType | undefined> | undefined {
-        return LodashUtilities.cloneDeep(this.objectDropdownValues ?? []).find(v => v.value === this.entity[this.propertyKey]);
+        return LodashUtilities.cloneDeep(this.objectDropdownValues ?? []).find(v => LodashUtilities.isEqual(v.value, this.entity[this.propertyKey]));
     }
     // eslint-disable-next-line jsdoc/require-returns
     /**
      * Whether or not the current object dropdown value should be shown in the dropdown.
      */
     get shouldDisplayCurrentObjectDropdownValue(): boolean {
-        return !!this.currentObjectDropdownValue && !(!!this.filteredObjectDropdownValues.find(v => v.value === this.currentObjectDropdownValue?.value));
+        return !!this.currentObjectDropdownValue && !(!!this.filteredObjectDropdownValues.find(v => LodashUtilities.isEqual(v.value, this.currentObjectDropdownValue?.value)));
     }
 
     @ViewChild('addArrayItemDialog')
@@ -738,6 +738,16 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 void this.hasManyEntityService.import(file);
             }
         });
+    }
+
+    /**
+     * Checks if two objects are equal. Is needed for the dropdown.
+     * @param value1 - The first object to compare.
+     * @param value2 - The second object to compare.
+     * @returns Whether or not the objects are the same.
+     */
+    compareObjects(value1?: EntityType, value2?: EntityType): boolean {
+        return LodashUtilities.isEqual(value1, value2);
     }
 
     /**
