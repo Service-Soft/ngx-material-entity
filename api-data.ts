@@ -1,5 +1,6 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { DateFilterFn } from '@angular/material/datepicker';
+
 import { TestEntityWithoutCustomPropertiesInterface } from './projects/ngx-material-entity/src/mocks/test-entity.interface';
 
 function getDatesBetween(
@@ -46,6 +47,13 @@ const testEntityData: TestEntityWithoutCustomPropertiesInterface = {
     maxNumberValue: 5,
     numberSliderValue: 12,
     objectValue: {
+        id: '1',
+        maxLengthStringValue: '1234',
+        secondTabStringValue: '12345',
+        rowValue1: 'rowValue1',
+        rowValue2: 'rowValue2'
+    },
+    dropdownObjectValue: {
         id: '1',
         maxLengthStringValue: '1234',
         secondTabStringValue: '12345',
@@ -227,7 +235,8 @@ interface Person {
     firstName: string,
     lastName: string,
     addressIds: string[],
-    timeTrackings: TimeTracking[]
+    timeTrackings: TimeTracking[],
+    addressDropdownObject: Address
 }
 
 const personData: Person = {
@@ -241,6 +250,14 @@ const personData: Person = {
         street: 'Test Street',
         number: '1',
         postcode: '12345'
+    },
+    addressDropdownObject: {
+        city: 'test city',
+        formOfAddress: 'Mr.',
+        id: '42',
+        number: '123',
+        postcode: '12345',
+        street: 'test street'
     },
     addressId: '1',
     addressIds: ['1'],

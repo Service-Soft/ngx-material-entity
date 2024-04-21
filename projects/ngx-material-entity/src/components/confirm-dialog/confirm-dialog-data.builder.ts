@@ -1,8 +1,8 @@
+import { ConfirmDialogData, ConfirmDialogTypes } from './confirm-dialog-data';
 import { BaseBuilder } from '../../classes/base.builder';
 import { CONFIG_NEEDS_UPDATE_KEY } from '../../default-global-configuration-values';
 import { getConfigValue } from '../../functions/get-config-value.function';
 import { NgxGlobalDefaultValues } from '../../global-configuration-values';
-import { ConfirmDialogData, ConfirmDialogTypes } from './confirm-dialog-data';
 
 /**
  * The internal ConfirmDialogData. Requires all default values the user can leave out.

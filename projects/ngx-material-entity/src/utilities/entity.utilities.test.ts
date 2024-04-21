@@ -1,6 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { expect } from '@jest/globals';
+// eslint-disable-next-line eslintImport/no-unassigned-import
 import 'zone.js';
+
+import { EntityTab, EntityUtilities } from './entity.utilities';
 import { Entity } from '../classes/entity.model';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { string } from '../decorators/string/string.decorator';
@@ -9,7 +12,6 @@ import { ReflectUtilities } from '../encapsulation/reflect.utilities';
 import { mockInjector } from '../mocks/environment-injector.mock';
 import { HttpClientMock } from '../mocks/http-client.mock';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder, TestObjectArrayEntity, TestObjectEntity, getDatesBetween } from '../mocks/test-entity.interface';
-import { EntityTab, EntityUtilities } from './entity.utilities';
 
 const builder: TestEntityWithoutCustomPropertiesMockBuilder = new TestEntityWithoutCustomPropertiesMockBuilder();
 const testEntity: TestEntityWithoutCustomProperties = builder.testEntity;
@@ -313,7 +315,7 @@ describe('keysOf', () => {
     test('should get all keys of the entity', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
-        expect(EntityUtilities.keysOf(tE, mockInjector)).toHaveLength(55);
+        expect(EntityUtilities.keysOf(tE, mockInjector)).toHaveLength(56);
     });
     test('should get keys without omitForCreate', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);

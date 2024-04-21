@@ -1,8 +1,8 @@
+import { CreateDataBuilder, CreateDataInternal } from './create-data.builder';
+import { CreateEntityData } from './create-entity-data';
 import { BaseBuilder } from '../../../classes/base.builder';
 import { BaseEntityType, EntityServiceClassNewable } from '../../../classes/entity.model';
 import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
-import { CreateDataBuilder, CreateDataInternal } from './create-data.builder';
-import { CreateEntityData } from './create-entity-data';
 
 /**
  * The internal CreateEntityDialogData. Requires all default values the user can leave out.

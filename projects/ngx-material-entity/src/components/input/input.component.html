@@ -308,6 +308,31 @@
     </div>
 
     <!-------------------------------------------->
+    <!---------------Object Dropdown-------------->
+    <!-------------------------------------------->
+    <mat-form-field *ngSwitchCase="DecoratorTypes.OBJECT_DROPDOWN" class="object-dropdown">
+        <mat-label>{{metadata.displayName}}</mat-label>
+        <mat-select #model="ngModel"
+            [name]="objectDropdownName"
+            [required]="metadata.required(entity)"
+            [disabled]="internalIsReadOnly"
+            [(ngModel)]="entity[propertyKey]"
+            (selectionChange)="emitChange()"
+            (opened)="selectSearchInput.focus()"
+        >
+            <mat-form-field class="select-search-input">
+                <!-- eslint-disable-next-line angular/no-any -->
+                <input #selectSearchInput matInput (keyup)="filterObjectDropdownValues($any($event.target).value)">
+                <i matSuffix class="fas fa-search"></i>
+            </mat-form-field>
+            <mat-option *ngIf="!metadata.required(entity)">-</mat-option>
+            <mat-option *ngIf="shouldDisplayCurrentObjectDropdownValue" [value]="currentObjectDropdownValue?.value">{{currentObjectDropdownValue?.displayName}}</mat-option>
+            <mat-option *ngFor="let value of filteredObjectDropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
+        </mat-select>
+        <mat-error>{{internalGetValidationErrorMessage(model)}}</mat-error>
+    </mat-form-field>
+
+    <!-------------------------------------------->
     <!-------------- references one ------------->
     <!-------------------------------------------->
     <div *ngSwitchCase="DecoratorTypes.REFERENCES_ONE">

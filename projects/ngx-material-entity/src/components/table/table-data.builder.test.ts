@@ -1,11 +1,12 @@
 /* eslint-disable no-console */
 import { expect } from '@jest/globals';
+
+import { TableData } from './table-data';
+import { BaseTableActionInternal, MultiSelectActionInternal, TableDataBuilder, TableDataInternal, defaultSearchFunction } from './table-data.builder';
 import { defaultGlobalDefaults } from '../../default-global-configuration-values';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../../mocks/test-entity.interface';
 import { TestEntityService } from '../../services/entity.service.test';
 import { ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
-import { TableData } from './table-data';
-import { BaseTableActionInternal, MultiSelectActionInternal, TableDataBuilder, TableDataInternal, defaultSearchFunction } from './table-data.builder';
 
 const baseTableData: TableData<TestEntityWithoutCustomProperties> = {
     baseData: {

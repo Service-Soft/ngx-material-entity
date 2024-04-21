@@ -1,11 +1,12 @@
 import { expect } from '@jest/globals';
+
+import { HasManyDecoratorConfigInternal } from './has-many-decorator-internal.data';
+import { hasMany } from './has-many.decorator';
 import { Entity } from '../../classes/entity.model';
 import { EntityService } from '../../services/entity.service';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { string } from '../string/string.decorator';
-import { HasManyDecoratorConfigInternal } from './has-many-decorator-internal.data';
-import { hasMany } from './has-many.decorator';
 
 class TestEntityService extends EntityService<TestEntity> {
     override baseUrl: string = '/test';

@@ -1,4 +1,5 @@
 import { Type } from '@angular/core';
+
 import { BaseEntityType } from '../../classes/entity.model';
 import { NgxMatEntityBaseInputComponent } from '../../components/input/base-input.component';
 import { DecoratorTypes } from '../base/decorator-types.enum';

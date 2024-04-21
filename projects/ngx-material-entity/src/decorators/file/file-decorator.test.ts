@@ -1,10 +1,11 @@
 import { expect } from '@jest/globals';
-import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../../mocks/test-entity.interface';
-import { EntityUtilities } from '../../utilities/entity.utilities';
-import { DecoratorTypes } from '../base/decorator-types.enum';
+
 import { DefaultFileDecoratorConfigInternal, ImageFileDecoratorConfigInternal } from './file-decorator-internal.data';
 import { DefaultFileDecoratorConfig } from './file-decorator.data';
 import { file } from './file.decorator';
+import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../../mocks/test-entity.interface';
+import { EntityUtilities } from '../../utilities/entity.utilities';
+import { DecoratorTypes } from '../base/decorator-types.enum';
 
 const testEntity: TestEntityWithoutCustomProperties = new TestEntityWithoutCustomPropertiesMockBuilder().testEntity;
 

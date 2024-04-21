@@ -1,11 +1,12 @@
 import { expect } from '@jest/globals';
+
+import { DecoratorTypes } from './decorator-types.enum';
 import { Entity } from '../../classes/entity.model';
 import { defaultTrue } from '../../functions/default-true.function';
 import { TestEntityWithoutCustomPropertiesMockBuilder } from '../../mocks/test-entity.interface';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { DefaultStringDecoratorConfigInternal } from '../string/string-decorator-internal.data';
 import { string } from '../string/string.decorator';
-import { DecoratorTypes } from './decorator-types.enum';
 
 describe('baseProperty', () => {
     test('id should have base Metadata', () => {

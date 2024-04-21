@@ -1,8 +1,9 @@
 import { expect } from '@jest/globals';
+
+import { EditDataBuilder } from './edit-data.builder';
 import { defaultGlobalDefaults } from '../../../default-global-configuration-values';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../../../mocks/test-entity.interface';
 import { EditData } from '../table-data';
-import { EditDataBuilder } from './edit-data.builder';
 
 const editData: EditData<TestEntityWithoutCustomProperties> = {};
 const editDataWithActions: EditData<TestEntityWithoutCustomProperties> = {

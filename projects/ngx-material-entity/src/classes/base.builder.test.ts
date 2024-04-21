@@ -1,6 +1,7 @@
 import { expect } from '@jest/globals';
-import { defaultGlobalDefaults } from '../default-global-configuration-values';
+
 import { BaseBuilder } from './base.builder';
+import { defaultGlobalDefaults } from '../default-global-configuration-values';
 
 interface Data {
     x: string,

@@ -1,3 +1,4 @@
+import { PageEditData } from './edit-page.component';
 import { BaseBuilder } from '../../classes/base.builder';
 import { BaseEntityType } from '../../classes/entity.model';
 import { defaultTrue } from '../../functions/default-true.function';
@@ -5,7 +6,6 @@ import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { EditDataBuilder, EditDataInternal } from '../table/edit-dialog/edit-data.builder';
 import { EditEntityDataInternal } from '../table/edit-dialog/edit-entity.builder';
-import { PageEditData } from './edit-page.component';
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type PageEditDataInternal<EntityType extends BaseEntityType<EntityType>> = Omit<EditEntityDataInternal<EntityType>, 'entity' | 'EntityServiceClass'> & {

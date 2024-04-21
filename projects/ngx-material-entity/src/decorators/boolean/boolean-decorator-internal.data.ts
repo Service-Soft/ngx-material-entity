@@ -1,7 +1,7 @@
+import { CheckboxBooleanDecoratorConfig, DropdownBooleanDecoratorConfig, ToggleBooleanDecoratorConfig } from './boolean-decorator.data';
 import { getConfigValue } from '../../functions/get-config-value.function';
 import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
-import { CheckboxBooleanDecoratorConfig, DropdownBooleanDecoratorConfig, ToggleBooleanDecoratorConfig } from './boolean-decorator.data';
 
 /**
  * The internal DropdownBooleanDecoratorConfig. Sets default values.

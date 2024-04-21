@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
+
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DateTimeArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
@@ -19,6 +20,7 @@ import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
 import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../../../global-configuration-values';
 import { DateUtilities } from '../../../../utilities/date.utilities';
 import { ArrayTableComponent } from '../array-table.class';
+
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'array-date-time-input',

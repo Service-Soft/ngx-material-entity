@@ -1,6 +1,6 @@
+import { DecoratorType, DecoratorTypes } from './decorator-types.enum';
 import { ReflectUtilities } from '../../encapsulation/reflect.utilities';
 import { EntityUtilities } from '../../utilities/entity.utilities';
-import { DecoratorType, DecoratorTypes } from './decorator-types.enum';
 
 /**
  * The base decorator for setting metadata on properties.

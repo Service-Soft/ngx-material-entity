@@ -1,6 +1,7 @@
 import { Component, ComponentRef, Input, OnInit, Type, ViewContainerRef } from '@angular/core';
-import { BaseEntityType } from '../../../classes/entity.model';
+
 import { NgxMatEntityBaseDisplayColumnValueComponent } from './base-display-column-value.component';
+import { BaseEntityType } from '../../../classes/entity.model';
 
 /**
  * The component that displays the custom display column value.

@@ -1,10 +1,10 @@
+import { ReferencesManyDecoratorConfig } from './references-many-decorator.data';
 import { BaseEntityType } from '../../classes/entity.model';
 import { DisplayColumn } from '../../components/table/table-data';
 import { getConfigValue } from '../../functions/get-config-value.function';
 import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
-import { ReferencesManyDecoratorConfig } from './references-many-decorator.data';
 
 /**
  * The internal DefaultNumberDecoratorConfig. Sets default values.

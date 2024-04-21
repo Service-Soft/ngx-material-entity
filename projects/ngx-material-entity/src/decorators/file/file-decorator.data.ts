@@ -1,6 +1,6 @@
+import { FileDataWithFile, FileDataWithUrl } from './file-decorator-internal.data';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
-import { FileDataWithFile, FileDataWithUrl } from './file-decorator-internal.data';
 
 /**
  * The type of a property annotated with @file.

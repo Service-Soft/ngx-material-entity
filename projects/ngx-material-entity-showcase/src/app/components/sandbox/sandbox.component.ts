@@ -1,14 +1,15 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { CommonModule, formatDate, formatNumber } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, EnvironmentInjector, Injectable, inject } from '@angular/core';
-import { DecoratorTypes, DropdownValue, Entity, EntityService, EntityUtilities, NgxMatEntityTableComponent, TableData, array, boolean, date, hasMany, number, object, referencesMany, referencesOne, string } from 'ngx-material-entity';
+import { Component, EnvironmentInjector, HostListener, Injectable, inject } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { DecoratorTypes, DropdownValue, Entity, EntityService, EntityUtilities, NgxMatEntityConfirmDialogComponent, NgxMatEntityTableComponent, TableData, UnsavedChangesPage, array, boolean, date, hasMany, number, object, referencesMany, referencesOne, string } from 'ngx-material-entity';
+import { firstValueFrom } from 'rxjs';
+
 import { environment } from '../../../environments/environment';
 import { PdfDownloadDisplayValueComponent } from '../pdf-download-display-value/pdf-download-display-value.component';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class PersonService extends EntityService<Person> {
     baseUrl: string = `${environment.apiUrl}/persons`;
 
@@ -220,6 +221,30 @@ export class Person extends Entity {
     })
     addressObject!: Address[];
 
+    @object({
+        displayName: 'Address Dropdown',
+        displayStyle: 'dropdown',
+        EntityClass: Address,
+        position: {
+            tab: 2,
+            tabName: 'Addresses'
+        },
+        dropdownValues: [
+            {
+                displayName: 'Address #1',
+                value: {
+                    city: 'test city',
+                    formOfAddress: 'Mr.',
+                    id: '42',
+                    number: '123',
+                    postcode: '12345',
+                    street: 'test street'
+                }
+            }
+        ]
+    })
+    addressDropdownObject!: Address[];
+
     constructor(entity?: Person) {
         super(entity);
         EntityUtilities.new(this, entity);
@@ -249,7 +274,9 @@ function getDropdownValues(entities: Address[]): DropdownValue<string>[] {
         NgxMatEntityTableComponent
     ]
 })
-export class SandboxComponent {
+export class SandboxComponent implements UnsavedChangesPage {
+    unsavedChanges: boolean = false;
+
     tableConfig: TableData<Person> = {
         baseData: {
             title: 'Custom Persons',
@@ -292,4 +319,19 @@ export class SandboxComponent {
             ]
         }
     };
+
+    constructor(private readonly dialog: MatDialog) {}
+
+    @HostListener('window:beforeunload')
+    canDeactivate(): boolean {
+        return !this.unsavedChanges;
+    }
+
+    async openConfirmNavigationDialog(): Promise<boolean> {
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+            autoFocus: false,
+            restoreFocus: false
+        });
+        return (await firstValueFrom(dialogRef.afterClosed())) ?? false;
+    }
 }

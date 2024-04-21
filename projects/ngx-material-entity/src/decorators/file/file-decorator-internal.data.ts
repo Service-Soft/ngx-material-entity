@@ -1,6 +1,6 @@
+import { DefaultFileDecoratorConfig, FileData, ImageFileDecoratorConfig } from './file-decorator.data';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
-import { DefaultFileDecoratorConfig, FileData, ImageFileDecoratorConfig } from './file-decorator.data';
 
 /**
  * Contains data about a file property where a blob exists.

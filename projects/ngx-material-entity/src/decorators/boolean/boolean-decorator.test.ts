@@ -1,10 +1,11 @@
 import { expect } from '@jest/globals';
+
+import { CheckboxBooleanDecoratorConfigInternal, DropdownBooleanDecoratorConfigInternal, ToggleBooleanDecoratorConfigInternal } from './boolean-decorator-internal.data';
+import { boolean } from './boolean.decorator';
 import { Entity } from '../../classes/entity.model';
 import { defaultGlobalDefaults } from '../../default-global-configuration-values';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
-import { CheckboxBooleanDecoratorConfigInternal, DropdownBooleanDecoratorConfigInternal, ToggleBooleanDecoratorConfigInternal } from './boolean-decorator-internal.data';
-import { boolean } from './boolean.decorator';
 
 class BooleanTestEntity extends Entity {
     @boolean({

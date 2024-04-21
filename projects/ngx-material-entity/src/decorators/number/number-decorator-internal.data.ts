@@ -1,6 +1,7 @@
+import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig, SliderNumberDecoratorConfig } from './number-decorator.data';
+import { dropdownValuesToFunction } from '../../functions/dropdown-values-to-function.function';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
-import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig, NumberDropdownValues, SliderNumberDecoratorConfig } from './number-decorator.data';
 
 /**
  * The internal DefaultNumberDecoratorConfig. Sets default values.
@@ -34,16 +35,7 @@ export class DropdownNumberDecoratorConfigInternal extends PropertyDecoratorConf
     constructor(data: DropdownNumberDecoratorConfig) {
         super(data);
         this.displayStyle = data.displayStyle;
-        this.dropdownValues = this.dropdownValuesToFunction(data.dropdownValues);
-    }
-
-    // eslint-disable-next-line typescript/no-explicit-any
-    private dropdownValuesToFunction(dropdownValues: NumberDropdownValues): (entity: any) => Promise<DropdownValue<number | undefined>[]> {
-        if (Array.isArray(dropdownValues)) {
-            return async () => dropdownValues;
-        }
-        // eslint-disable-next-line typescript/no-explicit-any
-        return async (e: any) => await dropdownValues(e);
+        this.dropdownValues = dropdownValuesToFunction(data.dropdownValues);
     }
 }
 

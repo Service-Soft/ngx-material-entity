@@ -7,12 +7,15 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, first, map } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
+
+import { PageEditDataBuilder, PageEditDataInternal } from './page-edit-data.builder';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { getValidationErrorsTooltipContent } from '../../functions/get-validation-errors-tooltip-content.function.ts';
 import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
+import { UnsavedChangesPage } from '../../services/unsaved-changes.guard';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { ValidationError, ValidationUtilities } from '../../utilities/validation.utilities';
 import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
@@ -23,7 +26,6 @@ import { EditActionInternal } from '../table/edit-dialog/edit-data.builder';
 import { EditEntityData } from '../table/edit-dialog/edit-entity-data';
 import { EditData } from '../table/table-data';
 import { TooltipComponent } from '../tooltip/tooltip.component';
-import { PageEditDataBuilder, PageEditDataInternal } from './page-edit-data.builder';
 
 /**
  * The data that needs to be provided for a route to be able to edit a entity.
@@ -86,7 +88,7 @@ export const NGX_EDIT_DATA: InjectionToken<PageEditData<any>> = new InjectionTok
         NgxMatEntityFormComponent
     ]
 })
-export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
+export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit, UnsavedChangesPage {
 
     /**
      * Contains HelperMethods around handling Entities and their property-metadata.
@@ -212,10 +214,7 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
         }
     }
 
-    /**
-     * Whether the page can be left without confirmation (of unsaved changes).
-     * @returns Whether or not the page can be left without confirmation.
-     */
+    // eslint-disable-next-line jsdoc/require-jsdoc
     @HostListener('window:beforeunload')
     canDeactivate(): boolean {
         return !this.hasUnsavedChanges || this.inConfirmNavigation;
@@ -306,31 +305,26 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
     /**
      * Tries to navigate back.
      */
-    navigateBack(): void {
+    async navigateBack(): Promise<void> {
         if (!this.hasUnsavedChanges) {
             this.confirmNavigateBack();
             return;
         }
 
-        this.openConfirmNavigationDialog().subscribe(res => {
-            if (res) {
-                this.confirmNavigateBack();
-            }
-        });
+        const res: boolean = await this.openConfirmNavigationDialog();
+        if (res) {
+            this.confirmNavigateBack();
+        }
     }
 
-    /**
-     * Opens the confirm dialog for navigating with unsaved changes.
-     * This is exposed because the UnsavedChangesGuard needs to access this.
-     * @returns The first observable result of the confirm dialog.
-     */
-    openConfirmNavigationDialog(): Observable<boolean> {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    async openConfirmNavigationDialog(): Promise<boolean> {
         const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
             data: this.data.editData.confirmUnsavedChangesDialogData,
             autoFocus: false,
             restoreFocus: false
         });
-        return dialogRef.afterClosed().pipe(first(), map(p => (p ?? false)));
+        return (await firstValueFrom(dialogRef.afterClosed())) ?? false;
     }
 
     private confirmNavigateBack(): void {

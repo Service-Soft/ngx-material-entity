@@ -1,8 +1,8 @@
+import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal, PasswordStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from './string-decorator-internal.data';
+import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, DropdownStringDecoratorConfig, PasswordStringDecoratorConfig, TextboxStringDecoratorConfig } from './string-decorator.data';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { baseProperty } from '../base/base-property.decorator';
 import { DecoratorTypes } from '../base/decorator-types.enum';
-import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal, PasswordStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from './string-decorator-internal.data';
-import { AutocompleteStringDecoratorConfig, DefaultStringDecoratorConfig, DropdownStringDecoratorConfig, PasswordStringDecoratorConfig, TextboxStringDecoratorConfig } from './string-decorator.data';
 
 /**
  * Decorator for setting and getting string Property metadata.

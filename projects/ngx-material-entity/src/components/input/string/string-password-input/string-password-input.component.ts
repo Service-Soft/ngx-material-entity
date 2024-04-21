@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { PasswordMatchValidatorDirective } from '../../../../directives/password-match.directive';

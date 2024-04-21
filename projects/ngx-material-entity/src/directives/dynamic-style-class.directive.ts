@@ -1,4 +1,5 @@
 import { Directive, ElementRef, Input, OnChanges, Renderer2 } from '@angular/core';
+
 import { BaseEntityType } from '../classes/entity.model';
 import { DynamicStyleClasses } from '../components/table/table-data';
 

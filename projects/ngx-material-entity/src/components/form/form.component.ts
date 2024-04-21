@@ -1,6 +1,7 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, EnvironmentInjector, EventEmitter, Input, OnInit, Output, runInInjectionContext } from '@angular/core';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
+
 import { BaseEntityType } from '../../classes/entity.model';
 import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
 import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';

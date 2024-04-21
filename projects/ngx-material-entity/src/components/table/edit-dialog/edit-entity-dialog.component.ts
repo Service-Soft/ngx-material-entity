@@ -1,10 +1,15 @@
 import { NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, EnvironmentInjector, Inject, OnInit, runInInjectionContext } from '@angular/core';
+import { Component, EnvironmentInjector, EventEmitter, Inject, OnInit, Output, runInInjectionContext } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
+import { firstValueFrom } from 'rxjs';
+
+import { EditActionInternal } from './edit-data.builder';
+import { EditEntityData } from './edit-entity-data';
+import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-entity.builder';
 import { BaseEntityType } from '../../../classes/entity.model';
 import { PropertyDecoratorConfigInternal } from '../../../decorators/base/property-decorator-internal.data';
 import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
@@ -17,9 +22,7 @@ import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confi
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { NgxMatEntityFormComponent } from '../../form/form.component';
 import { TooltipComponent } from '../../tooltip/tooltip.component';
-import { EditActionInternal } from './edit-data.builder';
-import { EditEntityData } from './edit-entity-data';
-import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-entity.builder';
+
 
 /**
  * The default dialog used to edit an existing entity based on the configuration passed in the MAT_DIALOG_DATA "inputData".
@@ -45,6 +48,12 @@ import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-entity.bui
     ]
 })
 export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
+    /**
+     * Emits when the form is dirty.
+     */
+    @Output()
+    unsavedChanges: EventEmitter<boolean> = new EventEmitter<boolean>();
+
     /**
      * Contains HelperMethods around handling Entities and their property-metadata.
      */
@@ -142,6 +151,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
     async checkEntity(): Promise<void> {
         await this.checkIsEntityValid();
         this.isEntityDirty = await EntityUtilities.isDirty(this.data.entity, this.entityPriorChanges, this.http);
+        this.unsavedChanges.emit(this.isEntityDirty);
     }
 
     private async checkIsEntityValid(): Promise<void> {
@@ -217,12 +227,33 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
     }
 
     /**
-     * Reverts all changes made and closes the dialog.
+     * Closes the dialog.
      */
-    cancel(): void {
+    async cancel(): Promise<void> {
+        if (!this.isEntityDirty || !this.data.editData.unsavedChangesRequireConfirmDialog) {
+            this.confirmCancel();
+            return;
+        }
+        const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.editData.confirmUnsavedChangesDialogData)
+            .withDefault('text', this.globalConfig.confirmUnsavedChangesDialogText)
+            .withDefault('confirmButtonLabel', this.globalConfig.confirmUnsavedChangesDialogLabel)
+            .withDefault('title', this.globalConfig.confirmUnsavedChangesTitle)
+            .getResult();
+        const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+            data: dialogData,
+            autoFocus: false,
+            restoreFocus: false
+        });
+        const res: boolean | undefined = await firstValueFrom(dialogRef.afterClosed());
+        if (res == true) {
+            this.confirmCancel();
+        }
+    }
+    private confirmCancel(): void {
         EntityUtilities.resetChangesOnEntity(this.data.entity, this.entityPriorChanges);
         this.dialogRef.close(0);
     }
+
 
     /**
      * Runs the edit action on the entity.

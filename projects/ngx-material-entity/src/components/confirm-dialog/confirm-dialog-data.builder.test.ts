@@ -1,6 +1,7 @@
 import { expect } from '@jest/globals';
-import { defaultGlobalDefaults } from '../../default-global-configuration-values';
+
 import { ConfirmDialogDataBuilder } from './confirm-dialog-data.builder';
+import { defaultGlobalDefaults } from '../../default-global-configuration-values';
 
 describe('validateInput', () => {
     test('should throw error for require confirmation and no confirmation text', () => {

@@ -1,8 +1,8 @@
+import { DefaultFileDecoratorConfigInternal, ImageFileDecoratorConfigInternal } from './file-decorator-internal.data';
+import { DefaultFileDecoratorConfig, ImageFileDecoratorConfig } from './file-decorator.data';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { baseProperty } from '../base/base-property.decorator';
 import { DecoratorTypes } from '../base/decorator-types.enum';
-import { DefaultFileDecoratorConfigInternal, ImageFileDecoratorConfigInternal } from './file-decorator-internal.data';
-import { DefaultFileDecoratorConfig, ImageFileDecoratorConfig } from './file-decorator.data';
 
 /**
  * Decorator for setting and getting file property metadata.
