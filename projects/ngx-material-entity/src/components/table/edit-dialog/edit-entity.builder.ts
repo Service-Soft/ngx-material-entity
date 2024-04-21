@@ -1,9 +1,9 @@
+import { EditDataBuilder, EditDataInternal } from './edit-data.builder';
+import { EditEntityData } from './edit-entity-data';
 import { BaseBuilder } from '../../../classes/base.builder';
 import { BaseEntityType, EntityServiceClassNewable } from '../../../classes/entity.model';
 import { defaultTrue } from '../../../functions/default-true.function';
 import { NgxGlobalDefaultValues } from '../../../global-configuration-values';
-import { EditDataBuilder, EditDataInternal } from './edit-data.builder';
-import { EditEntityData } from './edit-entity-data';
 
 /**
  * The internal EditEntityData. Requires all default values the user can leave out.

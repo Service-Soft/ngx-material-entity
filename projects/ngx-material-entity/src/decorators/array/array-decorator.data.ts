@@ -1,5 +1,6 @@
 import { Time } from '@angular/common';
 import { DateFilterFn } from '@angular/material/datepicker';
+
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
 import { CreateData, DisplayColumn } from '../../components/table/table-data';

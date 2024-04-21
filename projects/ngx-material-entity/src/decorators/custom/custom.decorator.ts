@@ -1,8 +1,8 @@
+import { CustomDecoratorConfigInternal } from './custom-decorator-internal.data';
+import { CustomDecoratorConfig } from './custom-decorator.data';
 import { BaseEntityType } from '../../classes/entity.model';
 import { baseProperty } from '../base/base-property.decorator';
 import { DecoratorTypes } from '../base/decorator-types.enum';
-import { CustomDecoratorConfigInternal } from './custom-decorator-internal.data';
-import { CustomDecoratorConfig } from './custom-decorator.data';
 
 /**
  * Decorator for setting and getting custom property metadata.

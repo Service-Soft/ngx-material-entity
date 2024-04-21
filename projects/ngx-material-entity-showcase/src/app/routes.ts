@@ -1,6 +1,7 @@
 import { Route, Routes } from '@angular/router';
-import { CreateDataRoute, EditDataRoute, NGX_CREATE_DATA, NGX_CREATE_DATA_ENTITY, NGX_CREATE_DATA_ENTITY_SERVICE, NGX_EDIT_DATA, NGX_EDIT_DATA_ENTITY, NGX_EDIT_DATA_ENTITY_SERVICE, PageEditData, defaultCreateDataRoute, defaultEditDataRoute } from 'ngx-material-entity';
+import { CreateDataRoute, EditDataRoute, NGX_CREATE_DATA, NGX_CREATE_DATA_ENTITY, NGX_CREATE_DATA_ENTITY_SERVICE, NGX_EDIT_DATA, NGX_EDIT_DATA_ENTITY, NGX_EDIT_DATA_ENTITY_SERVICE, PageEditData, UnsavedChangesGuard, defaultCreateDataRoute, defaultEditDataRoute } from 'ngx-material-entity';
 import { NavElementTypes, NavUtilities, NavbarRow } from 'ngx-material-navigation';
+
 import { TestEntity } from '../../../ngx-material-entity/src/mocks/test-entity.mock';
 import { TestEntityService } from '../services/test-entity.service';
 
@@ -35,7 +36,8 @@ export const navbarRows: NavbarRow[] = [
                 route: {
                     title: 'Sandbox',
                     path: 'sandbox',
-                    loadComponent: () => import('./components/sandbox/sandbox.component').then(m => m.SandboxComponent)
+                    loadComponent: () => import('./components/sandbox/sandbox.component').then(m => m.SandboxComponent),
+                    canDeactivate: [UnsavedChangesGuard]
                 },
                 collapse: 'md'
             },

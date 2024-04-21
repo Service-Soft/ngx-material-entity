@@ -1,6 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { NgFor, NgIf } from '@angular/common';
-import { Component, EnvironmentInjector, Inject, Input, OnInit, ViewChild, inject, runInInjectionContext } from '@angular/core';
+import { Component, EnvironmentInjector, EventEmitter, Inject, Input, OnInit, Output, ViewChild, inject, runInInjectionContext } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -14,14 +14,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { BaseEntityType, Entity } from '../../classes/entity.model';
-import { DynamicStyleClassDirective } from '../../directives/dynamic-style-class.directive';
-import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
-import { EntityService } from '../../services/entity.service';
-import { EntityUtilities } from '../../utilities/entity.utilities';
-import { SelectionUtilities } from '../../utilities/selection.utilities';
-import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
-import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+
 import { CreateEntityDataInternal, CreateEntityDialogDataBuilder } from './create-dialog/create-entity-data.builder';
 import { NgxMatEntityCreateDialogComponent } from './create-dialog/create-entity-dialog.component';
 import { DisplayColumnValueComponent } from './display-column-value/display-column-value.component';
@@ -30,6 +23,14 @@ import { NgxMatEntityEditDialogComponent } from './edit-dialog/edit-entity-dialo
 import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-dialog/edit-entity.builder';
 import { DisplayColumn, TableData } from './table-data';
 import { BaseTableActionInternal, TableActionInternal, TableDataBuilder, TableDataInternal } from './table-data.builder';
+import { BaseEntityType, Entity } from '../../classes/entity.model';
+import { DynamicStyleClassDirective } from '../../directives/dynamic-style-class.directive';
+import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
+import { EntityService } from '../../services/entity.service';
+import { EntityUtilities } from '../../utilities/entity.utilities';
+import { SelectionUtilities } from '../../utilities/selection.utilities';
+import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
+import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 /**
  * Generates a fully functional table for displaying, creating, updating and deleting entities
@@ -69,6 +70,12 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
      */
     @Input()
     tableData!: TableData<EntityType>;
+
+    /**
+     * Emits when there are unsaved changes on either the create or update dialog.
+     */
+    @Output()
+    unsavedDialogChanges: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * The internal TableData.
@@ -285,14 +292,14 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
             editData: this.data.editData
         };
         const dialogData: EditEntityDataInternal<EntityType> = new EditEntityDataBuilder(inputDialogData, this.globalConfig).getResult();
-        const res: number = await firstValueFrom(
-            this.dialog.open(NgxMatEntityEditDialogComponent, {
-                data: dialogData,
-                // minWidth: '60%',
-                autoFocus: false,
-                restoreFocus: false
-            }).afterClosed()
-        ) as number;
+        const dialogRef: MatDialogRef<NgxMatEntityEditDialogComponent<BaseEntityType<unknown>>, number> = this.dialog.open(NgxMatEntityEditDialogComponent, {
+            data: dialogData,
+            autoFocus: false,
+            restoreFocus: false
+        });
+        dialogRef.componentInstance.unsavedChanges.subscribe(res => this.unsavedDialogChanges.emit(res));
+        const res: number | undefined = await firstValueFrom(dialogRef.afterClosed());
+        this.unsavedDialogChanges.emit(false);
         if (res === 0) {
             const data: EntityType[] = this.dataSource.data;
             data[this.dataSource.data.findIndex((e) => e[this.entityService.idKey] === entity[this.entityService.idKey])] = entity;
@@ -320,7 +327,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
                 this.createDefaultPage();
                 return;
             }
-            this.createDefaultDialog(entity);
+            void this.createDefaultDialog(entity);
         }
     }
 
@@ -328,7 +335,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         void this.router.navigateByUrl(this.entityService.createBaseRoute);
     }
 
-    private createDefaultDialog(entity: EntityType): void {
+    private async createDefaultDialog(entity: EntityType): Promise<void> {
         const dialogData: CreateEntityDataInternal<EntityType> = new CreateEntityDialogDataBuilder(
             {
                 entity: entity,
@@ -337,12 +344,15 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
             },
             this.globalConfig
         ).getResult();
-        this.dialog.open(NgxMatEntityCreateDialogComponent, {
+        const dialogRef: MatDialogRef<NgxMatEntityCreateDialogComponent<BaseEntityType<unknown>>> = this.dialog.open(NgxMatEntityCreateDialogComponent, {
             data: dialogData,
             minWidth: '60%',
             autoFocus: false,
             restoreFocus: false
         });
+        dialogRef.componentInstance.unsavedChanges.subscribe(res => this.unsavedDialogChanges.emit(res));
+        await firstValueFrom(dialogRef.afterClosed());
+        this.unsavedDialogChanges.emit(false);
     }
 
     /**

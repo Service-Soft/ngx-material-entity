@@ -1,10 +1,11 @@
 import { expect } from '@jest/globals';
+
+import { CustomDecoratorConfigInternal } from './custom-decorator-internal.data';
+import { custom } from './custom.decorator';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { defaultTrue } from '../../functions/default-true.function';
 import { EntityUtilities } from '../../utilities/entity.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
-import { CustomDecoratorConfigInternal } from './custom-decorator-internal.data';
-import { custom } from './custom.decorator';
 
 export class RandomInputTestEntity {
     @custom<string, RandomMetadata, RandomInputTestEntity>({

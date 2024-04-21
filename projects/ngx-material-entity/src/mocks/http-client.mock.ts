@@ -2,9 +2,9 @@
 /* eslint-disable typescript/no-unsafe-assignment */
 /* eslint-disable typescript/no-unsafe-member-access */
 /* eslint-disable typescript/no-explicit-any */
-/* eslint-disable typescript/no-unused-vars */
+
 import { Observable, of } from 'rxjs';
-import { ReflectUtilities } from '../encapsulation/reflect.utilities';
+
 
 /**
  * A Mock for the angular http-client. Is needed for testing crud inside a ngx-mat-entity-table.
@@ -61,6 +61,7 @@ export class HttpClientErrorMock {
         this.exampleData.push(body);
         return of(undefined);
     }
+    // eslint-disable-next-line unusedImports/no-unused-vars
     get(url: string): Observable<any> {
         return of(this.exampleData);
     }

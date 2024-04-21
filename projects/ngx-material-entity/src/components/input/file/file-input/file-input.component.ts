@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DefaultFileDecoratorConfigInternal, FileDataWithFile, ImageFileDecoratorConfigInternal } from '../../../../decorators/file/file-decorator-internal.data';
 import { FileData } from '../../../../decorators/file/file-decorator.data';
@@ -16,6 +17,7 @@ import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
 import { EntityUtilities } from '../../../../utilities/entity.utilities';
 import { FileUtilities } from '../../../../utilities/file.utilities';
 import { NgxMatEntityConfirmDialogComponent } from '../../../confirm-dialog/confirm-dialog.component';
+
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'file-input',

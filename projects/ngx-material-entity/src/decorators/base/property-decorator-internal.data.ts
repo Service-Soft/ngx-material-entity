@@ -1,6 +1,6 @@
+import { Col, Position, PropertyDecoratorConfig } from './property-decorator.data';
 import { defaultFalse } from '../../functions/default-false.function';
 import { defaultTrue } from '../../functions/default-true.function';
-import { Col, Position, PropertyDecoratorConfig } from './property-decorator.data';
 
 /**
  * The internal Position. Sets default values and validates user input.

@@ -5,11 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
+
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'number-dropdown-input',

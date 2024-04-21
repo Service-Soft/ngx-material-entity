@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+// eslint-disable-next-line eslintImport/no-unassigned-import
 import 'reflect-metadata';
 
 declare global {
@@ -69,6 +70,9 @@ Cypress.Commands.add(
 
         cy.get('.mdc-tab__text-label').contains('Other properties').click({ force: true });
         cy.getInputByLabel('Object Second Tab Value').click().type('objectSecondTabValue');
+
+        cy.getInputByLabel('Dropdown Object Value').click();
+        cy.get('mat-option').contains('Test Object #1').click();
 
         // eslint-disable-next-line cspell/spellchecker
         cy.getInputByLabel('String Chips Array Value').click().type('abcd{enter}efgh{enter}');

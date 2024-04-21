@@ -1,8 +1,8 @@
+import { ReferencesOneDecoratorConfigInternal } from './references-one-decorator-internal.data';
+import { ReferencesOneDecoratorConfig } from './references-one-decorator.data';
 import { BaseEntityType } from '../../classes/entity.model';
 import { baseProperty } from '../base/base-property.decorator';
 import { DecoratorTypes } from '../base/decorator-types.enum';
-import { ReferencesOneDecoratorConfigInternal } from './references-one-decorator-internal.data';
-import { ReferencesOneDecoratorConfig } from './references-one-decorator.data';
 
 /**
  * Decorator for setting and getting references one property metadata.

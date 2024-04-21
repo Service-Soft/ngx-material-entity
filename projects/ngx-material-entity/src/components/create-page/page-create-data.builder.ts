@@ -1,10 +1,10 @@
+import { PageCreateData } from './create-page.component';
 import { BaseBuilder } from '../../classes/base.builder';
 import { BaseEntityType } from '../../classes/entity.model';
 import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { CreateDataBuilder, CreateDataInternal } from '../table/create-dialog/create-data.builder';
 import { CreateEntityDataInternal } from '../table/create-dialog/create-entity-data.builder';
-import { PageCreateData } from './create-page.component';
 
 // eslint-disable-next-line jsdoc/require-jsdoc
 export type PageCreateDataInternal<EntityType extends BaseEntityType<EntityType>> = Omit<CreateEntityDataInternal<EntityType>, 'entity' | 'EntityServiceClass'> & {

@@ -1,10 +1,11 @@
 import { inject } from '@angular/core';
+
+import { HasManyDecoratorConfig } from './has-many-decorator.data';
 import { BaseEntityType, EntityServiceClassNewable } from '../../classes/entity.model';
 import { BaseDataBuilder, BaseDataInternal, TableDataBuilder, TableDataInternal } from '../../components/table/table-data.builder';
 import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
-import { HasManyDecoratorConfig } from './has-many-decorator.data';
 
 /**
  * The internal HasManyDecoratorConfig. Sets default values.

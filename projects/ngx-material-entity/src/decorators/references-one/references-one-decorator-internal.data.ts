@@ -1,8 +1,8 @@
+import { ReferencesOneDecoratorConfig } from './references-one-decorator.data';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
 import { defaultGetEntityForId } from '../references-many/references-many-decorator-internal.data';
-import { ReferencesOneDecoratorConfig } from './references-one-decorator.data';
 
 /**
  * The internal DefaultNumberDecoratorConfig. Sets default values.

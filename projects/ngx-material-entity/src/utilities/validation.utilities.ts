@@ -1,5 +1,9 @@
 import { Time } from '@angular/common';
 import { EnvironmentInjector } from '@angular/core';
+
+import { DateUtilities } from './date.utilities';
+import { EntityUtilities } from './entity.utilities';
+import { FileUtilities } from './file.utilities';
 import { BaseEntityType } from '../classes/entity.model';
 import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
@@ -15,9 +19,6 @@ import { DefaultObjectDecoratorConfigInternal } from '../decorators/object/objec
 import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, PasswordStringDecoratorConfigInternal, TextboxStringDecoratorConfigInternal } from '../decorators/string/string-decorator-internal.data';
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../encapsulation/reflect.utilities';
-import { DateUtilities } from './date.utilities';
-import { EntityUtilities } from './entity.utilities';
-import { FileUtilities } from './file.utilities';
 
 /**
  * A validation error reported by the validation utilities.
@@ -138,14 +139,16 @@ export abstract class ValidationUtilities {
         }
         switch (type) {
             case DecoratorTypes.BOOLEAN_DROPDOWN:
-                break;
+                // Because only valid values can be selected, this is always true when it has a value
+                return undefined;
             case DecoratorTypes.BOOLEAN_CHECKBOX:
             case DecoratorTypes.BOOLEAN_TOGGLE:
                 const entityBoolean: boolean = entity[key] as boolean;
                 const booleanMetadata: ToggleBooleanDecoratorConfigInternal = metadata as ToggleBooleanDecoratorConfigInternal;
                 return this.getBooleanValidationError(entity, entityBoolean, booleanMetadata);
             case DecoratorTypes.STRING_DROPDOWN:
-                break;
+                // Because only valid values can be selected, this is always true when it has a value
+                return undefined;
             case DecoratorTypes.STRING:
                 const entityString: string = entity[key] as string;
                 const stringMetadata: DefaultStringDecoratorConfigInternal = metadata as DefaultStringDecoratorConfigInternal;
@@ -189,6 +192,9 @@ export abstract class ValidationUtilities {
                     }
                 }
                 break;
+            case DecoratorTypes.OBJECT_DROPDOWN:
+                // Because only valid values can be selected, this is always true when it has a value
+                return undefined;
             case DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS:
                 const stringAutocompleteArray: string[] = entity[key] as string[];
                 const stringAutocompleteArrayMetadata: AutocompleteStringChipsArrayDecoratorConfigInternal = metadata as AutocompleteStringChipsArrayDecoratorConfigInternal;

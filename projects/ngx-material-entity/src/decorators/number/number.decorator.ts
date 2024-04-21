@@ -1,7 +1,7 @@
+import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal, SliderNumberDecoratorConfigInternal } from './number-decorator-internal.data';
+import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig, SliderNumberDecoratorConfig } from './number-decorator.data';
 import { baseProperty } from '../base/base-property.decorator';
 import { DecoratorTypes } from '../base/decorator-types.enum';
-import { DefaultNumberDecoratorConfig, DropdownNumberDecoratorConfig, SliderNumberDecoratorConfig } from './number-decorator.data';
-import { DefaultNumberDecoratorConfigInternal, DropdownNumberDecoratorConfigInternal, SliderNumberDecoratorConfigInternal } from './number-decorator-internal.data';
 
 /**
  * Decorator for setting and getting number property metadata.

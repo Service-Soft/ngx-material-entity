@@ -1,8 +1,8 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { getDatesBetween, TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesInterface, TestObjectEntity } from './test-entity.interface';
 import { TestRandomInputComponent } from '../../../ngx-material-entity-showcase/src/app/components/custom-input-component/custom-input.component';
 import { custom } from '../decorators/custom/custom.decorator';
 import { EntityUtilities } from '../utilities/entity.utilities';
-import { getDatesBetween, TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesInterface, TestObjectEntity } from './test-entity.interface';
 
 export interface TestEntityInterface extends TestEntityWithoutCustomPropertiesInterface {
     randomValue: string
@@ -56,6 +56,13 @@ const testEntityData: TestEntity = {
     maxNumberValue: 5,
     numberSliderValue: 12,
     objectValue: {
+        id: '1',
+        maxLengthStringValue: '1234',
+        secondTabStringValue: '12345',
+        rowValue1: 'rowValue1',
+        rowValue2: 'rowValue2'
+    },
+    dropdownObjectValue: {
         id: '1',
         maxLengthStringValue: '1234',
         secondTabStringValue: '12345',

@@ -1,11 +1,12 @@
 import { Type } from '@angular/core';
+
+import { CustomDecoratorConfig } from './custom-decorator.data';
 import { BaseEntityType } from '../../classes/entity.model';
 import { NgxMatEntityBaseInputComponent } from '../../components/input/base-input.component';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { defaultTrue } from '../../functions/default-true.function';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
-import { CustomDecoratorConfig } from './custom-decorator.data';
 
 /**
  * The default function to use for checking if the value is dirty.

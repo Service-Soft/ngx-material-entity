@@ -1,6 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { EnvironmentInjector, runInInjectionContext } from '@angular/core';
 import { DateFilterFn } from '@angular/material/datepicker';
+
+import { DateUtilities } from './date.utilities';
+import { FileUtilities } from './file.utilities';
 import { BaseEntityType } from '../classes/entity.model';
 import { DateRangeArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
 import { DecoratorType, DecoratorTypes } from '../decorators/base/decorator-types.enum';
@@ -13,8 +16,6 @@ import { FileData } from '../decorators/file/file-decorator.data';
 import { DefaultObjectDecoratorConfigInternal } from '../decorators/object/object-decorator-internal.data';
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../encapsulation/reflect.utilities';
-import { DateUtilities } from './date.utilities';
-import { FileUtilities } from './file.utilities';
 
 /**
  * Shows information about differences between two entities.
@@ -200,7 +201,7 @@ export abstract class EntityUtilities {
     >(
         entity: EntityType,
         propertyKey: keyof EntityType,
-        // eslint-disable-next-line typescript/no-unused-vars
+        // eslint-disable-next-line unusedImports/no-unused-vars
         type?: T
     ): DecoratorType<T, CustomMetadataType> | undefined {
         const metadata: unknown = ReflectUtilities.getMetadata('metadata', entity, propertyKey);

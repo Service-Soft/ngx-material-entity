@@ -6,11 +6,13 @@ import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/ma
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { AutocompleteStringChipsArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
 import { IncludedInValidatorDirective } from '../../../../directives/included-in.directive';
 import { LodashUtilities } from '../../../../encapsulation/lodash.utilities';
 import { ArrayStringChipsInputComponent } from '../array-string-chips-input/array-string-chips-input.component';
+
 @Component({
     // eslint-disable-next-line angular/component-selector
     selector: 'array-string-autocomplete-chips',

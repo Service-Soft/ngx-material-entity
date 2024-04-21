@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { EnvironmentInjector } from '@angular/core';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
+
 import { BaseEntityType } from '../classes/entity.model';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
+import { DefaultFileDecoratorConfigInternal } from '../decorators/file/file-decorator-internal.data';
 import { FileData } from '../decorators/file/file-decorator.data';
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { EntityUtilities } from '../utilities/entity.utilities';
 import { FileUtilities } from '../utilities/file.utilities';
-import { DefaultFileDecoratorConfigInternal } from '../decorators/file/file-decorator-internal.data';
 
 /**
  * A generic EntityService class.

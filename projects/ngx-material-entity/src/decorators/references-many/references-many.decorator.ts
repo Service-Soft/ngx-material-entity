@@ -1,9 +1,9 @@
+import { ReferencesManyDecoratorConfigInternal } from './references-many-decorator-internal.data';
+import { ReferencesManyDecoratorConfig } from './references-many-decorator.data';
 import { BaseEntityType } from '../../classes/entity.model';
 import { needsUpdateGlobalDefaults } from '../../default-global-configuration-values';
 import { baseProperty } from '../base/base-property.decorator';
 import { DecoratorTypes } from '../base/decorator-types.enum';
-import { ReferencesManyDecoratorConfigInternal } from './references-many-decorator-internal.data';
-import { ReferencesManyDecoratorConfig } from './references-many-decorator.data';
 
 /**
  * Decorator for setting and getting references many property metadata.

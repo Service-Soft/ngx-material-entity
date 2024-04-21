@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, EnvironmentInjector, OnInit, runInInjectionContext } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
+
 import { BaseEntityType } from '../../../classes/entity.model';
 import { DecoratorTypes } from '../../../decorators/base/decorator-types.enum';
 import { LodashUtilities } from '../../../encapsulation/lodash.utilities';

@@ -18,34 +18,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { BaseEntityType } from '../../classes/entity.model';
-import { EditArrayItemDialogDataInternal, EntityArrayDecoratorConfigInternal } from '../../decorators/array/array-decorator-internal.data';
-import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
-import { DropdownValue } from '../../decorators/base/dropdown-value.interface';
-import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
-import { HasManyDecoratorConfigInternal } from '../../decorators/has-many/has-many-decorator-internal.data';
-import { DefaultObjectDecoratorConfigInternal } from '../../decorators/object/object-decorator-internal.data';
-import { ReferencesOneDecoratorConfigInternal } from '../../decorators/references-one/references-one-decorator-internal.data';
-import { LodashUtilities } from '../../encapsulation/lodash.utilities';
-import { ReflectUtilities } from '../../encapsulation/reflect.utilities';
-import { UUIDUtilities } from '../../encapsulation/uuid.utilities';
-import { defaultFalse } from '../../functions/default-false.function';
-import { NGX_GET_VALIDATION_ERROR_MESSAGE } from '../../functions/get-validation-error-message.function';
-import { getValidationErrorsTooltipContent } from '../../functions/get-validation-errors-tooltip-content.function.ts';
-import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
-import { EntityService } from '../../services/entity.service';
-import { DateUtilities } from '../../utilities/date.utilities';
-import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
-import { SelectionUtilities } from '../../utilities/selection.utilities';
-import { ValidationError, ValidationUtilities } from '../../utilities/validation.utilities';
-import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
-import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { CreateDataBuilder, CreateDataInternal } from '../table/create-dialog/create-data.builder';
-import { DisplayColumnValueComponent } from '../table/display-column-value/display-column-value.component';
-import { EditActionInternal } from '../table/edit-dialog/edit-data.builder';
-import { DisplayColumn } from '../table/table-data';
-import { BaseTableActionInternal, TableActionInternal } from '../table/table-data.builder';
-import { TooltipComponent } from '../tooltip/tooltip.component';
+
 import { ArrayDateInputComponent } from './array/array-date-input/array-date-input.component';
 import { ArrayDateRangeInputComponent } from './array/array-date-range-input/array-date-range-input.component';
 import { ArrayDateTimeInputComponent } from './array/array-date-time-input/array-date-time-input.component';
@@ -69,6 +42,34 @@ import { StringDropdownInputComponent } from './string/string-dropdown-input/str
 import { StringInputComponent } from './string/string-input/string-input.component';
 import { StringPasswordInputComponent } from './string/string-password-input/string-password-input.component';
 import { StringTextboxInputComponent } from './string/string-textbox-input/string-textbox-input.component';
+import { BaseEntityType } from '../../classes/entity.model';
+import { EditArrayItemDialogDataInternal, EntityArrayDecoratorConfigInternal } from '../../decorators/array/array-decorator-internal.data';
+import { DecoratorTypes } from '../../decorators/base/decorator-types.enum';
+import { DropdownValue } from '../../decorators/base/dropdown-value.interface';
+import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
+import { HasManyDecoratorConfigInternal } from '../../decorators/has-many/has-many-decorator-internal.data';
+import { DefaultObjectDecoratorConfigInternal, DropdownObjectDecoratorConfigInternal } from '../../decorators/object/object-decorator-internal.data';
+import { ReferencesOneDecoratorConfigInternal } from '../../decorators/references-one/references-one-decorator-internal.data';
+import { LodashUtilities } from '../../encapsulation/lodash.utilities';
+import { ReflectUtilities } from '../../encapsulation/reflect.utilities';
+import { UUIDUtilities } from '../../encapsulation/uuid.utilities';
+import { defaultFalse } from '../../functions/default-false.function';
+import { NGX_GET_VALIDATION_ERROR_MESSAGE } from '../../functions/get-validation-error-message.function';
+import { getValidationErrorsTooltipContent } from '../../functions/get-validation-errors-tooltip-content.function.ts';
+import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
+import { EntityService } from '../../services/entity.service';
+import { DateUtilities } from '../../utilities/date.utilities';
+import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
+import { SelectionUtilities } from '../../utilities/selection.utilities';
+import { ValidationError, ValidationUtilities } from '../../utilities/validation.utilities';
+import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
+import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { CreateDataBuilder, CreateDataInternal } from '../table/create-dialog/create-data.builder';
+import { DisplayColumnValueComponent } from '../table/display-column-value/display-column-value.component';
+import { EditActionInternal } from '../table/edit-dialog/edit-data.builder';
+import { DisplayColumn } from '../table/table-data';
+import { BaseTableActionInternal, TableActionInternal } from '../table/table-data.builder';
+import { TooltipComponent } from '../tooltip/tooltip.component';
 
 /**
  * The default input component. It gets the metadata of the property from the given @Input "entity" and @Input "propertyKey"
@@ -212,6 +213,37 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * The tabs for the object property.
      */
     objectPropertyTabs!: EntityTab<EntityType>[];
+
+    /**
+     * The metadata of an dropdown object property.
+     */
+    metadataDropdownObject!: DropdownObjectDecoratorConfigInternal<EntityType>;
+    /**
+     * All possible dropdown values for the object property.
+     */
+    private objectDropdownValues: DropdownValue<EntityType | undefined>[] = [];
+    /**
+     * A unique input name for the references one property.
+     */
+    objectDropdownName!: string;
+    /**
+     * All currently shown dropdown values for the object property.
+     */
+    filteredObjectDropdownValues: DropdownValue<EntityType | undefined>[] = [];
+    // eslint-disable-next-line jsdoc/require-returns
+    /**
+     * The currently selected object as a drop down value.
+     */
+    get currentObjectDropdownValue(): DropdownValue<EntityType | undefined> | undefined {
+        return LodashUtilities.cloneDeep(this.objectDropdownValues ?? []).find(v => v.value === this.entity[this.propertyKey]);
+    }
+    // eslint-disable-next-line jsdoc/require-returns
+    /**
+     * Whether or not the current object dropdown value should be shown in the dropdown.
+     */
+    get shouldDisplayCurrentObjectDropdownValue(): boolean {
+        return !!this.currentObjectDropdownValue && !(!!this.filteredObjectDropdownValues.find(v => v.value === this.currentObjectDropdownValue?.value));
+    }
 
     @ViewChild('addArrayItemDialog')
     private readonly addArrayItemDialog!: TemplateRef<unknown>;
@@ -494,7 +526,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         return runInInjectionContext(this.injector, () => displayColumn.value(entity));
     }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         this.internalGetValidationErrorMessage = this.getValidationErrorMessage ?? this.defaultGetValidationErrorMessage;
         this.internalIsReadOnly = this.isReadOnly ?? false;
 
@@ -517,6 +549,9 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.metadata = foundMetadata;
 
         switch (this.type) {
+            case DecoratorTypes.OBJECT_DROPDOWN:
+                await this.initDropdownObjectInput();
+                break;
             case DecoratorTypes.OBJECT:
                 this.initObjectInput();
                 break;
@@ -527,18 +562,18 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 this.initHasMany();
                 break;
             case DecoratorTypes.REFERENCES_ONE:
-                this.initReferencesOne();
+                await this.initReferencesOne();
                 break;
             default:
                 break;
         }
     }
 
-    private initReferencesOne(): void {
+    private async initReferencesOne(): Promise<void> {
         this.metadataReferencesOne = this.metadata as ReferencesOneDecoratorConfigInternal<EntityType>;
         this.referencesOneName = this.propertyKey.toString() + 'input' + UUIDUtilities.create();
 
-        void runInInjectionContext(
+        await runInInjectionContext(
             this.injector,
             (async () => {
                 this.referencesOneAllReferencedEntities = await this.metadataReferencesOne.getReferencedEntities();
@@ -653,6 +688,16 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.editArrayItemDialogData = this.metadataEntityArray.editDialogData;
     }
 
+    private async initDropdownObjectInput(): Promise<void> {
+        this.metadataDropdownObject = this.metadata as DropdownObjectDecoratorConfigInternal<EntityType>;
+        this.objectDropdownName = this.propertyKey.toString() + 'input' + UUIDUtilities.create();
+
+        await runInInjectionContext(this.injector, async () => {
+            this.objectDropdownValues = await this.metadataDropdownObject.dropdownValues(this.entity);
+            this.filteredObjectDropdownValues = LodashUtilities.cloneDeep(this.objectDropdownValues);
+        });
+    }
+
     private initObjectInput(): void {
         this.metadataDefaultObject = this.metadata as DefaultObjectDecoratorConfigInternal<EntityType>;
         this.objectProperty = this.entity[this.propertyKey] as EntityType;
@@ -696,10 +741,20 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     }
 
     /**
+     * Filters the dropdown values.
+     * @param searchInput - The search input to filter for.
+     */
+    filterObjectDropdownValues(searchInput: string): void {
+        const filter: string = searchInput.toLowerCase();
+        this.filteredObjectDropdownValues = LodashUtilities.cloneDeep(this.objectDropdownValues).filter(option => {
+            return option.displayName.toLowerCase().includes(filter) || JSON.stringify(option.value).toLowerCase().includes(filter);
+        });
+    }
+
+    /**
      * Sets the references one object using the input id.
      */
     setReferencesOneObject(): void {
-
         const foundEntity: EntityType | undefined = this.metadataReferencesOne.getEntityForId(this.entity[this.propertyKey] as string, this.referencesOneAllReferencedEntities);
         this.referencesOneObject = new this.metadataReferencesOne.EntityClass(foundEntity);
         this.referencesOnePropertyTabs = EntityUtilities.getEntityTabs(this.referencesOneObject, this.injector);
