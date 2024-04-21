@@ -241,7 +241,15 @@ export class Person extends Entity {
                     street: 'test street'
                 }
             }
-        ]
+        ],
+        default: {
+            city: 'test city',
+            formOfAddress: 'Mr.',
+            id: '42',
+            number: '123',
+            postcode: '12345',
+            street: 'test street'
+        }
     })
     addressDropdownObject!: Address[];
 
