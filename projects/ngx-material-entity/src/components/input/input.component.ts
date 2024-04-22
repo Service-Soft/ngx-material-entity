@@ -244,6 +244,11 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     get shouldDisplayCurrentObjectDropdownValue(): boolean {
         return !!this.currentObjectDropdownValue && !(!!this.filteredObjectDropdownValues.find(v => LodashUtilities.isEqual(v.value, this.currentObjectDropdownValue?.value)));
     }
+    /**
+     * A compareWith method for the select.
+     * Uses bind.
+     */
+    compareObjectsBound: (value1?: EntityType, value2?: EntityType) => boolean = this.compareObjects.bind(this);
 
     @ViewChild('addArrayItemDialog')
     private readonly addArrayItemDialog!: TemplateRef<unknown>;
@@ -746,7 +751,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * @param value2 - The second object to compare.
      * @returns Whether or not the objects are the same.
      */
-    compareObjects(value1?: EntityType, value2?: EntityType): boolean {
+    private compareObjects(value1?: EntityType, value2?: EntityType): boolean {
         const valueObject1: EntityType = new this.metadataDropdownObject.EntityClass(value1);
         const valueObject2: EntityType = new this.metadataDropdownObject.EntityClass(value2);
         return LodashUtilities.isEqual(valueObject1, valueObject2);

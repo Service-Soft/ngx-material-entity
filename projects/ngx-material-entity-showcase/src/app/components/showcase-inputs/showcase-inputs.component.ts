@@ -53,7 +53,8 @@ export class ShowcaseInputsComponent {
     ];
 
     private readonly OBJECT_DECORATOR_TYPES: DecoratorTypes[] = [
-        DecoratorTypes.OBJECT
+        DecoratorTypes.OBJECT,
+        DecoratorTypes.OBJECT_DROPDOWN
     ];
 
     private readonly DATE_DECORATOR_TYPES: DecoratorTypes[] = [
