@@ -747,7 +747,9 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * @returns Whether or not the objects are the same.
      */
     compareObjects(value1?: EntityType, value2?: EntityType): boolean {
-        return LodashUtilities.isEqual(value1, value2);
+        const valueObject1: EntityType = new this.metadataDropdownObject.EntityClass(value1);
+        const valueObject2: EntityType = new this.metadataDropdownObject.EntityClass(value2);
+        return LodashUtilities.isEqual(valueObject1, valueObject2);
     }
 
     /**
@@ -1180,27 +1182,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     async addEntity(): Promise<void> {
         await this.checkIsArrayItemValid();
-        if (this.metadataEntityArray.createInline) {
-            if (!this.metadataEntityArray.allowDuplicates) {
-                for (const v of this.entityArrayValues) {
-                    if ((await EntityUtilities.isEqual(this.arrayItem, v, this.metadata, this.metadataEntityArray.itemType, this.http))) {
-                        this.dialog.open(NgxMatEntityConfirmDialogComponent, {
-                            data: this.metadataEntityArray.duplicatesErrorDialog,
-                            autoFocus: false,
-                            restoreFocus: false
-                        });
-                        return;
-                    }
-                }
-            }
-            this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
-            this.entityArrayDataSource.data = this.entityArrayValues;
-            EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
-            EntityUtilities.setDefaultValues(this.arrayItem);
-            await this.checkIsArrayItemValid();
-            this.emitChange();
-        }
-        else {
+        if (!this.metadataEntityArray.createInline) {
             this.addArrayItemDialogRef = this.dialog.open(
                 this.addArrayItemDialog,
                 {
@@ -1209,7 +1191,26 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                     restoreFocus: false
                 }
             );
+            return;
         }
+        if (!this.metadataEntityArray.allowDuplicates) {
+            for (const v of this.entityArrayValues) {
+                if ((await EntityUtilities.isEqual(this.arrayItem, v, this.metadata, this.metadataEntityArray.itemType, this.http))) {
+                    this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+                        data: this.metadataEntityArray.duplicatesErrorDialog,
+                        autoFocus: false,
+                        restoreFocus: false
+                    });
+                    return;
+                }
+            }
+        }
+        this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
+        this.entityArrayDataSource.data = this.entityArrayValues;
+        EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
+        EntityUtilities.setDefaultValues(this.arrayItem);
+        await this.checkIsArrayItemValid();
+        this.emitChange();
     }
 
     /**
