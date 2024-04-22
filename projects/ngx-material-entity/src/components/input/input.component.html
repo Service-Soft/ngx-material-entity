@@ -316,7 +316,7 @@
             [name]="objectDropdownName"
             [required]="metadata.required(entity)"
             [disabled]="internalIsReadOnly"
-            [compareWith]="compareObjects"
+            [compareWith]="compareObjectsBound"
             [(ngModel)]="entity[propertyKey]"
             (selectionChange)="emitChange()"
             (opened)="selectSearchInput.focus()"
