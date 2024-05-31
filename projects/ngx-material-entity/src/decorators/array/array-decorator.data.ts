@@ -1,9 +1,9 @@
-import { Time } from '@angular/common';
 import { DateFilterFn } from '@angular/material/datepicker';
 
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
 import { CreateData, DisplayColumn } from '../../components/table/table-data';
+import { Time } from '../../utilities/date.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
@@ -123,10 +123,10 @@ export interface DateArrayDecoratorConfig extends ArrayDecoratorConfig<Date[]> {
      */
     addButtonLabel?: string,
 
-     /**
-      * The label for the remove button.
-      * @default 'Remove'
-      */
+    /**
+     * The label for the remove button.
+     * @default 'Remove'
+     */
     removeButtonLabel?: string,
 
     /**
@@ -169,10 +169,10 @@ export interface DateTimeArrayDecoratorConfig extends ArrayDecoratorConfig<Date[
      */
     addButtonLabel?: string,
 
-     /**
-      * The label for the remove button.
-      * @default 'Remove'
-      */
+    /**
+     * The label for the remove button.
+     * @default 'Remove'
+     */
     removeButtonLabel?: string,
 
     /**
@@ -241,10 +241,10 @@ export interface DateRangeArrayDecoratorConfig extends ArrayDecoratorConfig<Date
      */
     addButtonLabel?: string,
 
-     /**
-      * The label for the remove button.
-      * @default 'Remove'
-      */
+    /**
+     * The label for the remove button.
+     * @default 'Remove'
+     */
     removeButtonLabel?: string,
 
     /**

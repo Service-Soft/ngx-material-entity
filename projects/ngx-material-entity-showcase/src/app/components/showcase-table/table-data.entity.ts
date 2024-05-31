@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc */
 import { BaseEntityType, ConfirmDialogTypes, DecoratorTypes, Entity, EntityClassNewable, EntityServiceClassNewable, EntityUtilities, array, boolean, object, string } from 'ngx-material-entity';
 
 class ConfirmDialogDataEntity extends Entity {
@@ -67,7 +66,7 @@ class ConfirmDialogDataEntity extends Entity {
     })
     confirmationText?: string;
 
-    constructor(input: ConfirmDialogDataEntity) {
+    constructor(input?: ConfirmDialogDataEntity) {
         super();
         EntityUtilities.new(this, input);
     }
@@ -112,7 +111,7 @@ export class CreateDialogDataEntity extends Entity {
     })
     confirmCreateDialogData?: ConfirmDialogDataEntity;
 
-    constructor(input: CreateDialogDataEntity) {
+    constructor(input?: CreateDialogDataEntity) {
         super();
         EntityUtilities.new(this, input);
     }
@@ -182,7 +181,7 @@ export class EditDialogDataEntity<EntityType extends BaseEntityType<EntityType>>
     })
     confirmEditDialogData?: ConfirmDialogDataEntity;
 
-    constructor(input: EditDialogDataEntity<EntityType>) {
+    constructor(input?: EditDialogDataEntity<EntityType>) {
         super();
         EntityUtilities.new(this, input);
     }
@@ -201,7 +200,7 @@ export class DisplayColumnEntity<EntityType extends BaseEntityType<EntityType>> 
     })
     value!: (entity: EntityType) => string;
 
-    constructor(input: DisplayColumnEntity<EntityType>) {
+    constructor(input?: DisplayColumnEntity<EntityType>) {
         super();
         EntityUtilities.new(this, input);
     }
@@ -243,7 +242,7 @@ export class MultiSelectActionEntity<EntityType extends BaseEntityType<EntityTyp
     })
     confirmDialogData?: ConfirmDialogDataEntity;
 
-    constructor(input: MultiSelectActionEntity<EntityType>) {
+    constructor(input?: MultiSelectActionEntity<EntityType>) {
         super();
         EntityUtilities.new(this, input);
     }
@@ -258,7 +257,6 @@ export class BaseDataEntity<EntityType extends BaseEntityType<EntityType>> exten
 
     @array({
         displayName: 'Base Data Display Columns',
-        displayStyle: 'table',
         itemType: DecoratorTypes.OBJECT,
         EntityClass: DisplayColumnEntity,
         displayColumns: [
@@ -346,7 +344,6 @@ export class BaseDataEntity<EntityType extends BaseEntityType<EntityType>> exten
     @array({
         required: false,
         displayName: 'Base Data Multi Select Actions',
-        displayStyle: 'table',
         itemType: DecoratorTypes.OBJECT,
         EntityClass: MultiSelectActionEntity,
         displayColumns: [
@@ -367,7 +364,7 @@ export class BaseDataEntity<EntityType extends BaseEntityType<EntityType>> exten
     })
     multiSelectLabel?: string;
 
-    constructor(input: BaseDataEntity<EntityType>) {
+    constructor(input?: BaseDataEntity<EntityType>) {
         super();
         EntityUtilities.new(this, input);
     }
@@ -400,7 +397,7 @@ export class TableDataEntity<EntityType extends BaseEntityType<EntityType>> exte
     })
     editDialogData?: EditDialogDataEntity<EntityType>;
 
-    constructor(input: TableDataEntity<EntityType>) {
+    constructor(input?: TableDataEntity<EntityType>) {
         super();
         EntityUtilities.new(this, input);
     }

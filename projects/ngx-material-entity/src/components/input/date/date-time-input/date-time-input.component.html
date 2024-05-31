@@ -30,17 +30,9 @@
             [(ngModel)]="time"
             (selectionChange)="setTime()"
         >
-            <mat-option *ngFor="let validTime of DateUtilities.getValidTimesForDropdown(
-                    metadata.times,
-                    propertyValue,
-                    metadata.minTime,
-                    metadata.maxTime,
-                    metadata.filterTime
-                )"
-                [value]="validTime.value"
-            >
-                {{validTime.displayName}}
-            </mat-option>
+            @for (validTime of DateUtilities.getValidTimesForDropdown(metadata.times, propertyValue, metadata.minTime, metadata.maxTime, metadata.filterTime); track $index) {
+                <mat-option [value]="validTime.value">{{validTime.displayName}}</mat-option>
+            }
         </mat-select>
         <mat-error>{{getValidationErrorMessage(timeModel)}}</mat-error>
     </mat-form-field>

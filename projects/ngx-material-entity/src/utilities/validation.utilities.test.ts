@@ -307,7 +307,7 @@ describe('isEntityValid', () => {
     test('DATE_RANGE filter', async () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
-        (tE.customDateRangeValue.start).setDate(1);
+        tE.customDateRangeValue.start.setDate(1);
         expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(false);
         tE.customDateRangeValue.start.setDate(2);
         expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(true);

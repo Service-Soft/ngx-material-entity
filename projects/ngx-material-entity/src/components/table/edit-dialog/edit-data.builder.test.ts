@@ -24,10 +24,11 @@ const entity: TestEntityWithoutCustomProperties = new TestEntityWithoutCustomPro
 
 describe('default values', () => {
     test('should have correct title', () => {
+        // eslint-disable-next-line stylistic/newline-per-chained-call
         expect(new EditDataBuilder(defaultGlobalDefaults, editData).getResult().title(entity)).toBe('Edit');
     });
 
-    test('should build the actions correctly', ()=> {
+    test('should build the actions correctly', () => {
         expect(new EditDataBuilder(defaultGlobalDefaults, editDataWithActions).getResult().actions[0].enabled(entity)).toBe(true);
     });
 });

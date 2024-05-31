@@ -3,7 +3,7 @@
     <div class="array-headline">
         <b>{{metadata.displayName}}</b>
     </div>
-    <div *ngIf="!isReadOnly">
+    @if (!isReadOnly) {
         <mat-form-field appearance="outline">
             <mat-label>{{metadata.displayName}}</mat-label>
             <input
@@ -34,7 +34,7 @@
                 {{metadata.removeButtonLabel}}
             </button>
         </div>
-    </div>
+    }
 
     <mat-table [dataSource]="dataSource">
         <!-- select Column -->
@@ -47,20 +47,21 @@
             </mat-cell>
         </ng-container>
     
-        <ng-container *ngFor="let dCol of metadata.displayColumns" [matColumnDef]="dCol.displayName">
-            <mat-header-cell *matHeaderCellDef>
-                {{dCol.displayName}}
-            </mat-header-cell>
-            <mat-cell *matCellDef="let entity" class="entity">
-                {{getDisplayColumnValue(entity, dCol)}}
-            </mat-cell>
-        </ng-container>
-    
+        @for (dCol of metadata.displayColumns; track $index) {
+            <ng-container [matColumnDef]="dCol.displayName">
+                <mat-header-cell *matHeaderCellDef>
+                    {{dCol.displayName}}
+                </mat-header-cell>
+                <mat-cell *matCellDef="let entity" class="entity">
+                    {{getDisplayColumnValue(entity, dCol)}}
+                </mat-cell>
+            </ng-container>
+        }
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     </mat-table>
 
-    <div *ngIf="metadata.required(entity) && !dataSource.data.length" class="array-error">
-        {{metadata.missingErrorMessage}}
-    </div>
+    @if (metadata.required(entity) && !dataSource.data.length) {
+        <div class="array-error">{{metadata.missingErrorMessage}}</div>
+    }
 </div>

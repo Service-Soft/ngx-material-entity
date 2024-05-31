@@ -76,15 +76,13 @@ export abstract class FileUtilities {
                 size: data.size
             };
         }
-        else {
-            return {
-                file: await FileUtilities.getFileFromUrl(data.url as string, http),
-                name: data.name,
-                url: data.url,
-                type: data.type,
-                size: data.size
-            };
-        }
+        return {
+            file: await FileUtilities.getFileFromUrl(data.url as string, http),
+            name: data.name,
+            url: data.url,
+            type: data.type,
+            size: data.size
+        };
     }
 
     // TODO: Find a way to use blobs with jest

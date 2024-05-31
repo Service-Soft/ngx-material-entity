@@ -23,7 +23,6 @@ import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm
 import { NgxMatEntityFormComponent } from '../../form/form.component';
 import { TooltipComponent } from '../../tooltip/tooltip.component';
 
-
 /**
  * The default dialog used to edit an existing entity based on the configuration passed in the MAT_DIALOG_DATA "inputData".
  * Used by the ngx-mat-entity-table.
@@ -52,7 +51,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      * Emits when the form is dirty.
      */
     @Output()
-    unsavedChanges: EventEmitter<boolean> = new EventEmitter<boolean>();
+    readonly unsavedChanges: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * Contains HelperMethods around handling Entities and their property-metadata.
@@ -136,7 +135,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      */
     isReadOnly(key: keyof EntityType): boolean {
         return runInInjectionContext(this.injector, () => {
-
+            // eslint-disable-next-line stylistic/max-len
             const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = EntityUtilities.getPropertyMetadata(this.data.entity, key);
             if (!metadata) {
                 throw new Error(`No metadata was found for the key "${String(key)}"`);
@@ -164,15 +163,16 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      * Tries to save the changes and close the dialog afterwards.
      * Also handles the confirmation if required.
      */
-    edit(): void {
+    async edit(): Promise<void> {
         if (this.isEntityReadOnly || !this.isEntityValid || !this.isEntityDirty) {
             return;
         }
         if (!this.data.editData.editRequiresConfirmDialog) {
-            this.confirmEdit();
+            await this.confirmEdit();
             return;
         }
 
+        // eslint-disable-next-line stylistic/max-len
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.editData.confirmEditDialogData)
             .withDefault('text', this.globalConfig.confirmSaveText)
             .withDefault('confirmButtonLabel', this.globalConfig.saveLabel)
@@ -183,27 +183,29 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
             autoFocus: false,
             restoreFocus: false
         });
-        dialogRef.afterClosed().subscribe(res => {
-            if (res == true) {
-                this.confirmEdit();
-            }
-        });
+
+        const res: boolean | undefined = await firstValueFrom(dialogRef.afterClosed());
+        if (res == true) {
+            await this.confirmEdit();
+        }
     }
 
-    private confirmEdit(): void {
-        void this.entityService.update(this.data.entity, this.entityPriorChanges).then(() => this.dialogRef.close(1));
+    private async confirmEdit(): Promise<void> {
+        await this.entityService.update(this.data.entity, this.entityPriorChanges);
+        this.dialogRef.close(1);
     }
 
     /**
      * Tries to delete the entity and close the dialog afterwards.
      * Also handles the confirmation if required.
      */
-    delete(): void {
+    async delete(): Promise<void> {
         if (!this.data.editData.deleteRequiresConfirmDialog) {
-            this.confirmDelete();
+            await this.confirmDelete();
             return;
         }
 
+        // eslint-disable-next-line stylistic/max-len
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.editData.confirmDeleteDialogData)
             .withDefault('text', this.globalConfig.confirmDeleteText)
             .withDefault('type', 'delete')
@@ -215,15 +217,15 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
             autoFocus: false,
             restoreFocus: false
         });
-        dialogRef.afterClosed().subscribe(res => {
-            if (res == true) {
-                this.confirmDelete();
-            }
-        });
+        const res: boolean | undefined = await firstValueFrom(dialogRef.afterClosed());
+        if (res == true) {
+            await this.confirmDelete();
+        }
     }
 
-    private confirmDelete(): void {
-        void this.entityService.delete(this.entityPriorChanges).then(() => this.dialogRef.close(2));
+    private async confirmDelete(): Promise<void> {
+        await this.entityService.delete(this.entityPriorChanges);
+        this.dialogRef.close(2);
     }
 
     /**
@@ -234,6 +236,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
             this.confirmCancel();
             return;
         }
+        // eslint-disable-next-line stylistic/max-len
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.editData.confirmUnsavedChangesDialogData)
             .withDefault('text', this.globalConfig.confirmUnsavedChangesDialogText)
             .withDefault('confirmButtonLabel', this.globalConfig.confirmUnsavedChangesDialogLabel)
@@ -254,18 +257,17 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
         this.dialogRef.close(0);
     }
 
-
     /**
      * Runs the edit action on the entity.
      * @param action - The action to run.
      */
-    runEditAction(action: EditActionInternal<EntityType>): void {
+    async runEditAction(action: EditActionInternal<EntityType>): Promise<void> {
         const requireConfirmDialog: boolean = runInInjectionContext(this.injector, () => {
             return action.requireConfirmDialog(this.entityPriorChanges);
         });
 
         if (!requireConfirmDialog) {
-            this.confirmRunEditAction(action);
+            await this.confirmRunEditAction(action);
             return;
         }
         const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
@@ -273,15 +275,14 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
             autoFocus: false,
             restoreFocus: false
         });
-        dialogRef.afterClosed().subscribe(res => {
-            if (res == true) {
-                this.confirmRunEditAction(action);
-            }
-        });
+        const res: boolean | undefined = await firstValueFrom(dialogRef.afterClosed());
+        if (res == true) {
+            await this.confirmRunEditAction(action);
+        }
     }
 
-    private confirmRunEditAction(action: EditActionInternal<EntityType>): void {
-        void runInInjectionContext(this.injector, async () => {
+    private async confirmRunEditAction(action: EditActionInternal<EntityType>): Promise<void> {
+        await runInInjectionContext(this.injector, async () => {
             await action.action(this.data.entity, this.entityPriorChanges);
             await this.checkEntity();
         });

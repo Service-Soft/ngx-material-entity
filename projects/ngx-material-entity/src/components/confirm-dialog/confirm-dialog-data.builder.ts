@@ -51,7 +51,6 @@ export class ConfirmDialogDataBuilder extends BaseBuilder<ConfirmDialogDataInter
         super(globalConfig, data);
     }
 
-
     protected override generateBaseData(data?: ConfirmDialogData): ConfirmDialogDataInternal {
         return new ConfirmDialogDataInternal(
             getConfigValue(this.globalConfig.defaultConfirmDialogText, data?.text),
@@ -64,20 +63,20 @@ export class ConfirmDialogDataBuilder extends BaseBuilder<ConfirmDialogDataInter
         );
     }
 
-
     protected override validateInput(data?: ConfirmDialogData): void {
         if (!data) {
             return;
         }
         if (data.requireConfirmation === true && !data.confirmationText) {
-
-            throw new Error('Missing required Input data "confirmationText". You can only omit this value when "requireConfirmation" is false.');
+            throw new Error(
+                'Missing required Input data "confirmationText". You can only omit this value when "requireConfirmation" is false.'
+            );
         }
         if (data.requireConfirmation !== true && data.confirmationText) {
             throw new Error('The "confirmationText" will never be shown because "requireConfirmation" is not set to true');
         }
         if (data.type === 'info-only' && data.cancelButtonLabel && data.cancelButtonLabel !== CONFIG_NEEDS_UPDATE_KEY) {
-            throw new Error('The "cancelButtonLabel" will never be shown because "type" is set to "info-only"');
+            throw new Error(`The "cancelButtonLabel" "${data.cancelButtonLabel}" will never be shown because "type" is set to "info-only"`);
         }
     }
 }

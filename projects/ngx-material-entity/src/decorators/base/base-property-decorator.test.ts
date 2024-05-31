@@ -12,7 +12,7 @@ describe('baseProperty', () => {
     test('id should have base Metadata', () => {
         const metadata: DefaultStringDecoratorConfigInternal | undefined = EntityUtilities.getPropertyMetadata(new TestEntityWithoutCustomPropertiesMockBuilder().testEntity, 'id', DecoratorTypes.STRING);
         expect(metadata).toBeDefined();
-        expect(metadata?.display(null)).toBe(false);
+        expect(metadata?.display(undefined)).toBe(false);
         expect(metadata?.displayName).toBe('ID');
         expect(metadata?.omitForCreate).toBe(true);
         expect(metadata?.omitForUpdate).toBe(true);

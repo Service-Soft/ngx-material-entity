@@ -7,7 +7,7 @@ export type NumberDropdownValues =
     // eslint-disable-next-line typescript/no-explicit-any
     | ((entity: any) => DropdownValue<number | undefined>[])
     // eslint-disable-next-line typescript/no-explicit-any
-    | ((entity: any) => Promise<DropdownValue<number | undefined>[]>)
+    | ((entity: any) => Promise<DropdownValue<number | undefined>[]>);
 
 /**
  * Definition for the @number metadata.

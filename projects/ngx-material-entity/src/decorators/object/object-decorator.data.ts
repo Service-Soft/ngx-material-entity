@@ -8,7 +8,7 @@ export type ObjectDropdownValues<EntityType extends BaseEntityType<EntityType>> 
     // eslint-disable-next-line typescript/no-explicit-any
     | ((entity: any) => DropdownValue<EntityType | undefined>[])
     // eslint-disable-next-line typescript/no-explicit-any
-    | ((entity: any) => Promise<DropdownValue<EntityType | undefined>[]>)
+    | ((entity: any) => Promise<DropdownValue<EntityType | undefined>[]>);
 
 /**
  * Definition for the @object metadata.

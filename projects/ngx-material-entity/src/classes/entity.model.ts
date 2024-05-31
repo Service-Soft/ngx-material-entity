@@ -12,6 +12,7 @@ export type EntityClassNewable<EntityType extends BaseEntityType<EntityType>> = 
 /**
  * The newable type used whenever an entity service class is passed.
  */
+// eslint-disable-next-line stylistic/max-len
 export type EntityServiceClassNewable<EntityType extends BaseEntityType<EntityType>> = new (http: HttpClient, injector: EnvironmentInjector) => EntityService<EntityType>;
 
 /**

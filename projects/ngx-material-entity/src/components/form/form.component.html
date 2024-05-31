@@ -1,38 +1,50 @@
-<!-- eslint-disable angular/cyclomatic-complexity -->
-<!-- eslint-disable angular/no-call-expression -->
-<mat-tab-group *ngIf="entityTabs.length > 1" preserveContent (selectedTabChange)="selectedTabChange.emit()">
-    <mat-tab *ngFor="let tab of entityTabs" [label]="tab.tabName">
-        <div *ngFor="let row of tab.rows" class="row">
-            <ngx-mat-entity-input
-                *ngFor="let key of row.keys"
-                [entity]="entity"
-                [propertyKey]="key"
-                [hideOmitForEdit]="hideOmitForEdit"
-                [hideOmitForCreate]="hideOmitForCreate"
-                [class]="EntityUtilities.getWidthClasses(entity, key)"
-                [isReadOnly]="isReadOnly(key)"
-                (inputChangeEvent)="formChange.emit()"
-            >
-            </ngx-mat-entity-input>
-        </div>
-    </mat-tab>
-</mat-tab-group>
-
-<div *ngIf="entityTabs.length <= 1">
-    <span *ngIf="!entityTabs.length" class="no-entity-tabs">
-        ERROR: No Inputs. Did you correctly assign all values in the model constructor?
-    </span>
-    <div *ngFor="let row of entityTabs[0]?.rows" class="row">
-        <ngx-mat-entity-input
-            *ngFor="let key of row.keys"
-            [entity]="entity"
-            [propertyKey]="key"
-            [hideOmitForEdit]="hideOmitForEdit"
-            [hideOmitForCreate]="hideOmitForCreate"
-            [class]="EntityUtilities.getWidthClasses(entity, key)"
-            [isReadOnly]="isReadOnly(key)"
-            (inputChangeEvent)="formChange.emit()"
-        >
-        </ngx-mat-entity-input>
-    </div>
-</div>
+ <!-- eslint-disable angular/no-call-expression -->
+@if (entityTabs.length > 1) {
+    <mat-tab-group preserveContent (selectedTabChange)="selectedTabChange.emit()">
+        @for (tab of entityTabs; track $index) {
+            <mat-tab [label]="tab.tabName">
+                @for (row of tab.rows; track $index) {
+                    <div class="row">
+                        @for (key of row.keys; track key) {
+                            <ngx-mat-entity-input
+                                [entity]="entity"
+                                [propertyKey]="key"
+                                [hideOmitForEdit]="hideOmitForEdit"
+                                [hideOmitForCreate]="hideOmitForCreate"
+                                [class]="EntityUtilities.getWidthClasses(entity, key)"
+                                [isReadOnly]="isReadOnly(key)"
+                                (inputChangeEvent)="inputChange()"
+                            >
+                            </ngx-mat-entity-input>
+                        }
+                    </div>
+                }
+            </mat-tab>
+        }
+    </mat-tab-group>
+}
+@else {
+    @if (!entityTabs.length) {
+        <span class="no-entity-tabs">
+            ERROR: No Inputs. Did you correctly assign all values in the model constructor?
+        </span>
+    }
+    @else {
+        @for (row of entityTabs[0].rows; track $index) {
+            <div class="row">
+                @for (key of row.keys; track key) {
+                    <ngx-mat-entity-input
+                        [entity]="entity"
+                        [propertyKey]="key"
+                        [hideOmitForEdit]="hideOmitForEdit"
+                        [hideOmitForCreate]="hideOmitForCreate"
+                        [class]="EntityUtilities.getWidthClasses(entity, key)"
+                        [isReadOnly]="isReadOnly(key)"
+                        (inputChangeEvent)="formChange.emit()"
+                    >
+                    </ngx-mat-entity-input>
+                }
+            </div>
+        }
+    }
+}

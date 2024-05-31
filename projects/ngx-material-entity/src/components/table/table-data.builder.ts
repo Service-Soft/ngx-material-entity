@@ -55,6 +55,7 @@ export class BaseTableActionInternal implements BaseTableAction {
                 resolve(originalFunction());
             }
             catch (error) {
+                // eslint-disable-next-line promise/no-multiple-resolved
                 reject(error);
             }
         });
@@ -92,8 +93,9 @@ export class MultiSelectActionInternal<EntityType extends BaseEntityType<EntityT
             .getResult();
     }
 
-
-    private functionToAsync(originalFunction: ((selectedEntities: EntityType[]) => unknown) | ((selectedEntities: EntityType[]) => Promise<unknown>)): (selectedEntities: EntityType[]) => Promise<unknown> {
+    private functionToAsync(
+        originalFunction: ((selectedEntities: EntityType[]) => unknown) | ((selectedEntities: EntityType[]) => Promise<unknown>)
+    ): (selectedEntities: EntityType[]) => Promise<unknown> {
         if (isAsyncFunction(originalFunction)) {
             return originalFunction as (selectedEntities: EntityType[]) => Promise<unknown>;
         }
@@ -104,6 +106,7 @@ export class MultiSelectActionInternal<EntityType extends BaseEntityType<EntityT
                 resolve(originalFunction(selectedEntities));
             }
             catch (error) {
+                // eslint-disable-next-line promise/no-multiple-resolved
                 reject(error);
             }
         });
@@ -215,9 +218,10 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         this.defaultEdit = getConfigValue(globalConfig.defaultEditMethod, data.defaultEdit);
         this.defaultCreate = getConfigValue(globalConfig.defaultCreateMethod, data.defaultCreate);
         this.searchString = data.searchString ?? defaultSearchFunction;
+        // eslint-disable-next-line unicorn/prefer-ternary
         if (data.tableActions) {
             this.tableActions = data.tableActions.map(tA => {
-
+                // eslint-disable-next-line stylistic/max-len
                 return tA.type === 'default' ? new BaseTableActionInternal(tA, globalConfig) : new MultiSelectActionInternal(tA, globalConfig);
             });
         }
@@ -258,7 +262,7 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
     }
 
     private allowDataToFunction(value?: boolean | ((entity?: EntityType) => boolean)): ((entity?: EntityType) => boolean) {
-        if (value == null) {
+        if (value == undefined) {
             return defaultTrue;
         }
         if (typeof value == 'boolean') {
@@ -293,7 +297,6 @@ export class TableDataBuilder<EntityType extends BaseEntityType<EntityType>>
             editDialogData
         );
     }
-
 
     protected override validateInput(data: TableData<EntityType>): void {
         if (data.baseData.tableActions?.length && data.baseData.displayColumns.find(dp => dp.displayName === 'select')) {

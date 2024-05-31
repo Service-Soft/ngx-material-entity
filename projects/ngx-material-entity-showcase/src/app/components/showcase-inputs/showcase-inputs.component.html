@@ -1,37 +1,21 @@
 <!-- eslint-disable angular/no-call-expression -->
- 
 <div class="container">
     <br>
-    <form *ngIf="loaded" class="row">
-        <ngx-mat-entity-input
-            *ngFor="let key of keys"
-            [entity]="testEntity"
-            [propertyKey]="key"
-            [hideOmitForCreate]="true"
-            [isReadOnly]="isReadOnly"
-            [class]="EntityUtilities.getWidthClasses(testEntity, key)"
-        >
-        </ngx-mat-entity-input>
-        <hr style="margin-top: 10px;">
-        <button type="submit" mat-raised-button>dirty</button>
-        <button type="button" mat-raised-button (click)="toggleInputValues()">Toggle Input Values</button>
-        <button type="button" mat-raised-button (click)="toggleReadOnly()">Toggle Read Only</button>
-    </form>
-    
-    <form *ngIf="!loaded" class="row">
-        <ngx-mat-entity-input
-            *ngFor="let key of keys"
-            [entity]="testEntity"
-            [propertyKey]="key"
-            [hideOmitForCreate]="true"
-            [isReadOnly]="isReadOnly"
-            [class]="EntityUtilities.getWidthClasses(testEntity, key)"
-        >
-        </ngx-mat-entity-input>
-        <hr style="margin-top: 10px;">
-        <button type="submit" mat-raised-button>dirty</button>
-        <button type="button" mat-raised-button (click)="toggleInputValues()">Toggle Input Values</button>
-        <button type="button" mat-raised-button (click)="toggleReadOnly()">Toggle Read Only</button>
-    </form>
+        <form class="row">
+            @for (key of keys; track key) {
+                <ngx-mat-entity-input
+                    [entity]="testEntity"
+                    [propertyKey]="key"
+                    [hideOmitForCreate]="true"
+                    [isReadOnly]="isReadOnly"
+                    [class]="EntityUtilities.getWidthClasses(testEntity, key)"
+                >
+                </ngx-mat-entity-input>
+            }
+            <hr style="margin-top: 10px;">
+            <button type="submit" mat-raised-button>dirty</button>
+            <button type="button" mat-raised-button (click)="toggleInputValues()">Toggle Input Values</button>
+            <button type="button" mat-raised-button (click)="toggleReadOnly()">Toggle Read Only</button>
+        </form>
     <br>
 </div>

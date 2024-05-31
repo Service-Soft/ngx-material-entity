@@ -1,4 +1,4 @@
-<!-- eslint-disable angular/cyclomatic-complexity -->
+ 
 <!-- eslint-disable angular/no-call-expression -->
 <h1 class="title">{{data.baseData.title}}</h1>
 
@@ -7,41 +7,47 @@
         <mat-label>{{data.baseData.searchLabel}}</mat-label>
         <input matInput (keyup)="applyFilter($event)">
     </mat-form-field>
-    <div
-        *ngIf="data.baseData.tableActions.length"
-        [class.col-lg-2]="allowCreate"
-        [class.col-lg-4]="!allowCreate"
-        [class.col-md-3]="allowCreate"
-        [class.col-md-6]="!allowCreate"
-        [class.col-sm-6]="allowCreate"
-        [class.col-sm-12]="!allowCreate"
-    >
-        <button type="button" class="actions-button" mat-raised-button [matMenuTriggerFor]="menu">
-            {{data.baseData.tableActionsLabel}}
-        </button>
-    </div>
+    @if (data.baseData.tableActions.length) {
+        <div
+            [class.col-lg-2]="allowCreate"
+            [class.col-lg-4]="!allowCreate"
+            [class.col-md-3]="allowCreate"
+            [class.col-md-6]="!allowCreate"
+            [class.col-sm-6]="allowCreate"
+            [class.col-sm-12]="!allowCreate"
+        >
+            <button type="button" class="actions-button" mat-raised-button [matMenuTriggerFor]="menu">
+                {{data.baseData.tableActionsLabel}}
+            </button>
+        </div>
+    }
     <mat-menu #menu="matMenu">
-        <button *ngIf="data.baseData.allowJsonImport" type="button" mat-menu-item [disabled]="tableActionDisabled(importAction)" (click)="runTableAction(importAction)">
-            {{importAction.displayName}}
-        </button>
-        <button *ngFor="let action of data.baseData.tableActions" type="button" mat-menu-item [disabled]="tableActionDisabled(action)" (click)="runTableAction(action)">
-            {{action.displayName}}
-        </button>
+        @if (data.baseData.allowJsonImport) {
+            <button type="button" mat-menu-item [disabled]="tableActionDisabled(importAction)" (click)="runTableAction(importAction)">
+                {{importAction.displayName}}
+            </button>
+        }
+        @for (action of data.baseData.tableActions; track $index) {
+            <button type="button" mat-menu-item [disabled]="tableActionDisabled(action)" (click)="runTableAction(action)">
+                {{action.displayName}}
+            </button>
+        }
     </mat-menu>
 
-    <div
-        *ngIf="allowCreate"
-        [class.col-lg-2]="data.baseData.tableActions.length"
-        [class.col-lg-4]="!data.baseData.tableActions.length"
-        [class.col-md-3]="data.baseData.tableActions.length"
-        [class.col-md-6]="!data.baseData.tableActions.length"
-        [class.col-sm-6]="data.baseData.tableActions.length"
-        [class.col-sm-12]="!data.baseData.tableActions.length"
-    >
-        <button type="button" class="create-button" mat-raised-button (click)="createEntity()">
-            {{data.baseData.createButtonLabel}}
-        </button>
-    </div>
+    @if (allowCreate) {
+        <div
+            [class.col-lg-2]="data.baseData.tableActions.length"
+            [class.col-lg-4]="!data.baseData.tableActions.length"
+            [class.col-md-3]="data.baseData.tableActions.length"
+            [class.col-md-6]="!data.baseData.tableActions.length"
+            [class.col-sm-6]="data.baseData.tableActions.length"
+            [class.col-sm-12]="!data.baseData.tableActions.length"
+        >
+            <button type="button" class="create-button" mat-raised-button (click)="createEntity()">
+                {{data.baseData.createButtonLabel}}
+            </button>
+        </div>
+    }
 </div>
 
 <div class="mat-elevation-z8">
@@ -62,30 +68,34 @@
             </mat-cell>
         </ng-container>
 
-        <ng-container *ngFor="let dCol of data.baseData.displayColumns" [matColumnDef]="dCol.displayName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{dCol.displayName}}
-            </mat-header-cell>
-            <mat-cell *matCellDef="let entity" class="entity"
-                [class.enabled]="!dCol.disableClick && (allowUpdate(entity) || allowRead(entity))"
-                [dynamicStyleClasses]="data.baseData.dynamicRowStyleClasses" [entity]="entity"
-                (click)="editEntity(entity, dCol)"
-            >
-                <ng-container *ngIf="dCol.Component">
-                    <display-column-value [entity]="entity" [ComponentClass]="dCol.Component"></display-column-value>
-                </ng-container>
-                <ng-container *ngIf="!dCol.Component">
-                    {{getDisplayColumnValue(entity, dCol)}}
-                </ng-container>
-            </mat-cell>
-        </ng-container>
+        @for (dCol of data.baseData.displayColumns; track $index) {
+            <ng-container [matColumnDef]="dCol.displayName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>
+                    {{dCol.displayName}}
+                </mat-header-cell>
+                <mat-cell *matCellDef="let entity" class="entity"
+                    [class.enabled]="!dCol.disableClick && (allowUpdate(entity) || allowRead(entity))"
+                    [dynamicStyleClasses]="data.baseData.dynamicRowStyleClasses" [entity]="entity"
+                    (click)="editEntity(entity, dCol)"
+                >
+                    @if (dCol.Component) {
+                        <display-column-value [entity]="entity" [ComponentClass]="dCol.Component"></display-column-value>
+                    }
+                    @else {
+                        {{getDisplayColumnValue(entity, dCol)}}
+                    }
+                </mat-cell>
+            </ng-container>
+        }
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     </mat-table>
 
-    <mat-spinner *ngIf="isLoading && data.baseData.displayLoadingSpinner">
-    </mat-spinner>
+    @if (isLoading && data.baseData.displayLoadingSpinner) {
+        <mat-spinner>
+        </mat-spinner>
+    }
 
     <mat-paginator style="padding-top: 10px; padding-bottom: 10px;" [length]="dataSource.filteredData.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>
 </div>

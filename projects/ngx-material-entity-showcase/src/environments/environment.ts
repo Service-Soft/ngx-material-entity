@@ -4,7 +4,6 @@
 
 import { Environment } from './environment.model';
 
-// eslint-disable-next-line jsdoc/require-jsdoc
 export const environment: Environment = {
     production: false,
     apiUrl: 'http://localhost:3000'

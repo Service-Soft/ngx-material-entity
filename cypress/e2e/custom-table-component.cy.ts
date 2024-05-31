@@ -1,3 +1,5 @@
+/* eslint-disable stylistic/newline-per-chained-call */
+/* eslint-disable sonar/no-duplicate-string */
 
 describe('custom table', () => {
     before('Reset Api', () => {

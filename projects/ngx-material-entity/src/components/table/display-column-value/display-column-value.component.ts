@@ -19,13 +19,13 @@ export class DisplayColumnValueComponent<EntityType extends BaseEntityType<Entit
     /**
      * The entity for which the column should be displayed.
      */
-    @Input()
+    @Input({ required: true })
     entity!: EntityType;
 
     /**
      * The class of the component that should be used inside the custom display column.
      */
-    @Input()
+    @Input({ required: true })
     ComponentClass!: Type<NgxMatEntityBaseDisplayColumnValueComponent<EntityType>>;
 
     /**
@@ -36,12 +36,6 @@ export class DisplayColumnValueComponent<EntityType extends BaseEntityType<Entit
     constructor(private readonly viewContainerRef: ViewContainerRef) {}
 
     ngOnInit(): void {
-        if (this.ComponentClass == null) {
-            throw new Error('No ComponentClass has been provided.');
-        }
-        if (this.entity == null) {
-            throw new Error('No entity value has been provided.');
-        }
         this.component = this.viewContainerRef.createComponent(this.ComponentClass);
         this.component.instance.entity = this.entity;
         (this.component.location.nativeElement as HTMLElement).setAttribute('style', 'width: 100%');

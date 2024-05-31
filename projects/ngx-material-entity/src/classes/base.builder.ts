@@ -45,7 +45,7 @@ export abstract class BaseBuilder<InternalType extends InputType, InputType exte
      * @returns The Builder.
      */
     withDefault(key: keyof InputType, value: Omit<InternalType[keyof InputType], 'undefined'>): BaseBuilder<InternalType, InputType> {
-        if (this.inputData?.[key] == null || this.inputData[key] === CONFIG_NEEDS_UPDATE_KEY) {
+        if (this.inputData?.[key] == undefined || this.inputData[key] === CONFIG_NEEDS_UPDATE_KEY) {
             this.data[key] = value as InternalType[keyof InputType];
         }
         return this;
