@@ -20,7 +20,6 @@ import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm
 import { NgxMatEntityFormComponent } from '../../form/form.component';
 import { TooltipComponent } from '../../tooltip/tooltip.component';
 
-
 /**
  * The default dialog used to create new entities based on the configuration passed in the MAT_DIALOG_DATA "inputData".
  * Used by the ngx-mat-entity-table.
@@ -47,7 +46,7 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
      * Emits when the form is dirty.
      */
     @Output()
-    unsavedChanges: EventEmitter<boolean> = new EventEmitter<boolean>();
+    readonly unsavedChanges: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * Contains HelperMethods around handling Entities and their property-metadata.
@@ -125,6 +124,7 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
             await this.confirmCreate();
             return;
         }
+        // eslint-disable-next-line stylistic/max-len
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.createData.confirmCreateDialogData)
             .withDefault('text', this.globalConfig.confirmCreateText)
             .withDefault('confirmButtonLabel', this.globalConfig.createLabel)
@@ -153,6 +153,7 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
             this.confirmCancel();
             return;
         }
+        // eslint-disable-next-line stylistic/max-len
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.createData.confirmUnsavedChangesDialogData)
             .withDefault('text', this.globalConfig.confirmUnsavedChangesDialogText)
             .withDefault('confirmButtonLabel', this.globalConfig.confirmUnsavedChangesDialogLabel)

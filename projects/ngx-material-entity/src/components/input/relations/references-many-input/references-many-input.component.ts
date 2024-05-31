@@ -66,7 +66,7 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
     }
 
     get shouldDisplayCurrentValue(): boolean {
-        return !!this.currentDropdownValue && !(!!this.filteredDropdownValues.find(v => v.value === this.currentDropdownValue?.value));
+        return !!this.currentDropdownValue && !this.filteredDropdownValues.find(v => v.value === this.currentDropdownValue?.value);
     }
 
     constructor(
@@ -77,7 +77,7 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
         super();
     }
 
-    override async ngOnInit(): Promise<void> {
+    override ngOnInit(): void {
         super.ngOnInit();
         this.metadata = new ReferencesManyDecoratorConfigInternal(this.metadata, this.globalConfig);
         ReflectUtilities.defineMetadata('metadata', this.metadata, this.entity, this.key);
@@ -91,19 +91,18 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
         this.displayedColumns = this.isReadOnly ? givenDisplayColumns : ['select'].concat(givenDisplayColumns);
         this.referencedEntitiesDataSource.data = this.propertyValue ?? [];
 
-        await runInInjectionContext(this.injector, async () => {
+        void runInInjectionContext(this.injector, async () => {
             this.allReferencedEntities = await this.metadata.getReferencedEntities() as EntityType[];
-        });
-
-        this.allDropdownValues = this.metadata.getDropdownValues(LodashUtilities.cloneDeep(this.allReferencedEntities));
-        this.dropdownValues = LodashUtilities.cloneDeep(this.allDropdownValues);
-        for (const value of this.referencedEntitiesDataSource.data) {
-            const foundValue: DropdownValue<string> | undefined = this.dropdownValues.find(v => v.value === value);
-            if (foundValue) {
-                this.dropdownValues.splice(this.dropdownValues.indexOf(foundValue), 1);
+            this.allDropdownValues = this.metadata.getDropdownValues(LodashUtilities.cloneDeep(this.allReferencedEntities));
+            this.dropdownValues = LodashUtilities.cloneDeep(this.allDropdownValues);
+            for (const value of this.referencedEntitiesDataSource.data) {
+                const foundValue: DropdownValue<string> | undefined = this.dropdownValues.find(v => v.value === value);
+                if (foundValue) {
+                    this.dropdownValues.splice(this.dropdownValues.indexOf(foundValue), 1);
+                }
             }
-        }
-        this.filteredDropdownValues = LodashUtilities.cloneDeep(this.dropdownValues);
+            this.filteredDropdownValues = LodashUtilities.cloneDeep(this.dropdownValues);
+        });
     }
 
     /**
@@ -155,13 +154,13 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
     }
 
     remove(): void {
-        this.selection.selected.forEach(s => {
+        for (const s of this.selection.selected) {
             this.propertyValue?.splice(this.propertyValue.indexOf(s), 1);
             const foundDropdownValue: DropdownValue<string> | undefined = this.allDropdownValues.find(v => v.value === s);
             if (foundDropdownValue) {
                 this.dropdownValues.push(foundDropdownValue);
             }
-        });
+        }
         this.filteredDropdownValues = LodashUtilities.cloneDeep(this.dropdownValues);
         if (!this.propertyValue?.length) {
             this.propertyValue = undefined;

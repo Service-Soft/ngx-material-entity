@@ -68,14 +68,14 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     /**
      * The configuration for the component.
      */
-    @Input()
+    @Input({ required: true })
     tableData!: TableData<EntityType>;
 
     /**
      * Emits when there are unsaved changes on either the create or update dialog.
      */
     @Output()
-    unsavedDialogChanges: EventEmitter<boolean> = new EventEmitter<boolean>();
+    readonly unsavedDialogChanges: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * The internal TableData.
@@ -157,6 +157,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         });
 
         const givenDisplayColumns: string[] = this.data.baseData.displayColumns.map((v) => v.displayName);
+        // eslint-disable-next-line unicorn/prefer-ternary
         if (this.data.baseData.tableActions.filter(tA => tA.type === 'multi-select').length) {
             this.displayedColumns = ['select'].concat(givenDisplayColumns);
         }
@@ -183,6 +184,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
             this.dataSource.data = entities;
             this.selection.clear();
         });
+        // eslint-disable-next-line promise/prefer-await-to-then
         void this.entityService.read().then(() => {
             this.isLoading = false;
         });
@@ -207,13 +209,13 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         input.accept = 'application/json';
         input.onchange = async () => {
             if (input.files) {
-                this.importJson(input.files[0]);
+                await this.importJson(input.files[0]);
             }
         };
         input.click();
     }
 
-    private importJson(file: File): void {
+    private async importJson(file: File): Promise<void> {
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.importAction.confirmDialogData)
             .withDefault('text', this.data.baseData.importActionData.confirmDialogData.text)
             .withDefault('title', this.importAction.displayName)
@@ -223,11 +225,10 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
             autoFocus: false,
             restoreFocus: false
         });
-        dialogRef.afterClosed().subscribe(res => {
-            if (res == true) {
-                void this.entityService.import(file);
-            }
-        });
+        const res: boolean | undefined = await firstValueFrom(dialogRef.afterClosed());
+        if (res == true) {
+            await this.entityService.import(file);
+        }
     }
 
     /**
@@ -292,11 +293,13 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
             editData: this.data.editData
         };
         const dialogData: EditEntityDataInternal<EntityType> = new EditEntityDataBuilder(inputDialogData, this.globalConfig).getResult();
-        const dialogRef: MatDialogRef<NgxMatEntityEditDialogComponent<BaseEntityType<unknown>>, number> = this.dialog.open(NgxMatEntityEditDialogComponent, {
-            data: dialogData,
-            autoFocus: false,
-            restoreFocus: false
-        });
+        const dialogRef: MatDialogRef<NgxMatEntityEditDialogComponent<BaseEntityType<unknown>>, number> = this.dialog.open(
+            NgxMatEntityEditDialogComponent, {
+                data: dialogData,
+                autoFocus: false,
+                restoreFocus: false
+            }
+        );
         dialogRef.componentInstance.unsavedChanges.subscribe(res => this.unsavedDialogChanges.emit(res));
         const res: number | undefined = await firstValueFrom(dialogRef.afterClosed());
         this.unsavedDialogChanges.emit(false);
@@ -344,12 +347,14 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
             },
             this.globalConfig
         ).getResult();
-        const dialogRef: MatDialogRef<NgxMatEntityCreateDialogComponent<BaseEntityType<unknown>>> = this.dialog.open(NgxMatEntityCreateDialogComponent, {
-            data: dialogData,
-            minWidth: '60%',
-            autoFocus: false,
-            restoreFocus: false
-        });
+        const dialogRef: MatDialogRef<NgxMatEntityCreateDialogComponent<BaseEntityType<unknown>>> = this.dialog.open(
+            NgxMatEntityCreateDialogComponent, {
+                data: dialogData,
+                minWidth: '60%',
+                autoFocus: false,
+                restoreFocus: false
+            }
+        );
         dialogRef.componentInstance.unsavedChanges.subscribe(res => this.unsavedDialogChanges.emit(res));
         await firstValueFrom(dialogRef.afterClosed());
         this.unsavedDialogChanges.emit(false);
@@ -360,13 +365,13 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
      * Also handles confirmation with an additional dialog if configured.
      * @param action - The TableAction to run.
      */
-    runTableAction(action: TableActionInternal<EntityType>): void {
+    async runTableAction(action: TableActionInternal<EntityType>): Promise<void> {
         const requireConfirmDialog: boolean = runInInjectionContext(this.injector, () => {
             return action.requireConfirmDialog(this.selection.selected);
         });
 
         if (!requireConfirmDialog) {
-            this.confirmRunTableAction(action);
+            await this.confirmRunTableAction(action);
             return;
         }
         const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
@@ -374,15 +379,14 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
             autoFocus: false,
             restoreFocus: false
         });
-        dialogRef.afterClosed().subscribe(res => {
-            if (res == true) {
-                this.confirmRunTableAction(action);
-            }
-        });
+        const res: boolean | undefined = await firstValueFrom(dialogRef.afterClosed());
+        if (res == true) {
+            await this.confirmRunTableAction(action);
+        }
     }
 
-    private confirmRunTableAction(action: TableActionInternal<EntityType>): void {
-        void runInInjectionContext(this.injector, async () => {
+    private async confirmRunTableAction(action: TableActionInternal<EntityType>): Promise<void> {
+        await runInInjectionContext(this.injector, async () => {
             await action.action(this.selection.selected);
         });
     }
@@ -406,6 +410,5 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         const filterValue: string = (event.target as HTMLInputElement).value;
         this.dataSource.filter = filterValue.trim().toLowerCase();
     }
-
 
 }

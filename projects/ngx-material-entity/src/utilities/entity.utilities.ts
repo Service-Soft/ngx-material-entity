@@ -130,7 +130,7 @@ export abstract class EntityUtilities {
         for (const key of this.keysOf(entity, injector, false, true)) {
             const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = this.getPropertyMetadata(entity, key);
             const type: DecoratorTypes | undefined = this.getPropertyType(entity, key);
-            if (!(await this.isEqual(entity[key], entityPriorChanges[key], metadata, type, http))) {
+            if (!await this.isEqual(entity[key], entityPriorChanges[key], metadata, type, http)) {
                 switch (type) {
                     case DecoratorTypes.OBJECT:
                         // eslint-disable-next-line typescript/no-explicit-any
@@ -177,6 +177,7 @@ export abstract class EntityUtilities {
         for (const key in entity) {
             const type: DecoratorTypes | undefined = this.getPropertyType(entity, key);
             if (type === DecoratorTypes.FILE_DEFAULT || type === DecoratorTypes.FILE_IMAGE) {
+                // eslint-disable-next-line stylistic/max-len
                 const metadata: PropertyDecoratorConfigInternal<unknown> = this.getPropertyMetadata(entity, key) as PropertyDecoratorConfigInternal<unknown>;
                 if (!(metadata.omitForCreate && omit === 'create') && !(metadata.omitForUpdate && omit === 'update')) {
                     res.push(key);
@@ -305,7 +306,7 @@ export abstract class EntityUtilities {
         for (const key in entity) {
             const type: DecoratorTypes | undefined = this.getPropertyType(entity, key);
             const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = this.getPropertyMetadata(entity, key);
-            if (!(await this.isEqual(entity[key], entityPriorChanges[key], metadata, type, http))) {
+            if (!await this.isEqual(entity[key], entityPriorChanges[key], metadata, type, http)) {
                 res.push({
                     key: key,
                     before: entityPriorChanges[key],
@@ -446,6 +447,7 @@ export abstract class EntityUtilities {
                 filter
             );
         }
+        // eslint-disable-next-line stylistic/max-len
         const dateRangePriorChanges: Partial<DateRange> | undefined = LodashUtilities.cloneDeep(valuePriorChanges) as Partial<DateRange> | undefined;
         if (dateRangePriorChanges?.start) {
             dateRangePriorChanges.start = new Date(dateRangePriorChanges.start);
@@ -465,16 +467,12 @@ export abstract class EntityUtilities {
 
     // TODO: Find a way to use blobs with jest
     /* istanbul ignore next */
+    // eslint-disable-next-line sonar/cognitive-complexity
     private static async isEqualFile(value: unknown, valuePriorChanges: unknown, multiple: boolean, http: HttpClient): Promise<boolean> {
-        if (value == null) {
-            if (valuePriorChanges == null) {
-                return true;
-            }
-            else {
-                return false;
-            }
+        if (value == undefined) {
+            return valuePriorChanges == undefined;
         }
-        if (valuePriorChanges == null) {
+        if (valuePriorChanges == undefined) {
             return false;
         }
         const files: FileData[] = multiple ? (value as FileData[]).sort() : [value as FileData].sort();
@@ -508,10 +506,7 @@ export abstract class EntityUtilities {
         // eslint-disable-next-line typescript/no-explicit-any
         metadata: CustomDecoratorConfigInternal<any, any, any, any>
     ): boolean {
-        if (!metadata.isEqual(value, valuePriorChanges, metadata)) {
-            return false;
-        }
-        return true;
+        return metadata.isEqual(value, valuePriorChanges, metadata);
     }
 
     /**
@@ -631,7 +626,14 @@ export abstract class EntityUtilities {
             .filter(k => !additionalOmitKeys.includes(k));
         const numberOfTabs: number = this.getNumberOfTabs<EntityType>(keys, entity);
 
-        const firstTabRows: EntityRow<EntityType>[] = this.getEntityRows<EntityType>(entity, -1, hideOmitForCreate, hideOmitForEdit, additionalOmitKeys, injector);
+        const firstTabRows: EntityRow<EntityType>[] = this.getEntityRows<EntityType>(
+            entity,
+            -1,
+            hideOmitForCreate,
+            hideOmitForEdit,
+            additionalOmitKeys,
+            injector
+        );
         if (firstTabRows.length) {
             const firstTab: EntityTab<EntityType> = {
                 tabName: this.getFirstTabName(entity),
@@ -678,14 +680,14 @@ export abstract class EntityUtilities {
         return (keys
             .filter(k => this.getPropertyMetadata(entity, k)?.position.tab === tab)
             .map(k => this.getPropertyMetadata(entity, k)?.position.row) as number[])
-            .sort((a, b) => (a > b ? -1 : 1))[0];
+            .sort((a, b) => a > b ? -1 : 1)[0];
     }
 
     private static getNumberOfTabs<EntityType extends BaseEntityType<EntityType>>(keys: (keyof EntityType)[], entity: EntityType): number {
         return (keys
-            .filter(k => this.getPropertyMetadata(entity, k) != null)
+            .filter(k => this.getPropertyMetadata(entity, k) != undefined)
             .map(k => this.getPropertyMetadata(entity, k)?.position.tab) as number[])
-            .sort((a, b) => (a > b ? -1 : 1))[0];
+            .sort((a, b) => a > b ? -1 : 1)[0];
     }
 
     private static getTabName<EntityType extends BaseEntityType<EntityType>>(entity: EntityType, tab: number): string {
@@ -737,7 +739,8 @@ export abstract class EntityUtilities {
         const res: (keyof EntityType)[] = [];
         for (const key in entity) {
             const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = this.getPropertyMetadata(entity, key);
-            if (runInInjectionContext(injector, () => !metadata || !metadata.display(entity))) {
+            // eslint-disable-next-line typescript/strict-boolean-expressions
+            if (runInInjectionContext(injector, () => !metadata?.display(entity))) {
                 res.push(key);
             }
         }

@@ -12,6 +12,7 @@ import { DecoratorTypes } from '../base/decorator-types.enum';
 export function object<EntityType extends BaseEntityType<EntityType>>(
     metadata: DefaultObjectDecoratorConfig<EntityType> | DropdownObjectDecoratorConfig<EntityType>
 ): (target: object, propertyKey: string) => void {
+    // eslint-disable-next-line sonar/no-small-switch
     switch (metadata.displayStyle) {
         case 'dropdown':
             return baseProperty(new DropdownObjectDecoratorConfigInternal(metadata), DecoratorTypes.OBJECT_DROPDOWN);

@@ -8,9 +8,9 @@ module.exports = [
             'angular/component-selector': [
                 'warn',
                 {
-                    'style': 'kebab-case',
-                    'type': 'element',
-                    'prefix': 'ngx-mat-entity'
+                    style: 'kebab-case',
+                    type: 'element',
+                    prefix: 'ngx-mat-entity'
                 }
             ]
         }

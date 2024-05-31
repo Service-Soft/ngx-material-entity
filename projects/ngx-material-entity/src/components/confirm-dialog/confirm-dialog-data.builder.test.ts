@@ -14,6 +14,6 @@ describe('validateInput', () => {
     });
     test('should throw error for info-only and cancel label', () => {
         expect(() => new ConfirmDialogDataBuilder(defaultGlobalDefaults, { type: 'info-only', cancelButtonLabel: 'test' }))
-            .toThrow('The "cancelButtonLabel" will never be shown because "type" is set to "info-only"');
+            .toThrow('The "cancelButtonLabel" "test" will never be shown because "type" is set to "info-only"');
     });
 });

@@ -8,7 +8,7 @@ import { UnsavedChangesGuard } from '../../services/unsaved-changes.guard';
  * The definition for a route to use with the "NgxMatEntityEditPageComponent".
  */
 export interface EditDataRoute extends Route {
-    // eslint-disable-next-line jsdoc/require-jsdoc
+    // eslint-disable-next-line jsdoc/require-jsdoc, stylistic/max-len
     loadComponent: () => Type<unknown> | Observable<Type<unknown> | DefaultExport<Type<unknown>>> | Promise<Type<unknown> | DefaultExport<Type<unknown>>>,
     // eslint-disable-next-line jsdoc/require-jsdoc
     providers: (Provider | EnvironmentProviders)[],
@@ -22,6 +22,7 @@ export interface EditDataRoute extends Route {
  * The default data for a edit route.
  */
 export const defaultEditDataRoute: Omit<EditDataRoute, 'providers'> = {
+    // eslint-disable-next-line promise/prefer-await-to-then
     loadComponent: () => import('./edit-page.component').then(m => m.NgxMatEntityEditPageComponent),
     title: 'Edit',
     path: 'entities:id',

@@ -21,7 +21,7 @@ import { EntityUtilities } from '../../utilities/entity.utilities';
  * - ngOnInit: Gets the metadata for the property, be aware of this when overriding this method.
  * - emitChange: Should be called when the input has changed. This is needed to trigger validation and dirty checks.
  */
-// eslint-disable-next-line angular/prefer-standalone-component
+// eslint-disable-next-line angular/prefer-standalone
 @Component({
     selector: 'ngx-mat-entity-base-input',
     template: ''
@@ -35,33 +35,33 @@ export abstract class NgxMatEntityBaseInputComponent<
     /**
      * The entity that the property to display as an input comes from.
      */
-    @Input()
+    @Input({ required: true })
     entity!: EntityType;
 
     /**
      * The key of the property to build the input for.
      */
-    @Input()
+    @Input({ required: true })
     key!: keyof EntityType;
 
     /**
      * The function that generates the error message when the input is invalid.
      */
-    @Input()
+    @Input({ required: true })
     getValidationErrorMessage!: (model: NgModel) => string;
 
     /**
      * Whether or not the input should be readonly.
      * In that case it is disabled, but most of the disabled-styling is overridden.
      */
-    @Input()
+    @Input({ required: true })
     isReadOnly!: boolean;
 
     /**
      * Emits when the property value has changed.
      */
     @Output()
-    inputChangeEvent: EventEmitter<void> = new EventEmitter<void>();
+    readonly inputChangeEvent: EventEmitter<void> = new EventEmitter<void>();
 
     // eslint-disable-next-line jsdoc/require-returns
     /**
@@ -88,7 +88,7 @@ export abstract class NgxMatEntityBaseInputComponent<
     name!: string;
 
     ngOnInit(): void {
-
+        // eslint-disable-next-line stylistic/max-len
         const foundMetadata: DecoratorType<Type, CustomMetadataType> | undefined = EntityUtilities.getPropertyMetadata(this.entity, this.key);
         if (!foundMetadata) {
             throw new Error(`No metadata was found for the key "${String(this.key)}"`);

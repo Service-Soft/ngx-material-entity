@@ -17,7 +17,7 @@ export class TooltipDirective implements OnDestroy {
     /**
      * The content to display inside the tooltip.
      */
-    @Input()
+    @Input({ required: true })
     tooltip!: string;
 
     private tooltipElement?: HTMLElement;
@@ -89,23 +89,24 @@ export class TooltipDirective implements OnDestroy {
     }
 
     private showTooltip(): void {
-        if (!this.tooltipElement) {
-            this.tooltipElement = this.renderer.createElement('div') as HTMLElement;
-            this.tooltipElement.innerHTML = this.tooltip;
-
-            this.renderer.setStyle(this.tooltipElement, 'z-index', '1000');
-            this.renderer.setStyle(this.tooltipElement, 'position', 'absolute');
-            this.renderer.setStyle(this.tooltipElement, 'padding', '4px 8px 4px 8px');
-            this.renderer.setStyle(this.tooltipElement, 'border-radius', '5px');
-            this.renderer.setStyle(this.tooltipElement, 'background-color', '#616161');
-            this.renderer.setStyle(this.tooltipElement, 'color', 'white');
-            this.renderer.setStyle(this.tooltipElement, 'max-height', '30vh');
-            this.renderer.setStyle(this.tooltipElement, 'overflow', 'scroll');
-            this.renderer.appendChild(this.el.nativeElement, this.tooltipElement);
-
-            const marginBottom: number = this.tooltipElement.clientHeight + (this.el.nativeElement as HTMLElement).clientHeight + 15;
-            this.renderer.setStyle(this.tooltipElement, 'margin-bottom', `${marginBottom}px`);
+        if (this.tooltipElement) {
+            return;
         }
+        this.tooltipElement = this.renderer.createElement('div') as HTMLElement;
+        this.tooltipElement.innerHTML = this.tooltip;
+
+        this.renderer.setStyle(this.tooltipElement, 'z-index', '1000');
+        this.renderer.setStyle(this.tooltipElement, 'position', 'absolute');
+        this.renderer.setStyle(this.tooltipElement, 'padding', '4px 8px 4px 8px');
+        this.renderer.setStyle(this.tooltipElement, 'border-radius', '5px');
+        this.renderer.setStyle(this.tooltipElement, 'background-color', '#616161');
+        this.renderer.setStyle(this.tooltipElement, 'color', 'white');
+        this.renderer.setStyle(this.tooltipElement, 'max-height', '30vh');
+        this.renderer.setStyle(this.tooltipElement, 'overflow-y', 'scroll');
+        this.renderer.appendChild(this.el.nativeElement, this.tooltipElement);
+
+        const marginBottom: number = this.tooltipElement.clientHeight + (this.el.nativeElement as HTMLElement).clientHeight + 15;
+        this.renderer.setStyle(this.tooltipElement, 'margin-bottom', `${marginBottom}px`);
     }
 
     private registerCloseListeners(): void {

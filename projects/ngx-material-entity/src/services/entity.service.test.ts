@@ -1,3 +1,4 @@
+/* eslint-disable sonar/no-duplicate-string */
 import { HttpClient } from '@angular/common/http';
 import { expect } from '@jest/globals';
 
@@ -14,7 +15,6 @@ export class SimpleTestEntityService extends EntityService<SimpleTestEntity> {
 
 export class TestEntityService extends EntityService<TestEntityWithoutCustomProperties> {
     baseUrl: string = 'http://api/test';
-
 
     protected override async createWithFormData(body: Omit<TestEntityWithoutCustomProperties, keyof TestEntityWithoutCustomProperties>): Promise<TestEntityWithoutCustomProperties> {
         return this.createWithJson(body);
@@ -128,5 +128,7 @@ test('should warn in console but still update when patch does not return a resul
 });
 
 function flattenString(value: string): string {
-    return value.split('\n').join('').replace(/\s/g, '');
+    return value.split('\n')
+        .join('')
+        .replaceAll(/\s/g, '');
 }

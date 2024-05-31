@@ -71,18 +71,24 @@ export class NgxMatEntityFormComponent<EntityType extends BaseEntityType<EntityT
      * Fires whenever an input of the form changes.
      */
     @Output()
-    formChange: EventEmitter<void> = new EventEmitter<void>();
+    readonly formChange: EventEmitter<void> = new EventEmitter<void>();
 
     /**
      * Fires when the selected tab has been changed.
      */
     @Output()
-    selectedTabChange: EventEmitter<MatTabChangeEvent> = new EventEmitter<MatTabChangeEvent>();
+    readonly selectedTabChange: EventEmitter<MatTabChangeEvent> = new EventEmitter<MatTabChangeEvent>();
 
     constructor(private readonly injector: EnvironmentInjector) { }
 
     ngOnInit(): void {
-        this.entityTabs = EntityUtilities.getEntityTabs(this.entity, this.injector, this.hideOmitForCreate, this.hideOmitForEdit, this.additionalOmitKeys);
+        this.entityTabs = EntityUtilities.getEntityTabs(
+            this.entity,
+            this.injector,
+            this.hideOmitForCreate,
+            this.hideOmitForEdit,
+            this.additionalOmitKeys
+        );
     }
 
     /**
@@ -98,5 +104,20 @@ export class NgxMatEntityFormComponent<EntityType extends BaseEntityType<EntityT
             }
             return this.isEntityReadOnly || metadata.isReadOnly(this.entity);
         });
+    }
+
+    /**
+     * What happens when an input changes its value.
+     * This refreshes the entity tabs to check if there are now different inputs to display and emits the form change.
+     */
+    inputChange(): void {
+        this.entityTabs = EntityUtilities.getEntityTabs(
+            this.entity,
+            this.injector,
+            this.hideOmitForCreate,
+            this.hideOmitForEdit,
+            this.additionalOmitKeys
+        );
+        this.formChange.emit();
     }
 }

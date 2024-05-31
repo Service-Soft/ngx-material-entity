@@ -26,7 +26,7 @@ class Address extends Entity {
         displayName: 'City',
         minLength: 5,
         maxLength: 5,
-        regex: /^[0-9]*$/
+        regex: /^\d*$/
     })
     postcode!: string;
 

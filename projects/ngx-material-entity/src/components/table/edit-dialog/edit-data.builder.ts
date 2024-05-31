@@ -41,8 +41,10 @@ export class EditActionInternal<EntityType extends BaseEntityType<EntityType>> i
             .getResult();
     }
 
-
-    private functionToAsync(originalFunction: ((e: EntityType, ePriorChanges: EntityType) => unknown) | ((e: EntityType, ePriorChanges: EntityType) => Promise<unknown>)): (e: EntityType, ePriorChanges: EntityType) => Promise<unknown> {
+    private functionToAsync(
+        originalFunction: ((e: EntityType, ePriorChanges: EntityType) => unknown)
+        | ((e: EntityType, ePriorChanges: EntityType) => Promise<unknown>)
+    ): (e: EntityType, ePriorChanges: EntityType) => Promise<unknown> {
         if (isAsyncFunction(originalFunction)) {
             return originalFunction as (e: EntityType) => Promise<unknown>;
         }
@@ -53,6 +55,7 @@ export class EditActionInternal<EntityType extends BaseEntityType<EntityType>> i
                 resolve(originalFunction(e, ePriorChanges));
             }
             catch (error) {
+                // eslint-disable-next-line promise/no-multiple-resolved
                 reject(error);
             }
         });
@@ -131,12 +134,14 @@ export class EditDataBuilder<EntityType extends BaseEntityType<EntityType>>
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     protected generateBaseData(data?: EditData<EntityType>): EditDataInternal<EntityType> {
+        // eslint-disable-next-line stylistic/max-len
         const confirmEditDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, data?.confirmEditDialogData)
             .withDefault('confirmButtonLabel', this.globalConfig.saveLabel)
             .withDefault('text', this.globalConfig.confirmSaveText)
             .withDefault('title', this.globalConfig.editLabel)
             .getResult();
 
+        // eslint-disable-next-line stylistic/max-len
         const confirmDeleteDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, data?.confirmDeleteDialogData)
             .withDefault('confirmButtonLabel', this.globalConfig.deleteLabel)
             .withDefault('type', 'delete')
@@ -144,6 +149,7 @@ export class EditDataBuilder<EntityType extends BaseEntityType<EntityType>>
             .withDefault('title', this.globalConfig.deleteLabel)
             .getResult();
 
+        // eslint-disable-next-line stylistic/max-len
         const confirmUnsavedChangesDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, data?.confirmUnsavedChangesDialogData)
             .withDefault('confirmButtonLabel', this.globalConfig.confirmUnsavedChangesDialogLabel)
             .withDefault('text', this.globalConfig.confirmUnsavedChangesDialogText)

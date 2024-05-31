@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-null */
 import { Directive, Input } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from '@angular/forms';
 
@@ -19,10 +20,9 @@ export class IncludedInValidatorDirective implements Validator {
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     validate(control: AbstractControl<unknown>): ValidationErrors | null {
-        if (!this.includedIn?.length || !(Boolean(control.value))) {
+        if (!this.includedIn?.length || !Boolean(control.value)) {
             return null;
         }
-
         return this.includedIn.includes(control.value) ? null : { includedIn: { value: control.value, validValues: this.includedIn } };
     }
 }

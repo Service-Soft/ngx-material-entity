@@ -1,3 +1,4 @@
+/* eslint-disable sonar/no-duplicate-string */
 import { expect } from '@jest/globals';
 
 import { AutocompleteStringDecoratorConfigInternal, DefaultStringDecoratorConfigInternal, DropdownStringDecoratorConfigInternal } from './string-decorator-internal.data';

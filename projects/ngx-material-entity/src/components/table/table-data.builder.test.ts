@@ -1,3 +1,4 @@
+/* eslint-disable sonar/no-duplicate-string */
 /* eslint-disable no-console */
 import { expect } from '@jest/globals';
 

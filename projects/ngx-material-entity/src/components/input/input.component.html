@@ -1,633 +1,573 @@
 <!-- eslint-disable angular/no-call-expression -->
  
-<!-- eslint-disable angular/cyclomatic-complexity -->
-<div *ngIf="!(hideOmitForCreate && metadata.omitForCreate) && !(hideOmitForEdit && metadata.omitForUpdate)" [ngSwitch]="type">
-    <!-------------------------------------------->
-    <!-----------------Strings-------------------->
-    <!-------------------------------------------->
-    <div *ngSwitchCase="DecoratorTypes.STRING">
-        <string-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </string-input>
-    </div>
-    <div *ngSwitchCase="DecoratorTypes.STRING_TEXTBOX">
-        <string-textbox-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </string-textbox-input>
-    </div>
-    <div *ngSwitchCase="DecoratorTypes.STRING_AUTOCOMPLETE">
-        <string-autocomplete-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </string-autocomplete-input>
-    </div>
-    <div *ngSwitchCase="DecoratorTypes.STRING_DROPDOWN">
-        <string-dropdown-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </string-dropdown-input>
-    </div>
-    <div *ngSwitchCase="DecoratorTypes.STRING_PASSWORD">
-        <string-password-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </string-password-input>
-    </div>
-
-    <!-------------------------------------------->
-    <!-----------------Booleans------------------->
-    <!-------------------------------------------->
-    <div *ngSwitchCase="DecoratorTypes.BOOLEAN_CHECKBOX">
-        <boolean-checkbox-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </boolean-checkbox-input>
-    </div>
-    <div *ngSwitchCase="DecoratorTypes.BOOLEAN_TOGGLE">
-        <boolean-toggle-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </boolean-toggle-input>
-    </div>
-    <div *ngSwitchCase="DecoratorTypes.BOOLEAN_DROPDOWN">
-        <boolean-dropdown-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </boolean-dropdown-input>
-    </div>
-
-    <!-------------------------------------------->
-    <!------------------Numbers------------------->
-    <!-------------------------------------------->
-    <div *ngSwitchCase="DecoratorTypes.NUMBER">
-        <number-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </number-input>
-    </div>
-    <div *ngSwitchCase="DecoratorTypes.NUMBER_DROPDOWN">
-        <number-dropdown-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </number-dropdown-input>
-    </div>
-    <div *ngSwitchCase="DecoratorTypes.NUMBER_SLIDER">
-        <number-slider-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </number-slider-input>
-    </div>
-
-    <!-------------------------------------------->
-    <!-------------------Array-------------------->
-    <!-------------------------------------------->
-    <div *ngSwitchCase="DecoratorTypes.ARRAY_DATE">
-        <array-date-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </array-date-input>
-    </div>
-    <div *ngSwitchCase="DecoratorTypes.ARRAY_DATE_TIME">
-        <array-date-time-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </array-date-time-input>
-    </div>
-    <div *ngSwitchCase="DecoratorTypes.ARRAY_DATE_RANGE">
-        <array-date-range-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </array-date-range-input>
-    </div>
-    <div *ngSwitchCase="DecoratorTypes.ARRAY_STRING_CHIPS">
-        <array-string-chips-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </array-string-chips-input>
-    </div>
-    <div *ngSwitchCase="DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS">
-        <array-string-autocomplete-chips
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </array-string-autocomplete-chips>
-    </div>
-
-    <!-------------------------------------------->
-    <!-------------------Dates-------------------->
-    <!-------------------------------------------->
-    <div *ngSwitchCase="DecoratorTypes.DATE">
-        <date-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </date-input>
-    </div>
-    <div *ngSwitchCase="DecoratorTypes.DATE_RANGE">
-        <date-range-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </date-range-input>
-    </div>
-    <div *ngSwitchCase="DecoratorTypes.DATE_TIME">
-        <date-time-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </date-time-input>
-    </div>
-
-    <!-------------------------------------------->
-    <!-------------------Files-------------------->
-    <!-------------------------------------------->
-    <div *ngSwitchCase="DecoratorTypes.FILE_DEFAULT">
-        <file-default-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </file-default-input>
-    </div>
-    <div *ngSwitchCase="DecoratorTypes.FILE_IMAGE">
-        <file-image-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </file-image-input>
-    </div>
-
-    <!-------------------------------------------->
-    <!-------------- references many ------------->
-    <!-------------------------------------------->
-    <div *ngSwitchCase="DecoratorTypes.REFERENCES_MANY">
-        <references-many-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </references-many-input>
-    </div>
-
-    <!-------------------------------------------->
-    <!-------------------Custom------------------->
-    <!-------------------------------------------->
-    <div *ngSwitchCase="DecoratorTypes.CUSTOM">
-        <custom-input
-            [entity]="entity"
-            [key]="propertyKey"
-            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-            [isReadOnly]="internalIsReadOnly"
-            (inputChangeEvent)="emitChange()"
-        >
-        </custom-input>
-    </div>
-
-    <!-------------------------------------------->
-    <!-------------------Object------------------->
-    <!-------------------------------------------->
-    <div *ngSwitchCase="DecoratorTypes.OBJECT">
-        <b>{{metadataDefaultObject.displayName}}</b>
-        <!-- iterates over the object properties -->
-        <mat-tab-group *ngIf="objectPropertyTabs.length > 1" preserveContent>
-            <mat-tab *ngFor="let tab of objectPropertyTabs; let tI = index; trackBy: trackByFn" [label]="tab.tabName">
-                <div *ngFor="let row of tab.rows;" class="row">
-                    <ngx-mat-entity-input *ngFor="let key of row.keys; let rI = index; trackBy: trackByFn"
-                        [entity]="objectProperty"
-                        [propertyKey]="key"
-                        [getValidationErrorMessage]="internalGetValidationErrorMessage"
-                        [hideOmitForCreate]="hideOmitForCreate"
-                        [hideOmitForEdit]="hideOmitForEdit"
-                        [validEmpty]="!metadata.required(entity)"
-                        [isReadOnly]="isPropertyReadOnly(objectProperty, key)"
-                        [class]="EntityUtilities.getWidthClasses(objectProperty, key)"
-                        (inputChangeEvent)="emitChange()"
-                    >
-                    </ngx-mat-entity-input>
-                </div>
-            </mat-tab>
-        </mat-tab-group>
-
-        <div *ngIf="objectPropertyTabs.length <= 1">
-            <div *ngFor="let row of objectPropertyTabs[0].rows" class="row">
-                <ngx-mat-entity-input *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
-                    [entity]="objectProperty"
-                    [propertyKey]="key"
-                    [getValidationErrorMessage]="internalGetValidationErrorMessage"
-                    [hideOmitForCreate]="hideOmitForCreate"
-                    [hideOmitForEdit]="hideOmitForEdit"
-                    [validEmpty]="!metadata.required(entity)"
-                    [isReadOnly]="isPropertyReadOnly(objectProperty, key)"
-                    [class]="EntityUtilities.getWidthClasses(objectProperty, key)"
-                    (inputChangeEvent)="emitChange()"
-                >
-                </ngx-mat-entity-input>
-            </div>
-        </div>
-    </div>
-
-    <!-------------------------------------------->
-    <!---------------Object Dropdown-------------->
-    <!-------------------------------------------->
-    <mat-form-field *ngSwitchCase="DecoratorTypes.OBJECT_DROPDOWN" class="object-dropdown">
-        <mat-label>{{metadata.displayName}}</mat-label>
-        <mat-select #model="ngModel"
-            [name]="objectDropdownName"
-            [required]="metadata.required(entity)"
-            [disabled]="internalIsReadOnly"
-            [compareWith]="compareObjectsBound"
-            [(ngModel)]="entity[propertyKey]"
-            (selectionChange)="emitChange()"
-            (opened)="selectSearchInput.focus()"
-        >
-            <mat-form-field class="select-search-input">
-                <!-- eslint-disable-next-line angular/no-any -->
-                <input #selectSearchInput matInput (keyup)="filterObjectDropdownValues($any($event.target).value)">
-                <i matSuffix class="fas fa-search"></i>
-            </mat-form-field>
-            <mat-option *ngIf="!metadata.required(entity)">-</mat-option>
-            <mat-option *ngIf="shouldDisplayCurrentObjectDropdownValue" [value]="currentObjectDropdownValue?.value">{{currentObjectDropdownValue?.displayName}}</mat-option>
-            <mat-option *ngFor="let value of filteredObjectDropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
-        </mat-select>
-        <mat-error>{{internalGetValidationErrorMessage(model)}}</mat-error>
-    </mat-form-field>
-
-    <!-------------------------------------------->
-    <!-------------- references one ------------->
-    <!-------------------------------------------->
-    <div *ngSwitchCase="DecoratorTypes.REFERENCES_ONE">
-        <mat-form-field>
-            <mat-label>{{metadata.displayName}}</mat-label>
-            <mat-select #inputModel="ngModel"
-                [name]="referencesOneName"
-                [disabled]="internalIsReadOnly"
-                [required]="metadata.required(entity)"
-                [(ngModel)]="entity[propertyKey]"
-                (selectionChange)="setReferencesOneObject()"
-                (opened)="selectSearchInput.focus()"
+@if(!(hideOmitForCreate && metadata.omitForCreate) && !(hideOmitForEdit && metadata.omitForUpdate)) {
+    @switch (type) {
+        <!-------------------------------------------->
+        <!-----------------Strings-------------------->
+        <!-------------------------------------------->
+        @case (DecoratorTypes.STRING) {
+            <string-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
             >
-                <mat-form-field class="select-search-input">
-                    <!-- eslint-disable-next-line angular/no-any -->
-                    <input #selectSearchInput matInput (keyup)="filterReferencesOneValues($any($event.target).value)">
-                    <i matSuffix class="fas fa-search"></i>
-                </mat-form-field>
-                <mat-option *ngIf="!metadata.required(entity)">-</mat-option>
-                <mat-option *ngIf="shouldDisplayCurrentReferencesOneDropdownValue" [value]="currentReferencesOneDropdownValue?.value">{{currentReferencesOneDropdownValue?.displayName}}</mat-option>
-                <mat-option *ngFor="let value of filteredReferencesOneDropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
-            </mat-select>
-            <mat-error>{{internalGetValidationErrorMessage(inputModel)}}</mat-error>
-        </mat-form-field>
-        <!-- iterates over the references one properties -->
-        <mat-tab-group *ngIf="referencesOnePropertyTabs && referencesOnePropertyTabs.length > 1" preserveContent>
-            <mat-tab *ngFor="let tab of referencesOnePropertyTabs; let tI = index; trackBy: trackByFn" [label]="tab.tabName">
-                <div *ngFor="let row of tab.rows;" class="row">
-                    <ngx-mat-entity-input *ngFor="let key of row.keys; let rI = index; trackBy: trackByFn"
-                        [entity]="referencesOneObject"
-                        [propertyKey]="key"
-                        [getValidationErrorMessage]="internalGetValidationErrorMessage"
-                        [hideOmitForCreate]="hideOmitForCreate"
-                        [hideOmitForEdit]="hideOmitForEdit"
-                        [validEmpty]="!metadata.required(entity)"
-                        [isReadOnly]="true"
-                        [class]="EntityUtilities.getWidthClasses(referencesOneObject, key)"
-                        (inputChangeEvent)="emitChange()"
-                    >
-                    </ngx-mat-entity-input>
-                </div>
-            </mat-tab>
-        </mat-tab-group>
-
-        <div *ngIf="referencesOnePropertyTabs && referencesOnePropertyTabs.length <= 1">
-            <div *ngFor="let row of referencesOnePropertyTabs[0].rows" class="row">
-                <ngx-mat-entity-input *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
-                    [entity]="referencesOneObject"
-                    [propertyKey]="key"
-                    [getValidationErrorMessage]="internalGetValidationErrorMessage"
-                    [hideOmitForCreate]="hideOmitForCreate"
-                    [hideOmitForEdit]="hideOmitForEdit"
-                    [validEmpty]="!metadata.required(entity)"
-                    [isReadOnly]="true"
-                    [class]="EntityUtilities.getWidthClasses(referencesOneObject, key)"
-                    (inputChangeEvent)="emitChange()"
+            </string-input>
+        }
+        @case (DecoratorTypes.STRING_TEXTBOX) {
+            <string-textbox-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </string-textbox-input>
+        }
+        @case (DecoratorTypes.STRING_AUTOCOMPLETE) {
+            <string-autocomplete-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </string-autocomplete-input>
+        }
+        @case (DecoratorTypes.STRING_DROPDOWN) {
+            <string-dropdown-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </string-dropdown-input>
+        }
+        @case (DecoratorTypes.STRING_PASSWORD) {
+            <string-password-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </string-password-input>
+        }
+        <!-------------------------------------------->
+        <!-----------------Booleans------------------->
+        <!-------------------------------------------->
+        @case (DecoratorTypes.BOOLEAN_CHECKBOX) {
+            <boolean-checkbox-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </boolean-checkbox-input>
+        }
+        @case (DecoratorTypes.BOOLEAN_TOGGLE) {
+            <boolean-toggle-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </boolean-toggle-input>
+        }
+        @case (DecoratorTypes.BOOLEAN_DROPDOWN) {
+            <boolean-dropdown-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </boolean-dropdown-input>
+        }
+        <!-------------------------------------------->
+        <!------------------Numbers------------------->
+        <!-------------------------------------------->
+        @case (DecoratorTypes.NUMBER) {
+            <number-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </number-input>
+        }
+        @case (DecoratorTypes.NUMBER_DROPDOWN) {
+            <number-dropdown-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </number-dropdown-input>
+        }
+        @case (DecoratorTypes.NUMBER_SLIDER) {
+            <number-slider-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </number-slider-input>
+        }
+        <!-------------------------------------------->
+        <!-------------------Array-------------------->
+        <!-------------------------------------------->
+        @case (DecoratorTypes.ARRAY_DATE) {
+            <array-date-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </array-date-input>
+        }
+        @case (DecoratorTypes.ARRAY_DATE_TIME) {
+            <array-date-time-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </array-date-time-input>
+        }
+        @case (DecoratorTypes.ARRAY_DATE_RANGE) {
+            <array-date-range-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </array-date-range-input>
+        }
+        @case (DecoratorTypes.ARRAY_STRING_CHIPS) {
+            <array-string-chips-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </array-string-chips-input>
+        }
+        @case (DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS) {
+            <array-string-autocomplete-chips
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </array-string-autocomplete-chips>
+        }
+        <!-------------------------------------------->
+        <!-------------------Dates-------------------->
+        <!-------------------------------------------->
+        @case (DecoratorTypes.DATE) {
+            <date-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </date-input>
+        }
+        @case (DecoratorTypes.DATE_RANGE) {
+            <date-range-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </date-range-input>
+        }
+        @case (DecoratorTypes.DATE_TIME) {
+            <date-time-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </date-time-input>
+        }
+        <!-------------------------------------------->
+        <!-------------------Files-------------------->
+        <!-------------------------------------------->
+        @case (DecoratorTypes.FILE_DEFAULT) {
+            <file-default-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </file-default-input>
+        }
+        @case (DecoratorTypes.FILE_IMAGE) {
+            <file-image-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </file-image-input>
+        }
+        <!-------------------------------------------->
+        <!-------------- references many ------------->
+        <!-------------------------------------------->
+        @case (DecoratorTypes.REFERENCES_MANY) {
+            <references-many-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </references-many-input>
+        }
+        <!-------------------------------------------->
+        <!-------------------Custom------------------->
+        <!-------------------------------------------->
+        @case (DecoratorTypes.CUSTOM) {
+            <custom-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </custom-input>
+        }
+        <!-------------------------------------------->
+        <!-------------------Object------------------->
+        <!-------------------------------------------->
+        @case (DecoratorTypes.OBJECT) {
+            <b>{{metadataDefaultObject.displayName}}</b>
+            <!-- iterates over the object properties -->
+            <ng-container *ngTemplateOutlet="form; context: objectFormContext"></ng-container>
+        }
+        <!-------------------------------------------->
+        <!---------------Object Dropdown-------------->
+        <!-------------------------------------------->
+        @case (DecoratorTypes.OBJECT_DROPDOWN) {
+            <mat-form-field class="object-dropdown">
+                <mat-label>{{metadata.displayName}}</mat-label>
+                <mat-select #model="ngModel"
+                    [name]="objectDropdownName"
+                    [required]="metadata.required(entity)"
+                    [disabled]="internalIsReadOnly"
+                    [compareWith]="compareObjectsBound"
+                    [(ngModel)]="entity[propertyKey]"
+                    (selectionChange)="emitChange()"
+                    (opened)="selectSearchInput.focus()"
                 >
-                </ngx-mat-entity-input>
-            </div>
-        </div>
-    </div>
-
-    <!-------------------------------------------->
-    <!-------------------Array-------------------->
-    <!-------------------------------------------->
-    <div *ngSwitchCase="DecoratorTypes.ARRAY" class="entityArray">
-        <div class="mat-elevation-z8 elevation-container">
-            <div class="array-headline">
-                <b>{{metadataEntityArray.displayName}}</b>
-            </div>
-            <div *ngIf="metadataEntityArray.createInline && !internalIsReadOnly">
-                <mat-tab-group *ngIf="arrayItemInlineTabs.length > 1" preserveContent>
-                    <mat-tab *ngFor="let tab of arrayItemInlineTabs" [label]="tab.tabName">
-                        <div *ngFor="let row of tab.rows" class="row">
-                            <ngx-mat-entity-input
-                                *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
-                                [entity]="arrayItem"
-                                [propertyKey]="key"
-                                [hideOmitForCreate]="true"
-                                [getValidationErrorMessage]="internalGetValidationErrorMessage"
-                                [class]="EntityUtilities.getWidthClasses(arrayItem, key)"
-                                (inputChangeEvent)="checkIsArrayItemValid()"
-                            >
-                            </ngx-mat-entity-input>
+                    <mat-form-field class="select-search-input">
+                        <!-- eslint-disable-next-line angular/no-any -->
+                        <input #selectSearchInput matInput (keyup)="filterObjectDropdownValues($any($event.target).value)">
+                        <i matSuffix class="fas fa-search"></i>
+                    </mat-form-field>
+                    @if (!metadata.required(entity)) {
+                        <mat-option>-</mat-option>
+                    }
+                    @if (shouldDisplayCurrentObjectDropdownValue) {
+                        <mat-option [value]="currentObjectDropdownValue?.value">{{currentObjectDropdownValue?.displayName}}</mat-option>
+                    }
+                    @for (value of filteredObjectDropdownValues; track $index) {
+                        <mat-option [value]="value.value">{{value.displayName}}</mat-option>
+                    }
+                </mat-select>
+                <mat-error>{{internalGetValidationErrorMessage(model)}}</mat-error>
+            </mat-form-field>
+        }
+        <!-------------------------------------------->
+        <!-------------- references one -------------->
+        <!-------------------------------------------->
+        @case (DecoratorTypes.REFERENCES_ONE) {
+            <mat-form-field>
+                <mat-label>{{metadata.displayName}}</mat-label>
+                <mat-select #inputModel="ngModel"
+                    [name]="referencesOneName"
+                    [disabled]="internalIsReadOnly"
+                    [required]="metadata.required(entity)"
+                    [(ngModel)]="entity[propertyKey]"
+                    (selectionChange)="setReferencesOneObject()"
+                    (opened)="selectSearchInput.focus()"
+                >
+                    <mat-form-field class="select-search-input">
+                        <!-- eslint-disable-next-line angular/no-any -->
+                        <input #selectSearchInput matInput (keyup)="filterReferencesOneValues($any($event.target).value)">
+                        <i matSuffix class="fas fa-search"></i>
+                    </mat-form-field>
+                    @if (!metadata.required(entity)) {
+                        <mat-option>-</mat-option>
+                    }
+                    @if (shouldDisplayCurrentReferencesOneDropdownValue) {
+                        <mat-option [value]="currentReferencesOneDropdownValue?.value">{{currentReferencesOneDropdownValue?.displayName}}</mat-option>
+                    }
+                    @for (value of filteredReferencesOneDropdownValues; track $index) {
+                        <mat-option [value]="value.value">{{value.displayName}}</mat-option>
+                    }
+                </mat-select>
+                <mat-error>{{internalGetValidationErrorMessage(inputModel)}}</mat-error>
+            </mat-form-field>
+            <!-- iterates over the references one properties -->
+            @if (referencesOneFormContext) {
+                <ng-container *ngTemplateOutlet="form; context: referencesOneFormContext"></ng-container>
+            }
+        }
+        <!-------------------------------------------->
+        <!-------------------Array-------------------->
+        <!-------------------------------------------->
+        @case (DecoratorTypes.ARRAY) {
+            <div class="entityArray">
+                <div class="mat-elevation-z8 elevation-container">
+                    <div class="array-headline">
+                        <b>{{metadataEntityArray.displayName}}</b>
+                    </div>
+                    @if (metadataEntityArray.createInline && !internalIsReadOnly && addArrayItemFormContext) {
+                        <ng-container *ngTemplateOutlet="form; context: addArrayItemFormContext"></ng-container>
+                    }
+                    @if (!internalIsReadOnly) {
+                        <div class="buttons">
+                            <button type="button" mat-raised-button
+                                [disabled]="metadataEntityArray.createInline && !isArrayItemValid"
+                                (click)="addEntity()">
+                                {{metadataEntityArray.addButtonLabel}}
+                            </button>
+                            <button type="button" mat-raised-button
+                                [disabled]="!entityArraySelection.selected.length"
+                                (click)="removeFromEntityArray()">
+                                {{metadataEntityArray.removeButtonLabel}}
+                            </button>
                         </div>
-                    </mat-tab>
-                </mat-tab-group>
+                    }
+                    <mat-table [dataSource]="entityArrayDataSource">
+                        @if (!internalIsReadOnly) {
+                            <ng-container matColumnDef="select">
+                                <mat-header-cell *matHeaderCellDef>
+                                    <mat-checkbox
+                                        [disabled]="!entityArrayDataSource.data.length" [checked]="entityArraySelection.hasValue() && SelectionUtilities.isAllSelected(entityArraySelection, entityArrayDataSource)"
+                                        [indeterminate]="entityArraySelection.hasValue() && !SelectionUtilities.isAllSelected(entityArraySelection, entityArrayDataSource)"
+                                        (change)="$event ? SelectionUtilities.masterToggle(entityArraySelection, entityArrayDataSource) : null">
+                                    </mat-checkbox>
+                                </mat-header-cell>
+                                <mat-cell *matCellDef="let entity">
+                                    <mat-checkbox [checked]="entityArraySelection.isSelected(entity)" (click)="$event.stopPropagation()" (change)="$event ? entityArraySelection.toggle(entity) : null"></mat-checkbox>
+                                </mat-cell>
+                            </ng-container>
+                        }
+                        @for (dCol of metadataEntityArray.displayColumns; track $index) {
+                            <ng-container [matColumnDef]="dCol.displayName">
+                                <mat-header-cell *matHeaderCellDef>
+                                    {{dCol.displayName}}
+                                </mat-header-cell>
+                                <mat-cell *matCellDef="let entity" [class.enabled]="!dCol.disableClick" (click)="editArrayItem(entity, dCol)">
+                                    @if (dCol.Component) {
+                                        <display-column-value [entity]="entity" [ComponentClass]="dCol.Component"></display-column-value>
+                                    }
+                                    @else {
+                                        {{getDisplayColumnValue(entity, dCol)}}
+                                    }
+                                </mat-cell>
+                            </ng-container>
+                        }
+                        <mat-header-row *matHeaderRowDef="entityArrayDisplayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: entityArrayDisplayedColumns"></mat-row>
+                    </mat-table>
+                
+                    @if (metadataEntityArray.required(entity) && !entityArrayDataSource.data.length) {
+                        <div class="array-error">{{metadataEntityArray.missingErrorMessage}}</div>
+                    }
+                </div>
+            </div>
+        }
+        <!-------------------------------------------->
+        <!------------------ has many ---------------->
+        <!-------------------------------------------->
+        @case (DecoratorTypes.HAS_MANY) {
+            <div class="hasMany">
+                <h2 class="title">{{metadataHasMany.tableData.baseData.title}}</h2>
+                <div class="row">
+                    <mat-form-field class="col-lg-8 col-md-6 col-sm-12">
+                        <mat-label>{{metadataHasMany.tableData.baseData.searchLabel}}</mat-label>
+                        <input matInput (keyup)="applyHasManyFilter($event)">
+                    </mat-form-field>
+                    @if (metadataHasMany.tableData.baseData.tableActions.length) {
+                        <div
+                            [class.col-lg-2]="hasManyAllowCreate"
+                            [class.col-lg-4]="!hasManyAllowCreate"
+                            [class.col-md-3]="hasManyAllowCreate"
+                            [class.col-md-6]="!hasManyAllowCreate"
+                            [class.col-sm-6]="hasManyAllowCreate"
+                            [class.col-sm-12]="!hasManyAllowCreate"
+                        >
+                            <button type="button" class="actions-button" mat-raised-button [matMenuTriggerFor]="menu">
+                                {{metadataHasMany.tableData.baseData.tableActionsLabel}}
+                            </button>
+                        </div>
+                    }
+                    <mat-menu #menu="matMenu">
+                        @if (metadataHasMany.tableData.baseData.allowJsonImport) {
+                            <button type="button" mat-menu-item [disabled]="hasManyTableActionDisabled(hasManyImportAction)" (click)="runHasManyTableAction(hasManyImportAction)">
+                                {{hasManyImportAction.displayName}}
+                            </button>
+                        }
+                        @for (action of metadataHasMany.tableData.baseData.tableActions; track $index) {
+                            <button type="button" mat-menu-item [disabled]="hasManyTableActionDisabled(action)" (click)="runHasManyTableAction(action)">
+                                {{action.displayName}}
+                            </button>
+                        }
+                    </mat-menu>
+                    @if (hasManyAllowCreate) {
+                        <div
+                            [class.col-lg-2]="metadataHasMany.tableData.baseData.tableActions.length"
+                            [class.col-lg-4]="!metadataHasMany.tableData.baseData.tableActions.length"
+                            [class.col-md-3]="metadataHasMany.tableData.baseData.tableActions.length"
+                            [class.col-md-6]="!metadataHasMany.tableData.baseData.tableActions.length"
+                            [class.col-sm-6]="metadataHasMany.tableData.baseData.tableActions.length"
+                            [class.col-sm-12]="!metadataHasMany.tableData.baseData.tableActions.length"
+                        >
+                            <button type="button" class="create-button" mat-raised-button (click)="createHasManyEntity()">
+                                {{metadataHasMany.tableData.baseData.createButtonLabel}}
+                            </button>
+                        </div>
+                    }
+                </div>
+        
+                <div class="mat-elevation-z8 elevation-container">
+                    <mat-table matSort [dataSource]="hasManyDataSource">
+                        <!-- select Column -->
+                        <ng-container matColumnDef="select">
+                            <mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox [checked]="hasManySelection.hasValue() && SelectionUtilities.isAllSelected(hasManySelection, hasManyDataSource)"
+                                    [indeterminate]="hasManySelection.hasValue() && !SelectionUtilities.isAllSelected(hasManySelection, hasManyDataSource)"
+                                    (change)="$event ? SelectionUtilities.masterToggle(hasManySelection, hasManyDataSource) : null">
+                                </mat-checkbox>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let entity" class="enabled">
+                                <mat-checkbox [checked]="hasManySelection.isSelected(entity)"
+                                    (click)="$event.stopPropagation()"
+                                    (change)="$event ? hasManySelection.toggle(entity) : null">
+                                </mat-checkbox>
+                            </mat-cell>
+                        </ng-container>
+                        
+                        @for (dCol of metadataHasMany.tableData.baseData.displayColumns; track $index) {
+                            <ng-container [matColumnDef]="dCol.displayName">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{dCol.displayName}}
+                                </mat-header-cell>
+                                <mat-cell *matCellDef="let entity"
+                                    [class.enabled]="!dCol.disableClick && (hasManyAllowUpdate(entity) || hasManyAllowRead(entity))"
+                                    (click)="editHasManyEntity(entity, dCol)"
+                                >
+                                    @if (dCol.Component) {
+                                        <display-column-value [entity]="entity" [ComponentClass]="dCol.Component"></display-column-value>
+                                    }
+                                    @else {
+                                        {{getDisplayColumnValue(entity, dCol)}}
+                                    }
+                                </mat-cell>
+                            </ng-container>
+                        }
+                        <mat-header-row *matHeaderRowDef="displayedHasManyColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedHasManyColumns"></mat-row>
+                    </mat-table>
+        
+                    @if (hasManyIsLoading && metadataHasMany.tableData.baseData.displayLoadingSpinner) {
+                        <mat-spinner></mat-spinner>
+                    }
+                    <mat-paginator style="padding-top: 10px; padding-bottom: 10px;" [length]="hasManyDataSource.filteredData.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>
+                </div>
+            </div>
+        }
+        
+        @default {
+            <div>ERROR: The type {{type}} is not known.</div>
+        }
+    }
+}
 
-                <div *ngIf="arrayItemInlineTabs.length <= 1">
-                    <div *ngFor="let row of arrayItemInlineTabs[0].rows" class="row">
+
+
+
+<!--------------------------------------------------------->
+<!---------------------------Form-------------------------->
+<!--------------------------------------------------------->
+<ng-template #form let-context>
+     <!-- eslint-disable angular/no-call-expression -->
+    @if (context.tabs.length > 1) {
+        <mat-tab-group preserveContent>
+            @for (tab of context.tabs; track $index) {
+                <mat-tab [label]="tab.tabName">
+                    @for (row of tab.rows; track $index) {
+                        <div class="row">
+                            @for (key of row.keys; track key) {
+                                <ngx-mat-entity-input
+                                    [entity]="context.entity"
+                                    [propertyKey]="key"
+                                    [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                                    [validEmpty]="context.validEmpty?.()"
+                                    [isReadOnly]="context.isReadOnly?.(context.entity, key)"
+                                    [class]="EntityUtilities.getWidthClasses(context.entity, key)"
+                                    [hideOmitForEdit]="context.hideOmitForEdit"
+                                    [hideOmitForCreate]="context.hideOmitForCreate"
+                                    (inputChangeEvent)="context.inputChangeEvent()"
+                                >
+                                </ngx-mat-entity-input>
+                            }
+                        </div>
+                    }
+                </mat-tab>
+            }
+        </mat-tab-group>
+    }
+    @else {
+        @if (!context.tabs.length) {
+            <span class="no-entity-tabs">
+                ERROR: No Inputs. Did you correctly assign all values in the model constructor?
+            </span>
+        }
+        @else {
+            @for (row of context.tabs[0].rows; track $index) {
+                <div class="row">
+                    @for (key of row.keys; track key) {
                         <ngx-mat-entity-input
-                            *ngFor="let key of row.keys; let i = index; trackBy: trackByFn"
-                            [entity]="arrayItem"
+                            [entity]="context.entity"
                             [propertyKey]="key"
-                            [hideOmitForCreate]="true"
                             [getValidationErrorMessage]="internalGetValidationErrorMessage"
-                            [class]="EntityUtilities.getWidthClasses(arrayItem, key)"
-                            (inputChangeEvent)="checkIsArrayItemValid()"
+                            [validEmpty]="context.validEmpty?.()"
+                            [isReadOnly]="context.isReadOnly?.(context.entity, key)"
+                            [class]="EntityUtilities.getWidthClasses(context.entity, key)"
+                            [hideOmitForEdit]="context.hideOmitForEdit"
+                            [hideOmitForCreate]="context.hideOmitForCreate"
+                            (inputChangeEvent)="context.inputChangeEvent()"
                         >
                         </ngx-mat-entity-input>
-                    </div>
+                    }
                 </div>
-            </div>
-
-            <div *ngIf="!internalIsReadOnly" class="buttons">
-                <button type="button" mat-raised-button
-                    [disabled]="metadataEntityArray.createInline && !isArrayItemValid"
-                    (click)="addEntity()">
-                    {{metadataEntityArray.addButtonLabel}}
-                </button>
-                <button type="button" mat-raised-button
-                    [disabled]="!entityArraySelection.selected.length"
-                    (click)="removeFromEntityArray()">
-                    {{metadataEntityArray.removeButtonLabel}}
-                </button>
-            </div>
-        
-            <mat-table [dataSource]="entityArrayDataSource">
-                <!-- select Column -->
-                <ng-container *ngIf="!internalIsReadOnly" matColumnDef="select">
-                    <mat-header-cell *matHeaderCellDef>
-                        <mat-checkbox
-                            [disabled]="!entityArrayDataSource.data.length" [checked]="entityArraySelection.hasValue() && SelectionUtilities.isAllSelected(entityArraySelection, entityArrayDataSource)"
-                            [indeterminate]="entityArraySelection.hasValue() && !SelectionUtilities.isAllSelected(entityArraySelection, entityArrayDataSource)"
-                            (change)="$event ? SelectionUtilities.masterToggle(entityArraySelection, entityArrayDataSource) : null">
-                        </mat-checkbox>
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let entity">
-                        <mat-checkbox [checked]="entityArraySelection.isSelected(entity)" (click)="$event.stopPropagation()" (change)="$event ? entityArraySelection.toggle(entity) : null"></mat-checkbox>
-                    </mat-cell>
-                </ng-container>
-            
-                <ng-container *ngFor="let dCol of metadataEntityArray.displayColumns" [matColumnDef]="dCol.displayName">
-                    <mat-header-cell *matHeaderCellDef>
-                        {{dCol.displayName}}
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let entity" [class.enabled]="!dCol.disableClick" (click)="editArrayItem(entity, dCol)">
-                        <ng-container *ngIf="dCol.Component">
-                            <display-column-value [entity]="entity" [ComponentClass]="dCol.Component"></display-column-value>
-                        </ng-container>
-                        <ng-container *ngIf="!dCol.Component">
-                            {{getDisplayColumnValue(entity, dCol)}}
-                        </ng-container>
-                    </mat-cell>
-                </ng-container>
-            
-                <mat-header-row *matHeaderRowDef="entityArrayDisplayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: entityArrayDisplayedColumns"></mat-row>
-            </mat-table>
-        
-            <div *ngIf="metadataEntityArray.required(entity) && !entityArrayDataSource.data.length" class="array-error">
-                {{metadataEntityArray.missingErrorMessage}}
-            </div>
-        </div>
-    </div>
-
-    <!-------------------------------------------->
-    <!------------------ has many ---------------->
-    <!-------------------------------------------->
-    <div *ngSwitchCase="DecoratorTypes.HAS_MANY" class="hasMany">
-        <h2 class="title">{{metadataHasMany.tableData.baseData.title}}</h2>
-
-        <div class="row">
-            <mat-form-field class="col-lg-8 col-md-6 col-sm-12">
-                <mat-label>{{metadataHasMany.tableData.baseData.searchLabel}}</mat-label>
-                <input matInput (keyup)="applyHasManyFilter($event)">
-            </mat-form-field>
-            <div
-                *ngIf="metadataHasMany.tableData.baseData.tableActions.length"
-                [class.col-lg-2]="hasManyAllowCreate"
-                [class.col-lg-4]="!hasManyAllowCreate"
-                [class.col-md-3]="hasManyAllowCreate"
-                [class.col-md-6]="!hasManyAllowCreate"
-                [class.col-sm-6]="hasManyAllowCreate"
-                [class.col-sm-12]="!hasManyAllowCreate"
-            >
-                <button type="button" class="actions-button" mat-raised-button [matMenuTriggerFor]="menu">
-                    {{metadataHasMany.tableData.baseData.tableActionsLabel}}
-                </button>
-            </div>
-            <mat-menu #menu="matMenu">
-                <button *ngIf="metadataHasMany.tableData.baseData.allowJsonImport" type="button" mat-menu-item [disabled]="hasManyTableActionDisabled(hasManyImportAction)" (click)="runHasManyTableAction(hasManyImportAction)">
-                    {{hasManyImportAction.displayName}}
-                </button>
-                <button *ngFor="let action of metadataHasMany.tableData.baseData.tableActions" type="button" mat-menu-item [disabled]="hasManyTableActionDisabled(action)" (click)="runHasManyTableAction(action)">
-                    {{action.displayName}}
-                </button>
-            </mat-menu>
-
-            <div
-                *ngIf="hasManyAllowCreate"
-                [class.col-lg-2]="metadataHasMany.tableData.baseData.tableActions.length"
-                [class.col-lg-4]="!metadataHasMany.tableData.baseData.tableActions.length"
-                [class.col-md-3]="metadataHasMany.tableData.baseData.tableActions.length"
-                [class.col-md-6]="!metadataHasMany.tableData.baseData.tableActions.length"
-                [class.col-sm-6]="metadataHasMany.tableData.baseData.tableActions.length"
-                [class.col-sm-12]="!metadataHasMany.tableData.baseData.tableActions.length"
-            >
-                <button type="button" class="create-button" mat-raised-button (click)="createHasManyEntity()">
-                    {{metadataHasMany.tableData.baseData.createButtonLabel}}
-                </button>
-            </div>
-        </div>
-
-        <div class="mat-elevation-z8 elevation-container">
-            <mat-table matSort [dataSource]="hasManyDataSource">
-                <!-- select Column -->
-                <ng-container matColumnDef="select">
-                    <mat-header-cell *matHeaderCellDef>
-                        <mat-checkbox [checked]="hasManySelection.hasValue() && SelectionUtilities.isAllSelected(hasManySelection, hasManyDataSource)"
-                            [indeterminate]="hasManySelection.hasValue() && !SelectionUtilities.isAllSelected(hasManySelection, hasManyDataSource)"
-                            (change)="$event ? SelectionUtilities.masterToggle(hasManySelection, hasManyDataSource) : null">
-                        </mat-checkbox>
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let entity" class="enabled">
-                        <mat-checkbox [checked]="hasManySelection.isSelected(entity)"
-                            (click)="$event.stopPropagation()"
-                            (change)="$event ? hasManySelection.toggle(entity) : null">
-                        </mat-checkbox>
-                    </mat-cell>
-                </ng-container>
-
-                <ng-container *ngFor="let dCol of metadataHasMany.tableData.baseData.displayColumns" [matColumnDef]="dCol.displayName">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>
-                        {{dCol.displayName}}
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let entity"
-                        [class.enabled]="!dCol.disableClick && (hasManyAllowUpdate(entity) || hasManyAllowRead(entity))"
-                        (click)="editHasManyEntity(entity, dCol)"
-                    >
-                        <ng-container *ngIf="dCol.Component">
-                            <display-column-value [entity]="entity" [ComponentClass]="dCol.Component"></display-column-value>
-                        </ng-container>
-                        <ng-container *ngIf="!dCol.Component">
-                            {{getDisplayColumnValue(entity, dCol)}}
-                        </ng-container>
-                    </mat-cell>
-                </ng-container>
-
-                <mat-header-row *matHeaderRowDef="displayedHasManyColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedHasManyColumns"></mat-row>
-            </mat-table>
-
-            <mat-spinner *ngIf="hasManyIsLoading && metadataHasMany.tableData.baseData.displayLoadingSpinner">
-            </mat-spinner>
-
-            <mat-paginator style="padding-top: 10px; padding-bottom: 10px;" [length]="hasManyDataSource.filteredData.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>
-        </div>
-    </div>
-
-    <div *ngSwitchDefault>ERROR: The type {{type}} is not known.</div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            }
+        }
+    }
+</ng-template>
 
 <!--------------------------------------------------------->
 <!--------------------Add Array Item Dialog---------------->
@@ -639,37 +579,9 @@
 
     <form>
         <mat-dialog-content>
-            <mat-tab-group *ngIf="arrayItemDialogTabs.length > 1" preserveContent>
-                <mat-tab *ngFor="let tab of arrayItemDialogTabs" [label]="tab.tabName">
-                    <div *ngFor="let row of tab.rows" class="row">
-                        <ngx-mat-entity-input
-                            *ngFor="let key of row.keys"
-                            [entity]="arrayItem"
-                            [propertyKey]="key"
-                            [hideOmitForCreate]="true"
-                            [getValidationErrorMessage]="internalGetValidationErrorMessage"
-                            [class]="EntityUtilities.getWidthClasses(arrayItem, key)"
-                            (inputChangeEvent)="checkIsArrayItemValid()"
-                        >
-                        </ngx-mat-entity-input>
-                    </div>
-                </mat-tab>
-            </mat-tab-group>
-    
-            <div *ngIf="arrayItemDialogTabs.length <= 1">
-                <div *ngFor="let row of arrayItemDialogTabs[0].rows" class="row">
-                    <ngx-mat-entity-input
-                        *ngFor="let key of row.keys"
-                        [entity]="arrayItem"
-                        [propertyKey]="key"
-                        [hideOmitForCreate]="true"
-                        [getValidationErrorMessage]="internalGetValidationErrorMessage"
-                        [class]="EntityUtilities.getWidthClasses(arrayItem, key)"
-                        (inputChangeEvent)="checkIsArrayItemValid()"
-                    >
-                    </ngx-mat-entity-input>
-                </div>
-            </div>
+            @if (addArrayItemFormContext) {
+                <ng-container *ngTemplateOutlet="form; context: addArrayItemFormContext"></ng-container>
+            }
         </mat-dialog-content>
     
         <mat-dialog-actions>
@@ -682,7 +594,9 @@
                 >
                     {{addArrayItemDialogData.createButtonLabel}}
                 </button>
-                <ngx-mat-entity-tooltip *ngIf="arrayItemValidationErrors.length" [tooltipContent]="arrayItemTooltipContent"></ngx-mat-entity-tooltip>
+                @if (arrayItemValidationErrors.length) {
+                    <ngx-mat-entity-tooltip [tooltipContent]="arrayItemTooltipContent"></ngx-mat-entity-tooltip>
+                }
             </div>
             <button type="button" mat-raised-button class="cancel-button" (click)="closeAddArrayItemDialog()">
                 {{addArrayItemDialogData.cancelButtonLabel}}
@@ -702,50 +616,24 @@
     
     <form>
         <mat-dialog-content>
-            <mat-tab-group *ngIf="arrayItemDialogTabs.length > 1" preserveContent>
-                <mat-tab *ngFor="let tab of arrayItemDialogTabs" [label]="tab.tabName">
-                    <div *ngFor="let row of tab.rows" class="row">
-                        <ngx-mat-entity-input
-                            *ngFor="let key of row.keys"
-                            [entity]="arrayItem"
-                            [propertyKey]="key"
-                            [hideOmitForEdit]="true"
-                            [class]="EntityUtilities.getWidthClasses(arrayItem, key)"
-                            [isReadOnly]="isPropertyReadOnly(arrayItem, key)"
-                            (inputChangeEvent)="checkArrayItem()"
-                        >
-                        </ngx-mat-entity-input>
-                    </div>
-                </mat-tab>
-            </mat-tab-group>
-        
-            <div *ngIf="arrayItemDialogTabs.length <= 1">
-                <div *ngFor="let row of arrayItemDialogTabs[0].rows" class="row">
-                    <ngx-mat-entity-input
-                        *ngFor="let key of row.keys"
-                        [entity]="arrayItem"
-                        [propertyKey]="key"
-                        [hideOmitForEdit]="true"
-                        [class]="EntityUtilities.getWidthClasses(arrayItem, key)"
-                        [isReadOnly]="isPropertyReadOnly(arrayItem, key)"
-                        (inputChangeEvent)="checkArrayItem()"
-                    >
-                    </ngx-mat-entity-input>
-                </div>
-            </div>
+            @if (editArrayItemFormContext) {
+                <ng-container *ngTemplateOutlet="form; context: editArrayItemFormContext"></ng-container>
+            }
         </mat-dialog-content>
         
         <mat-dialog-actions>
             <div class="d-flex align-items-center gap-3" style="margin-top: 10px;">
                 <button type="submit" mat-raised-button matBadgeColor="warn"
-                [disabled]="internalIsReadOnly || !isArrayItemValid || !isArrayItemDirty"
+                    [disabled]="internalIsReadOnly || !isArrayItemValid || !isArrayItemDirty"
                     [matBadge]="arrayItemValidationErrors.length"
                     [matBadgeHidden]="!arrayItemValidationErrors.length"
                     (click)="saveArrayItem()"
                 >
                     {{editArrayItemDialogData.confirmButtonLabel}}
                 </button>
-                <ngx-mat-entity-tooltip *ngIf="arrayItemValidationErrors.length" [tooltipContent]="arrayItemTooltipContent"></ngx-mat-entity-tooltip>
+                @if (arrayItemValidationErrors.length) {
+                    <ngx-mat-entity-tooltip [tooltipContent]="arrayItemTooltipContent"></ngx-mat-entity-tooltip>
+                }
             </div>
             <button type="button" mat-raised-button class="cancel-button" (click)="closeEditArrayItemDialog()">
                 {{editArrayItemDialogData.cancelButtonLabel}}
@@ -764,35 +652,9 @@
     
     <form>
         <mat-dialog-content>
-            <mat-tab-group *ngIf="hasManyCreateTabs.length > 1" preserveContent>
-                <mat-tab *ngFor="let tab of hasManyCreateTabs" [label]="tab.tabName">
-                    <div *ngFor="let row of tab.rows" class="row">
-                        <ngx-mat-entity-input
-                            *ngFor="let key of row.keys"
-                            [entity]="hasManyEntity"
-                            [propertyKey]="key"
-                            [hideOmitForCreate]="true"
-                            [class]="EntityUtilities.getWidthClasses(hasManyEntity, key)"
-                            (inputChangeEvent)="checkIsHasManyEntityValid('create')"
-                        >
-                        </ngx-mat-entity-input>
-                    </div>
-                </mat-tab>
-            </mat-tab-group>
-        
-            <div *ngIf="hasManyCreateTabs.length <= 1">
-                <div *ngFor="let row of hasManyCreateTabs[0].rows" class="row">
-                    <ngx-mat-entity-input
-                        *ngFor="let key of row.keys"
-                        [entity]="hasManyEntity"
-                        [propertyKey]="key"
-                        [hideOmitForCreate]="true"
-                        [class]="EntityUtilities.getWidthClasses(hasManyEntity, key)"
-                        (inputChangeEvent)="checkIsHasManyEntityValid('create')"
-                    >
-                    </ngx-mat-entity-input>
-                </div>
-            </div>
+            @if (hasManyCreateFormContext) {
+                <ng-container *ngTemplateOutlet="form; context: hasManyCreateFormContext"></ng-container>
+            }
         </mat-dialog-content>
         
         <mat-dialog-actions>
@@ -805,7 +667,9 @@
                 >
                     {{metadataHasMany.tableData.createData.createButtonLabel}}
                 </button>
-                <ngx-mat-entity-tooltip *ngIf="hasManyValidationErrors.length" [tooltipContent]="hasManyTooltipContent"></ngx-mat-entity-tooltip>
+                @if (hasManyValidationErrors.length) {
+                    <ngx-mat-entity-tooltip [tooltipContent]="hasManyTooltipContent"></ngx-mat-entity-tooltip>
+                }
             </div>
             <button type="button" mat-raised-button class="cancel-button" (click)="dialogCancelCreateHasMany()">
                 {{metadataHasMany.tableData.createData.cancelButtonLabel}}
@@ -823,54 +687,32 @@
         <div>{{metadataHasMany.tableData.editData.title(hasManyEntityPriorChanges)}}</div>
 
         <div class="actions-container">
-            <button *ngIf="metadataHasMany.tableData.editData.actions.length" type="button" mat-raised-button [matMenuTriggerFor]="menu">
-                {{metadataHasMany.tableData.editData.actionsLabel}}
-            </button>
-            <mat-menu #menu="matMenu">
-                <button *ngFor="let action of metadataHasMany.tableData.editData.actions" type="button" mat-menu-item [disabled]="hasManyEditActionDisabled(action)" (click)="hasManyRunEditAction(action)">
-                    {{action.displayName}}
+            @if (metadataHasMany.tableData.editData.actions.length) {
+                <button type="button" mat-raised-button [matMenuTriggerFor]="menu">
+                    {{metadataHasMany.tableData.editData.actionsLabel}}
                 </button>
+            }
+            <mat-menu #menu="matMenu">
+                @for (action of metadataHasMany.tableData.editData.actions; track $index) {
+                    <button type="button" mat-menu-item [disabled]="hasManyEditActionDisabled(action)" (click)="hasManyRunEditAction(action)">
+                        {{action.displayName}}
+                    </button>
+                }
             </mat-menu>
         
-            <button *ngIf="hasManyAllowDelete(hasManyEntity)" type="button" mat-raised-button color="warn" class="delete-button" tabindex="-1" (click)="deleteHasManyEntity()">
-                {{metadataHasMany.tableData.editData.deleteButtonLabel}}
-            </button>
+            @if (hasManyAllowDelete(hasManyEntity)) {
+                <button type="button" mat-raised-button color="warn" class="delete-button" tabindex="-1" (click)="deleteHasManyEntity()">
+                    {{metadataHasMany.tableData.editData.deleteButtonLabel}}
+                </button>
+            }
         </div>
     </div>
     
     <form>
         <mat-dialog-content>
-            <mat-tab-group *ngIf="hasManyUpdateTabs.length > 1" preserveContent>
-                <mat-tab *ngFor="let tab of hasManyUpdateTabs" [label]="tab.tabName">
-                    <div *ngFor="let row of tab.rows" class="row">
-                        <ngx-mat-entity-input
-                            *ngFor="let key of row.keys"
-                            [entity]="hasManyEntity"
-                            [propertyKey]="key"
-                            [hideOmitForEdit]="true"
-                            [class]="EntityUtilities.getWidthClasses(hasManyEntity, key)"
-                            [isReadOnly]="isPropertyReadOnly(hasManyEntity, key)"
-                            (inputChangeEvent)="checkHasManyEntity()"
-                        >
-                        </ngx-mat-entity-input>
-                    </div>
-                </mat-tab>
-            </mat-tab-group>
-        
-            <div *ngIf="hasManyUpdateTabs.length <= 1">
-                <div *ngFor="let row of hasManyUpdateTabs[0].rows" class="row">
-                    <ngx-mat-entity-input
-                        *ngFor="let key of row.keys"
-                        [entity]="hasManyEntity"
-                        [propertyKey]="key"
-                        [hideOmitForEdit]="true"
-                        [class]="EntityUtilities.getWidthClasses(hasManyEntity, key)"
-                        [isReadOnly]="isPropertyReadOnly(hasManyEntity, key)"
-                        (inputChangeEvent)="checkHasManyEntity()"
-                    >
-                    </ngx-mat-entity-input>
-                </div>
-            </div>
+            @if (hasManyEditFormContext) {
+                <ng-container *ngTemplateOutlet="form; context: hasManyEditFormContext"></ng-container>
+            }
         </mat-dialog-content>
         
         <mat-dialog-actions>
@@ -883,7 +725,9 @@
                 >
                     {{metadataHasMany.tableData.editData.confirmButtonLabel}}
                 </button>
-                <ngx-mat-entity-tooltip *ngIf="hasManyValidationErrors.length" [tooltipContent]="hasManyTooltipContent"></ngx-mat-entity-tooltip>
+                @if (hasManyValidationErrors.length) {
+                    <ngx-mat-entity-tooltip [tooltipContent]="hasManyTooltipContent"></ngx-mat-entity-tooltip>
+                }
             </div>
             <button type="button" mat-raised-button class="cancel-button" (click)="dialogCancelEditHasMany()">
                 {{metadataHasMany.tableData.editData.cancelButtonLabel}}

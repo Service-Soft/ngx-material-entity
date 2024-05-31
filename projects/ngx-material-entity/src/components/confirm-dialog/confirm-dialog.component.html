@@ -1,23 +1,34 @@
-<!-- eslint-disable angular/cyclomatic-complexity -->
-<h2 *ngIf="data.title" mat-dialog-title>{{data.title}}</h2>
+@if (data.title) {
+    <h2 mat-dialog-title>{{data.title}}</h2>
+}
 
 <mat-dialog-content>
-    <p *ngFor="let paragraph of data.text">{{paragraph}}</p>
-    <div *ngIf="data.requireConfirmation" class="checkbox-wrapper">
-        <mat-checkbox name="confirm" [(ngModel)]="confirm">
-            {{data.confirmationText}}
-        </mat-checkbox>
-    </div>
+    @for (paragraph of data.text; track $index) {
+        <p>{{paragraph}}</p>
+    }
+    @if (data.requireConfirmation) {
+        <div class="checkbox-wrapper">
+            <mat-checkbox name="confirm" [(ngModel)]="confirm">
+                {{data.confirmationText}}
+            </mat-checkbox>
+        </div>
+    }
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button *ngIf="data.type === 'delete'" type="button" mat-raised-button color="warn" class="confirm-button" [disabled]="data.requireConfirmation && !confirm" (click)="confirmAction()">
-        {{data.confirmButtonLabel}}
-    </button>
-    <button *ngIf="data.type !== 'delete'" type="button" mat-raised-button class="confirm-button" [disabled]="data.requireConfirmation && !confirm" (click)="confirmAction()">
-        {{data.confirmButtonLabel}}
-    </button>
-    <button *ngIf="data.type !== 'info-only'" type="button" mat-raised-button class="cancel-button" (click)="cancel()">
-        {{data.cancelButtonLabel}}
-    </button>
+    @if (data.type === 'delete') {
+        <button type="button" mat-raised-button color="warn" class="confirm-button" [disabled]="data.requireConfirmation && !confirm" (click)="confirmAction()">
+            {{data.confirmButtonLabel}}
+        </button>
+    }
+    @if (data.type !== 'delete') {
+        <button type="button" mat-raised-button class="confirm-button" [disabled]="data.requireConfirmation && !confirm" (click)="confirmAction()">
+            {{data.confirmButtonLabel}}
+        </button>
+    }
+    @if (data.type !== 'info-only') {
+        <button type="button" mat-raised-button class="cancel-button" (click)="cancel()">
+            {{data.cancelButtonLabel}}
+        </button>
+    }
 </mat-dialog-actions>

@@ -7,7 +7,7 @@ import { CONFIG_NEEDS_UPDATE_KEY } from '../default-global-configuration-values'
  * @returns Value if it is not null and not the CONFIG_NEEDS_UPDATE_KEY, defaultValue otherwise.
  */
 export function getConfigValue<ValueType>(defaultValue: ValueType, value?: ValueType): ValueType {
-    if (value != null && value !== CONFIG_NEEDS_UPDATE_KEY) {
+    if (value != undefined && value !== CONFIG_NEEDS_UPDATE_KEY) {
         return value;
     }
     return defaultValue;

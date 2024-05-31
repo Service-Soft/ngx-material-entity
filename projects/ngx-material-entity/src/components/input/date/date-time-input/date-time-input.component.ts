@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { NgFor, Time } from '@angular/common';
+import { NgFor } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DateFilterFn, MatDatepickerModule } from '@angular/material/datepicker';
@@ -14,7 +14,7 @@ import { DateTimeDateDecoratorConfigInternal } from '../../../../decorators/date
 import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
 import { defaultTrue } from '../../../../functions/default-true.function';
 import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../../../global-configuration-values';
-import { DateUtilities } from '../../../../utilities/date.utilities';
+import { DateUtilities, Time } from '../../../../utilities/date.utilities';
 import { EntityUtilities } from '../../../../utilities/entity.utilities';
 import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
@@ -74,10 +74,7 @@ export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType
      * @returns Whether or not the time objects are the same.
      */
     compareTimes(time1?: Time, time2?: Time): boolean {
-        if (time1 && time2 && time1.hours === time2.hours && time1.minutes === time2.minutes) {
-            return true;
-        }
-        return false;
+        return !!time1 && !!time2 && time1.hours === time2.hours && time1.minutes === time2.minutes;
     }
 
     /**
@@ -89,7 +86,7 @@ export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType
             return;
         }
         this.propertyValue = new Date(this.propertyValue);
-        if (this.time?.hours != null && this.time?.minutes != null) {
+        if (this.time?.hours != undefined && this.time?.minutes != undefined) {
             this.propertyValue.setHours(this.time.hours, this.time.minutes, 0, 0);
         }
         else {

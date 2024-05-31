@@ -39,16 +39,16 @@ export class NumberDropdownInputComponent<EntityType extends BaseEntityType<Enti
     }
 
     get shouldDisplayCurrentValue(): boolean {
-        return !!this.currentDropdownValue && !(!!this.filteredDropdownValues.find(v => v.value === this.currentDropdownValue?.value));
+        return !!this.currentDropdownValue && !this.filteredDropdownValues.find(v => v.value === this.currentDropdownValue?.value);
     }
 
     constructor(private readonly injector: EnvironmentInjector) {
         super();
     }
 
-    override async ngOnInit(): Promise<void> {
+    override ngOnInit(): void {
         super.ngOnInit();
-        await runInInjectionContext(this.injector, async () => {
+        void runInInjectionContext(this.injector, async () => {
             this.dropdownValues = await this.metadata.dropdownValues(this.entity);
             this.filteredDropdownValues = LodashUtilities.cloneDeep(this.dropdownValues);
         });
@@ -61,7 +61,7 @@ export class NumberDropdownInputComponent<EntityType extends BaseEntityType<Enti
     filterDropdownValues(searchInput: string): void {
         const filter: string = searchInput.toLowerCase();
         this.filteredDropdownValues = LodashUtilities.cloneDeep(this.dropdownValues).filter(option => {
-            return option.displayName.toLowerCase().includes(filter) || (`${option.value}`).toLowerCase().includes(filter);
+            return option.displayName.toLowerCase().includes(filter) || `${option.value}`.toLowerCase().includes(filter);
         });
     }
 }

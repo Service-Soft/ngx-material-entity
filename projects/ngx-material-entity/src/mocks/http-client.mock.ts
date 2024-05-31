@@ -5,7 +5,6 @@
 
 import { Observable, of } from 'rxjs';
 
-
 /**
  * A Mock for the angular http-client. Is needed for testing crud inside a ngx-mat-entity-table.
  */
@@ -29,7 +28,7 @@ export class HttpClientMock {
         const id: string = this.getIdFromUrl(url);
         const res: any = this.exampleData[this.exampleData.findIndex((e) => e.id === id)];
         for (const key in body) {
-            if (res[key] != null) {
+            if (res[key] != undefined) {
                 res[key] = body[key];
             }
         }
@@ -69,7 +68,7 @@ export class HttpClientErrorMock {
         const id: string = this.getIdFromUrl(url);
         const res: any = this.exampleData[this.exampleData.findIndex((e) => e.id === id)];
         for (const key in body) {
-            if (res[key] != null) {
+            if (res[key] != undefined) {
                 res[key] = body[key];
             }
         }

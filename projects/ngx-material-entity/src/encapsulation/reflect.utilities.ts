@@ -69,7 +69,7 @@ export abstract class ReflectUtilities {
      * @param propertyKey - The key of the target.
      */
     static hasMetadata<T extends object>(metadataKey: string, target: T, propertyKey: keyof T): boolean {
-        return this.getMetadata(metadataKey, target, propertyKey) != null;
+        return this.getMetadata(metadataKey, target, propertyKey) != undefined;
     }
 
     /**

@@ -23,7 +23,7 @@ export function importFromJsonMultiAction<EntityType extends BaseEntityType<Enti
     htmlInput.multiple = false;
     htmlInput.onchange = () => {
         const file: File | undefined | null = htmlInput.files?.item(0);
-        if (file != null) {
+        if (file != undefined) {
             void service.import(file);
         }
     };
@@ -36,7 +36,7 @@ export function importFromJsonMultiAction<EntityType extends BaseEntityType<Enti
  * @param selectedEntities - The selected entities to export.
  */
 export function exportAsJsonMultiAction<EntityType extends BaseEntityType<EntityType>>(selectedEntities: EntityType[]): void {
-    const blob: Blob = new Blob([JSON.stringify(selectedEntities, null, '\t')], { type: '.json' });
+    const blob: Blob = new Blob([JSON.stringify(selectedEntities, undefined, '\t')], { type: '.json' });
     FileUtilities.downLoadBlob(blob, 'export.json');
 }
 
@@ -71,13 +71,13 @@ function convertToCsv<EntityType extends BaseEntityType<EntityType>>(array: Enti
     return result;
 }
 
-
 // eslint-disable-next-line jsdoc/require-jsdoc
 function getLineForEntity<EntityType extends BaseEntityType<EntityType>>(headerList: (keyof EntityType)[], entity: EntityType): string {
     let line: string = '';
     for (const head of headerList) {
         line = line += getLineForHeader<EntityType>(entity, head);
     }
+    // eslint-disable-next-line sonar/no-ignored-return
     line.slice(0, line.length - 1);
     return line;
 }

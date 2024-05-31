@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { NgFor, NgIf, Time } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, EnvironmentInjector, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -18,7 +18,7 @@ import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum
 import { DropdownValue } from '../../../../decorators/base/dropdown-value.interface';
 import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
 import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../../../global-configuration-values';
-import { DateUtilities } from '../../../../utilities/date.utilities';
+import { DateUtilities, Time } from '../../../../utilities/date.utilities';
 import { ArrayTableComponent } from '../array-table.class';
 
 @Component({
@@ -65,7 +65,7 @@ export class ArrayDateTimeInputComponent<EntityType extends BaseEntityType<Entit
         ReflectUtilities.defineMetadata('metadata', this.metadata, this.entity, this.key);
         this.time = DateUtilities.getTimeFromDate(this.entity[this.key] as Date);
         this.timeDropdownValues = this.metadata.times;
-        if (this.entity[this.key] != null) {
+        if (this.entity[this.key] != undefined) {
             this.dateTime = new Date(this.entity[this.key] as Date);
         }
     }

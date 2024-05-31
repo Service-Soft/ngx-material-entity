@@ -26,6 +26,6 @@ export class BooleanCheckboxInputComponent<EntityType extends BaseEntityType<Ent
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.BOOLEAN_CHECKBOX, boolean> implements OnInit {
 
     updatePropertyValue(): void {
-        this.propertyValue = this.propertyValue != null ? !this.propertyValue : true;
+        this.propertyValue = this.propertyValue != undefined ? !this.propertyValue : true;
     }
 }

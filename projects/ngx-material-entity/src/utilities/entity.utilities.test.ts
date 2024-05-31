@@ -1,3 +1,4 @@
+/* eslint-disable sonar/cognitive-complexity */
 import { HttpClient } from '@angular/common/http';
 import { expect } from '@jest/globals';
 // eslint-disable-next-line eslintImport/no-unassigned-import
@@ -25,12 +26,10 @@ const http: HttpClient = new HttpClientMock([]) as unknown as HttpClient;
  * @returns Whether or not the given value is an Entity.
  */
 function valueIsEntity(value: unknown): value is Entity {
-    if (value != null && typeof value === 'object') {
+    if (value != undefined && typeof value === 'object') {
         return ReflectUtilities.has(value, 'id' as keyof typeof value);
     }
-    else {
-        return false;
-    }
+    return false;
 }
 
 describe('new', () => {
@@ -149,12 +148,14 @@ describe('getWithoutOmitUpdateValues', () => {
                 },
                 {
                     secondTabValue: 'stv 2',
-                    stringValue: 'stringValue2' },
+                    stringValue: 'stringValue2'
+                },
                 {
                     secondTabValue: 'secondTabValue',
                     stringValue: 'stringValue'
                 }
-            ] });
+            ]
+        });
     });
 });
 
@@ -199,7 +200,8 @@ describe('dirty', () => {
         tE.dateRangeArrayValue[0].start = testEntity.dateRangeArrayValue[0].start;
         expect(await EntityUtilities.isDirty(tE, tEPriorChanges, http)).toBe(false);
 
-        tE.dateRangeArrayValue.push({ start: new Date(), end: new Date(), values: getDatesBetween(new Date(), new Date()) });
+        const values: Date[] = getDatesBetween(new Date(), new Date());
+        tE.dateRangeArrayValue.push({ start: new Date(), end: new Date(), values: values });
         expect(await EntityUtilities.isDirty(tE, tEPriorChanges, http)).toBe(true);
 
         tE.dateRangeArrayValue = testEntity.dateRangeArrayValue;

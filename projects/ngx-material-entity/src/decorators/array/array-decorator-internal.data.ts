@@ -1,4 +1,3 @@
-import { Time } from '@angular/common';
 import { DateFilterFn } from '@angular/material/datepicker';
 
 import { ArrayDecoratorConfig, AutocompleteStringChipsArrayDecoratorConfig, DateArrayDecoratorConfig, DateRangeArrayDecoratorConfig, DateTimeArrayDecoratorConfig, EditArrayItemDialogData, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from './array-decorator.data';
@@ -8,7 +7,7 @@ import { ConfirmDialogDataBuilder } from '../../components/confirm-dialog/confir
 import { CreateData, DisplayColumn } from '../../components/table/table-data';
 import { getConfigValue } from '../../functions/get-config-value.function';
 import { NgxGlobalDefaultValues } from '../../global-configuration-values';
-import { DateUtilities } from '../../utilities/date.utilities';
+import { DateUtilities, Time } from '../../utilities/date.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';

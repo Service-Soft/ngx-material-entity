@@ -201,10 +201,10 @@ export interface NgxGlobalDefaultValues {
 
 }
 
-
 /**
  * The provider for global configuration values.
  */
+// eslint-disable-next-line stylistic/max-len
 export const NGX_GLOBAL_DEFAULT_VALUES: InjectionToken<Partial<NgxGlobalDefaultValues>> = new InjectionToken<Partial<NgxGlobalDefaultValues>>(
     'NGX_GLOBAL_DEFAULT_VALUES',
     {
