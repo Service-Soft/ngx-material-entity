@@ -69,7 +69,7 @@ test('should have numberSlider Metadata', () => {
     const metadata: SliderNumberDecoratorConfigInternal | undefined = EntityUtilities.getPropertyMetadata(testEntity, 'numberSlider', DecoratorTypes.NUMBER_SLIDER);
     expect(metadata).toBeDefined();
     expect(metadata?.displayStyle).toBe('slider');
-    expect(JSON.stringify(metadata?.formatThumbLabelValue)).toEqual(JSON.stringify(((value: number) => value)));
+    expect(JSON.stringify(metadata?.formatThumbLabelValue)).toEqual(JSON.stringify((value: number) => value));
 });
 test('default format thumb label value should just return the value without any changes', () => {
     expect(defaultFormatThumbLabelValue(42)).toEqual('42');

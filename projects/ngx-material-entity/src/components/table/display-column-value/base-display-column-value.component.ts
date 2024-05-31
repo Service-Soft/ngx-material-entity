@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { BaseEntityType } from '../../../classes/entity.model';
 
@@ -7,24 +7,15 @@ import { BaseEntityType } from '../../../classes/entity.model';
  *
  * Contains the entity for which the component gets displayed.
  */
-// eslint-disable-next-line angular/prefer-standalone-component
+// eslint-disable-next-line angular/prefer-standalone
 @Component({
     selector: 'ngx-mat-entity-base-display-column-value',
     template: ''
 })
-export abstract class NgxMatEntityBaseDisplayColumnValueComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
-
+export abstract class NgxMatEntityBaseDisplayColumnValueComponent<EntityType extends BaseEntityType<EntityType>> {
     /**
      * The entity for which the component gets displayed.
      */
-    @Input()
+    @Input({ required: true })
     entity!: EntityType;
-
-    constructor() { }
-
-    ngOnInit(): void {
-        if (this.entity == null) {
-            throw new Error('The provided entity is null');
-        }
-    }
 }

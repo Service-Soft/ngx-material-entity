@@ -1,5 +1,7 @@
+/* eslint-disable sonar/no-duplicate-string */
 /* eslint-disable jsdoc/require-jsdoc */
 import { DateFilterFn } from '@angular/material/datepicker';
+import moment from 'moment';
 import { firstValueFrom, of } from 'rxjs';
 
 import { RandomMetadata } from './test-entity.mock';
@@ -268,7 +270,7 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
     @string({
         displayStyle: 'line',
         displayName: 'Regex Value',
-        regex: new RegExp('^[0-9]+$')
+        regex: new RegExp('^\\d+$')
     })
     regexStringValue!: string;
 
@@ -292,7 +294,7 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         displayStyle: 'autocomplete',
         displayName: 'Regex Autocomplete Value',
         autocompleteValues: ['1234', '5678'],
-        regex: new RegExp('^[0-9]+$')
+        regex: new RegExp('^\\d+$')
     })
     regexAutocompleteStringValue!: string;
 
@@ -315,7 +317,7 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         displayName: 'Password Value',
         minLength: 8,
         maxLength: 12,
-        regex: /.*[0-9].*/
+        regex: /.*\d.*/
     })
     passwordString!: string;
 
@@ -941,8 +943,11 @@ const testEntityData: TestEntityWithoutCustomProperties = {
     customDateRangeValue: {
         start: new Date(2022, 0, 2, 0, 0, 0, 0),
         end: new Date(2022, 0, 20, 0, 0, 0, 0),
-
-        values: getDatesBetween(new Date(2022, 0, 2, 0, 0, 0, 0), new Date(2022, 0, 20, 0, 0, 0, 0), (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1)
+        values: getDatesBetween(
+            new Date(2022, 0, 2, 0, 0, 0, 0),
+            new Date(2022, 0, 20, 0, 0, 0, 0),
+            (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1
+        )
     },
     dateTimeValue: new Date(2022, 0, 1, 8, 30, 0, 0),
     customDateTimeValue: new Date(2022, 0, 2, 16, 30, 0, 0),
@@ -1061,7 +1066,7 @@ export class TestEntityWithoutCustomPropertiesMockBuilder {
         value?: unknown
     ): void {
         ReflectUtilities.defineMetadata(metadataKey, value ?? testEntity[propertyKey], testEntity, propertyKey);
-        if (testEntityWithoutData != null) {
+        if (testEntityWithoutData != undefined) {
             ReflectUtilities.defineMetadata(metadataKey, undefined, testEntityWithoutData, propertyKey);
         }
     }
@@ -1080,6 +1085,9 @@ export function getDatesBetween(
     endDate: Date,
     filter?: DateFilterFn<Date>
 ): Date[] {
+    if (moment(startDate, 'YYYY-MM-DD').isSame(moment(endDate, 'YYYY-MM-DD'), 'day')) {
+        return [endDate];
+    }
 
     const DAY_IN_MS: number = 1000 * 60 * 60 * 24;
     const res: Date[] = [];
@@ -1094,7 +1102,5 @@ export function getDatesBetween(
     if (filter) {
         return res.filter(d => filter(d));
     }
-    else {
-        return res;
-    }
+    return res;
 }

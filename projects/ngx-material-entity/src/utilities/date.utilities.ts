@@ -1,12 +1,46 @@
-import { Time } from '@angular/common';
 import { DateFilterFn } from '@angular/material/datepicker';
 
 import { DropdownValue } from '../decorators/base/dropdown-value.interface';
 import { LodashUtilities } from '../encapsulation/lodash.utilities';
 import { defaultTrue } from '../functions/default-true.function';
 
-
 const DAY_IN_MS: number = 1000 * 60 * 60 * 24;
+
+/**
+ * Helper type for hours and minutes.
+ */
+type Enumerate<N extends number, Acc extends number[] = []> = Acc['length'] extends N
+    ? Acc[number]
+    : Enumerate<N, [...Acc, Acc['length']]>;
+
+/**
+ * Helper type for hours and minutes.
+ */
+type Range<F extends number, T extends number> = Exclude<Enumerate<T>, Enumerate<F>>;
+
+/**
+ * The possible hour values. Ranges from 0 to 23.
+ */
+export type Hour = Range<0, 24>;
+
+/**
+ * The possible minute values. Ranges from 0 to 59.
+ */
+export type Minute = Range<0, 60>;
+
+/**
+ * Represents a time value with hours and minutes.
+ */
+export type Time = {
+    /**
+     * The hours in the 24 hour format.
+     */
+    hours: Hour,
+    /**
+     * The minutes of the time.
+     */
+    minutes: Minute
+};
 
 /**
  * Valid steps from one time value to the next. Needs to be able to divide 60 minutes without remainder.
@@ -40,15 +74,15 @@ export abstract class DateUtilities {
      */
     static getDefaultTimes(format: 12 | 24 = 24, minuteSteps: MinuteSteps = 30): DropdownValue<Time>[] {
         const res: DropdownValue<Time>[] = [{ displayName: '-', value: undefined as unknown as Time }];
-        for (let hour: number = 0; hour < 24; hour++) {
-            for (let minute: number = 0; minute < 60; minute += minuteSteps) {
-                res.push(DateUtilities.getTimeDropdownValue(format, hour, minute));
+        for (let hour: Hour = 0; hour < 24; hour++) {
+            for (let minute: Minute = 0; minute < 60; minute += minuteSteps) {
+                res.push(DateUtilities.getTimeDropdownValue(format, hour as Hour, minute as Minute));
             }
         }
         return res;
     }
 
-    private static getTimeDropdownValue(format: 12 | 24, hour: number, minute: number): DropdownValue<Time> {
+    private static getTimeDropdownValue(format: 12 | 24, hour: Hour, minute: Minute): DropdownValue<Time> {
         const displayHour: number = DateUtilities.getFormattedHour(format, LodashUtilities.cloneDeep(hour));
         const displayMinute: string = DateUtilities.getFormattedMinute(format, hour, minute);
         return {
@@ -70,12 +104,7 @@ export abstract class DateUtilities {
     private static getFormattedMinute(format: 12 | 24, hour: number, minute: number): string {
         let res: string = `${minute}`;
         if (format === 12) {
-            if (hour > 12) {
-                res = `${minute} PM`;
-            }
-            else {
-                res = `${minute} AM`;
-            }
+            res = hour > 12 ? `${minute} PM` : `${minute} AM`;
         }
         if (minute.toString().length === 1) {
             res = '0'.concat(res);
@@ -92,12 +121,10 @@ export abstract class DateUtilities {
         if (!value) {
             return undefined;
         }
-        else {
-            return {
-                hours: new Date(value).getHours(),
-                minutes: new Date(value).getMinutes()
-            };
-        }
+        return {
+            hours: new Date(value).getHours() as Hour,
+            minutes: new Date(value).getMinutes() as Minute
+        };
     }
 
     /**
@@ -121,12 +148,7 @@ export abstract class DateUtilities {
             res.push(new Date(startDate));
             startDate.setTime(startDate.getTime() + DAY_IN_MS);
         }
-        if (filter) {
-            return res.filter(d => filter(d));
-        }
-        else {
-            return res;
-        }
+        return filter ? res.filter(d => filter(d)) : res;
     }
 
     /**
@@ -147,25 +169,21 @@ export abstract class DateUtilities {
     ): DropdownValue<Time | undefined>[] {
         if (min) {
             const minTime: Time = min(date);
-            times = times.filter(t =>
-                !t.value
-                || t.value.hours > minTime.hours
-                || (
-                    t.value.hours === minTime.hours
-                    && t.value.minutes >= minTime.minutes
-                )
-            );
+            times = times.filter(t => !t.value
+            || t.value.hours > minTime.hours
+            || (
+                t.value.hours === minTime.hours
+                && t.value.minutes >= minTime.minutes
+            ));
         }
         if (max) {
             const maxTime: Time = max(date);
-            times = times.filter(t =>
-                !t.value
-                || t.value.hours < maxTime.hours
-                || (
-                    t.value.hours === maxTime.hours
-                    && t.value.minutes <= maxTime.minutes
-                )
-            );
+            times = times.filter(t => !t.value
+            || t.value.hours < maxTime.hours
+            || (
+                t.value.hours === maxTime.hours
+                && t.value.minutes <= maxTime.minutes
+            ));
         }
         if (filter) {
             times = times.filter(t => !t.value || filter(t.value));
@@ -181,16 +199,11 @@ export abstract class DateUtilities {
      * @returns Whether or not the time object is unprocessable.
      */
     static timeIsUnprocessable(time?: Time): boolean {
-        if (
-            time?.hours == null
+        return time?.hours == undefined
             || typeof time.hours !== 'number'
             || Number.isNaN(time.hours)
-            || time.minutes == null
+            || time.minutes == undefined
             || typeof time.minutes !== 'number'
-            || Number.isNaN(time.minutes)
-        ) {
-            return true;
-        }
-        return false;
+            || Number.isNaN(time.minutes);
     }
 }

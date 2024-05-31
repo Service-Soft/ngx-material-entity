@@ -10,14 +10,12 @@ import { TooltipDirective } from '../../directives/tooltip.directive';
     templateUrl: './tooltip.component.html',
     styleUrls: ['./tooltip.component.scss'],
     standalone: true,
-    imports: [
-        TooltipDirective
-    ]
+    imports: [TooltipDirective]
 })
 export class TooltipComponent {
     /**
      * What to display inside the tooltip.
      */
-    @Input()
+    @Input({ required: true })
     tooltipContent!: string;
 }

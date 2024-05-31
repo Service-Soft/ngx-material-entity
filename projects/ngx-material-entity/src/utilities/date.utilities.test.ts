@@ -1,7 +1,6 @@
-import { Time } from '@angular/common';
 import { expect } from '@jest/globals';
 
-import { DateUtilities } from './date.utilities';
+import { DateUtilities, Time } from './date.utilities';
 import { EntityUtilities } from './entity.utilities';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { DropdownValue } from '../decorators/base/dropdown-value.interface';
@@ -14,6 +13,7 @@ const testEntity: TestEntityWithoutCustomProperties = builder.testEntity;
 
 describe('defaultDateFilter', () => {
     test('defaultDateFilter', () => {
+        // eslint-disable-next-line unicorn/no-null
         expect(DateUtilities.defaultDateFilter(null)).toEqual(true);
         expect(DateUtilities.defaultDateFilter(undefined)).toEqual(true);
         expect(DateUtilities.defaultDateFilter(new Date())).toEqual(true);
@@ -260,12 +260,12 @@ describe('timeIsUnprocessable', () => {
     test('with invalid hour', () => {
         expect(DateUtilities.timeIsUnprocessable({ hours: undefined, minutes: 0 } as unknown as Time)).toBe(true);
         expect(DateUtilities.timeIsUnprocessable({ hours: 'string', minutes: 0 } as unknown as Time)).toBe(true);
-        expect(DateUtilities.timeIsUnprocessable({ hours: NaN, minutes: 0 } as unknown as Time)).toBe(true);
+        expect(DateUtilities.timeIsUnprocessable({ hours: Number.NaN, minutes: 0 } as unknown as Time)).toBe(true);
     });
     test('with invalid minute', () => {
         expect(DateUtilities.timeIsUnprocessable({ hours: 0, minutes: undefined } as unknown as Time)).toBe(true);
         expect(DateUtilities.timeIsUnprocessable({ hours: 0, minutes: 'string' } as unknown as Time)).toBe(true);
-        expect(DateUtilities.timeIsUnprocessable({ hours: 0, minutes: NaN } as unknown as Time)).toBe(true);
+        expect(DateUtilities.timeIsUnprocessable({ hours: 0, minutes: Number.NaN } as unknown as Time)).toBe(true);
     });
     test('with valid time', () => {
         expect(DateUtilities.timeIsUnprocessable({ hours: 0, minutes: 0 })).toBe(false);

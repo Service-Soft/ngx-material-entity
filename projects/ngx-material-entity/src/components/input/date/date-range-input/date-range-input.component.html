@@ -27,6 +27,10 @@
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-date-range-picker #picker></mat-date-range-picker>
 
-    <mat-error *ngIf="startModel.errors">{{getValidationErrorMessage(startModel)}}</mat-error>
-    <mat-error *ngIf="!startModel.errors && endModel.errors">{{getValidationErrorMessage(endModel)}}</mat-error>
+    @if (startModel.errors) {
+        <mat-error >{{getValidationErrorMessage(startModel)}}</mat-error>
+    }
+    @if (!startModel.errors && endModel.errors) {
+        <mat-error >{{getValidationErrorMessage(endModel)}}</mat-error>
+    }
 </mat-form-field>

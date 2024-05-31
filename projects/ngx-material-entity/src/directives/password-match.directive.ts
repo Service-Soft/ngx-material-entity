@@ -19,7 +19,7 @@ export class PasswordMatchValidatorDirective implements Validator {
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     validate(control: AbstractControl): ValidationErrors | null {
-        // eslint-disable-next-line typescript/no-unsafe-assignment
+        // eslint-disable-next-line typescript/no-unsafe-assignment, unicorn/no-null
         return this.passwordMatch == control.value ? null : { passwordMatch: { value: control.value } };
     }
 }

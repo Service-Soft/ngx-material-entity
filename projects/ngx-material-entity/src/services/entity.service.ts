@@ -53,7 +53,6 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
      */
     readonly entitiesSubject: BehaviorSubject<EntityType[]> = new BehaviorSubject<EntityType[]>([]);
 
-
     /**
      * When frequently trying to find a single entity by an id (eg. When nesting relations)
      * you might send a lot of unnecessary requests.
@@ -92,9 +91,7 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
         if (!filePropertyKeys.length) {
             return await this.createWithJson(body, baseUrl);
         }
-        else {
-            return await this.createWithFormData(body, filePropertyKeys, entity, baseUrl);
-        }
+        return await this.createWithFormData(body, filePropertyKeys, entity, baseUrl);
     }
 
     // TODO: Find a way to use blobs with jest
@@ -135,7 +132,12 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
         const formData: FormData = new FormData();
         formData.append('body', JSON.stringify(LodashUtilities.omit(body, filePropertyKeys)));
         for (const key of filePropertyKeys) {
-            if ((EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT) as DefaultFileDecoratorConfigInternal).multiple) {
+            const metadata: DefaultFileDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(
+                entity,
+                key,
+                DecoratorTypes.FILE_DEFAULT
+            ) as DefaultFileDecoratorConfigInternal;
+            if (metadata.multiple) {
                 const fileDataValues: FileData[] = body[key] as FileData[];
                 for (const value of fileDataValues) {
                     formData.append(key as string, (await FileUtilities.getFileData(value, this.http)).file, value.name);
@@ -199,8 +201,8 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
      */
     async findById(id: EntityType[keyof EntityType]): Promise<EntityType> {
         if (
-            this.lastRead == null
-            || (new Date().getTime() - this.lastRead.getTime()) > this.READ_EXPIRATION_IN_MS
+            this.lastRead == undefined
+            || (Date.now() - this.lastRead.getTime()) > this.READ_EXPIRATION_IN_MS
         ) {
             return firstValueFrom(this.http.get<EntityType>(`${this.baseUrl}/${id}`));
         }
@@ -219,10 +221,9 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
         const body: Partial<EntityType> = await this.entityToUpdateRequestBody(entity, entityPriorChanges);
         if (!filePropertyKeys.length) {
             await this.updateWithJson(body, entityPriorChanges[this.idKey]);
+            return;
         }
-        else {
-            await this.updateWithFormData(body, filePropertyKeys, entity, entityPriorChanges[this.idKey]);
-        }
+        await this.updateWithFormData(body, filePropertyKeys, entity, entityPriorChanges[this.idKey]);
     }
 
     /**
@@ -255,8 +256,12 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
         const formData: FormData = new FormData();
         formData.append('body', JSON.stringify(LodashUtilities.omit(body, filePropertyKeys)));
         for (const key of filePropertyKeys) {
-
-            if ((EntityUtilities.getPropertyMetadata(entity, key, DecoratorTypes.FILE_DEFAULT) as DefaultFileDecoratorConfigInternal).multiple) {
+            const metadata: DefaultFileDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(
+                entity,
+                key,
+                DecoratorTypes.FILE_DEFAULT
+            ) as DefaultFileDecoratorConfigInternal;
+            if (metadata.multiple) {
                 const fileDataValues: FileData[] = body[key] as FileData[];
                 for (const value of fileDataValues) {
                     formData.append(key as string, (await FileUtilities.getFileData(value, this.http)).file, value.name);

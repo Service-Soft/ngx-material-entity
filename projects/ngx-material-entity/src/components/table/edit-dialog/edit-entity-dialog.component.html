@@ -3,18 +3,24 @@
     <div>{{data.editData.title(entityPriorChanges)}}</div>
 
     <div class="actions-container">
-        <button *ngIf="data.editData.actions.length" type="button" mat-raised-button [matMenuTriggerFor]="menu">
-            {{data.editData.actionsLabel}}
-        </button>
-        <mat-menu #menu="matMenu">
-            <button *ngFor="let action of data.editData.actions" type="button" mat-menu-item [disabled]="editActionDisabled(action)" (click)="runEditAction(action)">
-                {{action.displayName}}
+        @if (data.editData.actions.length) {
+            <button type="button" mat-raised-button [matMenuTriggerFor]="menu">
+                {{data.editData.actionsLabel}}
             </button>
+        }
+        <mat-menu #menu="matMenu">
+            @for (action of data.editData.actions; track $index) {
+                <button type="button" mat-menu-item [disabled]="editActionDisabled(action)" (click)="runEditAction(action)">
+                    {{action.displayName}}
+                </button>
+            }
         </mat-menu>
     
-        <button *ngIf="allowDelete" type="button" mat-raised-button color="warn" class="delete-button" tabindex="-1" (click)="delete()">
-            {{data.editData.deleteButtonLabel}}
-        </button>
+        @if (allowDelete) {
+            <button type="button" mat-raised-button color="warn" class="delete-button" tabindex="-1" (click)="delete()">
+                {{data.editData.deleteButtonLabel}}
+            </button>
+        }
     </div>
 </div>
 
@@ -34,7 +40,9 @@
             >
                 {{data.editData.confirmButtonLabel}}
             </button>
-            <ngx-mat-entity-tooltip *ngIf="validationErrors.length" [tooltipContent]="tooltipContent"></ngx-mat-entity-tooltip>
+            @if (validationErrors.length) {
+                <ngx-mat-entity-tooltip [tooltipContent]="tooltipContent"></ngx-mat-entity-tooltip>
+            }
         </div>
 
 

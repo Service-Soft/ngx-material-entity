@@ -7,7 +7,7 @@ import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-
 import { EditDataBuilder, EditDataInternal } from '../table/edit-dialog/edit-data.builder';
 import { EditEntityDataInternal } from '../table/edit-dialog/edit-entity.builder';
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc, stylistic/max-len
 export type PageEditDataInternal<EntityType extends BaseEntityType<EntityType>> = Omit<EditEntityDataInternal<EntityType>, 'entity' | 'EntityServiceClass'> & {
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayLoadingSpinner: boolean,
@@ -34,6 +34,7 @@ export class PageEditDataBuilder<EntityType extends BaseEntityType<EntityType>>
             .withDefault('cancelButtonLabel', this.globalConfig.backLabel)
             .getResult();
 
+        // eslint-disable-next-line stylistic/max-len
         const confirmUnsavedChangesDialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, data.editData?.confirmUnsavedChangesDialogData)
             .withDefault('title', this.globalConfig.confirmUnsavedChangesTitle)
             .withDefault('text', this.globalConfig.confirmUnsavedChangesText)

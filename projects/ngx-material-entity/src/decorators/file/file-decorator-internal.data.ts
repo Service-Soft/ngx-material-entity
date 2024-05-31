@@ -58,6 +58,9 @@ export interface FileDataWithUrl {
     url: string
 }
 
+const errorAddingFiles: string = 'Error adding files';
+const errorAddingFile: string = 'Error adding file';
+
 /**
  * The internal DefaultFileDecoratorConfig. Sets default values.
  */
@@ -156,9 +159,9 @@ export class ImageFileDecoratorConfigInternal extends PropertyDecoratorConfigInt
 function getDefaultMimeTypeErrorDialogData(data: DefaultFileDecoratorConfig | ImageFileDecoratorConfig): ConfirmDialogData {
     return {
         type: data.mimeTypeErrorDialog?.type ?? 'info-only',
-
+        // eslint-disable-next-line stylistic/max-len
         text: data.mimeTypeErrorDialog?.text ?? (data.multiple ? ['One of the uploaded files has the wrong type.'] : ['The uploaded file has the wrong type.']),
-        title: data.mimeTypeErrorDialog?.title ?? (data.multiple ? 'Error adding files' : 'Error adding file'),
+        title: data.mimeTypeErrorDialog?.title ?? (data.multiple ? errorAddingFiles : errorAddingFile),
         confirmButtonLabel: data.mimeTypeErrorDialog?.confirmButtonLabel,
         cancelButtonLabel: data.mimeTypeErrorDialog?.cancelButtonLabel,
         requireConfirmation: data.mimeTypeErrorDialog?.requireConfirmation,
@@ -175,9 +178,9 @@ function getDefaultMimeTypeErrorDialogData(data: DefaultFileDecoratorConfig | Im
 function getDefaultMaxSizeErrorDialogData(data: DefaultFileDecoratorConfig | ImageFileDecoratorConfig): ConfirmDialogData {
     return {
         type: data.mimeTypeErrorDialog?.type ?? 'info-only',
-
+        // eslint-disable-next-line stylistic/max-len
         text: data.mimeTypeErrorDialog?.text ?? (data.multiple ? ['One of the uploaded files is too big'] : ['The uploaded files is too big']),
-        title: data.mimeTypeErrorDialog?.title ?? (data.multiple ? 'Error adding files' : 'Error adding file'),
+        title: data.mimeTypeErrorDialog?.title ?? (data.multiple ? errorAddingFiles : errorAddingFile),
         confirmButtonLabel: data.mimeTypeErrorDialog?.confirmButtonLabel,
         cancelButtonLabel: data.mimeTypeErrorDialog?.cancelButtonLabel,
         requireConfirmation: data.mimeTypeErrorDialog?.requireConfirmation,
@@ -195,7 +198,7 @@ function getDefaultMaxSizeTotalErrorDialogData(data: DefaultFileDecoratorConfig 
     return {
         type: data.mimeTypeErrorDialog?.type ?? 'info-only',
         text: data.mimeTypeErrorDialog?.text ?? ['The size of all files combined is too big'],
-        title: data.mimeTypeErrorDialog?.title ?? (data.multiple ? 'Error adding files' : 'Error adding file'),
+        title: data.mimeTypeErrorDialog?.title ?? (data.multiple ? errorAddingFiles : errorAddingFile),
         confirmButtonLabel: data.mimeTypeErrorDialog?.confirmButtonLabel,
         cancelButtonLabel: data.mimeTypeErrorDialog?.cancelButtonLabel,
         requireConfirmation: data.mimeTypeErrorDialog?.requireConfirmation,

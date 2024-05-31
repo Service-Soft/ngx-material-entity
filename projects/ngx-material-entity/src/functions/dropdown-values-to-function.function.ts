@@ -7,7 +7,7 @@ export type DropdownValues<T> = DropdownValue<T | undefined>[]
     // eslint-disable-next-line typescript/no-explicit-any
     | ((entity: any) => DropdownValue<T | undefined>[])
     // eslint-disable-next-line typescript/no-explicit-any
-    | ((entity: any) => Promise<DropdownValue<T | undefined>[]>)
+    | ((entity: any) => Promise<DropdownValue<T | undefined>[]>);
 
 /**
  * Transforms the given dropdown values to an async function.

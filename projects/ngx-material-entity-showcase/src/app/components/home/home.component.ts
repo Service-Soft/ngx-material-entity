@@ -6,11 +6,8 @@ import { Component } from '@angular/core';
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
     standalone: true,
-    imports: [
-        CommonModule
-    ]
+    imports: [CommonModule]
 })
-// eslint-disable-next-line jsdoc/require-jsdoc
 export class HomeComponent {
     constructor() { }
 }

@@ -28,6 +28,7 @@ import { TooltipComponent } from '../tooltip/tooltip.component';
 /**
  * The data that needs to be provided for a route to be able to create a entity.
  */
+// eslint-disable-next-line stylistic/max-len
 export type PageCreateData<EntityType extends BaseEntityType<EntityType>> = Omit<CreateEntityData<EntityType>, 'entity' | 'EntityServiceClass'> & {
     /**
      * Whether or not to display a loading spinner while the data for the page is loaded.
@@ -54,12 +55,16 @@ export type PageCreateData<EntityType extends BaseEntityType<EntityType>> = Omit
  * The entity service that needs to be provided in the providers array of the create page route.
  */
 // eslint-disable-next-line typescript/no-explicit-any
-export const NGX_CREATE_DATA_ENTITY_SERVICE: InjectionToken<EntityService<any>> = new InjectionToken<EntityService<any>>('NGX_CREATE_DATA_ENTITY_SERVICE');
+export const NGX_CREATE_DATA_ENTITY_SERVICE: InjectionToken<EntityService<any>> = new InjectionToken<EntityService<any>>(
+    'NGX_CREATE_DATA_ENTITY_SERVICE'
+);
 /**
  * The entity class that needs to be provided in the providers array of the create page route.
  */
 // eslint-disable-next-line typescript/no-explicit-any
-export const NGX_CREATE_DATA_ENTITY: InjectionToken<EntityClassNewable<any>> = new InjectionToken<EntityClassNewable<any>>('NGX_CREATE_DATA_ENTITY');
+export const NGX_CREATE_DATA_ENTITY: InjectionToken<EntityClassNewable<any>> = new InjectionToken<EntityClassNewable<any>>(
+    'NGX_CREATE_DATA_ENTITY'
+);
 /**
  * The configuration that needs to be provided in the providers array of the create page route.
  */
@@ -153,22 +158,24 @@ export class NgxMatEntityCreatePageComponent<EntityType extends BaseEntityType<E
         protected readonly globalConfig: NgxGlobalDefaultValues
     ) { }
 
-    async ngOnInit(): Promise<void> {
+    ngOnInit(): void {
         this.data = new PageCreateDataBuilder(this.inputData, this.globalConfig).getResult();
-        if (this.data == null) {
+        if (this.data == undefined) {
             this.confirmNavigateBack();
-
-            throw new Error('No create data was provided for "NGX_CREATE_DATA". You need to provide a value in your routes providers array.');
+            throw new Error(
+                'No create data was provided for "NGX_CREATE_DATA". You need to provide a value in your routes providers array.'
+            );
         }
 
         this.entity = new this.EntityClass();
         EntityUtilities.setDefaultValues(this.entity);
         this.entityPriorChanges = LodashUtilities.cloneDeep(this.entity);
-        await this.checkIsEntityValid();
-
-        this.isLoaded = true;
-        setTimeout(() => this.checkOffset(), 1);
-        // setTimeout(() => this.checkEntity(), 1);
+        // eslint-disable-next-line promise/prefer-await-to-then
+        void this.checkIsEntityValid().then(() => {
+            this.isLoaded = true;
+            setTimeout(() => this.checkOffset(), 1);
+            // setTimeout(() => this.checkEntity(), 1);
+        });
     }
 
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -217,15 +224,16 @@ export class NgxMatEntityCreatePageComponent<EntityType extends BaseEntityType<E
      * Tries create the entity and navigate back afterwards.
      * Also handles the confirmation if required.
      */
-    create(): void {
+    async create(): Promise<void> {
         if (!this.isEntityValid) {
             return;
         }
         if (!this.data.createData.createRequiresConfirmDialog) {
-            this.confirmCreate();
+            await this.confirmCreate();
             return;
         }
 
+        // eslint-disable-next-line stylistic/max-len
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.createData.confirmCreateDialogData)
             .withDefault('text', this.globalConfig.confirmCreateText)
             .withDefault('confirmButtonLabel', this.globalConfig.createLabel)
@@ -236,15 +244,15 @@ export class NgxMatEntityCreatePageComponent<EntityType extends BaseEntityType<E
             autoFocus: false,
             restoreFocus: false
         });
-        dialogRef.afterClosed().subscribe(res => {
-            if (res == true) {
-                this.confirmCreate();
-            }
-        });
+        const res: boolean | undefined = await firstValueFrom(dialogRef.afterClosed());
+        if (res == true) {
+            await this.confirmCreate();
+        }
     }
 
-    private confirmCreate(): void {
-        void this.entityService.create(this.entity).then(() => this.confirmNavigateBack());
+    private async confirmCreate(): Promise<void> {
+        await this.entityService.create(this.entity);
+        this.confirmNavigateBack();
     }
 
     /**
@@ -269,7 +277,7 @@ export class NgxMatEntityCreatePageComponent<EntityType extends BaseEntityType<E
             autoFocus: false,
             restoreFocus: false
         });
-        return (await firstValueFrom(dialogRef.afterClosed())) ?? false;
+        return await firstValueFrom(dialogRef.afterClosed()) ?? false;
     }
 
     private confirmNavigateBack(): void {

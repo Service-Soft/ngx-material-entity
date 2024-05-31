@@ -7,12 +7,14 @@
         [(ngModel)]="propertyValue"
         (ngModelChange)="setValidationErrors(model, chipsModel)"
     >
-        <mat-chip-row *ngFor="let value of propertyValue" (removed)="removeStringChipArrayValue(value)">
-            {{value}}
-            <button type="button" matChipRemove>
-                <i [class]="metadata.deleteIcon"></i>
-            </button>
-        </mat-chip-row>
+        @for (value of propertyValue; track $index) {
+            <mat-chip-row (removed)="removeStringChipArrayValue(value)">
+                {{value}}
+                <button type="button" matChipRemove>
+                    <i [class]="metadata.deleteIcon"></i>
+                </button>
+            </mat-chip-row>
+        }
         <input #chipsModel="ngModel"
             matInput
             [matChipInputFor]="chipGrid"

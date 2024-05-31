@@ -1,8 +1,8 @@
-<!-- eslint-disable angular/conditional-complexity -->
+ 
 <!-- eslint-disable angular/prefer-ngsrc -->
 <!-- eslint-disable angular/alt-text -->
-<!-- eslint-disable angular/cyclomatic-complexity -->
-<div *ngIf="!metadata.dragAndDrop && !metadata.preview">
+ 
+@if (!metadata.dragAndDrop && !metadata.preview) {
     <file-input
         [propertyValue]="propertyValue"
         [metadata]="metadata"
@@ -13,81 +13,96 @@
         (fileDataChangeEvent)="refreshFileData($event)"
     >
     </file-input>
-</div>
+}
+    
+@if (metadata.dragAndDrop || metadata.preview) {
+    <div class="file-input mat-elevation-z8">
+        <file-input
+            [propertyValue]="propertyValue"
+            [metadata]="metadata"
+            [getValidationErrorMessage]="getValidationErrorMessage"
+            [isReadOnly]="isReadOnly"
+            [entity]="entity"
+            [key]="key"
+            (fileDataChangeEvent)="refreshFileData($event)"
+        >
+        </file-input>
 
-<div *ngIf="metadata.dragAndDrop || metadata.preview" class="file-input mat-elevation-z8">
-    <file-input
-        [propertyValue]="propertyValue"
-        [metadata]="metadata"
-        [getValidationErrorMessage]="getValidationErrorMessage"
-        [isReadOnly]="isReadOnly"
-        [entity]="entity"
-        [key]="key"
-        (fileDataChangeEvent)="refreshFileData($event)"
-    >
-    </file-input>
-
-    <ng-container *ngIf="metadata.preview">
-        <ng-container *ngIf="metadata.multiple">
-            <div class="image-preview">
-                <img *ngIf="multiPreviewImages?.[imageIndex]" class="mat-elevation-z2" [src]="multiPreviewImages?.[imageIndex]">
-                <img *ngIf="!multiPreviewImages?.[imageIndex]" class="mat-elevation-z2" [src]="metadata.previewPlaceholderUrl ?? placeHolder">
-            </div>
-        
-            <div class="preview-nav">
-                <i class="fas fa-angle-left left-button" [class.disabled]="imageIndex === 0" (click)="prev()"></i>
-                <div *ngIf="
+        @if (metadata.preview) {
+            @if (metadata.multiple) {
+                <div class="image-preview">
+                    @if (multiPreviewImages?.[imageIndex]) {
+                        <img class="mat-elevation-z2" [src]="multiPreviewImages?.[imageIndex]">
+                    }
+                    @else {
+                        <img class="mat-elevation-z2" [src]="metadata.previewPlaceholderUrl ?? placeHolder">
+                    }
+                </div>
+            
+                <div class="preview-nav">
+                    <i class="fas fa-angle-left left-button" [class.disabled]="imageIndex === 0" (click)="prev()"></i>
+                    @if (
                         multiPreviewImages
                         && multiPreviewImages[imageIndex-4]
                         && imageIndex === (multiPreviewImages.length - 1)
-                    "
-                    class="dot"
-                    (click)="setIndex(imageIndex-4)"
-                >
-                    <div class="image-index">{{imageIndex - 3}}</div>
+                    ) {
+                        <div class="dot" (click)="setIndex(imageIndex-4)">
+                            <div class="image-index">{{imageIndex - 3}}</div>
+                        </div>
+                    }
+                    @if (
+                        multiPreviewImages
+                        && multiPreviewImages[imageIndex-3]
+                        && (
+                            imageIndex === (multiPreviewImages.length - 2)
+                            || imageIndex === (multiPreviewImages.length - 1)
+                        )
+                    ) {
+                        <div class="dot" (click)="setIndex(imageIndex-3)">
+                            <div class="image-index">{{imageIndex - 2}}</div>
+                        </div>
+                    }
+                    @if (multiPreviewImages?.[imageIndex-2]) {
+                        <div class="dot" (click)="setIndex(imageIndex-2)">
+                            <div class="image-index">{{imageIndex - 1}}</div>
+                        </div>
+                    }
+                    @if (multiPreviewImages?.[imageIndex-1]) {
+                        <div class="dot" (click)="setIndex(imageIndex-1)">
+                            <div class="image-index">{{imageIndex}}</div>
+                        </div>
+                    }                    
+                    <div class="dot selected disabled">
+                        <div class="image-index">{{imageIndex + 1}}</div>
+                    </div>
+                    @if (multiPreviewImages?.[imageIndex+1]) {
+                        <div class="dot" (click)="setIndex(imageIndex+1)">
+                            <div class="image-index">{{imageIndex + 2}}</div>
+                        </div>
+                    }
+                    @if (multiPreviewImages?.[imageIndex+2]) {
+                        <div class="dot" (click)="setIndex(imageIndex+2)">
+                            <div class="image-index">{{imageIndex + 3}}</div>
+                        </div>
+                    }
+                    @if (multiPreviewImages?.[imageIndex+3] && imageIndex <= 1) {
+                        <div class="dot" (click)="setIndex(imageIndex+3)">
+                            <div class="image-index">{{imageIndex + 4}}</div>
+                        </div>
+                    }
+                    @if (multiPreviewImages?.[imageIndex+4] && imageIndex === 0) {
+                        <div class="dot" (click)="setIndex(imageIndex+4)">
+                            <div class="image-index">{{imageIndex + 5}}</div>
+                        </div>
+                    }
+                    <i class="fas fa-angle-right right-button" [class.disabled]="!multiPreviewImages || !multiPreviewImages.length || imageIndex === (multiPreviewImages.length - 1)" (click)="next()"></i>
                 </div>
-                <div *ngIf="
-                            multiPreviewImages
-                            && multiPreviewImages[imageIndex-3]
-                            && (
-                                imageIndex === (multiPreviewImages.length - 2)
-                                || imageIndex === (multiPreviewImages.length - 1)
-                            )
-                        "
-                        class="dot"
-                        (click)="setIndex(imageIndex-3)"
-                    >
-                    <div class="image-index">{{imageIndex - 2}}</div>
+            }
+            @else {
+                <div class="image-preview">
+                    <img class="mat-elevation-z2" [src]="singlePreviewImage ?? metadata.previewPlaceholderUrl ?? placeHolder">
                 </div>
-                <div *ngIf="multiPreviewImages?.[imageIndex-2]" class="dot" (click)="setIndex(imageIndex-2)">
-                    <div class="image-index">{{imageIndex - 1}}</div>
-                </div>
-                <div *ngIf="multiPreviewImages?.[imageIndex-1]" class="dot" (click)="setIndex(imageIndex-1)">
-                    <div class="image-index">{{imageIndex}}</div>
-                </div>
-                <div class="dot selected disabled">
-                    <div class="image-index">{{imageIndex + 1}}</div>
-                </div>
-                <div *ngIf="multiPreviewImages?.[imageIndex+1]" class="dot" (click)="setIndex(imageIndex+1)">
-                    <div class="image-index">{{imageIndex + 2}}</div>
-                </div>
-                <div *ngIf="multiPreviewImages?.[imageIndex+2]" class="dot" (click)="setIndex(imageIndex+2)">
-                    <div class="image-index">{{imageIndex + 3}}</div>
-                </div>
-                <div *ngIf="multiPreviewImages?.[imageIndex+3] && imageIndex <= 1" class="dot" (click)="setIndex(imageIndex+3)">
-                    <div class="image-index">{{imageIndex + 4}}</div>
-                </div>
-                <div *ngIf="multiPreviewImages?.[imageIndex+4] && imageIndex === 0" class="dot" (click)="setIndex(imageIndex+4)">
-                    <div class="image-index">{{imageIndex + 5}}</div>
-                </div>
-                <i class="fas fa-angle-right right-button" [class.disabled]="!multiPreviewImages || !multiPreviewImages.length || imageIndex === (multiPreviewImages.length - 1)" (click)="next()"></i>
-            </div>
-        </ng-container>
-
-        <ng-container *ngIf="!metadata.multiple">
-            <div class="image-preview">
-                <img class="mat-elevation-z2" [src]="singlePreviewImage ?? metadata.previewPlaceholderUrl ?? placeHolder">
-            </div>
-        </ng-container>
-    </ng-container>
-</div>
+            }
+        }
+    </div>
+}

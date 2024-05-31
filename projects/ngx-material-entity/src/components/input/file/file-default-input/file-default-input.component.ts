@@ -13,9 +13,7 @@ import { FileInputComponent } from '../file-input/file-input.component';
     templateUrl: './file-default-input.component.html',
     styleUrls: ['./file-default-input.component.scss'],
     standalone: true,
-    imports: [
-        FileInputComponent
-    ]
+    imports: [FileInputComponent]
 })
 export class FileDefaultInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.FILE_DEFAULT, FileData | FileData[]> implements OnInit {

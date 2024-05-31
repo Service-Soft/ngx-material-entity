@@ -1,7 +1,6 @@
-import { Time } from '@angular/common';
 import { EnvironmentInjector } from '@angular/core';
 
-import { DateUtilities } from './date.utilities';
+import { DateUtilities, Time } from './date.utilities';
 import { EntityUtilities } from './entity.utilities';
 import { FileUtilities } from './file.utilities';
 import { BaseEntityType } from '../classes/entity.model';
@@ -102,19 +101,20 @@ export abstract class ValidationUtilities {
      * @returns A validation error when the property is not valid, undefined otherwise.
      * @throws When the type of the property is not known.
      */
+    // eslint-disable-next-line sonar/cognitive-complexity
     static async getPropertyValidationError<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         key: keyof EntityType,
         omit?: 'create' | 'update'
     ): Promise<ValidationError | undefined> {
         const type: DecoratorTypes | undefined = EntityUtilities.getPropertyType(entity, key);
-        if (type == null) {
+        if (type == undefined) {
             return undefined;
         }
         const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = EntityUtilities.getPropertyMetadata(entity, key, type);
 
         // istanbul ignore next
-        if (metadata == null) {
+        if (metadata == undefined) {
             return undefined;
         }
 
@@ -124,18 +124,14 @@ export abstract class ValidationUtilities {
         if (metadata.omitForUpdate && omit === 'update') {
             return undefined;
         }
-        if (metadata.required(entity) && type !== DecoratorTypes.HAS_MANY) {
-            if (entity[key] == null || entity[key] === '') {
-                return {
-                    property: metadata.displayName,
-                    message: 'required'
-                };
-            }
+        if (type !== DecoratorTypes.HAS_MANY && metadata.required(entity) && (entity[key] == undefined || entity[key] === '')) {
+            return {
+                property: metadata.displayName,
+                message: 'required'
+            };
         }
-        if (!metadata.required(entity)) {
-            if (entity[key] == null || entity[key] === '') {
-                return undefined;
-            }
+        if (!metadata.required(entity) && (entity[key] == undefined || entity[key] === '')) {
+            return undefined;
         }
         switch (type) {
             case DecoratorTypes.BOOLEAN_DROPDOWN:
@@ -155,6 +151,7 @@ export abstract class ValidationUtilities {
                 return this.getStringValidationError(entityString, stringMetadata);
             case DecoratorTypes.STRING_AUTOCOMPLETE:
                 const entityAutocompleteString: string = entity[key] as string;
+                // eslint-disable-next-line stylistic/max-len
                 const stringAutocompleteMetadata: AutocompleteStringDecoratorConfigInternal = metadata as AutocompleteStringDecoratorConfigInternal;
                 return this.getAutocompleteStringValidationError(entity, entityAutocompleteString, stringAutocompleteMetadata);
             case DecoratorTypes.STRING_TEXTBOX:
@@ -180,7 +177,7 @@ export abstract class ValidationUtilities {
                     const value: unknown = entityObject[parameterKey];
                     if (
                         !(metadata as DefaultObjectDecoratorConfigInternal<EntityType>).omit.includes(parameterKey)
-                        && !(!metadata.required(entity) && (value == null || value == ''))
+                        && !(!metadata.required(entity) && (value == undefined || value == ''))
                     ) {
                         const err: ValidationError | undefined = await this.getPropertyValidationError(entityObject, parameterKey, omit);
                         if (err) {
@@ -197,7 +194,9 @@ export abstract class ValidationUtilities {
                 return undefined;
             case DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS:
                 const stringAutocompleteArray: string[] = entity[key] as string[];
+                // eslint-disable-next-line stylistic/max-len
                 const stringAutocompleteArrayMetadata: AutocompleteStringChipsArrayDecoratorConfigInternal = metadata as AutocompleteStringChipsArrayDecoratorConfigInternal;
+                // eslint-disable-next-line stylistic/max-len
                 return await this.getArrayStringAutocompleteChipsValidationError(entity, stringAutocompleteArrayMetadata, stringAutocompleteArray);
             case DecoratorTypes.ARRAY_STRING_CHIPS:
             case DecoratorTypes.ARRAY_DATE:
@@ -205,6 +204,7 @@ export abstract class ValidationUtilities {
             case DecoratorTypes.ARRAY_DATE_RANGE:
             case DecoratorTypes.ARRAY:
                 const entityArray: unknown[] = entity[key] as unknown[];
+                // eslint-disable-next-line stylistic/max-len
                 const arrayMetadata: EntityArrayDecoratorConfigInternal<EntityType> = metadata as EntityArrayDecoratorConfigInternal<EntityType>;
                 if (arrayMetadata.required(entity) && !entityArray.length) {
                     return {
@@ -236,7 +236,7 @@ export abstract class ValidationUtilities {
             case DecoratorTypes.HAS_MANY:
                 break;
             case DecoratorTypes.CUSTOM:
-                // eslint-disable-next-line typescript/no-explicit-any
+                // eslint-disable-next-line typescript/no-explicit-any, stylistic/max-len
                 const customMetadata: CustomDecoratorConfigInternal<EntityType, any, any, any> = metadata as CustomDecoratorConfigInternal<EntityType, any, any, any>;
                 if (!customMetadata.isValid(entity[key], omit)) {
                     return {
@@ -430,18 +430,17 @@ export abstract class ValidationUtilities {
         return undefined;
     }
 
+    // eslint-disable-next-line sonar/cognitive-complexity
     private static getDateRangeValidationError<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         value: Partial<DateRange>,
         metadata: DateRangeDateDecoratorConfigInternal
     ): ValidationError | undefined {
-        if (metadata.required(entity)) {
-            if (value.start == null || value.end == null || value.values == null) {
-                return {
-                    property: metadata.displayName,
-                    message: 'required'
-                };
-            }
+        if (metadata.required(entity) && (value.start == undefined || value.end == undefined || value.values == undefined)) {
+            return {
+                property: metadata.displayName,
+                message: 'required'
+            };
         }
         if (value.start) {
             value.start = new Date(value.start);
@@ -457,13 +456,11 @@ export abstract class ValidationUtilities {
                     message: `start date needs to be before ${formatDate(metadata.maxStart(value.start))}`
                 };
             }
-            if (metadata.filter) {
-                if (!metadata.filter(value.start)) {
-                    return {
-                        property: metadata.displayName,
-                        message: 'start date invalid'
-                    };
-                }
+            if (metadata.filter && !metadata.filter(value.start)) {
+                return {
+                    property: metadata.displayName,
+                    message: 'start date invalid'
+                };
             }
         }
 
@@ -481,16 +478,13 @@ export abstract class ValidationUtilities {
                     message: `end date needs to be before ${formatDate(metadata.maxEnd(value.end))}`
                 };
             }
-            if (metadata.filter) {
-                if (!metadata.filter(value.end)) {
-                    return {
-                        property: metadata.displayName,
-                        message: 'end date invalid'
-                    };
-                }
+            if (metadata.filter && !metadata.filter(value.end)) {
+                return {
+                    property: metadata.displayName,
+                    message: 'end date invalid'
+                };
             }
         }
-
 
         if (metadata.filter && value.values) {
             for (const date of value.values) {
@@ -505,6 +499,7 @@ export abstract class ValidationUtilities {
         return undefined;
     }
 
+    // eslint-disable-next-line sonar/cognitive-complexity
     private static getDateTimeValidationError(
         value: Date,
         metadata: DateTimeDateDecoratorConfigInternal,
@@ -585,7 +580,7 @@ export abstract class ValidationUtilities {
         const files: FileData[] = metadata.multiple ? value as FileData[] : [value as FileData];
         let fileSizeTotal: number = 0;
         for (const file of files) {
-            if (!file.name || !file.file && !file.url) {
+            if (!file.name || (!file.file && !file.url)) {
                 return {
                     property: metadata.displayName,
                     message: 'invalid'

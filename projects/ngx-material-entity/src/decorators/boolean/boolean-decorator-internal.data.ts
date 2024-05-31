@@ -45,6 +45,7 @@ export class ToggleBooleanDecoratorConfigInternal extends PropertyDecoratorConfi
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'toggle';
 
+    // eslint-disable-next-line sonar/no-identical-functions
     constructor(data: ToggleBooleanDecoratorConfig) {
         super(data);
         this.displayStyle = data.displayStyle;

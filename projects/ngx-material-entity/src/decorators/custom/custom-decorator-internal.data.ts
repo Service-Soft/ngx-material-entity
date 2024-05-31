@@ -33,7 +33,11 @@ export class CustomDecoratorConfigInternal<
     // eslint-disable-next-line jsdoc/require-jsdoc
     isValid: (value: ValueType, omit?: 'create' | 'update') => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    isEqual: (value: ValueType, valuePriorChanges: ValueType, metadata: CustomDecoratorConfig<EntityType, ValueType, MetadataType, ComponentType>) => boolean;
+    isEqual: (
+        value: ValueType,
+        valuePriorChanges: ValueType,
+        metadata: CustomDecoratorConfig<EntityType, ValueType, MetadataType, ComponentType>
+    ) => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
     customMetadata: MetadataType;
 

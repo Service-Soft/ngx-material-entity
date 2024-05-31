@@ -24,7 +24,7 @@ class PositionInternal implements Position {
     }
 
     private validateInput(data?: Position): void {
-        if (data?.order != null) {
+        if (data?.order != undefined) {
             if (data.order < 1 && data.order != -1) {
                 throw new Error('order must be at least 1');
             }
@@ -32,10 +32,10 @@ class PositionInternal implements Position {
                 throw new Error('order cannot be bigger than 12 (the maximum value for a bootstrap column)');
             }
         }
-        if (data?.row != null && data.row != -1 && data.row < 1) {
+        if (data?.row != undefined && data.row != -1 && data.row < 1) {
             throw new Error('row must be at least 1');
         }
-        if (data?.tab != null && data.tab != -1 && data.tab < 2) {
+        if (data?.tab != undefined && data.tab != -1 && data.tab < 2) {
             throw new Error('tab must be either -1 for the first tab or at least 2');
         }
     }
@@ -85,13 +85,13 @@ export abstract class PropertyDecoratorConfigInternal<ValueType> implements Prop
      * @returns A function that returns a default value or undefined.
      */
     protected defaultToFunction(value?: ValueType | (() => ValueType)): (() => ValueType) | undefined {
-        if (value == null) {
+        if (value == undefined) {
             return undefined;
         }
         if (typeof value == 'function') {
             return value as (() => ValueType);
         }
-        return (() => value);
+        return () => value;
     }
 
     /**

@@ -13,10 +13,14 @@ export function baseProperty<
     T extends DecoratorTypes,
     CustomMetadataType extends Record<string, unknown>
 >(metadata: DecoratorType<T, CustomMetadataType>, type: T, metadataKeysToReset?: string[]) {
-    return function (target: object, propertyKey: string) {
+    return function(target: object, propertyKey: string) {
         ReflectUtilities.defineMetadata('metadata', metadata, target, propertyKey as keyof object);
         ReflectUtilities.defineMetadata('type', type, target, propertyKey as keyof object);
-
-        ReflectUtilities.defineMetadata(EntityUtilities.METADATA_KEYS_TO_RESET_KEY, metadataKeysToReset, target, propertyKey as keyof object);
+        ReflectUtilities.defineMetadata(
+            EntityUtilities.METADATA_KEYS_TO_RESET_KEY,
+            metadataKeysToReset,
+            target,
+            propertyKey as keyof object
+        );
     };
 }

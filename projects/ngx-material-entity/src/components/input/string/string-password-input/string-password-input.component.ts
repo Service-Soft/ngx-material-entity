@@ -100,10 +100,7 @@ export class StringPasswordInputComponent<EntityType extends BaseEntityType<Enti
 
     // exists
     private isPasswordWeak(): boolean {
-        if (!this.propertyValue) {
-            return false;
-        }
-        return true;
+        return !!this.propertyValue;
     }
 
     private isPasswordComplex(): boolean {
@@ -112,7 +109,7 @@ export class StringPasswordInputComponent<EntityType extends BaseEntityType<Enti
         }
         return /[A-Z]/g.test(this.propertyValue)
             && /[a-z]/g.test(this.propertyValue)
-            && /[0-9]/g.test(this.propertyValue)
-            && /[!@#$%^&*(),.?":{}|<>]/.test(this.propertyValue);
+            && /\d/g.test(this.propertyValue)
+            && /[!"#$%&()*,.:<>?@^{|}]/.test(this.propertyValue);
     }
 }

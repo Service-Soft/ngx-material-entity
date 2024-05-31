@@ -13,15 +13,21 @@
                 <i matSuffix class="fas fa-search"></i>
             </mat-form-field>
             <mat-option>-</mat-option>
-            <mat-option *ngIf="shouldDisplayCurrentValue" [value]="currentDropdownValue?.value">{{currentDropdownValue?.displayName}}</mat-option>
-        <mat-option *ngFor="let value of filteredDropdownValues" [value]="value.value">{{value.displayName}}</mat-option>
+            @if (shouldDisplayCurrentValue) {
+                <mat-option [value]="currentDropdownValue?.value">{{currentDropdownValue?.displayName}}</mat-option>
+            }
+            @for (value of filteredDropdownValues; track $index) {
+                <mat-option [value]="value.value">{{value.displayName}}</mat-option>
+            }
         </mat-select>
         <mat-error>{{getValidationErrorMessage(inputModel)}}</mat-error>
     </mat-form-field>
 
-    <button *ngIf="metadata.addAll" type="button" style="margin-left: 20px;" mat-raised-button [disabled]="!dropdownValues.length || isReadOnly" (click)="addAll()">
-        {{metadata.addAllButtonLabel}}
-    </button>
+    @if (metadata.addAll) {
+        <button type="button" style="margin-left: 20px;" mat-raised-button [disabled]="!dropdownValues.length || isReadOnly" (click)="addAll()">
+            {{metadata.addAllButtonLabel}}
+        </button>
+    }
 
     <div class="buttons">
         <button type="button" mat-raised-button [disabled]="!input" (click)="add()">
@@ -34,27 +40,31 @@
 
     <mat-table [dataSource]="referencedEntitiesDataSource">
         <!-- select Column -->
-        <ng-container *ngIf="!isReadOnly" matColumnDef="select">
-            <mat-header-cell *matHeaderCellDef>
-                <mat-checkbox
-                    [disabled]="!referencedEntitiesDataSource.data.length" [checked]="selection.hasValue() && SelectionUtilities.isAllSelected(selection, referencedEntitiesDataSource)"
-                    [indeterminate]="selection.hasValue() && !SelectionUtilities.isAllSelected(selection, referencedEntitiesDataSource)"
-                    (change)="$event ? SelectionUtilities.masterToggle(selection, referencedEntitiesDataSource) : null">
-                </mat-checkbox>
-            </mat-header-cell>
-            <mat-cell *matCellDef="let entity">
-                <mat-checkbox [checked]="selection.isSelected(entity)" (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(entity) : null"></mat-checkbox>
-            </mat-cell>
-        </ng-container>
-    
-        <ng-container *ngFor="let dCol of metadata.displayColumns" [matColumnDef]="dCol.displayName">
-            <mat-header-cell *matHeaderCellDef>
-                {{dCol.displayName}}
-            </mat-header-cell>
-            <mat-cell *matCellDef="let entityId" class="entity">
-                {{getDisplayColumnValue(entityId, dCol)}}
-            </mat-cell>
-        </ng-container>
+        @if (!isReadOnly) {
+            <ng-container matColumnDef="select">
+                <mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox
+                        [disabled]="!referencedEntitiesDataSource.data.length" [checked]="selection.hasValue() && SelectionUtilities.isAllSelected(selection, referencedEntitiesDataSource)"
+                        [indeterminate]="selection.hasValue() && !SelectionUtilities.isAllSelected(selection, referencedEntitiesDataSource)"
+                        (change)="$event ? SelectionUtilities.masterToggle(selection, referencedEntitiesDataSource) : null">
+                    </mat-checkbox>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let entity">
+                    <mat-checkbox [checked]="selection.isSelected(entity)" (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(entity) : null"></mat-checkbox>
+                </mat-cell>
+            </ng-container>
+        }
+
+        @for (dCol of metadata.displayColumns; track $index) {
+            <ng-container [matColumnDef]="dCol.displayName">
+                <mat-header-cell *matHeaderCellDef>
+                    {{dCol.displayName}}
+                </mat-header-cell>
+                <mat-cell *matCellDef="let entityId" class="entity">
+                    {{getDisplayColumnValue(entityId, dCol)}}
+                </mat-cell>
+            </ng-container>
+        }
     
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>

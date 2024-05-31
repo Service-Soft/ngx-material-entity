@@ -1,3 +1,4 @@
+/* eslint-disable sonar/no-duplicate-string */
 import { expect } from '@jest/globals';
 import { firstValueFrom, of } from 'rxjs';
 
@@ -34,7 +35,7 @@ class Address {
     @string({
         displayName: 'Postcode',
         displayStyle: 'line',
-        regex: new RegExp('^[0-9]+$'),
+        regex: new RegExp('^\\d+$'),
         maxLength: 5,
         minLength: 5
     })
@@ -116,13 +117,15 @@ describe('referencesOne', () => {
                 'addressId',
                 DecoratorTypes.REFERENCES_ONE
             );
-        const referencedEntities: Address[] = (await metadata?.getReferencedEntities()) ?? [];
+        const referencedEntities: Address[] = await metadata?.getReferencedEntities() ?? [];
         expect(referencedEntities).toEqual([{ id: '1', street: 'Example Street', number: '42', postcode: '12345', city: 'Example City' }]);
         const dropdownValues: DropdownValue<string>[] | undefined = metadata?.getDropdownValues(referencedEntities);
-        expect(dropdownValues).toEqual([{
-            displayName: 'Example Street 42, 12345 Example City',
-            value: '1'
-        }]);
+        expect(dropdownValues).toEqual([
+            {
+                displayName: 'Example Street 42, 12345 Example City',
+                value: '1'
+            }
+        ]);
     });
 
     test('should return correct values for default getEntityForId method', async () => {
@@ -132,7 +135,7 @@ describe('referencesOne', () => {
                 'addressId',
                 DecoratorTypes.REFERENCES_ONE
             );
-        const referencedEntities: Address[] = (await metadata?.getReferencedEntities()) ?? [];
+        const referencedEntities: Address[] = await metadata?.getReferencedEntities() ?? [];
         const entityForId: Address | undefined = metadata?.getEntityForId('1', referencedEntities);
         expect(entityForId).toEqual({ id: '1', street: 'Example Street', number: '42', postcode: '12345', city: 'Example City' });
     });

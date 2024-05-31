@@ -13,11 +13,11 @@ import { DecoratorTypes } from '../base/decorator-types.enum';
  */
 export function array<EntityType extends BaseEntityType<EntityType>>(
     metadata: EntityArrayDecoratorConfig<EntityType>
-                | StringChipsArrayDecoratorConfig
-                | AutocompleteStringChipsArrayDecoratorConfig
-                | DateArrayDecoratorConfig
-                | DateTimeArrayDecoratorConfig
-                | DateRangeArrayDecoratorConfig
+    | StringChipsArrayDecoratorConfig
+    | AutocompleteStringChipsArrayDecoratorConfig
+    | DateArrayDecoratorConfig
+    | DateTimeArrayDecoratorConfig
+    | DateRangeArrayDecoratorConfig
 ): (target: object, propertyKey: string) => void {
     switch (metadata.itemType) {
         case DecoratorTypes.OBJECT:

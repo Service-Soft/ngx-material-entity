@@ -30,6 +30,7 @@ import { TooltipComponent } from '../tooltip/tooltip.component';
 /**
  * The data that needs to be provided for a route to be able to edit a entity.
  */
+// eslint-disable-next-line stylistic/max-len
 export type PageEditData<EntityType extends BaseEntityType<EntityType>> = Omit<EditEntityData<EntityType>, 'entity' | 'EntityServiceClass'> & {
     /**
      * Whether or not to display a loading spinner while the entity for the page is loaded.
@@ -55,12 +56,12 @@ export type PageEditData<EntityType extends BaseEntityType<EntityType>> = Omit<E
 /**
  * The entity service that needs to be provided in the providers array of the edit page route.
  */
-// eslint-disable-next-line typescript/no-explicit-any
+// eslint-disable-next-line typescript/no-explicit-any, stylistic/max-len
 export const NGX_EDIT_DATA_ENTITY_SERVICE: InjectionToken<EntityService<any>> = new InjectionToken<EntityService<any>>('NGX_EDIT_DATA_ENTITY_SERVICE');
 /**
  * The entity class that needs to be provided in the providers array of the edit page route.
  */
-// eslint-disable-next-line typescript/no-explicit-any
+// eslint-disable-next-line typescript/no-explicit-any, stylistic/max-len
 export const NGX_EDIT_DATA_ENTITY: InjectionToken<EntityClassNewable<any>> = new InjectionToken<EntityClassNewable<any>>('NGX_EDIT_DATA_ENTITY');
 /**
  * The configuration that needs to be provided in the providers array of the edit page route.
@@ -165,31 +166,32 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
         protected readonly globalConfig: NgxGlobalDefaultValues
     ) { }
 
-    async ngOnInit(): Promise<void> {
+    ngOnInit(): void {
         this.data = new PageEditDataBuilder(this.inputData, this.globalConfig).getResult();
-        if (this.data == null) {
+        if (this.data == undefined) {
             this.confirmNavigateBack();
             throw new Error('No edit data was provided for "NGX_EDIT_DATA". You need to provide a value in your routes providers array.');
         }
 
         const id: EntityType[keyof EntityType] = this.route.snapshot.paramMap.get('id') as EntityType[keyof EntityType];
-        const foundEntity: EntityType | undefined = await this.entityService.findById(id);
+        // eslint-disable-next-line promise/prefer-await-to-then
+        void this.entityService.findById(id).then(foundEntity => {
+            if (foundEntity == undefined) {
+                this.confirmNavigateBack();
+                throw new Error(`Could not find entity with id ${id}`);
+            }
 
-        if (foundEntity == null) {
-            this.confirmNavigateBack();
-            throw new Error(`Could not find entity with id ${id}`);
-        }
+            this.entity = new this.EntityClass(foundEntity);
+            this.entityPriorChanges = LodashUtilities.cloneDeep(this.entity);
 
-        this.entity = new this.EntityClass(foundEntity);
-        this.entityPriorChanges = LodashUtilities.cloneDeep(this.entity);
-
-        runInInjectionContext(this.injector, () => {
-            this.isEntityReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
-            this.allowDelete = this.data.allowDelete(this.entityPriorChanges);
+            runInInjectionContext(this.injector, () => {
+                this.isEntityReadOnly = !this.data.allowUpdate(this.entityPriorChanges);
+                this.allowDelete = this.data.allowDelete(this.entityPriorChanges);
+            });
+            this.isLoaded = true;
+            setTimeout(() => this.checkOffset(), 1);
+            setTimeout(() => void this.checkIsEntityValid(), 1);
         });
-        this.isLoaded = true;
-        setTimeout(() => this.checkOffset(), 1);
-        setTimeout(() => void this.checkIsEntityValid(), 1);
     }
 
     /**
@@ -238,15 +240,16 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
      * Tries to save the changes and close the dialog afterwards.
      * Also handles the confirmation if required.
      */
-    edit(): void {
+    async edit(): Promise<void> {
         if (this.isEntityReadOnly || !this.isEntityValid || !this.isEntityDirty) {
             return;
         }
         if (!this.data.editData.editRequiresConfirmDialog) {
-            this.confirmEdit();
+            await this.confirmEdit();
             return;
         }
 
+        // eslint-disable-next-line stylistic/max-len
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.editData.confirmEditDialogData)
             .withDefault('text', this.globalConfig.confirmSaveText)
             .withDefault('confirmButtonLabel', this.globalConfig.saveLabel)
@@ -257,27 +260,28 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
             autoFocus: false,
             restoreFocus: false
         });
-        dialogRef.afterClosed().subscribe(res => {
-            if (res == true) {
-                this.confirmEdit();
-            }
-        });
+        const res: boolean | undefined = await firstValueFrom(dialogRef.afterClosed());
+        if (res == true) {
+            await this.confirmEdit();
+        }
     }
 
-    private confirmEdit(): void {
-        void this.entityService.update(this.entity, this.entityPriorChanges).then(() => this.confirmNavigateBack());
+    private async confirmEdit(): Promise<void> {
+        await this.entityService.update(this.entity, this.entityPriorChanges);
+        this.confirmNavigateBack();
     }
 
     /**
      * Tries to delete the entity and close the dialog afterwards.
      * Also handles the confirmation if required.
      */
-    delete(): void {
+    async delete(): Promise<void> {
         if (!this.data.editData.deleteRequiresConfirmDialog) {
-            this.confirmDelete();
+            await this.confirmDelete();
             return;
         }
 
+        // eslint-disable-next-line stylistic/max-len
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, this.data.editData.confirmDeleteDialogData)
             .withDefault('text', this.globalConfig.confirmDeleteText)
             .withDefault('type', 'delete')
@@ -289,17 +293,15 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
             autoFocus: false,
             restoreFocus: false
         });
-        dialogRef.afterClosed().subscribe(res => {
-            if (res == true) {
-                this.confirmDelete();
-            }
-        });
+        const res: boolean | undefined = await firstValueFrom(dialogRef.afterClosed());
+        if (res == true) {
+            await this.confirmDelete();
+        }
     }
 
-    private confirmDelete(): void {
-        void this.entityService
-            .delete(this.entityPriorChanges)
-            .then(() => this.confirmNavigateBack());
+    private async confirmDelete(): Promise<void> {
+        await this.entityService.delete(this.entityPriorChanges);
+        this.confirmNavigateBack();
     }
 
     /**
@@ -324,7 +326,7 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
             autoFocus: false,
             restoreFocus: false
         });
-        return (await firstValueFrom(dialogRef.afterClosed())) ?? false;
+        return await firstValueFrom(dialogRef.afterClosed()) ?? false;
     }
 
     private confirmNavigateBack(): void {
@@ -337,13 +339,13 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
      * Runs the edit action on the entity.
      * @param action - The action to run.
      */
-    runEditAction(action: EditActionInternal<EntityType>): void {
+    async runEditAction(action: EditActionInternal<EntityType>): Promise<void> {
         const requireConfirmDialog: boolean = runInInjectionContext(this.injector, () => {
             return action.requireConfirmDialog(this.entityPriorChanges);
         });
 
         if (!requireConfirmDialog) {
-            this.confirmRunEditAction(action);
+            await this.confirmRunEditAction(action);
             return;
         }
         const dialogRef: MatDialogRef<NgxMatEntityConfirmDialogComponent, boolean> = this.dialog.open(NgxMatEntityConfirmDialogComponent, {
@@ -351,15 +353,14 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
             autoFocus: false,
             restoreFocus: false
         });
-        dialogRef.afterClosed().subscribe(res => {
-            if (res == true) {
-                this.confirmRunEditAction(action);
-            }
-        });
+        const res: boolean | undefined = await firstValueFrom(dialogRef.afterClosed());
+        if (res == true) {
+            await this.confirmRunEditAction(action);
+        }
     }
 
-    private confirmRunEditAction(action: EditActionInternal<EntityType>): void {
-        void runInInjectionContext(this.injector, async () => {
+    private async confirmRunEditAction(action: EditActionInternal<EntityType>): Promise<void> {
+        await runInInjectionContext(this.injector, async () => {
             await action.action(this.entity, this.entityPriorChanges);
             await this.checkEntity();
         });

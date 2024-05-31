@@ -14,15 +14,21 @@
     <mat-form-field>
         <mat-label>Table Configuration</mat-label>
         <mat-select #config="ngModel" name="config" [(ngModel)]="selectedTableDataPreset">
-            <mat-option *ngFor="let value of tableDataPresets" [value]="value" (click)="refreshTable()">
-                {{value}}
-            </mat-option>
+            @for (value of tableDataPresets; track $index) {
+                <mat-option [value]="value" (click)="refreshTable()">
+                    {{value}}
+                </mat-option>
+            }
         </mat-select>
     </mat-form-field>
     
-    <ngx-mat-entity-table *ngIf="showTable" [tableData]="tableData">
-    </ngx-mat-entity-table>
-    <ngx-mat-entity-table *ngIf="!showTable" [tableData]="tableData">
-    </ngx-mat-entity-table>
+    @if (showTable) {
+        <ngx-mat-entity-table [tableData]="tableData">
+        </ngx-mat-entity-table>
+    }
+    @else {
+        <ngx-mat-entity-table [tableData]="tableData">
+        </ngx-mat-entity-table>
+    }
     <br>
 </div>

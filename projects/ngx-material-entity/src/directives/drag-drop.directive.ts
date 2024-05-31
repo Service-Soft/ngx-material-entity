@@ -12,7 +12,7 @@ export class DragDropDirective {
      * Emits the dropped files to the parent.
      */
     @Output()
-    files: EventEmitter<File[]> = new EventEmitter<File[]>();
+    readonly files: EventEmitter<File[]> = new EventEmitter<File[]>();
 
     constructor() { }
 

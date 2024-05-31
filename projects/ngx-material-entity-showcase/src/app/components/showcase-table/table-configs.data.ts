@@ -1,4 +1,4 @@
-/* eslint-disable jsdoc/require-jsdoc */
+/* eslint-disable sonar/no-duplicate-string */
 import { TableData, exportAsCsvMultiAction, exportAsJsonMultiAction, exportAsXmlMultiAction } from 'ngx-material-entity';
 
 import { TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';

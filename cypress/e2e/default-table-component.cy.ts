@@ -1,3 +1,5 @@
+/* eslint-disable sonar/no-duplicate-string */
+/* eslint-disable stylistic/newline-per-chained-call */
 describe('default table', () => {
     before('Reset Api', () => {
         cy.request('POST', 'http://localhost:3000/reset/');

@@ -43,9 +43,9 @@ export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntity
         super();
     }
 
-    override async ngOnInit(): Promise<void> {
+    override ngOnInit(): void {
         super.ngOnInit();
-        await runInInjectionContext(this.injector, async () => {
+        void runInInjectionContext(this.injector, async () => {
             this.autocompleteStrings = await this.autocompleteMetadata.autocompleteValues(this.entity);
             this.filteredAutocompleteStrings = LodashUtilities.cloneDeep(this.autocompleteStrings);
         });

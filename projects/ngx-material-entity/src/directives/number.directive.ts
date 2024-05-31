@@ -17,7 +17,7 @@ export class NumberDirective {
     @HostListener('keydown', ['$event'])
     onKeyDown(e: KeyboardEvent): void {
         if (
-            !isNaN(parseInt(e.key))
+            !Number.isNaN(Number.parseInt(e.key))
             || ['.', ',', 'Escape', 'Enter', 'Delete', 'Backspace', 'Home', 'End', 'Left', 'Right', 'Tab'].includes(e.key)
             || (e.ctrlKey || e.metaKey) // && ['a', 'c', 'v', 'x', 'z'].includes(e.key)
         ) {

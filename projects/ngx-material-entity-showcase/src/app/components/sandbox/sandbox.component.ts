@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc */
 import { CommonModule, formatDate, formatNumber } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, EnvironmentInjector, HostListener, Injectable, inject } from '@angular/core';
@@ -54,7 +53,7 @@ class Address extends Entity {
     @string({
         displayName: 'Postcode',
         displayStyle: 'line',
-        regex: new RegExp('^[0-9]+$'),
+        regex: new RegExp('^\\d+$'),
         maxLength: 5,
         minLength: 5,
         change: (entity: Address) => entity.city = undefined as unknown as string
@@ -126,6 +125,14 @@ export class Person extends Entity {
         default: () => 'Smith'
     })
     lastName!: string;
+
+    @string({
+        displayName: 'Company Name',
+        displayStyle: 'line',
+        display: (e: Person) => e.firstName === 'company',
+        required: (e: Person) => e.firstName === 'company'
+    })
+    companyName?: string;
 
     @object({
         displayName: 'Optional Partial Address',
@@ -340,6 +347,6 @@ export class SandboxComponent implements UnsavedChangesPage {
             autoFocus: false,
             restoreFocus: false
         });
-        return (await firstValueFrom(dialogRef.afterClosed())) ?? false;
+        return await firstValueFrom(dialogRef.afterClosed()) ?? false;
     }
 }

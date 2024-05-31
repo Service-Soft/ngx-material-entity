@@ -45,32 +45,32 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
 
     FileUtilities: typeof FileUtilities = FileUtilities;
 
-    @Input()
+    @Input({ required: true })
     propertyValue!: FileData | FileData[] | undefined;
 
-    @Input()
+    @Input({ required: true })
     entity!: EntityType;
 
-    @Input()
+    @Input({ required: true })
     key!: keyof EntityType;
 
-    @Input()
+    @Input({ required: true })
     metadata!: DefaultFileDecoratorConfigInternal | ImageFileDecoratorConfigInternal;
 
-    @Input()
+    @Input({ required: true })
     getValidationErrorMessage!: (model: NgModel) => string;
 
-    @Input()
+    @Input({ required: true })
     isReadOnly!: boolean;
 
     @Output()
-    fileDataChangeEvent: EventEmitter<FileData | FileData[]> = new EventEmitter<FileData | FileData[]>();
+    readonly fileDataChangeEvent: EventEmitter<FileData | FileData[]> = new EventEmitter<FileData | FileData[]>();
 
     acceptString!: string;
 
     constructor(private readonly dialog: MatDialog, private readonly http: HttpClient) { }
 
-    async ngOnInit(): Promise<void> {
+    ngOnInit(): void {
         if (this.metadata.multiple) {
             this.initMultiFile();
         }
@@ -131,12 +131,7 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
             this.resetFileInputs();
             return;
         }
-        if (this.metadata.multiple) {
-            await this.setMultiFile(Array.from(files));
-        }
-        else {
-            await this.setSingleFile(files[0]);
-        }
+        await (this.metadata.multiple ? this.setMultiFile(Array.from(files)) : this.setSingleFile(files[0]));
         this.fileDataChangeEvent.emit(this.propertyValue);
     }
 
@@ -214,16 +209,16 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
         if (!this.propertyValue) {
             return false;
         }
-        if ((this.propertyValue as FileData[]).length < 2) {
-            return false;
-        }
-        return true;
+        return !((this.propertyValue as FileData[]).length < 2);
     }
 
     async downloadAll(): Promise<void> {
         if ((this.propertyValue as FileData[]).length) {
-
-            void FileUtilities.downloadMultipleFiles(this.metadata.displayName, LodashUtilities.cloneDeep(this.propertyValue as FileData[]), this.http);
+            await FileUtilities.downloadMultipleFiles(
+                this.metadata.displayName,
+                LodashUtilities.cloneDeep(this.propertyValue as FileData[]),
+                this.http
+            );
         }
     }
 }

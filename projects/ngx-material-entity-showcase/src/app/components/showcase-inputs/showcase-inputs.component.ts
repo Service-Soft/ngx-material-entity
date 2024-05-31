@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc */
 import { CommonModule } from '@angular/common';
 import { Component, EnvironmentInjector } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -83,42 +82,42 @@ export class ShowcaseInputsComponent {
         private readonly injector: EnvironmentInjector
     ) {
         this.route.params.subscribe(params => {
-            if ((params as unknown) != null) {
-                const type: string | undefined = params['type'] as string | undefined;
-                if (!type) {
-                    void this.router.navigate(['/']);
-                }
-                switch (type) {
-                    case 'string':
-                        this.setKeys(this.STRING_DECORATOR_TYPES);
-                        break;
-                    case 'number':
-                        this.setKeys(this.NUMBER_DECORATOR_TYPES);
-                        break;
-                    case 'array':
-                        this.setKeys(this.ARRAY_DECORATOR_TYPES);
-                        break;
-                    case 'boolean':
-                        this.setKeys(this.BOOLEAN_DECORATOR_TYPES);
-                        break;
-                    case 'object':
-                        this.setKeys(this.OBJECT_DECORATOR_TYPES);
-                        break;
-                    case 'date':
-                        this.setKeys(this.DATE_DECORATOR_TYPES);
-                        break;
-                    case 'file':
-                        this.setKeys(this.FILE_DECORATOR_TYPES);
-                        break;
-                    case 'custom':
-                        this.setKeys([DecoratorTypes.CUSTOM]);
-                        break;
-                    default:
-                        throw new Error(`The specified type ${type} is unknown`);
-                }
-            }
-            else {
+            if ((params as unknown) == undefined) {
                 void this.router.navigate(['/']);
+                return;
+            }
+            const type: string | undefined = params['type'] as string | undefined;
+            if (!type) {
+                void this.router.navigate(['/']);
+                return;
+            }
+            switch (type) {
+                case 'string':
+                    this.setKeys(this.STRING_DECORATOR_TYPES);
+                    break;
+                case 'number':
+                    this.setKeys(this.NUMBER_DECORATOR_TYPES);
+                    break;
+                case 'array':
+                    this.setKeys(this.ARRAY_DECORATOR_TYPES);
+                    break;
+                case 'boolean':
+                    this.setKeys(this.BOOLEAN_DECORATOR_TYPES);
+                    break;
+                case 'object':
+                    this.setKeys(this.OBJECT_DECORATOR_TYPES);
+                    break;
+                case 'date':
+                    this.setKeys(this.DATE_DECORATOR_TYPES);
+                    break;
+                case 'file':
+                    this.setKeys(this.FILE_DECORATOR_TYPES);
+                    break;
+                case 'custom':
+                    this.setKeys([DecoratorTypes.CUSTOM]);
+                    break;
+                default:
+                    throw new Error(`The specified type ${type} is unknown`);
             }
         });
     }

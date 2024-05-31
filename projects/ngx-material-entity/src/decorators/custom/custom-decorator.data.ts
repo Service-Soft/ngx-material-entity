@@ -34,7 +34,11 @@ export interface CustomDecoratorConfig<
      * TIP: If you need additional data for checking if the value is valid, you can define them as metadata directly on the values.
      * @default (value: ValueType, valuePriorChanges: ValueType) => LodashUtilities.isEqual(value, valuePriorChanges)
      */
-    isEqual?: (value: ValueType, valuePriorChanges: ValueType, metadata: CustomDecoratorConfig<EntityType, ValueType, CustomMetadataType, ComponentType>) => boolean,
+    isEqual?: (
+        value: ValueType,
+        valuePriorChanges: ValueType,
+        metadata: CustomDecoratorConfig<EntityType, ValueType, CustomMetadataType, ComponentType>
+    ) => boolean,
     /**
      * Any custom metadata you want to add to the property.
      */

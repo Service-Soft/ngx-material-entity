@@ -31,7 +31,9 @@ export abstract class SelectionUtilities {
             selection.clear();
         }
         else {
-            dataSource.data.forEach(row => selection.select(row));
+            for (const row of dataSource.data) {
+                selection.select(row);
+            }
         }
     }
 
@@ -43,9 +45,9 @@ export abstract class SelectionUtilities {
      */
     // eslint-disable-next-line typescript/no-explicit-any
     static remove(selection: SelectionModel<any>, values: any[], dataSource: MatTableDataSource<any>): void {
-        selection.selected.forEach(s => {
+        for (const s of selection.selected) {
             values.splice(values.indexOf(s), 1);
-        });
+        }
         dataSource.data = values;
         selection.clear();
     }

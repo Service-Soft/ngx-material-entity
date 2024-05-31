@@ -38,9 +38,9 @@ export class StringAutocompleteInputComponent<EntityType extends BaseEntityType<
         super();
     }
 
-    override async ngOnInit(): Promise<void> {
+    override ngOnInit(): void {
         super.ngOnInit();
-        await runInInjectionContext(this.injector, async () => {
+        void runInInjectionContext(this.injector, async () => {
             this.autocompleteStrings = await this.metadata.autocompleteValues(this.entity);
             this.filteredAutocompleteStrings = LodashUtilities.cloneDeep(this.autocompleteStrings);
         });
@@ -50,9 +50,8 @@ export class StringAutocompleteInputComponent<EntityType extends BaseEntityType<
      * Dynamically filters the Autocomplete options when the user inputs something.
      * @param input - The input of the user.
      */
-    filterAutocompleteStrings(input?: string): void {
-        const searchString: string = input ?? '';
-        this.filteredAutocompleteStrings = this.autocompleteStrings.filter(s => s.toLowerCase().includes(searchString.toLowerCase()));
+    filterAutocompleteStrings(input: string = ''): void {
+        this.filteredAutocompleteStrings = this.autocompleteStrings.filter(s => s.toLowerCase().includes(input.toLowerCase()));
         if (!this.filteredAutocompleteStrings.length) {
             this.filteredAutocompleteStrings = LodashUtilities.cloneDeep(this.autocompleteStrings);
         }

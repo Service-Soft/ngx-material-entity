@@ -19,7 +19,9 @@
             >
                 {{data.createData.createButtonLabel}}
             </button>
-            <ngx-mat-entity-tooltip *ngIf="validationErrors.length" [tooltipContent]="tooltipContent"></ngx-mat-entity-tooltip>
+            @if (validationErrors.length) {
+                <ngx-mat-entity-tooltip [tooltipContent]="tooltipContent"></ngx-mat-entity-tooltip>
+            }
         </div>
 
         <button type="button" mat-raised-button class="cancel-button" (click)="cancel()">

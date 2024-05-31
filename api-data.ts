@@ -1,3 +1,4 @@
+/* eslint-disable sonar/no-duplicate-string */
 /* eslint-disable jsdoc/require-jsdoc */
 import { DateFilterFn } from '@angular/material/datepicker';
 
@@ -19,12 +20,7 @@ function getDatesBetween(
         res.push(new Date(startDate));
         startDate.setTime(startDate.getTime() + DAY_IN_MS);
     }
-    if (filter) {
-        return res.filter(d => filter(d));
-    }
-    else {
-        return res;
-    }
+    return filter ? res.filter(d => filter(d)) : res;
 }
 
 const testEntityData: TestEntityWithoutCustomPropertiesInterface = {
@@ -150,8 +146,11 @@ const testEntityData: TestEntityWithoutCustomPropertiesInterface = {
     customDateRangeValue: {
         start: new Date(2022, 0, 2, 0, 0, 0, 0),
         end: new Date(2022, 0, 20, 0, 0, 0, 0),
-
-        values: getDatesBetween(new Date(2022, 0, 2, 0, 0, 0, 0), new Date(2022, 0, 20, 0, 0, 0, 0), (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1)
+        values: getDatesBetween(
+            new Date(2022, 0, 2, 0, 0, 0, 0),
+            new Date(2022, 0, 20, 0, 0, 0, 0),
+            (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1
+        )
     },
     dateTimeValue: new Date(2022, 0, 1, 8, 30, 0, 0),
     customDateTimeValue: new Date(2022, 0, 2, 16, 30, 0, 0),
@@ -286,9 +285,7 @@ export interface ApiData {
     addresses: Address[]
 }
 export const apiData: ApiData = {
-    testEntities: [
-        testEntityData
-    ],
+    testEntities: [testEntityData],
     persons: [
         personData,
         personData,

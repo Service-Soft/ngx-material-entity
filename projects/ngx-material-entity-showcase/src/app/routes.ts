@@ -1,3 +1,4 @@
+/* eslint-disable promise/prefer-await-to-then */
 import { Route, Routes } from '@angular/router';
 import { CreateDataRoute, EditDataRoute, NGX_CREATE_DATA, NGX_CREATE_DATA_ENTITY, NGX_CREATE_DATA_ENTITY_SERVICE, NGX_EDIT_DATA, NGX_EDIT_DATA_ENTITY, NGX_EDIT_DATA_ENTITY_SERVICE, PageEditData, UnsavedChangesGuard, defaultCreateDataRoute, defaultEditDataRoute } from 'ngx-material-entity';
 import { NavElementTypes, NavUtilities, NavbarRow } from 'ngx-material-navigation';
@@ -5,7 +6,6 @@ import { NavElementTypes, NavUtilities, NavbarRow } from 'ngx-material-navigatio
 import { TestEntity } from '../../../ngx-material-entity/src/mocks/test-entity.mock';
 import { TestEntityService } from '../services/test-entity.service';
 
-// eslint-disable-next-line jsdoc/require-jsdoc
 export const navbarRows: NavbarRow[] = [
     {
         elements: [
@@ -177,5 +177,4 @@ const createTestEntityRoute: CreateDataRoute = {
     ]
 };
 
-// eslint-disable-next-line jsdoc/require-jsdoc
 export const routes: Routes = NavUtilities.getAngularRoutes(navbarRows, [], [inputRoute, editTestEntityRoute, createTestEntityRoute]);

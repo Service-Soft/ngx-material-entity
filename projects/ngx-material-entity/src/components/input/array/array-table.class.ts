@@ -20,7 +20,7 @@ type ArrayTableType = DecoratorTypes.ARRAY | DecoratorTypes.ARRAY_DATE
 /**
  * The base component needed for all arrays that are displayed as a table.
  */
-// eslint-disable-next-line angular/prefer-standalone-component
+// eslint-disable-next-line angular/prefer-standalone
 @Component({
     selector: 'ngx-mat-entity-array-table',
     template: ''
@@ -68,25 +68,26 @@ export abstract class ArrayTableComponent<ValueType, EntityType extends BaseEnti
      * Tries to add an item to the array.
      */
     add(): void {
-        if (this.input != null) {
-            if (
-                !this.metadata.allowDuplicates
-                && this.propertyValue?.find(
-                    async v => await EntityUtilities.isEqual(this.input, v, this.metadata, this.metadata.itemType, this.http)
-                ) != null
-            ) {
-                this.matDialog.open(NgxMatEntityConfirmDialogComponent, {
-                    data: this.metadata.duplicatesErrorDialog,
-                    autoFocus: false,
-                    restoreFocus: false
-                });
-                return;
-            }
-            this.propertyValue?.push(LodashUtilities.cloneDeep(this.input));
-            this.dataSource.data = this.propertyValue ?? [];
-            this.resetInput();
-            this.emitChange();
+        if (this.input == undefined) {
+            return;
         }
+        if (
+            !this.metadata.allowDuplicates
+            && this.propertyValue?.find(
+                async v => await EntityUtilities.isEqual(this.input, v, this.metadata, this.metadata.itemType, this.http)
+            ) != undefined
+        ) {
+            this.matDialog.open(NgxMatEntityConfirmDialogComponent, {
+                data: this.metadata.duplicatesErrorDialog,
+                autoFocus: false,
+                restoreFocus: false
+            });
+            return;
+        }
+        this.propertyValue?.push(LodashUtilities.cloneDeep(this.input));
+        this.dataSource.data = this.propertyValue ?? [];
+        this.resetInput();
+        this.emitChange();
     }
 
     /**

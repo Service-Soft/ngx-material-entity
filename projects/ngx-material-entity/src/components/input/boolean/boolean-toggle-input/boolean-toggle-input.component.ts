@@ -26,6 +26,6 @@ export class BooleanToggleInputComponent<EntityType extends BaseEntityType<Entit
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.BOOLEAN_TOGGLE, boolean> implements OnInit {
 
     updatePropertyValue(): void {
-        this.propertyValue = this.propertyValue != null ? !this.propertyValue : true;
+        this.propertyValue = this.propertyValue != undefined ? !this.propertyValue : true;
     }
 }

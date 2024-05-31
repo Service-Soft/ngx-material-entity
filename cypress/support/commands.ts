@@ -1,3 +1,5 @@
+/* eslint-disable stylistic/newline-per-chained-call */
+/* eslint-disable sonar/no-duplicate-string */
 /// <reference types="cypress" />
 // eslint-disable-next-line eslintImport/no-unassigned-import
 import 'reflect-metadata';
