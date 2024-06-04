@@ -192,6 +192,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
 
     private async confirmEdit(): Promise<void> {
         await this.entityService.update(this.data.entity, this.entityPriorChanges);
+        this.unsavedChanges.emit(false);
         this.dialogRef.close(1);
     }
 
@@ -225,6 +226,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
 
     private async confirmDelete(): Promise<void> {
         await this.entityService.delete(this.entityPriorChanges);
+        this.unsavedChanges.emit(false);
         this.dialogRef.close(2);
     }
 
@@ -254,6 +256,7 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
     }
     private confirmCancel(): void {
         EntityUtilities.resetChangesOnEntity(this.data.entity, this.entityPriorChanges);
+        this.unsavedChanges.emit(false);
         this.dialogRef.close(0);
     }
 

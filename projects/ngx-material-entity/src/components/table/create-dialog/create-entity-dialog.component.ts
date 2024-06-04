@@ -142,6 +142,7 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
     }
     private async confirmCreate(): Promise<void> {
         await this.entityService.create(this.data.entity);
+        this.unsavedChanges.emit(false);
         this.dialogRef.close();
     }
 
@@ -170,6 +171,7 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
         }
     }
     private confirmCancel(): void {
+        this.unsavedChanges.emit(false);
         this.dialogRef.close();
     }
 }
