@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
@@ -28,8 +28,7 @@ import { NgxMatEntityConfirmDialogComponent } from '../../../confirm-dialog/conf
         MatFormFieldModule,
         MatChipsModule,
         FormsModule,
-        NgIf,
-        NgFor,
+        CommonModule,
         DragDropDirective,
         MatButtonModule
     ]

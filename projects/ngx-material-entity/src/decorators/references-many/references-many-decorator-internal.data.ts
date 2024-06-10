@@ -1,6 +1,7 @@
 import { ReferencesManyDecoratorConfig } from './references-many-decorator.data';
 import { BaseEntityType } from '../../classes/entity.model';
-import { DisplayColumn } from '../../components/table/table-data';
+import { DisplayColumn, DynamicStyleClasses } from '../../components/table/table-data';
+import { defaultDynamicStyleClasses } from '../../functions/default-style-classes.function';
 import { getConfigValue } from '../../functions/get-config-value.function';
 import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { DropdownValue } from '../base/dropdown-value.interface';
@@ -17,6 +18,10 @@ export class ReferencesManyDecoratorConfigInternal<EntityType extends BaseEntity
     getDropdownValues: (referencedEntities: EntityType[]) => DropdownValue<string>[];
     // eslint-disable-next-line jsdoc/require-jsdoc
     getEntityForId: (entityId: string, allReferencedEntities: EntityType[]) => EntityType;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    emptyErrorMessage: string;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    dynamicRowStyleClasses: DynamicStyleClasses<EntityType>;
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayColumns: DisplayColumn<EntityType>[];
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -35,6 +40,8 @@ export class ReferencesManyDecoratorConfigInternal<EntityType extends BaseEntity
         this.getReferencedEntities = data.getReferencedEntities;
         this.getDropdownValues = data.getDropdownValues;
         this.getEntityForId = data.getEntityForId ?? defaultGetEntityForId;
+        this.emptyErrorMessage = getConfigValue(globalConfig.emptyArrayErrorMessage, data.emptyErrorMessage);
+        this.dynamicRowStyleClasses = data.dynamicRowStyleClasses ?? defaultDynamicStyleClasses;
         this.displayColumns = data.displayColumns;
         this.addButtonLabel = getConfigValue(globalConfig.addLabel, data.addButtonLabel);
         this.removeButtonLabel = getConfigValue(globalConfig.removeLabel, data.removeButtonLabel);

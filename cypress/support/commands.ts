@@ -155,6 +155,9 @@ Cypress.Commands.add(
             cy.get('input[type=file]').eq(i).selectFile('@testImage', { force: true });
         }
 
+        cy.getInputByLabel('References One Value').click();
+        cy.get('mat-option').contains('Referenced Entity #1').click();
+
         cy.getInputByLabel('Select').click();
         cy.get('mat-option').contains('#1: String Value').click();
         cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(4).click();

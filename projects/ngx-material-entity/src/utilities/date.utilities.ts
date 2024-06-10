@@ -134,19 +134,16 @@ export abstract class DateUtilities {
      * @param filter - The custom filter from the metadata.
      * @returns All dates between the two provided dates. Includes start and end date.
      */
-    static getDatesBetween(
-        startDate: Date,
-        endDate: Date,
-        filter?: DateFilterFn<Date>
-    ): Date[] {
+    static getDatesBetween(startDate: Date, endDate: Date, filter?: DateFilterFn<Date>): Date[] {
+        const clonedStartDate: Date = new Date(startDate);
         const res: Date[] = [];
         while (
-            startDate.getFullYear() < endDate.getFullYear()
-            || startDate.getMonth() < endDate.getMonth()
-            || startDate.getDate() <= endDate.getDate()
+            clonedStartDate.getFullYear() < endDate.getFullYear()
+            || clonedStartDate.getMonth() < endDate.getMonth()
+            || clonedStartDate.getDate() <= endDate.getDate()
         ) {
-            res.push(new Date(startDate));
-            startDate.setTime(startDate.getTime() + DAY_IN_MS);
+            res.push(new Date(clonedStartDate));
+            clonedStartDate.setTime(clonedStartDate.getTime() + DAY_IN_MS);
         }
         return filter ? res.filter(d => filter(d)) : res;
     }

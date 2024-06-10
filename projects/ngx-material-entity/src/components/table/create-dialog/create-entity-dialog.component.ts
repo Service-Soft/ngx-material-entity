@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, EnvironmentInjector, EventEmitter, Inject, OnInit, Output, runInInjectionContext } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -10,7 +10,7 @@ import { CreateEntityData } from './create-entity-data';
 import { CreateEntityDataInternal, CreateEntityDialogDataBuilder } from './create-entity-data.builder';
 import { BaseEntityType } from '../../../classes/entity.model';
 import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
-import { getValidationErrorsTooltipContent } from '../../../functions/get-validation-errors-tooltip-content.function.ts';
+import { getValidationErrorsTooltipContent } from '../../../functions/get-validation-errors-tooltip-content.function';
 import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../../global-configuration-values';
 import { EntityService } from '../../../services/entity.service';
 import { EntityUtilities } from '../../../utilities/entity.utilities';
@@ -29,11 +29,10 @@ import { TooltipComponent } from '../../tooltip/tooltip.component';
 @Component({
     selector: 'ngx-mat-entity-create-dialog',
     templateUrl: './create-entity-dialog.component.html',
-    styleUrls: ['./create-entity-dialog.component.scss'],
+    styleUrls: ['./create-entity-dialog.component.scss', '../../../scss/dialog-styles.scss'],
     standalone: true,
     imports: [
-        NgFor,
-        NgIf,
+        CommonModule,
         MatDialogModule,
         MatButtonModule,
         MatBadgeModule,
@@ -108,7 +107,7 @@ export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType
         this.validationErrors = await ValidationUtilities.getEntityValidationErrors(this.data.entity, this.injector, 'create');
         this.tooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.validationErrors));
         this.isEntityValid = this.validationErrors.length === 0;
-        this.isEntityDirty = await EntityUtilities.isDirty(this.data.entity, this.entityPriorChanges, this.http);
+        this.isEntityDirty = await EntityUtilities.isDirty(this.data.entity, this.entityPriorChanges, this.http, this.injector);
         this.unsavedChanges.emit(this.isEntityDirty);
     }
 

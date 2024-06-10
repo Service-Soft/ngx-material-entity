@@ -1,4 +1,4 @@
-import { Location, NgFor, NgIf } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, EnvironmentInjector, HostListener, Inject, InjectionToken, OnInit, Renderer2, runInInjectionContext } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -11,7 +11,7 @@ import { PageCreateDataBuilder, PageCreateDataInternal } from './page-create-dat
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-decorator-internal.data';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
-import { getValidationErrorsTooltipContent } from '../../functions/get-validation-errors-tooltip-content.function.ts';
+import { getValidationErrorsTooltipContent } from '../../functions/get-validation-errors-tooltip-content.function';
 import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
 import { UnsavedChangesPage } from '../../services/unsaved-changes.guard';
@@ -81,8 +81,7 @@ export const NGX_CREATE_DATA: InjectionToken<PageCreateData<any>> = new Injectio
     styleUrls: ['./create-page.component.scss'],
     standalone: true,
     imports: [
-        NgIf,
-        NgFor,
+        CommonModule,
         MatButtonModule,
         MatProgressSpinnerModule,
         MatBadgeModule,
@@ -211,7 +210,7 @@ export class NgxMatEntityCreatePageComponent<EntityType extends BaseEntityType<E
      */
     async checkEntity(): Promise<void> {
         await this.checkIsEntityValid();
-        this.isEntityDirty = await EntityUtilities.isDirty(this.entity, this.entityPriorChanges, this.http);
+        this.isEntityDirty = await EntityUtilities.isDirty(this.entity, this.entityPriorChanges, this.http, this.injector);
     }
 
     private async checkIsEntityValid(): Promise<void> {

@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, EnvironmentInjector, OnInit, runInInjectionContext } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -23,8 +23,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
         MatFormFieldModule,
         MatSelectModule,
         FormsModule,
-        NgIf,
-        NgFor
+        CommonModule
     ]
 })
 export class StringDropdownInputComponent<EntityType extends BaseEntityType<EntityType>>

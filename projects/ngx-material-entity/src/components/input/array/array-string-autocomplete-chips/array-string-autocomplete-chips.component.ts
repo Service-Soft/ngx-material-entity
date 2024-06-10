@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, EnvironmentInjector, OnInit, runInInjectionContext } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -26,7 +26,7 @@ import { ArrayStringChipsInputComponent } from '../array-string-chips-input/arra
         MatAutocompleteModule,
         IncludedInValidatorDirective,
         MatInputModule,
-        NgFor
+        CommonModule
     ]
 })
 export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntityType<EntityType>>

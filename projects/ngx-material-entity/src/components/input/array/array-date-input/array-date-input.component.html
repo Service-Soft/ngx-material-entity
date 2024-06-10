@@ -29,39 +29,18 @@
                 {{metadata.addButtonLabel}}
             </button>
             <button type="button" mat-raised-button
-                [disabled]="!selection.selected.length"
+                [disabled]="!selected.length"
                 (click)="remove()">
                 {{metadata.removeButtonLabel}}
             </button>
         </div>
     }
 
-    <mat-table [dataSource]="dataSource">
-        <!-- select Column -->
-        <ng-container matColumnDef="select">
-            <mat-header-cell *matHeaderCellDef>
-                <mat-checkbox [disabled]="!dataSource.data.length" [checked]="selection.hasValue() && SelectionUtilities.isAllSelected(selection, dataSource)" [indeterminate]="selection.hasValue() && !SelectionUtilities.isAllSelected(selection, dataSource)" (change)="$event ? SelectionUtilities.masterToggle(selection, dataSource) : null"></mat-checkbox>
-            </mat-header-cell>
-            <mat-cell *matCellDef="let entity">
-                <mat-checkbox [checked]="selection.isSelected(entity)" (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(entity) : null"></mat-checkbox>
-            </mat-cell>
-        </ng-container>
-    
-        @for (dCol of metadata.displayColumns; track $index) {
-            <ng-container [matColumnDef]="dCol.displayName">
-                <mat-header-cell *matHeaderCellDef>
-                    {{dCol.displayName}}
-                </mat-header-cell>
-                <mat-cell *matCellDef="let entity" class="entity">
-                    {{getDisplayColumnValue(entity, dCol)}}
-                </mat-cell>
-            </ng-container>
-        }
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-    </mat-table>
-
-    @if (metadata.required(entity) && !dataSource.data.length) {
-        <div class="array-error">{{metadata.missingErrorMessage}}</div>
-    }
+    <custom-table
+        [configuration]="tableConfig"
+        [data]="propertyValue"
+        [required]="metadata.required(entity)"
+        (selectionChanged)="selected = $any($event)"
+    >
+    </custom-table>
 </div>

@@ -54,7 +54,6 @@ function defaultCreateBaseUrl<EntityType extends BaseEntityType<EntityType>, Rel
     baseEntity: RelatedBaseEntityType,
     metadata: HasManyDecoratorConfigInternal<EntityType, RelatedBaseEntityType>
 ): string {
-
     // eslint-disable-next-line stylistic/max-len
     const baseEntityService: EntityService<RelatedBaseEntityType> = inject<EntityService<RelatedBaseEntityType>>(metadata.RelatedEntityServiceClass);
     const entityService: EntityService<EntityType> = inject<EntityService<EntityType>>(metadata.tableData.baseData.EntityServiceClass);

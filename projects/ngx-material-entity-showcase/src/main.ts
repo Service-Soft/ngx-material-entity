@@ -1,15 +1,36 @@
-import { provideHttpClient } from '@angular/common/http';
-import { enableProdMode } from '@angular/core';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { EnvironmentInjector, Injectable, enableProdMode } from '@angular/core';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDateFormats } from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
-import { NGX_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from 'ngx-material-entity';
+import { EntityService, NGX_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from 'ngx-material-entity';
 
 import { AppComponent } from './app/app.component';
 import { routes } from './app/routes';
 import { environment } from './environments/environment';
+import { HasManyEntityService as ImportedHasManyEntityService } from '../../ngx-material-entity/src/mocks/has-many-entity.service.mock';
+import { HasManyEntity, TestEntityWithoutCustomProperties } from '../../ngx-material-entity/src/mocks/test-entity.interface';
+import { TestEntityService as ImportedTestEntityService } from '../../ngx-material-entity/src/mocks/test-entity.service.mock';
+
+@Injectable({ providedIn: 'root' })
+export class TestEntityService extends EntityService<TestEntityWithoutCustomProperties> {
+    baseUrl: string = 'http://localhost:3000/testEntities';
+
+    constructor(http: HttpClient, injector: EnvironmentInjector) {
+        super(http, injector);
+    }
+}
+
+@Injectable({ providedIn: 'root' })
+export class HasManyEntityService extends EntityService<HasManyEntity> {
+    baseUrl: string = 'http://localhost:3000/hasManyEntities';
+
+    constructor(http: HttpClient, injector: EnvironmentInjector) {
+        super(http, injector);
+    }
+}
 
 const DateFormats: MatDateFormats = {
     parse: {
@@ -51,6 +72,14 @@ bootstrapApplication(
             {
                 provide: NGX_GLOBAL_DEFAULT_VALUES,
                 useValue: NgxEntityDefaults
+            },
+            {
+                provide: ImportedHasManyEntityService,
+                useExisting: HasManyEntityService
+            },
+            {
+                provide: ImportedTestEntityService,
+                useExisting: TestEntityService
             }
         ]
     }

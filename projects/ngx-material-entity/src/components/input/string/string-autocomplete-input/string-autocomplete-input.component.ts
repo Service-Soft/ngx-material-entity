@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, EnvironmentInjector, OnInit, runInInjectionContext } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -24,8 +24,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
         MatAutocompleteModule,
         FormsModule,
         IncludedInValidatorDirective,
-        NgIf,
-        NgFor
+        CommonModule
     ]
 })
 export class StringAutocompleteInputComponent<EntityType extends BaseEntityType<EntityType>>

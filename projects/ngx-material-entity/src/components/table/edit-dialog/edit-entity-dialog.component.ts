@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, EnvironmentInjector, EventEmitter, Inject, OnInit, Output, runInInjectionContext } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -13,10 +13,11 @@ import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-entity.bui
 import { BaseEntityType } from '../../../classes/entity.model';
 import { PropertyDecoratorConfigInternal } from '../../../decorators/base/property-decorator-internal.data';
 import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
-import { getValidationErrorsTooltipContent } from '../../../functions/get-validation-errors-tooltip-content.function.ts';
+import { getChangesTooltipContent } from '../../../functions/get-changes-tooltip-content.function';
+import { getValidationErrorsTooltipContent } from '../../../functions/get-validation-errors-tooltip-content.function';
 import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../../global-configuration-values';
 import { EntityService } from '../../../services/entity.service';
-import { EntityTab, EntityUtilities } from '../../../utilities/entity.utilities';
+import { Difference, EntityUtilities } from '../../../utilities/entity.utilities';
 import { ValidationError, ValidationUtilities } from '../../../utilities/validation.utilities';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
@@ -32,11 +33,10 @@ import { TooltipComponent } from '../../tooltip/tooltip.component';
 @Component({
     selector: 'ngx-mat-entity-edit-dialog',
     templateUrl: './edit-entity-dialog.component.html',
-    styleUrls: ['./edit-entity-dialog.component.scss'],
+    styleUrls: ['./edit-entity-dialog.component.scss', '../../../scss/dialog-styles.scss'],
     standalone: true,
     imports: [
-        NgIf,
-        NgFor,
+        CommonModule,
         MatDialogModule,
         MatButtonModule,
         NgxMatEntityConfirmDialogComponent,
@@ -57,11 +57,6 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      * Contains HelperMethods around handling Entities and their property-metadata.
      */
     EntityUtilities: typeof EntityUtilities = EntityUtilities;
-
-    /**
-     * The tabs of the dialog.
-     */
-    entityTabs!: EntityTab<EntityType>[];
 
     /**
      * The service of the provided entity.
@@ -90,6 +85,10 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      * The validation errors of the entity.
      */
     validationErrors: ValidationError[] = [];
+    /**
+     * All the changes that have been done to the entity.
+     */
+    changes: Difference<EntityType>[] = [];
     /**
      * What to display inside the tooltip.
      */
@@ -123,7 +122,6 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
             this.allowDelete = this.data.allowDelete(this.entityPriorChanges);
         });
         this.dialogRef.disableClose = true;
-        this.entityTabs = EntityUtilities.getEntityTabs(this.data.entity, this.injector, false, true);
         this.entityService = this.injector.get(this.data.EntityServiceClass) as EntityService<EntityType>;
         setTimeout(() => void this.checkIsEntityValid(), 1);
     }
@@ -149,13 +147,24 @@ export class NgxMatEntityEditDialogComponent<EntityType extends BaseEntityType<E
      */
     async checkEntity(): Promise<void> {
         await this.checkIsEntityValid();
-        this.isEntityDirty = await EntityUtilities.isDirty(this.data.entity, this.entityPriorChanges, this.http);
+        this.changes = await EntityUtilities.getDifferencesBetweenEntities(
+            this.data.entity,
+            this.entityPriorChanges,
+            this.http,
+            this.injector
+        );
+        if (!this.validationErrors.length && this.changes.length) {
+            this.tooltipContent = runInInjectionContext(this.injector, () => getChangesTooltipContent(this.changes));
+        }
+        this.isEntityDirty = !!this.changes.length;
         this.unsavedChanges.emit(this.isEntityDirty);
     }
 
     private async checkIsEntityValid(): Promise<void> {
         this.validationErrors = await ValidationUtilities.getEntityValidationErrors(this.data.entity, this.injector, 'update');
-        this.tooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.validationErrors));
+        if (this.validationErrors.length) {
+            this.tooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.validationErrors));
+        }
         this.isEntityValid = this.validationErrors.length === 0;
     }
 

@@ -2,14 +2,13 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { DateFilterFn } from '@angular/material/datepicker';
 
-import { TestEntityWithoutCustomPropertiesInterface } from './projects/ngx-material-entity/src/mocks/test-entity.interface';
+import { HasManyEntity, TestEntityWithoutCustomPropertiesInterface } from './projects/ngx-material-entity/src/mocks/test-entity.interface';
 
 function getDatesBetween(
     startDate: Date,
     endDate: Date,
     filter?: DateFilterFn<Date>
 ): Date[] {
-
     const DAY_IN_MS: number = 1000 * 60 * 60 * 24;
     const res: Date[] = [];
     while (
@@ -208,7 +207,18 @@ const testEntityData: TestEntityWithoutCustomPropertiesInterface = {
     ],
     referencesManyIds: ['1'],
     randomValue: '42',
-    notDecoratedValue: '42'
+    notDecoratedValue: '42',
+    referencesOneId: '1',
+    hasManyValues: [
+        {
+            id: '1',
+            stringValue: 'test string value #1'
+        },
+        {
+            id: '2',
+            stringValue: 'test string value #2'
+        }
+    ]
 };
 
 interface Address {
@@ -281,11 +291,22 @@ const addressData: Address = {
 
 export interface ApiData {
     testEntities: TestEntityWithoutCustomPropertiesInterface[],
+    hasManyEntities: HasManyEntity[],
     persons: Person[],
     addresses: Address[]
 }
 export const apiData: ApiData = {
     testEntities: [testEntityData],
+    hasManyEntities: [
+        {
+            id: '1',
+            stringValue: 'test string value #1'
+        },
+        {
+            id: '2',
+            stringValue: 'test string value #2'
+        }
+    ],
     persons: [
         personData,
         personData,

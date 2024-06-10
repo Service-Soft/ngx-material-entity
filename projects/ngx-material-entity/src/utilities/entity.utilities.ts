@@ -276,34 +276,39 @@ export abstract class EntityUtilities {
      * @param entity - The entity after all changes.
      * @param entityPriorChanges - The entity before the changes.
      * @param http - The angular HttpClient. Used to fetch files.
+     * @param injector - An angular environment injector.
      * @returns Whether or not the entity is dirty.
      */
     static async isDirty<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         entityPriorChanges: EntityType,
-        http: HttpClient
+        http: HttpClient,
+        injector: EnvironmentInjector
     ): Promise<boolean> {
         if (!(entityPriorChanges as EntityType | undefined)) {
             return false;
         }
-        const differences: Difference<EntityType>[] = await this.getDifferencesBetweenEntities(entity, entityPriorChanges, http);
-        return differences.length ? true : false;
+        const differences: Difference<EntityType>[] = await this.getDifferencesBetweenEntities(entity, entityPriorChanges, http, injector);
+        return !!differences.length;
     }
 
     /**
-     * Gets the differences between the two given entities.
+     * Gets the differences between the two given entities. Only checks properties which are decorated.
      * @param entity - The entity as is.
      * @param entityPriorChanges - The entity before any changes have been made.
      * @param http - The angular http client, is needed to check if files are equal.
+     * @param injector - An angular environment injector.
      * @returns The differences as an array consisting of key, before and after.
      */
     static async getDifferencesBetweenEntities<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         entityPriorChanges: EntityType,
-        http: HttpClient
+        http: HttpClient,
+        injector: EnvironmentInjector
     ): Promise<Difference<EntityType>[]> {
         const res: Difference<EntityType>[] = [];
-        for (const key in entity) {
+        // values that are not decorated can be ignored, as they are not transferred via http.
+        for (const key of this.keysOf(entity, injector)) {
             const type: DecoratorTypes | undefined = this.getPropertyType(entity, key);
             const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = this.getPropertyMetadata(entity, key);
             if (!await this.isEqual(entity[key], entityPriorChanges[key], metadata, type, http)) {
@@ -338,6 +343,12 @@ export abstract class EntityUtilities {
         type: DecoratorTypes | undefined,
         http: HttpClient
     ): Promise<boolean> {
+        if ((value == undefined && valuePriorChanges == undefined)
+            || this.differenceIsUndefinedAndEmptyArray(value, valuePriorChanges)
+            || this.differenceIsUndefinedAndEmptyString(value, valuePriorChanges)
+        ) {
+            return true;
+        }
         switch (type) {
             case DecoratorTypes.DATE_RANGE:
                 return this.isEqualDateRange(
@@ -370,6 +381,16 @@ export abstract class EntityUtilities {
             default:
                 return LodashUtilities.isEqual(value, valuePriorChanges);
         }
+    }
+
+    private static differenceIsUndefinedAndEmptyString(value: unknown, valuePriorChanges: unknown): boolean {
+        return (valuePriorChanges == undefined && typeof value === 'string' && !value.length)
+            || (value == undefined && typeof valuePriorChanges === 'string' && !valuePriorChanges.length);
+    }
+
+    private static differenceIsUndefinedAndEmptyArray(value: unknown, valuePriorChanges: unknown): boolean {
+        return (valuePriorChanges == undefined && Array.isArray(value) && !value.length)
+            || (value == undefined && Array.isArray(valuePriorChanges) && !valuePriorChanges.length);
     }
 
     private static isEqualArrayString(value: unknown, valuePriorChanges: unknown): boolean | PromiseLike<boolean> {

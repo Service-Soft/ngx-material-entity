@@ -8,9 +8,9 @@ import { Entity, NgxMatEntityBaseDisplayColumnValueComponent } from 'ngx-materia
     templateUrl: './pdf-download-display-value.component.html',
     styleUrls: ['./pdf-download-display-value.component.scss']
 })
-// eslint-disable-next-line typescript/no-explicit-any
-export class PdfDownloadDisplayValueComponent extends NgxMatEntityBaseDisplayColumnValueComponent<any> {
+
+export class PdfDownloadDisplayValueComponent<T extends Entity> extends NgxMatEntityBaseDisplayColumnValueComponent<T> {
     logToConsole(): void {
-        console.log('Clicked on the pdf column of the entity', (this.entity as Entity).id);
+        console.log('Clicked on the pdf column of the entity', this.entity.id);
     }
 }

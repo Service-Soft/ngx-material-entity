@@ -225,7 +225,18 @@ const testEntityData: TestEntity = {
     ],
     randomValue: '42',
     referencesManyIds: ['1'],
-    notDecoratedValue: '42'
+    notDecoratedValue: '42',
+    referencesOneId: '1',
+    hasManyValues: [
+        {
+            id: '1',
+            stringValue: 'test string value #1'
+        },
+        {
+            id: '2',
+            stringValue: 'test string value #2'
+        }
+    ]
 };
 
 /**

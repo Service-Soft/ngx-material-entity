@@ -4,7 +4,9 @@ import { DateFilterFn } from '@angular/material/datepicker';
 import moment from 'moment';
 import { firstValueFrom, of } from 'rxjs';
 
+import { HasManyEntityService } from './has-many-entity.service.mock';
 import { RandomMetadata } from './test-entity.mock';
+import { TestEntityService } from './test-entity.service.mock';
 import { Entity } from '../classes/entity.model';
 import { array } from '../decorators/array/array.decorator';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
@@ -15,9 +17,11 @@ import { DateRange } from '../decorators/date/date-decorator.data';
 import { date } from '../decorators/date/date.decorator';
 import { FileData } from '../decorators/file/file-decorator.data';
 import { file } from '../decorators/file/file.decorator';
+import { hasMany } from '../decorators/has-many/has-many.decorator';
 import { number } from '../decorators/number/number.decorator';
 import { object } from '../decorators/object/object.decorator';
 import { referencesMany } from '../decorators/references-many/references-many.decorator';
+import { referencesOne } from '../decorators/references-one/references-one.decorator';
 import { string } from '../decorators/string/string.decorator';
 import { ReflectUtilities } from '../encapsulation/reflect.utilities';
 import { DateUtilities } from '../utilities/date.utilities';
@@ -113,6 +117,22 @@ export class ReferencedEntity extends Entity {
     }
 }
 
+/**
+ * An Entity used to Test the @hasMany decorator on the TestEntity class.
+ */
+export class HasManyEntity extends Entity {
+    @string({
+        displayStyle: 'line',
+        displayName: 'Example Value'
+    })
+    stringValue!: string;
+
+    constructor(entity?: ReferencedEntity) {
+        super();
+        EntityUtilities.new(this, entity);
+    }
+}
+
 export interface TestEntityWithoutCustomPropertiesInterface {
     id: string,
     secondTabValue: string,
@@ -171,6 +191,8 @@ export interface TestEntityWithoutCustomPropertiesInterface {
     customImageValues: FileData[],
     randomValue: string,
     referencesManyIds: string[],
+    referencesOneId: string,
+    hasManyValues: HasManyEntity[],
     notDecoratedValue: string
 }
 
@@ -770,6 +792,16 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
     })
     customImageValues!: FileData[];
 
+    @referencesOne({
+        displayName: 'References One Value',
+        EntityClass: ReferencedEntity,
+        getReferencedEntities: async () => [{ stringValue: 'string value', id: '1' }],
+        getDropdownValues: (entities: ReferencedEntity[]) => entities.map(e => {
+            return { displayName: `Referenced Entity #${e.id}`, value: e.id };
+        })
+    })
+    referencesOneId!: string;
+
     @referencesMany({
         displayName: 'Referenced Entities',
         getReferencedEntities: getReferencedEntities,
@@ -795,6 +827,34 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         }
     })
     randomValue!: string;
+
+    @hasMany({
+        tableData: {
+            baseData: {
+                title: 'Has Many Value',
+                displayColumns: [
+                    {
+                        displayName: 'id',
+                        value: e => e.id
+                    },
+                    {
+                        displayName: 'string value',
+                        value: e => e.stringValue
+                    }
+                ],
+                EntityServiceClass: HasManyEntityService,
+                EntityClass: HasManyEntity
+            }
+        },
+        RelatedEntityServiceClass: TestEntityService,
+        createBaseUrl: () => 'http://localhost:3000/hasManyEntities',
+        readBaseUrl: () => 'http://localhost:3000/hasManyEntities',
+        displayName: 'Has Many Value',
+        position: {
+            tab: 2
+        }
+    })
+    hasManyValues!: HasManyEntity[];
 
     notDecoratedValue!: string;
 
@@ -1005,6 +1065,17 @@ const testEntityData: TestEntityWithoutCustomProperties = {
     ],
     referencesManyIds: ['1'],
     randomValue: '42',
+    referencesOneId: '1',
+    hasManyValues: [
+        {
+            id: '1',
+            stringValue: 'test string value #1'
+        },
+        {
+            id: '2',
+            stringValue: 'test string value #2'
+        }
+    ],
     notDecoratedValue: '42'
 };
 
