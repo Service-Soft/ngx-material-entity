@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DateFilterFn, MatDatepickerModule } from '@angular/material/datepicker';
@@ -30,7 +30,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
         MatDatepickerModule,
         FormsModule,
         MatSelectModule,
-        NgFor
+        CommonModule
     ]
 })
 export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType>>

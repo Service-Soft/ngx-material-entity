@@ -1,16 +1,5 @@
-.mdc-data-table__row:last-child .mdc-data-table__cell {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-}
-
 button {
     width: 100%;
-}
-
-mat-spinner {
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 10px;
-    margin-bottom: 10px;
 }
 
 .title {
@@ -24,19 +13,7 @@ mat-spinner {
     font-size: 16px;
 }
 
-.mat-column-select {
-    flex: 0 0 48px;
-    padding-left: 0px;
-    padding-right: 0px;
-    justify-content: center;
-}
-
-.enabled:hover {
-    cursor: pointer;
-}
-
 @media(max-width: 767px) {
-
     .actions-button,
     .create-button {
         margin-bottom: 15px;

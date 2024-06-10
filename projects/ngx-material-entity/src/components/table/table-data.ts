@@ -5,9 +5,14 @@ import { BaseEntityType, EntityClassNewable, EntityServiceClassNewable } from '.
 import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
 
 /**
+ * The value that can be displayed inside a table column.
+ */
+export type TableColumnValue = string | number | Date;
+
+/**
  * The Definition of a Column inside the table.
  */
-export interface DisplayColumn<EntityType extends BaseEntityType<EntityType>> {
+export interface DisplayColumn<T> {
     /**
      * The name inside the header.
      */
@@ -15,12 +20,12 @@ export interface DisplayColumn<EntityType extends BaseEntityType<EntityType>> {
     /**
      * What to display inside the row.
      */
-    value: (entity: EntityType) => string,
+    value: (value: T) => TableColumnValue,
     /**
      * A custom component to use instead of the value.
      * You still need to provide a value function for the sorting by header to work.
      */
-    Component?: Type<NgxMatEntityBaseDisplayColumnValueComponent<EntityType>>,
+    Component?: Type<NgxMatEntityBaseDisplayColumnValueComponent<T>>,
     /**
      * Whether or not the click event should be disabled.
      * This can be useful if your component has a custom way to handle clicks.
@@ -31,7 +36,7 @@ export interface DisplayColumn<EntityType extends BaseEntityType<EntityType>> {
 /**
  * Dynamic css class that should be applied based on a condition.
  */
-export type DynamicStyleClasses<EntityType extends BaseEntityType<EntityType>> = (entity: EntityType) => string[];
+export type DynamicStyleClasses<T> = (value: T) => string[];
 
 /**
  * A table action that will run regardless if something has been selected in the table.
@@ -204,6 +209,7 @@ export interface BaseData<EntityType extends BaseEntityType<EntityType>> {
      * Configuration for css classes that should be applied to table rows based on a condition.
      * This could be used to eg. Set the background color to green when an item has the status completed etc.
      * INFO: You need to use ng-deep or apply the styling in the styles.scss.
+     * @default () => []
      */
     dynamicRowStyleClasses?: DynamicStyleClasses<EntityType>
 }

@@ -1,4 +1,4 @@
-import { Location, NgFor, NgIf } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, EnvironmentInjector, HostListener, Inject, InjectionToken, OnInit, Renderer2, runInInjectionContext } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -12,11 +12,12 @@ import { firstValueFrom } from 'rxjs';
 import { PageEditDataBuilder, PageEditDataInternal } from './page-edit-data.builder';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
-import { getValidationErrorsTooltipContent } from '../../functions/get-validation-errors-tooltip-content.function.ts';
+import { getChangesTooltipContent } from '../../functions/get-changes-tooltip-content.function';
+import { getValidationErrorsTooltipContent } from '../../functions/get-validation-errors-tooltip-content.function';
 import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
 import { UnsavedChangesPage } from '../../services/unsaved-changes.guard';
-import { EntityUtilities } from '../../utilities/entity.utilities';
+import { Difference, EntityUtilities } from '../../utilities/entity.utilities';
 import { ValidationError, ValidationUtilities } from '../../utilities/validation.utilities';
 import { ConfirmDialogData } from '../confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
@@ -79,8 +80,7 @@ export const NGX_EDIT_DATA: InjectionToken<PageEditData<any>> = new InjectionTok
     styleUrls: ['./edit-page.component.scss'],
     standalone: true,
     imports: [
-        NgIf,
-        NgFor,
+        CommonModule,
         MatButtonModule,
         MatProgressSpinnerModule,
         MatMenuModule,
@@ -118,6 +118,10 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
      * Whether or not the entity is valid.
      */
     isEntityValid: boolean = true;
+    /**
+     * All changes that have been done to the entity.
+     */
+    changes: Difference<EntityType>[] = [];
     /**
      * Whether or not the entity is dirty.
      */
@@ -227,12 +231,18 @@ export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<Ent
      */
     async checkEntity(): Promise<void> {
         await this.checkIsEntityValid();
-        this.isEntityDirty = await EntityUtilities.isDirty(this.entity, this.entityPriorChanges, this.http);
+        this.changes = await EntityUtilities.getDifferencesBetweenEntities(this.entity, this.entityPriorChanges, this.http, this.injector);
+        if (!this.validationErrors.length && this.changes.length) {
+            this.tooltipContent = runInInjectionContext(this.injector, () => getChangesTooltipContent(this.changes));
+        }
+        this.isEntityDirty = !!this.changes.length;
     }
 
     private async checkIsEntityValid(): Promise<void> {
         this.validationErrors = await ValidationUtilities.getEntityValidationErrors(this.entity, this.injector, 'update');
-        this.tooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.validationErrors));
+        if (this.validationErrors.length) {
+            this.tooltipContent = runInInjectionContext(this.injector, () => getValidationErrorsTooltipContent(this.validationErrors));
+        }
         this.isEntityValid = this.validationErrors.length === 0;
     }
 

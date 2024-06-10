@@ -40,7 +40,7 @@
                         [hideOmitForCreate]="hideOmitForCreate"
                         [class]="EntityUtilities.getWidthClasses(entity, key)"
                         [isReadOnly]="isReadOnly(key)"
-                        (inputChangeEvent)="formChange.emit()"
+                        (inputChangeEvent)="inputChange()"
                     >
                     </ngx-mat-entity-input>
                 }

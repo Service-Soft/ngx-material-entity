@@ -1,19 +1,20 @@
-/* eslint-disable jsdoc/require-jsdoc */
-import { SelectionModel } from '@angular/cdk/collections';
 import { HttpClient } from '@angular/common/http';
-import { Component, EnvironmentInjector, OnInit, runInInjectionContext } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
 
 import { BaseEntityType } from '../../../classes/entity.model';
 import { DecoratorTypes } from '../../../decorators/base/decorator-types.enum';
 import { LodashUtilities } from '../../../encapsulation/lodash.utilities';
+import { defaultFalse } from '../../../functions/default-false.function';
 import { EntityUtilities } from '../../../utilities/entity.utilities';
-import { SelectionUtilities } from '../../../utilities/selection.utilities';
 import { NgxMatEntityConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
-import { DisplayColumn } from '../../table/table-data';
+import { CustomTableConfiguration } from '../../custom-table/custom-table-configuration.model';
+import { DisplayColumn, DynamicStyleClasses } from '../../table/table-data';
 import { NgxMatEntityBaseInputComponent } from '../base-input.component';
 
+/**
+ * The Decorator Types that use the array table class.
+ */
 type ArrayTableType = DecoratorTypes.ARRAY | DecoratorTypes.ARRAY_DATE
     | DecoratorTypes.ARRAY_DATE_RANGE | DecoratorTypes.ARRAY_DATE_TIME;
 
@@ -28,64 +29,72 @@ type ArrayTableType = DecoratorTypes.ARRAY | DecoratorTypes.ARRAY_DATE
 export abstract class ArrayTableComponent<ValueType, EntityType extends BaseEntityType<EntityType>, ArrayType extends ArrayTableType>
     extends NgxMatEntityBaseInputComponent<EntityType, ArrayType, ValueType[]> implements OnInit {
 
+    /**
+     * The input that should be added to the array.
+     */
     input?: ValueType = undefined;
-    dataSource: MatTableDataSource<ValueType> = new MatTableDataSource();
-    selection: SelectionModel<ValueType> = new SelectionModel<ValueType>(true, []);
-    displayedColumns!: string[];
+    /**
+     * The currently selected values.
+     */
+    selected: ValueType[] = [];
+    /**
+     * The configuration of the table.
+     */
+    tableConfig!: CustomTableConfiguration; // TODO: Make generic type
 
-    SelectionUtilities: typeof SelectionUtilities = SelectionUtilities;
+    override get propertyValue(): ValueType[] {
+        return this.entity[this.key] as ValueType[];
+    }
 
-    constructor(private readonly matDialog: MatDialog, private readonly injector: EnvironmentInjector, private readonly http: HttpClient) {
+    override set propertyValue(value: ValueType[]) {
+        (this.entity[this.key] as ValueType[]) = value;
+        this.metadata.change?.(this.entity);
+    }
+
+    constructor(private readonly dialog: MatDialog, private readonly http: HttpClient) {
         super();
     }
 
     override ngOnInit(): void {
         super.ngOnInit();
         this.propertyValue = this.propertyValue ?? [];
-        const givenDisplayColumns: string[] = this.metadata.displayColumns.map((v) => v.displayName);
-        if (givenDisplayColumns.find(s => s === 'select')) {
-            throw new Error(
-                `The name "select" for a display column is reserved.
-                Please choose a different name.`
-            );
-        }
-        this.displayedColumns = this.isReadOnly ? givenDisplayColumns : ['select'].concat(givenDisplayColumns);
-        this.dataSource.data = this.propertyValue;
     }
 
     /**
-     * Gets the value to display in the column.
-     * Runs in environment context to enable injection.
-     * @param entity - The entity to get the value from.
-     * @param displayColumn - The display column to get the value from.
-     * @returns The value of the display column.
+     * Sets the table config.
+     * This is not included in the ngOnInit for child classes to be able to set their metadata.
+     * (which is used in the table config).
      */
-    getDisplayColumnValue(entity: ValueType, displayColumn: DisplayColumn<ValueType>): unknown {
-        return runInInjectionContext(this.injector, () => displayColumn.value(entity));
+    protected setTableConfig(): void {
+        this.tableConfig = {
+            allowClick: defaultFalse,
+            displayColumns: this.metadata.displayColumns as DisplayColumn<unknown>[],
+            withSelection: !this.isReadOnly,
+            dynamicRowStyleClasses: this.metadata.dynamicRowStyleClasses as DynamicStyleClasses<unknown>
+        };
     }
 
     /**
      * Tries to add an item to the array.
      */
-    add(): void {
+    async add(): Promise<void> {
         if (this.input == undefined) {
             return;
         }
-        if (
-            !this.metadata.allowDuplicates
-            && this.propertyValue?.find(
-                async v => await EntityUtilities.isEqual(this.input, v, this.metadata, this.metadata.itemType, this.http)
-            ) != undefined
-        ) {
-            this.matDialog.open(NgxMatEntityConfirmDialogComponent, {
-                data: this.metadata.duplicatesErrorDialog,
-                autoFocus: false,
-                restoreFocus: false
-            });
-            return;
+        if (!this.metadata.allowDuplicates) {
+            for (const value of this.propertyValue) {
+                if (await EntityUtilities.isEqual(this.input, value, this.metadata, this.metadata.itemType, this.http)) {
+                    this.dialog.open(NgxMatEntityConfirmDialogComponent, {
+                        data: this.metadata.duplicatesErrorDialog,
+                        autoFocus: false,
+                        restoreFocus: false
+                    });
+                    return;
+                }
+            }
         }
-        this.propertyValue?.push(LodashUtilities.cloneDeep(this.input));
-        this.dataSource.data = this.propertyValue ?? [];
+        this.propertyValue.push(LodashUtilities.cloneDeep(this.input));
+        this.propertyValue = [...this.propertyValue];
         this.resetInput();
         this.emitChange();
     }
@@ -101,7 +110,7 @@ export abstract class ArrayTableComponent<ValueType, EntityType extends BaseEnti
      * Removes all selected entries from the entity array.
      */
     remove(): void {
-        SelectionUtilities.remove(this.selection, this.propertyValue as [], this.dataSource);
+        this.propertyValue = this.propertyValue.filter(v => !this.selected.includes(v));
         this.emitChange();
     }
 }

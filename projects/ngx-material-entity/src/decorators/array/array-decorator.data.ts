@@ -2,7 +2,7 @@ import { DateFilterFn } from '@angular/material/datepicker';
 
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
-import { CreateData, DisplayColumn } from '../../components/table/table-data';
+import { CreateData, DisplayColumn, DynamicStyleClasses } from '../../components/table/table-data';
 import { Time } from '../../utilities/date.utilities';
 import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DropdownValue } from '../base/dropdown-value.interface';
@@ -11,7 +11,7 @@ import { DateRange } from '../date/date-decorator.data';
 import { StringAutocompleteValues } from '../string/string-decorator.data';
 
 /**
- * Interface definition for the @array metadata.
+ * Base definition for the @array metadata.
  */
 export abstract class ArrayDecoratorConfig<ValueType> extends PropertyDecoratorConfig<ValueType> {
     /**
@@ -29,6 +29,42 @@ export abstract class ArrayDecoratorConfig<ValueType> extends PropertyDecoratorC
      * The error dialog to display when the user tries to add a duplicate entry.
      */
     duplicatesErrorDialog?: ConfirmDialogData;
+}
+
+/**
+ * Base definition for the @array table metadata.
+ */
+abstract class ArrayTableDecoratorConfig<ValueType> extends ArrayDecoratorConfig<ValueType[]> {
+    /**
+     * The definition of the columns to display. Consists of the displayName to show in the header of the row
+     * and the value, which is a function that generates the value to display inside a column.
+     */
+    displayColumns!: DisplayColumn<ValueType>[];
+
+    /**
+     * Configuration for css classes that should be applied to table rows based on a condition.
+     * This could be used to eg. Set the background color to green when an item has the status completed etc.
+     * INFO: You need to use ng-deep or apply the styling in the styles.scss.
+     * @default () => []
+     */
+    dynamicRowStyleClasses?: DynamicStyleClasses<ValueType>;
+
+    /**
+     * The error-message to display when the array is required but contains no values.
+     */
+    missingErrorMessage?: string;
+
+    /**
+     * The label for the add button.
+     * @default 'Add'
+     */
+    addButtonLabel?: string;
+
+    /**
+     * The label for the remove button.
+     * @default 'Remove'
+     */
+    removeButtonLabel?: string;
 }
 
 /**
@@ -52,7 +88,7 @@ export interface EditArrayItemDialogData<EntityType extends BaseEntityType<Entit
 /**
  * Definition for an array of Entities.
  */
-export interface EntityArrayDecoratorConfig<EntityType extends BaseEntityType<EntityType>> extends ArrayDecoratorConfig<EntityType[]> {
+export interface EntityArrayDecoratorConfig<EntityType extends BaseEntityType<EntityType>> extends ArrayTableDecoratorConfig<EntityType> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.OBJECT,
 
@@ -60,12 +96,6 @@ export interface EntityArrayDecoratorConfig<EntityType extends BaseEntityType<En
      * The EntityClass used for generating the create inputs.
      */
     EntityClass: EntityClassNewable<EntityType>,
-
-    /**
-     * The definition of the columns to display. Consists of the displayName to show in the header of the row
-     * and the value, which is a function that generates the value to display inside a column.
-     */
-    displayColumns: DisplayColumn<EntityType>[],
 
     /**
      * The data for the add-item-dialog.
@@ -84,55 +114,15 @@ export interface EntityArrayDecoratorConfig<EntityType extends BaseEntityType<En
      * should be displayed inline.
      * @default true
      */
-    createInline?: boolean,
-
-    /**
-     * The label for the add button when createInline is true.
-     * @default 'Add'
-     */
-    addButtonLabel?: string,
-
-    /**
-     * The label for the remove button when createInline is true.
-     * @default 'Remove'
-     */
-    removeButtonLabel?: string,
-
-    /**
-     * The error-message to display when the array is required but contains no values.
-     */
-    missingErrorMessage?: string
+    createInline?: boolean
 }
 
 /**
  * Definition for an array of Dates.
  */
-export interface DateArrayDecoratorConfig extends ArrayDecoratorConfig<Date[]> {
+export interface DateArrayDecoratorConfig extends ArrayTableDecoratorConfig<Date> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.DATE,
-
-    /**
-     * The definition of the columns to display. Consists of the displayName to show in the header of the row
-     * and the value, which is a function that generates the value to display inside a column.
-     */
-    displayColumns: DisplayColumn<Date>[],
-
-    /**
-     * The label for the add button.
-     * @default 'Add'
-     */
-    addButtonLabel?: string,
-
-    /**
-     * The label for the remove button.
-     * @default 'Remove'
-     */
-    removeButtonLabel?: string,
-
-    /**
-     * The error-message to display when the array is required but contains no values.
-     */
-    missingErrorMessage?: string,
 
     /**
      * A function to get the minimum value of the date.
@@ -153,32 +143,9 @@ export interface DateArrayDecoratorConfig extends ArrayDecoratorConfig<Date[]> {
 /**
  * Definition for an array of DateTimes.
  */
-export interface DateTimeArrayDecoratorConfig extends ArrayDecoratorConfig<Date[]> {
+export interface DateTimeArrayDecoratorConfig extends ArrayTableDecoratorConfig<Date> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.DATE_TIME,
-
-    /**
-     * The definition of the columns to display. Consists of the displayName to show in the header of the row
-     * and the value, which is a function that generates the value to display inside a column.
-     */
-    displayColumns: DisplayColumn<Date>[],
-
-    /**
-     * The label for the add button.
-     * @default 'Add'
-     */
-    addButtonLabel?: string,
-
-    /**
-     * The label for the remove button.
-     * @default 'Remove'
-     */
-    removeButtonLabel?: string,
-
-    /**
-     * The error-message to display when the array is required but contains no values.
-     */
-    missingErrorMessage?: string,
 
     /**
      * The selectable times.
@@ -225,32 +192,9 @@ export interface DateTimeArrayDecoratorConfig extends ArrayDecoratorConfig<Date[
 /**
  * Definition for an array of DateRanges.
  */
-export interface DateRangeArrayDecoratorConfig extends ArrayDecoratorConfig<DateRange[]> {
+export interface DateRangeArrayDecoratorConfig extends ArrayTableDecoratorConfig<DateRange> {
     // eslint-disable-next-line jsdoc/require-jsdoc
     itemType: DecoratorTypes.DATE_RANGE,
-
-    /**
-     * The definition of the columns to display. Consists of the displayName to show in the header of the row
-     * and the value, which is a function that generates the value to display inside a column.
-     */
-    displayColumns: DisplayColumn<DateRange>[],
-
-    /**
-     * The label for the add button.
-     * @default 'Add'
-     */
-    addButtonLabel?: string,
-
-    /**
-     * The label for the remove button.
-     * @default 'Remove'
-     */
-    removeButtonLabel?: string,
-
-    /**
-     * The error-message to display when the array is required but contains no values.
-     */
-    missingErrorMessage?: string,
 
     /**
      * A function to get the minimum value of the start date.

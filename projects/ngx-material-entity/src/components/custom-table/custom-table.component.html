@@ -1,0 +1,50 @@
+<!-- eslint-disable angular/no-call-expression -->
+<mat-table matSort [dataSource]="dataSource" [class.table-with-error-slot]="shouldShowMissingError">
+    <!-- select Column -->
+    <ng-container matColumnDef="select">
+        <mat-header-cell *matHeaderCellDef>
+            <mat-checkbox [checked]="selection.hasValue() && SelectionUtilities.isAllSelected(selection, dataSource)"
+                [indeterminate]="selection.hasValue() && !SelectionUtilities.isAllSelected(selection, dataSource)"
+                (change)="masterToggle($event)">
+            </mat-checkbox>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let value" [dynamicStyleClasses]="internalConfiguration.dynamicRowStyleClasses" [value]="value">
+            <mat-checkbox [checked]="selection.isSelected(value)"
+                (click)="$event.stopPropagation()"
+                (change)="toggle(value, $event)">
+            </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+
+    @for (dCol of internalConfiguration.displayColumns; track $index) {
+        <ng-container [matColumnDef]="dCol.displayName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                {{dCol.displayName}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let value" [class.enabled]="!dCol.disableClick && internalConfiguration.allowClick(value)"
+                [dynamicStyleClasses]="internalConfiguration.dynamicRowStyleClasses" [value]="value"
+                (click)="clickCell(value, dCol)"
+            >
+                @if (dCol.Component) {
+                    <display-column-value [entity]="value" [ComponentClass]="dCol.Component"></display-column-value>
+                }
+                @else {
+                    {{getDisplayColumnValue(value, dCol)}}
+                }
+            </mat-cell>
+        </ng-container>
+    }
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+</mat-table>
+
+@if (internalConfiguration.displayLoadingSpinner && isLoading) {
+    <mat-spinner>
+    </mat-spinner>
+}
+@else if (shouldShowMissingError && !dataSource.data.length) {
+    <div class="table-error">{{internalConfiguration.emptyErrorMessage}}</div>
+}
+
+<mat-paginator [length]="dataSource.filteredData.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>

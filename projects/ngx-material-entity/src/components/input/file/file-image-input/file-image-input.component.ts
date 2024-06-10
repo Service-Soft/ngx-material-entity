@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
@@ -19,10 +19,7 @@ import { FileInputComponent } from '../file-input/file-input.component';
     templateUrl: './file-image-input.component.html',
     styleUrls: ['./file-image-input.component.scss'],
     standalone: true,
-    imports: [
-        FileInputComponent,
-        NgIf
-    ]
+    imports: [CommonModule, FileInputComponent]
 })
 export class FileImageInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.FILE_IMAGE, FileData | FileData[]> implements OnInit {

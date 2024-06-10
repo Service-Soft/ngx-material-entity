@@ -1,13 +1,12 @@
 import { Directive, ElementRef, Input, OnChanges, Renderer2 } from '@angular/core';
 
-import { BaseEntityType } from '../classes/entity.model';
 import { DynamicStyleClasses } from '../components/table/table-data';
 
 /**
  * Dynamically applies css classes based on a provided function.
  */
 @Directive({ selector: '[dynamicStyleClasses]', standalone: true })
-export class DynamicStyleClassDirective<EntityType extends BaseEntityType<EntityType>> implements OnChanges {
+export class DynamicStyleClassDirective<T> implements OnChanges {
 
     private styleClassesApplied: string[] = [];
 
@@ -15,13 +14,13 @@ export class DynamicStyleClassDirective<EntityType extends BaseEntityType<Entity
      * The function that gets the css classes to dynamically apply.
      */
     @Input({ required: true })
-    dynamicStyleClasses!: DynamicStyleClasses<EntityType>;
+    dynamicStyleClasses!: DynamicStyleClasses<T>;
 
     /**
      * The input for the dynamic style classes function.
      */
     @Input({ required: true })
-    entity!: EntityType;
+    value!: T;
 
     constructor(private readonly element: ElementRef, private readonly renderer: Renderer2) {}
 
@@ -30,7 +29,7 @@ export class DynamicStyleClassDirective<EntityType extends BaseEntityType<Entity
     }
 
     private applyDynamicClasses(): void {
-        const classes: string[] | void = this.dynamicStyleClasses(this.entity);
+        const classes: string[] | void = this.dynamicStyleClasses(this.value);
 
         for (const styleClass of this.styleClassesApplied) {
             this.renderer.removeClass(this.element.nativeElement, styleClass);

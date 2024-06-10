@@ -345,7 +345,7 @@
                     @if (metadataEntityArray.createInline && !internalIsReadOnly && addArrayItemFormContext) {
                         <ng-container *ngTemplateOutlet="form; context: addArrayItemFormContext"></ng-container>
                     }
-                    @if (!internalIsReadOnly) {
+                    @if (!internalIsReadOnly && entityArrayTableContext) {
                         <div class="buttons">
                             <button type="button" mat-raised-button
                                 [disabled]="metadataEntityArray.createInline && !isArrayItemValid"
@@ -353,48 +353,14 @@
                                 {{metadataEntityArray.addButtonLabel}}
                             </button>
                             <button type="button" mat-raised-button
-                                [disabled]="!entityArraySelection.selected.length"
+                                [disabled]="!entityArrayTableContext.$implicit.selection.selected.length"
                                 (click)="removeFromEntityArray()">
                                 {{metadataEntityArray.removeButtonLabel}}
                             </button>
                         </div>
                     }
-                    <mat-table [dataSource]="entityArrayDataSource">
-                        @if (!internalIsReadOnly) {
-                            <ng-container matColumnDef="select">
-                                <mat-header-cell *matHeaderCellDef>
-                                    <mat-checkbox
-                                        [disabled]="!entityArrayDataSource.data.length" [checked]="entityArraySelection.hasValue() && SelectionUtilities.isAllSelected(entityArraySelection, entityArrayDataSource)"
-                                        [indeterminate]="entityArraySelection.hasValue() && !SelectionUtilities.isAllSelected(entityArraySelection, entityArrayDataSource)"
-                                        (change)="$event ? SelectionUtilities.masterToggle(entityArraySelection, entityArrayDataSource) : null">
-                                    </mat-checkbox>
-                                </mat-header-cell>
-                                <mat-cell *matCellDef="let entity">
-                                    <mat-checkbox [checked]="entityArraySelection.isSelected(entity)" (click)="$event.stopPropagation()" (change)="$event ? entityArraySelection.toggle(entity) : null"></mat-checkbox>
-                                </mat-cell>
-                            </ng-container>
-                        }
-                        @for (dCol of metadataEntityArray.displayColumns; track $index) {
-                            <ng-container [matColumnDef]="dCol.displayName">
-                                <mat-header-cell *matHeaderCellDef>
-                                    {{dCol.displayName}}
-                                </mat-header-cell>
-                                <mat-cell *matCellDef="let entity" [class.enabled]="!dCol.disableClick" (click)="editArrayItem(entity, dCol)">
-                                    @if (dCol.Component) {
-                                        <display-column-value [entity]="entity" [ComponentClass]="dCol.Component"></display-column-value>
-                                    }
-                                    @else {
-                                        {{getDisplayColumnValue(entity, dCol)}}
-                                    }
-                                </mat-cell>
-                            </ng-container>
-                        }
-                        <mat-header-row *matHeaderRowDef="entityArrayDisplayedColumns"></mat-header-row>
-                        <mat-row *matRowDef="let row; columns: entityArrayDisplayedColumns"></mat-row>
-                    </mat-table>
-                
-                    @if (metadataEntityArray.required(entity) && !entityArrayDataSource.data.length) {
-                        <div class="array-error">{{metadataEntityArray.missingErrorMessage}}</div>
+                    @if (entityArrayTableContext) {
+                        <ng-container *ngTemplateOutlet="table; context: entityArrayTableContext"></ng-container>
                     }
                 </div>
             </div>
@@ -453,49 +419,9 @@
                 </div>
         
                 <div class="mat-elevation-z8 elevation-container">
-                    <mat-table matSort [dataSource]="hasManyDataSource">
-                        <!-- select Column -->
-                        <ng-container matColumnDef="select">
-                            <mat-header-cell *matHeaderCellDef>
-                                <mat-checkbox [checked]="hasManySelection.hasValue() && SelectionUtilities.isAllSelected(hasManySelection, hasManyDataSource)"
-                                    [indeterminate]="hasManySelection.hasValue() && !SelectionUtilities.isAllSelected(hasManySelection, hasManyDataSource)"
-                                    (change)="$event ? SelectionUtilities.masterToggle(hasManySelection, hasManyDataSource) : null">
-                                </mat-checkbox>
-                            </mat-header-cell>
-                            <mat-cell *matCellDef="let entity" class="enabled">
-                                <mat-checkbox [checked]="hasManySelection.isSelected(entity)"
-                                    (click)="$event.stopPropagation()"
-                                    (change)="$event ? hasManySelection.toggle(entity) : null">
-                                </mat-checkbox>
-                            </mat-cell>
-                        </ng-container>
-                        
-                        @for (dCol of metadataHasMany.tableData.baseData.displayColumns; track $index) {
-                            <ng-container [matColumnDef]="dCol.displayName">
-                                <mat-header-cell *matHeaderCellDef mat-sort-header>
-                                    {{dCol.displayName}}
-                                </mat-header-cell>
-                                <mat-cell *matCellDef="let entity"
-                                    [class.enabled]="!dCol.disableClick && (hasManyAllowUpdate(entity) || hasManyAllowRead(entity))"
-                                    (click)="editHasManyEntity(entity, dCol)"
-                                >
-                                    @if (dCol.Component) {
-                                        <display-column-value [entity]="entity" [ComponentClass]="dCol.Component"></display-column-value>
-                                    }
-                                    @else {
-                                        {{getDisplayColumnValue(entity, dCol)}}
-                                    }
-                                </mat-cell>
-                            </ng-container>
-                        }
-                        <mat-header-row *matHeaderRowDef="displayedHasManyColumns"></mat-header-row>
-                        <mat-row *matRowDef="let row; columns: displayedHasManyColumns"></mat-row>
-                    </mat-table>
-        
-                    @if (hasManyIsLoading && metadataHasMany.tableData.baseData.displayLoadingSpinner) {
-                        <mat-spinner></mat-spinner>
+                    @if (hasManyTableContext) {
+                        <ng-container *ngTemplateOutlet="table; context: hasManyTableContext"></ng-container>
                     }
-                    <mat-paginator style="padding-top: 10px; padding-bottom: 10px;" [length]="hasManyDataSource.filteredData.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>
                 </div>
             </div>
         }
@@ -507,7 +433,57 @@
 }
 
 
+<ng-template #table let-context>
+    <mat-table matSort [dataSource]="context.dataSource" [class.table-with-error-slot]="context.shouldShowMissingError">
+        <!-- select Column -->
+        <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef>
+                <mat-checkbox [checked]="context.selection.hasValue() && SelectionUtilities.isAllSelected(context.selection, context.dataSource)"
+                    [indeterminate]="context.selection.hasValue() && !SelectionUtilities.isAllSelected(context.selection, context.dataSource)"
+                    (change)="$event ? SelectionUtilities.masterToggle(context.selection, context.dataSource) : null">
+                </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let value" [dynamicStyleClasses]="context.dynamicRowStyleClasses" [value]="value">
+                <mat-checkbox [checked]="context.selection.isSelected(value)"
+                    (click)="$event.stopPropagation()"
+                    (change)="$event ? context.selection.toggle(value) : null">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
 
+        @for (dCol of context.displayColumns; track $index) {
+            <ng-container [matColumnDef]="dCol.displayName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>
+                    {{dCol.displayName}}
+                </mat-header-cell>
+                <mat-cell *matCellDef="let value" [class.enabled]="!dCol.disableClick && context.allowClick(value)"
+                    [dynamicStyleClasses]="context.dynamicRowStyleClasses" [value]="value"
+                    (click)="clickCell(value, dCol, context)"
+                >
+                    @if (dCol.Component) {
+                        <display-column-value [entity]="value" [ComponentClass]="dCol.Component"></display-column-value>
+                    }
+                    @else {
+                        {{getDisplayColumnValue(value, dCol)}}
+                    }
+                </mat-cell>
+            </ng-container>
+        }
+
+        <mat-header-row *matHeaderRowDef="context.displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: context.displayedColumns"></mat-row>
+    </mat-table>
+
+    @if (context.displayLoadingSpinner && context.isLoading) {
+        <mat-spinner>
+        </mat-spinner>
+    }
+    @else if (context.shouldShowMissingError && !context.dataSource.data.length) {
+        <div class="table-error">{{context.emptyErrorMessage}}</div>
+    }
+
+    <mat-paginator [length]="context.dataSource.filteredData.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>
+</ng-template>
 
 <!--------------------------------------------------------->
 <!---------------------------Form-------------------------->
@@ -624,14 +600,15 @@
         <mat-dialog-actions>
             <div class="d-flex align-items-center gap-3" style="margin-top: 10px;">
                 <button type="submit" mat-raised-button matBadgeColor="warn"
+                    [class.badge-changes]="!arrayItemValidationErrors.length"
                     [disabled]="internalIsReadOnly || !isArrayItemValid || !isArrayItemDirty"
-                    [matBadge]="arrayItemValidationErrors.length"
-                    [matBadgeHidden]="!arrayItemValidationErrors.length"
+                    [matBadge]="arrayItemValidationErrors.length > 0 ? arrayItemValidationErrors.length : arrayItemChanges.length"
+                    [matBadgeHidden]="!arrayItemValidationErrors.length && !arrayItemChanges.length"
                     (click)="saveArrayItem()"
                 >
                     {{editArrayItemDialogData.confirmButtonLabel}}
                 </button>
-                @if (arrayItemValidationErrors.length) {
+                @if (arrayItemValidationErrors.length || arrayItemChanges.length) {
                     <ngx-mat-entity-tooltip [tooltipContent]="arrayItemTooltipContent"></ngx-mat-entity-tooltip>
                 }
             </div>
@@ -718,14 +695,15 @@
         <mat-dialog-actions>
             <div class="d-flex align-items-center gap-3" style="margin-top: 10px;">
                 <button type="submit" mat-raised-button matBadgeColor="warn"
+                    [class.badge-changes]="!hasManyValidationErrors.length"
                     [disabled]="internalIsReadOnly || !isHasManyEntityValid || !isHasManyEntityDirty"
-                    [matBadge]="hasManyValidationErrors.length"
-                    [matBadgeHidden]="!hasManyValidationErrors.length"
+                    [matBadge]="hasManyValidationErrors.length > 0 ? hasManyValidationErrors.length : hasManyChanges.length"
+                    [matBadgeHidden]="!hasManyValidationErrors.length && !hasManyChanges.length"
                     (click)="dialogEditHasMany()"
                 >
                     {{metadataHasMany.tableData.editData.confirmButtonLabel}}
                 </button>
-                @if (hasManyValidationErrors.length) {
+                @if (hasManyValidationErrors.length || hasManyChanges.length) {
                     <ngx-mat-entity-tooltip [tooltipContent]="hasManyTooltipContent"></ngx-mat-entity-tooltip>
                 }
             </div>

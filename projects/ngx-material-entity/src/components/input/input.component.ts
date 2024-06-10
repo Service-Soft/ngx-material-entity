@@ -10,10 +10,10 @@ import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dial
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
@@ -50,28 +50,41 @@ import { PropertyDecoratorConfigInternal } from '../../decorators/base/property-
 import { HasManyDecoratorConfigInternal } from '../../decorators/has-many/has-many-decorator-internal.data';
 import { DefaultObjectDecoratorConfigInternal, DropdownObjectDecoratorConfigInternal } from '../../decorators/object/object-decorator-internal.data';
 import { ReferencesOneDecoratorConfigInternal } from '../../decorators/references-one/references-one-decorator-internal.data';
+import { DynamicStyleClassDirective } from '../../directives/dynamic-style-class.directive';
 import { LodashUtilities } from '../../encapsulation/lodash.utilities';
 import { ReflectUtilities } from '../../encapsulation/reflect.utilities';
 import { UUIDUtilities } from '../../encapsulation/uuid.utilities';
 import { defaultFalse } from '../../functions/default-false.function';
+import { getChangesTooltipContent } from '../../functions/get-changes-tooltip-content.function';
 import { NGX_GET_VALIDATION_ERROR_MESSAGE } from '../../functions/get-validation-error-message.function';
-import { getValidationErrorsTooltipContent } from '../../functions/get-validation-errors-tooltip-content.function.ts';
+import { getValidationErrorsTooltipContent } from '../../functions/get-validation-errors-tooltip-content.function';
+import { tableColumnValueToSortValue } from '../../functions/table-column-value-to-sort-value.function';
 import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
 import { DateUtilities } from '../../utilities/date.utilities';
-import { EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
+import { Difference, EntityTab, EntityUtilities } from '../../utilities/entity.utilities';
 import { SelectionUtilities } from '../../utilities/selection.utilities';
 import { ValidationError, ValidationUtilities } from '../../utilities/validation.utilities';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { InternalCustomTableConfiguration } from '../custom-table/custom-table-configuration.model';
 import { CreateDataBuilder, CreateDataInternal } from '../table/create-dialog/create-data.builder';
 import { DisplayColumnValueComponent } from '../table/display-column-value/display-column-value.component';
 import { EditActionInternal } from '../table/edit-dialog/edit-data.builder';
-import { DisplayColumn } from '../table/table-data';
+import { DisplayColumn, DynamicStyleClasses } from '../table/table-data';
 import { BaseTableActionInternal, TableActionInternal } from '../table/table-data.builder';
 import { TooltipComponent } from '../tooltip/tooltip.component';
 
-// TODO: 4 context where the tabs are not set by the form component: hasManyEdit, hasManyCreate, addArrayItem, editArrayItem
+/**
+ * Generic type for contexts that can fill an inline template.
+ */
+type TemplateContext<T> = {
+    /**
+     * The actual value. The $implicit is needed so that we don't need to specify a key when writing "let-context" in the html template.
+     */
+    $implicit: T
+};
+
 /**
  * A form context that is used to fill an inline template.
  * This is used to go around the limitations of having everything in the same file due to circular dependencies.
@@ -79,38 +92,65 @@ import { TooltipComponent } from '../tooltip/tooltip.component';
  */
 type FormContext<EntityType extends BaseEntityType<EntityType>> = {
     /**
-     * The actual value. The $implicit is needed so that we don't need to specify a key when writing "let-context" in the html template.
+     * The entity to build the form for.
      */
-    $implicit: {
-        /**
-         * The entity to build the form for.
-         */
-        entity: EntityType,
-        /**
-         * The tabs to display.
-         */
-        tabs: EntityTab<EntityType>[],
-        /**
-         * Whether or not edit values should be omitted.
-         */
-        hideOmitForEdit?: boolean,
-        /**
-         * Whether or not create values should be omitted.
-         */
-        hideOmitForCreate?: boolean,
-        /**
-         * What happens when the input changes.
-         */
-        inputChangeEvent: () => void | Promise<void>,
-        /**
-         * Whether or not the input is readonly.
-         */
-        isReadOnly?: (property: EntityType, key: keyof EntityType) => boolean,
-        /**
-         * Whether or not the input is valid empty.
-         */
-        validEmpty?: () => boolean
-    }
+    entity: EntityType,
+    /**
+     * The tabs to display.
+     */
+    tabs: EntityTab<EntityType>[],
+    /**
+     * Whether or not edit values should be omitted.
+     */
+    hideOmitForEdit?: boolean,
+    /**
+     * Whether or not create values should be omitted.
+     */
+    hideOmitForCreate?: boolean,
+    /**
+     * What happens when the input changes.
+     */
+    inputChangeEvent: () => void | Promise<void>,
+    /**
+     * Whether or not the input is readonly.
+     */
+    isReadOnly?: (property: EntityType, key: keyof EntityType) => boolean,
+    /**
+     * Whether or not the input is valid empty.
+     */
+    validEmpty?: () => boolean
+};
+
+/**
+ * A table context that is used to fill an inline template.
+ * This is used to go around the limitations of having everything in the same file due to circular dependencies.
+ * The table is used for entity array and hasMany.
+ */
+type TableContext<T> = InternalCustomTableConfiguration & {
+    /**
+     * The data source of the table.
+     */
+    dataSource: MatTableDataSource<T>,
+    /**
+     * Whether or not a error message should be shown when the table is empty.
+     */
+    shouldShowMissingError: boolean,
+    /**
+     * The selection of the table.
+     */
+    selection: SelectionModel<T>,
+    /**
+     * What happens when a cell is clicked.
+     */
+    clickCell: (value: T, displayColumn: DisplayColumn<T>) => void,
+    /**
+     * Whether or not the data for the table is currently being loaded.
+     */
+    isLoading: boolean,
+    /**
+     * All columns that should be displayed.
+     */
+    displayedColumns: string[]
 };
 
 /**
@@ -124,7 +164,7 @@ type FormContext<EntityType extends BaseEntityType<EntityType>> = {
 @Component({
     selector: 'ngx-mat-entity-input',
     templateUrl: './input.component.html',
-    styleUrls: ['./input.component.scss'],
+    styleUrls: ['./input.component.scss', '../../scss/dialog-styles.scss'],
     standalone: true,
     imports: [
         DisplayColumnValueComponent,
@@ -165,7 +205,9 @@ type FormContext<EntityType extends BaseEntityType<EntityType>> = {
         FileDefaultInputComponent,
         FileImageInputComponent,
         ReferencesManyInputComponent,
-        CustomInputComponent
+        CustomInputComponent,
+        DynamicStyleClassDirective,
+        MatSortModule
     ]
 })
 export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
@@ -231,6 +273,23 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     readonly inputChangeEvent: EventEmitter<void> = new EventEmitter<void>();
 
     /**
+     * A setter for the has many sort.
+     * Is needed because the sort is inside a switch case,
+     * which means that at ngOnInit it can't be initialized.
+     */
+    @ViewChild(MatSort)
+    private set sort(sort: MatSort) {
+        // eslint-disable-next-line typescript/strict-boolean-expressions
+        if (this.hasManyTableContext) {
+            this.hasManyTableContext.$implicit.dataSource.sort = this.hasManyTableContext.$implicit.dataSource.sort ?? sort;
+        }
+        // eslint-disable-next-line typescript/strict-boolean-expressions
+        if (this.entityArrayTableContext) {
+            this.entityArrayTableContext.$implicit.dataSource.sort = this.entityArrayTableContext.$implicit.dataSource.sort ?? sort;
+        }
+    }
+
+    /**
      * The type of the decorator for this input.
      */
     type!: DecoratorTypes;
@@ -246,7 +305,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * The form context for an object property.
      */
-    objectFormContext!: FormContext<EntityType>;
+    objectFormContext!: TemplateContext<FormContext<EntityType>>;
 
     /**
      * The metadata of an dropdown object property.
@@ -297,9 +356,9 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     metadataEntityArray!: EntityArrayDecoratorConfigInternal<EntityType>;
     /**
-     * The entity array property value.
+     * The table context for the entity array input.
      */
-    entityArrayValues!: EntityType[];
+    entityArrayTableContext!: TemplateContext<TableContext<EntityType>>;
     /**
      * The current array item to be added or updated.
      */
@@ -311,23 +370,11 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * The form context for adding an array item.
      */
-    addArrayItemFormContext!: FormContext<EntityType>;
+    addArrayItemFormContext!: TemplateContext<FormContext<EntityType>>;
     /**
      * The form context for editing an array item.
      */
-    editArrayItemFormContext!: FormContext<EntityType>;
-    /**
-     * The dataSource for the entity array.
-     */
-    entityArrayDataSource!: MatTableDataSource<EntityType>;
-    /**
-     * The selection for the entity array.
-     */
-    entityArraySelection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
-    /**
-     * The columns to display in the entity array table.
-     */
-    entityArrayDisplayedColumns!: string[];
+    editArrayItemFormContext!: TemplateContext<FormContext<EntityType>>;
     /**
      * Whether or not the array item is valid.
      */
@@ -353,6 +400,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     arrayItemValidationErrors: ValidationError[] = [];
     /**
+     * All the changes that have been done to the array item.
+     */
+    arrayItemChanges: Difference<EntityType>[] = [];
+    /**
      * What to display inside the array item tooltip.
      */
     arrayItemTooltipContent: string = '';
@@ -362,45 +413,9 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     metadataHasMany!: HasManyDecoratorConfigInternal<EntityType, EntityType>;
     /**
-     * Whether or not has many is currently loading.
+     * The table context for the has many input.
      */
-    hasManyIsLoading: boolean = true;
-    /**
-     * A setter for the has many paginator.
-     * Is needed because the paginator is inside a switch case,
-     * which means that at ngOnInit it can't be initialized.
-     */
-    @ViewChild(MatPaginator)
-    set hasManyPaginator(paginator: MatPaginator) {
-        if (!this.hasManyDataSource.paginator) {
-            this.hasManyDataSource.paginator = paginator;
-        }
-    }
-    /**
-     * A setter for the has many sort.
-     * Is needed because the sort is inside a switch case,
-     * which means that at ngOnInit it can't be initialized.
-     */
-    @ViewChild(MatSort)
-    private set hasManySort(sort: MatSort) {
-        if (!this.hasManyDataSource.sort) {
-            this.hasManyDataSource.sort = sort;
-        }
-    }
-    @ViewChild('filter', { static: true })
-    private readonly hasManyFilter!: string;
-    /**
-     * The columns of the has many table.
-     */
-    displayedHasManyColumns!: string[];
-    /**
-     * The data source of the has many table.
-     */
-    hasManyDataSource: MatTableDataSource<EntityType> = new MatTableDataSource();
-    /**
-     * The selection of the has many table.
-     */
-    hasManySelection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
+    hasManyTableContext!: TemplateContext<TableContext<EntityType>>;
     /**
      * The has many import action.
      */
@@ -429,6 +444,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     hasManyValidationErrors: ValidationError[] = [];
     /**
+     * All the changes that have been done to the has many entity.
+     */
+    hasManyChanges: Difference<EntityType>[] = [];
+    /**
      * What to display inside the has many tooltip.
      */
     hasManyTooltipContent: string = '';
@@ -443,11 +462,11 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * The form context for creating an has many entity.
      */
-    hasManyCreateFormContext!: FormContext<EntityType>;
+    hasManyCreateFormContext!: TemplateContext<FormContext<EntityType>>;
     /**
      * The form context for editing an has many entity.
      */
-    hasManyEditFormContext!: FormContext<EntityType>;
+    hasManyEditFormContext!: TemplateContext<FormContext<EntityType>>;
     private hasManyCreateBaseUrl!: string;
 
     /**
@@ -473,7 +492,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     /**
      * The form context for an object property.
      */
-    referencesOneFormContext!: FormContext<EntityType>;
+    referencesOneFormContext!: TemplateContext<FormContext<EntityType>>;
 
     /**
      * The enum Values for all the different DecoratorTypes.
@@ -552,6 +571,19 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     getDisplayColumnValue(entity: EntityType, displayColumn: DisplayColumn<EntityType>): unknown {
         return runInInjectionContext(this.injector, () => displayColumn.value(entity));
+    }
+
+    /**
+     * Emits a cellClicked event when the clicked column is enabled and clicking is allowed by the configuration.
+     * @param value - The value of the row that was clicked.
+     * @param dCol - The display column of the row that was clicked.
+     * @param context - The context of the table where the cell was clicked.
+     */
+    clickCell<T>(value: T, dCol: DisplayColumn<T>, context: TableContext<T>): void {
+        if (dCol.disableClick == true || !context.allowClick(value)) {
+            return;
+        }
+        context.clickCell(value, dCol);
     }
 
     ngOnInit(): void {
@@ -650,37 +682,62 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         });
 
         const givenDisplayColumns: string[] = this.metadataHasMany.tableData.baseData.displayColumns.map((v) => v.displayName);
-        // eslint-disable-next-line unicorn/prefer-ternary
-        if (this.metadataHasMany.tableData.baseData.tableActions.filter(tA => tA.type === 'multi-select').length) {
-            this.displayedHasManyColumns = ['select'].concat(givenDisplayColumns);
+        if (givenDisplayColumns.find(s => s === 'select')) {
+            throw new Error(
+                `The name "select" for a display column is reserved.
+                Please choose a different name.`
+            );
         }
-        else {
-            this.displayedHasManyColumns = givenDisplayColumns;
-        }
+        this.hasManyTableContext = {
+            $implicit: {
+                ...new InternalCustomTableConfiguration(
+                    this.globalConfig,
+                    {
+                        displayColumns: this.metadataHasMany.tableData.baseData.displayColumns as DisplayColumn<unknown>[],
+                        withSelection: !this.internalIsReadOnly,
+                        // eslint-disable-next-line stylistic/max-len
+                        dynamicRowStyleClasses: this.metadataHasMany.tableData.baseData.dynamicRowStyleClasses as DynamicStyleClasses<unknown>,
+                        allowClick: ((entity: EntityType) => {
+                            return this.metadataHasMany.tableData.baseData.allowRead(entity)
+                                || this.metadataHasMany.tableData.baseData.allowUpdate(entity);
+                        }) as (value: unknown) => boolean,
+                        displayLoadingSpinner: this.metadataHasMany.tableData.baseData.displayLoadingSpinner,
+                        searchStringForRow: this.metadataHasMany.tableData.baseData.searchString as (value: unknown) => string
+                    }
+                ),
+                displayedColumns: !this.metadataHasMany.tableData.baseData.tableActions.filter(tA => tA.type === 'multi-select').length
+                    ? givenDisplayColumns
+                    : ['select'].concat(givenDisplayColumns),
+                dataSource: new MatTableDataSource(),
+                isLoading: true,
+                shouldShowMissingError: false,
+                selection: new SelectionModel<EntityType>(true, []),
+                clickCell: (entity, dCol) => this.editHasManyEntity(entity, dCol)
+            }
+        };
 
-        this.hasManyDataSource.sortingDataAccessor = (entity: EntityType, header: string) => {
+        this.hasManyTableContext.$implicit.dataSource.sortingDataAccessor = (entity: EntityType, header: string) => {
             return runInInjectionContext(this.injector, () => {
-                return this.metadataHasMany.tableData.baseData.displayColumns
-                    .find((dp) => dp.displayName === header)
-                    ?.value(entity) as string;
+                const displayColumn: DisplayColumn<EntityType> = this.metadataHasMany.tableData.baseData.displayColumns
+                    .find((dp) => dp.displayName === header) as DisplayColumn<EntityType>;
+                return tableColumnValueToSortValue(displayColumn.value(entity));
             });
         };
-        this.hasManyDataSource.filterPredicate = (entity: EntityType, filter: string) => {
+        this.hasManyTableContext.$implicit.dataSource.filterPredicate = (entity: EntityType, filter: string) => {
             const searchStr: string = this.metadataHasMany.tableData.baseData.searchString(entity);
             const formattedSearchString: string = searchStr.toLowerCase();
             const formattedFilterString: string = filter.toLowerCase();
             return formattedSearchString.includes(formattedFilterString);
         };
-        this.hasManyDataSource.filter = this.hasManyFilter;
 
         this.hasManyEntityService.entitiesSubject.subscribe((entities) => {
-            this.hasManyDataSource.data = entities;
-            this.hasManySelection.clear();
+            this.hasManyTableContext.$implicit.dataSource.data = entities;
+            this.hasManyTableContext.$implicit.selection.clear();
         });
         void runInInjectionContext(this.injector, async () => {
             const readBaseUrl: string = this.metadataHasMany.readBaseUrl(this.entity, this.metadataHasMany);
             await this.hasManyEntityService.read(readBaseUrl);
-            this.hasManyIsLoading = false;
+            this.hasManyTableContext.$implicit.isLoading = false;
         });
     }
 
@@ -694,7 +751,6 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         if (this.entity[this.propertyKey] == undefined) {
             (this.entity[this.propertyKey] as EntityType[]) = [];
         }
-        this.entityArrayValues = this.entity[this.propertyKey] as EntityType[];
         if (!this.metadataEntityArray.createInline && !this.metadataEntityArray.createDialogData) {
             this.metadataEntityArray.createDialogData = {
                 title: 'Add'
@@ -707,9 +763,28 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 Please choose a different name.`
             );
         }
-        this.entityArrayDisplayedColumns = this.internalIsReadOnly ? givenDisplayColumns : ['select'].concat(givenDisplayColumns);
-        this.entityArrayDataSource = new MatTableDataSource();
-        this.entityArrayDataSource.data = this.entityArrayValues;
+        this.entityArrayTableContext = {
+            $implicit: {
+                ...new InternalCustomTableConfiguration(
+                    this.globalConfig,
+                    {
+                        displayColumns: this.metadataEntityArray.displayColumns as DisplayColumn<unknown>[],
+                        withSelection: !this.internalIsReadOnly,
+                        dynamicRowStyleClasses: this.metadataEntityArray.dynamicRowStyleClasses as DynamicStyleClasses<unknown>,
+                        emptyErrorMessage: this.metadataEntityArray.missingErrorMessage
+                    }
+                ),
+                displayedColumns: this.internalIsReadOnly ? givenDisplayColumns : ['select'].concat(givenDisplayColumns),
+                dataSource: new MatTableDataSource(),
+                isLoading: false,
+                shouldShowMissingError: true,
+                selection: new SelectionModel<EntityType>(true, []),
+                // eslint-disable-next-line typescript/no-misused-promises
+                clickCell: (entity, dCol) => this.editArrayItem(entity, dCol)
+            }
+        };
+        this.entityArrayTableContext.$implicit.dataSource.data = this.entity[this.propertyKey] as EntityType[];
+
         this.arrayItem = new this.metadataEntityArray.EntityClass();
         this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
         EntityUtilities.setDefaultValues(this.arrayItem);
@@ -991,11 +1066,11 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         );
         const res: number = await firstValueFrom(this.editHasManyDialogRef.afterClosed()) as number;
         if (res === 0) {
-            const data: EntityType[] = this.hasManyDataSource.data;
+            const data: EntityType[] = this.hasManyTableContext.$implicit.dataSource.data;
             // eslint-disable-next-line stylistic/max-len
-            data[this.hasManyDataSource.data.findIndex((e) => e[this.hasManyEntityService.idKey] === entity[this.hasManyEntityService.idKey])] = entity;
-            this.hasManyDataSource.data = data;
-            this.hasManySelection.clear();
+            data[this.hasManyTableContext.$implicit.dataSource.data.findIndex((e) => e[this.hasManyEntityService.idKey] === entity[this.hasManyEntityService.idKey])] = entity;
+            this.hasManyTableContext.$implicit.dataSource.data = data;
+            this.hasManyTableContext.$implicit.selection.clear();
         }
     }
 
@@ -1178,7 +1253,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     async runHasManyTableAction(action: TableActionInternal<EntityType>): Promise<void> {
         const requireConfirmDialog: boolean = runInInjectionContext(
             this.injector,
-            () => action.requireConfirmDialog(this.hasManySelection.selected)
+            () => action.requireConfirmDialog(this.hasManyTableContext.$implicit.selection.selected)
         );
         if (!requireConfirmDialog) {
             await this.confirmRunHasManyTableAction(action);
@@ -1186,7 +1261,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         }
 
         const defaultText: string[] = action.type === 'multi-select'
-            ? this.globalConfig.confirmMultiSelectActionText(this.hasManySelection.selected)
+            ? this.globalConfig.confirmMultiSelectActionText(this.hasManyTableContext.$implicit.selection.selected)
             : this.globalConfig.confirmBaseActionText;
         const dialogData: ConfirmDialogDataInternal = new ConfirmDialogDataBuilder(this.globalConfig, action.confirmDialogData)
             .withDefault('text', defaultText)
@@ -1205,7 +1280,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
     private async confirmRunHasManyTableAction(action: TableActionInternal<EntityType>): Promise<void> {
         await runInInjectionContext(this.injector, async () => {
-            await action.action(this.hasManySelection.selected);
+            await action.action(this.hasManyTableContext.$implicit.selection.selected);
             this.emitChange();
         });
     }
@@ -1217,7 +1292,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     hasManyTableActionDisabled(action: TableActionInternal<EntityType>): boolean {
         return runInInjectionContext(this.injector, () => {
-            return !action.enabled(this.hasManySelection.selected);
+            return !action.enabled(this.hasManyTableContext.$implicit.selection.selected);
         });
     }
 
@@ -1227,7 +1302,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     applyHasManyFilter(event: Event): void {
         const filterValue: string = (event.target as HTMLInputElement).value;
-        this.hasManyDataSource.filter = filterValue.trim().toLowerCase();
+        this.hasManyTableContext.$implicit.dataSource.filter = filterValue.trim().toLowerCase();
     }
 
     /**
@@ -1235,7 +1310,19 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     async checkHasManyEntity(): Promise<void> {
         await this.checkIsHasManyEntityValid('update');
-        this.isHasManyEntityDirty = await EntityUtilities.isDirty(this.hasManyEntity, this.hasManyEntityPriorChanges, this.http);
+        this.hasManyChanges = await EntityUtilities.getDifferencesBetweenEntities(
+            this.hasManyEntity,
+            this.hasManyEntityPriorChanges,
+            this.http,
+            this.injector
+        );
+        if (!this.hasManyValidationErrors.length && this.hasManyChanges.length) {
+            this.hasManyTooltipContent = runInInjectionContext(
+                this.injector,
+                () => getChangesTooltipContent(this.hasManyChanges)
+            );
+        }
+        this.isHasManyEntityDirty = !!this.hasManyChanges.length;
     }
 
     /**
@@ -1244,11 +1331,12 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     async checkIsHasManyEntityValid(omit: 'create' | 'update'): Promise<void> {
         this.hasManyValidationErrors = await ValidationUtilities.getEntityValidationErrors(this.hasManyEntity, this.injector, omit);
-
-        this.hasManyTooltipContent = runInInjectionContext(
-            this.injector,
-            () => getValidationErrorsTooltipContent(this.hasManyValidationErrors)
-        );
+        if (this.hasManyValidationErrors.length) {
+            this.hasManyTooltipContent = runInInjectionContext(
+                this.injector,
+                () => getValidationErrorsTooltipContent(this.hasManyValidationErrors)
+            );
+        }
         this.isHasManyEntityValid = this.hasManyValidationErrors.length === 0;
     }
 
@@ -1264,7 +1352,19 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * Checks if the array item is dirty.
      */
     async checkIsArrayItemDirty(): Promise<void> {
-        this.isArrayItemDirty = await EntityUtilities.isDirty(this.arrayItem, this.arrayItemPriorChanges, this.http);
+        this.arrayItemChanges = await EntityUtilities.getDifferencesBetweenEntities(
+            this.arrayItem,
+            this.arrayItemPriorChanges,
+            this.http,
+            this.injector
+        );
+        if (!this.arrayItemValidationErrors.length && this.arrayItemChanges.length) {
+            this.arrayItemTooltipContent = runInInjectionContext(
+                this.injector,
+                () => getChangesTooltipContent(this.arrayItemChanges)
+            );
+        }
+        this.isArrayItemDirty = !!this.arrayItemChanges.length;
     }
 
     /**
@@ -1272,11 +1372,12 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     async checkIsArrayItemValid(): Promise<void> {
         this.arrayItemValidationErrors = await ValidationUtilities.getEntityValidationErrors(this.arrayItem, this.injector, 'create');
-
-        this.arrayItemTooltipContent = runInInjectionContext(
-            this.injector,
-            () => getValidationErrorsTooltipContent(this.arrayItemValidationErrors)
-        );
+        if (this.arrayItemValidationErrors.length) {
+            this.arrayItemTooltipContent = runInInjectionContext(
+                this.injector,
+                () => getValidationErrorsTooltipContent(this.arrayItemValidationErrors)
+            );
+        }
         this.isArrayItemValid = this.arrayItemValidationErrors.length === 0;
     }
 
@@ -1306,7 +1407,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             return;
         }
         if (!this.metadataEntityArray.allowDuplicates) {
-            for (const v of this.entityArrayValues) {
+            for (const v of this.entityArrayTableContext.$implicit.dataSource.data) {
                 if (await EntityUtilities.isEqual(this.arrayItem, v, this.metadata, this.metadataEntityArray.itemType, this.http)) {
                     this.dialog.open(NgxMatEntityConfirmDialogComponent, {
                         data: this.metadataEntityArray.duplicatesErrorDialog,
@@ -1317,8 +1418,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 }
             }
         }
-        this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
-        this.entityArrayDataSource.data = this.entityArrayValues;
+        (this.entity[this.propertyKey] as EntityType[]).push(LodashUtilities.cloneDeep(this.arrayItem));
+        this.entityArrayTableContext.$implicit.dataSource.data = (this.entity[this.propertyKey] as EntityType[]);
         EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
         EntityUtilities.setDefaultValues(this.arrayItem);
         await this.checkIsArrayItemValid();
@@ -1332,8 +1433,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         if (!this.isArrayItemValid) {
             return;
         }
-        this.entityArrayValues.push(LodashUtilities.cloneDeep(this.arrayItem));
-        this.entityArrayDataSource.data = this.entityArrayValues;
+        (this.entity[this.propertyKey] as EntityType[]).push(LodashUtilities.cloneDeep(this.arrayItem));
+        this.entityArrayTableContext.$implicit.dataSource.data = (this.entity[this.propertyKey] as EntityType[]);
 
         await this.closeAddArrayItemDialog();
     }
@@ -1357,7 +1458,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         if (dCol.disableClick === true) {
             return;
         }
-        this.indexOfEditedArrayItem = this.entityArrayValues.indexOf(entity);
+        this.indexOfEditedArrayItem = this.entityArrayTableContext.$implicit.dataSource.data.indexOf(entity);
         this.arrayItem = new this.metadataEntityArray.EntityClass(entity);
         this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
 
@@ -1377,8 +1478,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * Saves changes on the array item in the dialog.
      */
     saveArrayItem(): void {
-        this.entityArrayValues[this.indexOfEditedArrayItem] = LodashUtilities.cloneDeep(this.arrayItem);
-        this.entityArrayDataSource.data = this.entityArrayValues;
+        (this.entity[this.propertyKey] as EntityType[])[this.indexOfEditedArrayItem] = LodashUtilities.cloneDeep(this.arrayItem);
+        this.entityArrayTableContext.$implicit.dataSource.data = (this.entity[this.propertyKey] as EntityType[]);
 
         void this.closeEditArrayItemDialog();
     }
@@ -1398,7 +1499,11 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * Removes all selected entries from the entity array.
      */
     removeFromEntityArray(): void {
-        SelectionUtilities.remove(this.entityArraySelection, this.entityArrayValues, this.entityArrayDataSource);
+        SelectionUtilities.remove(
+            this.entityArrayTableContext.$implicit.selection,
+            this.entity[this.propertyKey] as EntityType[],
+            this.entityArrayTableContext.$implicit.dataSource
+        );
         this.emitChange();
     }
 }

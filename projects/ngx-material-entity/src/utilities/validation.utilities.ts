@@ -203,6 +203,7 @@ export abstract class ValidationUtilities {
             case DecoratorTypes.ARRAY_DATE_TIME:
             case DecoratorTypes.ARRAY_DATE_RANGE:
             case DecoratorTypes.ARRAY:
+            case DecoratorTypes.REFERENCES_MANY:
                 const entityArray: unknown[] = entity[key] as unknown[];
                 // eslint-disable-next-line stylistic/max-len
                 const arrayMetadata: EntityArrayDecoratorConfigInternal<EntityType> = metadata as EntityArrayDecoratorConfigInternal<EntityType>;
@@ -231,7 +232,6 @@ export abstract class ValidationUtilities {
                 const entityFile: FileData | FileData[] = entity[key] as FileData | FileData[];
                 const entityFileMetadata: DefaultFileDecoratorConfigInternal = metadata as DefaultFileDecoratorConfigInternal;
                 return this.getFileDataValidationError(entityFile, entityFileMetadata);
-            case DecoratorTypes.REFERENCES_MANY:
             case DecoratorTypes.REFERENCES_ONE:
             case DecoratorTypes.HAS_MANY:
                 break;

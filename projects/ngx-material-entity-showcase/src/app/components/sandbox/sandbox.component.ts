@@ -190,7 +190,7 @@ export class Person extends Entity {
     @hasMany({
         tableData: {
             baseData: {
-                title: 'Addresses',
+                title: 'Has Many Addresses',
                 displayColumns: [
                     {
                         displayName: 'Street',
@@ -209,7 +209,7 @@ export class Person extends Entity {
             createData: {}
         },
         RelatedEntityServiceClass: PersonService,
-        displayName: 'Addresses',
+        displayName: 'Has Many Addresses',
         position: {
             tab: 2,
             tabName: 'Addresses'
