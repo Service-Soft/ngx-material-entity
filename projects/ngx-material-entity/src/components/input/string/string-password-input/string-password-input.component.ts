@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,7 +29,7 @@ export enum PasswordStrength {
         MatFormFieldModule,
         FormsModule,
         MatInputModule,
-        NgIf,
+        CommonModule,
         MatButtonModule,
         PasswordMatchValidatorDirective
     ]

@@ -4,7 +4,8 @@ import { ArrayDecoratorConfig, AutocompleteStringChipsArrayDecoratorConfig, Date
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder } from '../../components/confirm-dialog/confirm-dialog-data.builder';
-import { CreateData, DisplayColumn } from '../../components/table/table-data';
+import { CreateData, DisplayColumn, DynamicStyleClasses } from '../../components/table/table-data';
+import { defaultDynamicStyleClasses } from '../../functions/default-style-classes.function';
 import { getConfigValue } from '../../functions/get-config-value.function';
 import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { DateUtilities, Time } from '../../utilities/date.utilities';
@@ -50,6 +51,8 @@ export class EntityArrayDecoratorConfigInternal<EntityType extends BaseEntityTyp
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayColumns: DisplayColumn<EntityType>[];
     // eslint-disable-next-line jsdoc/require-jsdoc
+    dynamicRowStyleClasses: DynamicStyleClasses<EntityType>;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     createDialogData?: CreateData;
     // eslint-disable-next-line jsdoc/require-jsdoc
     editDialogData: EditArrayItemDialogDataInternal<EntityType>;
@@ -70,6 +73,7 @@ export class EntityArrayDecoratorConfigInternal<EntityType extends BaseEntityTyp
         this.duplicatesErrorDialog = getDefaultDuplicateErrorDialogData(data, globalConfig);
         this.EntityClass = data.EntityClass;
         this.displayColumns = data.displayColumns;
+        this.dynamicRowStyleClasses = data.dynamicRowStyleClasses ?? defaultDynamicStyleClasses;
         this.createInline = data.createInline ?? true;
         this.missingErrorMessage = getConfigValue(globalConfig.emptyArrayErrorMessage, data.missingErrorMessage);
         this.defaultWidths = data.defaultWidths ?? [12, 12, 12];
@@ -98,6 +102,8 @@ export class DateArrayDecoratorConfigInternal extends PropertyDecoratorConfigInt
     // eslint-disable-next-line jsdoc/require-jsdoc
     missingErrorMessage: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
+    dynamicRowStyleClasses: DynamicStyleClasses<Date>;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     min?: (date?: Date) => Date;
     // eslint-disable-next-line jsdoc/require-jsdoc
     max?: (date?: Date) => Date;
@@ -114,6 +120,7 @@ export class DateArrayDecoratorConfigInternal extends PropertyDecoratorConfigInt
         this.addButtonLabel = getConfigValue(globalConfig.addLabel, data.addButtonLabel);
         this.removeButtonLabel = getConfigValue(globalConfig.removeLabel, data.removeButtonLabel);
         this.missingErrorMessage = getConfigValue(globalConfig.emptyArrayErrorMessage, data.missingErrorMessage);
+        this.dynamicRowStyleClasses = data.dynamicRowStyleClasses ?? defaultDynamicStyleClasses;
         this.min = data.min;
         this.max = data.max;
         this.filter = data.filter;
@@ -143,6 +150,8 @@ export class DateTimeArrayDecoratorConfigInternal extends PropertyDecoratorConfi
     // eslint-disable-next-line jsdoc/require-jsdoc
     timeDisplayName: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
+    dynamicRowStyleClasses: DynamicStyleClasses<Date>;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     minDate?: (date?: Date) => Date;
     // eslint-disable-next-line jsdoc/require-jsdoc
     maxDate?: (date?: Date) => Date;
@@ -167,6 +176,7 @@ export class DateTimeArrayDecoratorConfigInternal extends PropertyDecoratorConfi
         this.missingErrorMessage = getConfigValue(globalConfig.emptyArrayErrorMessage, data.missingErrorMessage);
         this.times = data.times ?? DateUtilities.getDefaultTimes();
         this.timeDisplayName = getConfigValue(globalConfig.timeLabel, data.timeDisplayName);
+        this.dynamicRowStyleClasses = data.dynamicRowStyleClasses ?? defaultDynamicStyleClasses;
         this.minDate = data.minDate;
         this.maxDate = data.maxDate;
         this.filterDate = data.filterDate;
@@ -200,6 +210,8 @@ export class DateRangeArrayDecoratorConfigInternal extends PropertyDecoratorConf
     // eslint-disable-next-line jsdoc/require-jsdoc
     placeholderEnd: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
+    dynamicRowStyleClasses: DynamicStyleClasses<DateRange>;
+    // eslint-disable-next-line jsdoc/require-jsdoc
     minStart?: (date?: Date) => Date;
     // eslint-disable-next-line jsdoc/require-jsdoc
     maxStart?: (date?: Date) => Date;
@@ -222,6 +234,7 @@ export class DateRangeArrayDecoratorConfigInternal extends PropertyDecoratorConf
         this.missingErrorMessage = getConfigValue(globalConfig.emptyArrayErrorMessage, data.missingErrorMessage);
         this.placeholderStart = getConfigValue(globalConfig.startLabel, data.placeholderStart);
         this.placeholderEnd = getConfigValue(globalConfig.endLabel, data.placeholderEnd);
+        this.dynamicRowStyleClasses = data.dynamicRowStyleClasses ?? defaultDynamicStyleClasses;
         this.minStart = data.minStart;
         this.maxStart = data.maxStart;
         this.minEnd = data.minEnd;
@@ -318,7 +331,7 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
  * @returns The dialog data with set default values.
  */
 function getDefaultDuplicateErrorDialogData(
-    data: ArrayDecoratorConfig<unknown[]>,
+    data: ArrayDecoratorConfig<unknown>,
     globalConfig: NgxGlobalDefaultValues
 ): ConfirmDialogData {
     return new ConfirmDialogDataBuilder(globalConfig, data.duplicatesErrorDialog)

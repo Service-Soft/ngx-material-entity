@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DateFilterFn, MatDatepickerModule } from '@angular/material/datepicker';
@@ -21,11 +21,10 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
     styleUrls: ['./date-range-input.component.scss'],
     standalone: true,
     imports: [
+        CommonModule,
         MatFormFieldModule,
         MatDatepickerModule,
-        FormsModule,
-        NgFor,
-        NgIf
+        FormsModule
     ]
 })
 export class DateRangeInputComponent<EntityType extends BaseEntityType<EntityType>>

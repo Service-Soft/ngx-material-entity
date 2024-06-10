@@ -1,17 +1,13 @@
-import { SelectionModel } from '@angular/cdk/collections';
-import { NgFor, NgIf } from '@angular/common';
-import { Component, EnvironmentInjector, EventEmitter, Inject, Input, OnInit, Output, ViewChild, inject, runInInjectionContext } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, EnvironmentInjector, EventEmitter, Inject, Input, OnInit, Output, inject, runInInjectionContext } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
@@ -28,9 +24,10 @@ import { DynamicStyleClassDirective } from '../../directives/dynamic-style-class
 import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
 import { EntityUtilities } from '../../utilities/entity.utilities';
-import { SelectionUtilities } from '../../utilities/selection.utilities';
 import { ConfirmDialogDataBuilder, ConfirmDialogDataInternal } from '../confirm-dialog/confirm-dialog-data.builder';
 import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { CustomTableConfiguration } from '../custom-table/custom-table-configuration.model';
+import { CustomTableComponent } from '../custom-table/custom-table.component';
 
 /**
  * Generates a fully functional table for displaying, creating, updating and deleting entities
@@ -44,14 +41,10 @@ import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-di
     styleUrls: ['./table.component.scss'],
     standalone: true,
     imports: [
-        NgIf,
-        NgFor,
+        CommonModule,
         MatInputModule,
         FormsModule,
         MatFormFieldModule,
-        MatCheckboxModule,
-        MatTableModule,
-        MatPaginatorModule,
         MatSortModule,
         MatButtonModule,
         MatMenuModule,
@@ -60,7 +53,8 @@ import { NgxMatEntityConfirmDialogComponent } from '../confirm-dialog/confirm-di
         NgxMatEntityCreateDialogComponent,
         NgxMatEntityEditDialogComponent,
         DisplayColumnValueComponent,
-        DynamicStyleClassDirective
+        DynamicStyleClassDirective,
+        CustomTableComponent
     ]
 })
 export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity>> implements OnInit {
@@ -83,6 +77,26 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     data!: TableDataInternal<EntityType>;
 
     /**
+     * Configuration for the table.
+     */
+    tableConfig!: CustomTableConfiguration<EntityType>;
+
+    /**
+     * The entities to display inside the table.
+     */
+    entities!: EntityType[];
+
+    /**
+     * A search string for filtering table results.
+     */
+    searchString: string = '';
+
+    /**
+     * The currently selected entities.
+     */
+    selected: EntityType[] = [];
+
+    /**
      * Whether or not the table content is currently loading.
      */
     isLoading: boolean = true;
@@ -92,38 +106,6 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     allowCreate!: boolean;
 
     private entityService!: EntityService<EntityType>;
-    /**
-     * The paginator from the html.
-     */
-    @ViewChild(MatPaginator, { static: true })
-    paginator!: MatPaginator;
-    /**
-     * The sort from the html.
-     */
-    @ViewChild(MatSort, { static: true })
-    sort!: MatSort;
-    /**
-     * The filter (search) from the html.
-     */
-    @ViewChild('filter', { static: true })
-    filter!: string;
-    /**
-     * The columns of the table.
-     */
-    displayedColumns!: string[];
-    /**
-     * The table dataSource.
-     */
-    dataSource: MatTableDataSource<EntityType> = new MatTableDataSource();
-    /**
-     * The selection of the table.
-     */
-    selection: SelectionModel<EntityType> = new SelectionModel<EntityType>(true, []);
-
-    /**
-     * Provides functionality around material selections inside of tables.
-     */
-    SelectionUtilities: typeof SelectionUtilities = SelectionUtilities;
 
     /**
      * The internal BaseTableAction. Sets default values.
@@ -145,6 +127,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         this.data = new TableDataBuilder(this.globalConfig, this.tableData).getResult();
         runInInjectionContext(this.injector, () => {
             this.allowCreate = this.data.baseData.allowCreate();
+            this.entityService = inject<EntityService<EntityType>>(this.data.baseData.EntityServiceClass);
         });
 
         this.importAction = new BaseTableActionInternal({
@@ -152,37 +135,16 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
             action: () => this.startImportJson()
         }, this.globalConfig);
 
-        runInInjectionContext(this.injector, () => {
-            this.entityService = inject<EntityService<EntityType>>(this.data.baseData.EntityServiceClass);
-        });
-
-        const givenDisplayColumns: string[] = this.data.baseData.displayColumns.map((v) => v.displayName);
-        // eslint-disable-next-line unicorn/prefer-ternary
-        if (this.data.baseData.tableActions.filter(tA => tA.type === 'multi-select').length) {
-            this.displayedColumns = ['select'].concat(givenDisplayColumns);
-        }
-        else {
-            this.displayedColumns = givenDisplayColumns;
-        }
-
-        this.dataSource.sortingDataAccessor = (entity: EntityType, header: string) => {
-            return runInInjectionContext(this.injector, () => {
-                return this.data.baseData.displayColumns.find((dp) => dp.displayName === header)?.value(entity) as string;
-            });
+        this.tableConfig = {
+            displayColumns: this.tableData.baseData.displayColumns,
+            withSelection: !!this.data.baseData.tableActions.filter(tA => tA.type === 'multi-select').length,
+            allowClick: (value) => this.allowRead(value) || this.allowUpdate(value),
+            dynamicRowStyleClasses: this.data.baseData.dynamicRowStyleClasses,
+            searchStringForRow: this.data.baseData.searchString
         };
-        this.dataSource.sort = this.sort;
-        this.dataSource.filterPredicate = (entity: EntityType, filter: string) => {
-            const searchStr: string = this.data.baseData.searchString(entity);
-            const formattedSearchString: string = searchStr.toLowerCase();
-            const formattedFilterString: string = filter.toLowerCase();
-            return formattedSearchString.includes(formattedFilterString);
-        };
-        this.dataSource.filter = this.filter;
-        this.dataSource.paginator = this.paginator;
 
         this.entityService.entitiesSubject.subscribe((entities) => {
-            this.dataSource.data = entities;
-            this.selection.clear();
+            this.entities = [...entities];
         });
         // eslint-disable-next-line promise/prefer-await-to-then
         void this.entityService.read().then(() => {
@@ -234,16 +196,9 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
     /**
      * Edits an entity. This either calls the edit-Method provided by the user or uses a default edit-dialog.
      * @param entity - The entity that should be updated.
-     * @param dCol - The display column. Is needed if a custom component was used that handles the click event differently.
      * @throws When no EntityClass was provided, as a new call is needed to initialize metadata.
      */
-    editEntity(entity: EntityType, dCol: DisplayColumn<EntityType>): void {
-        if (dCol.disableClick == true) {
-            return;
-        }
-        if (!(this.allowUpdate(entity) || this.allowRead(entity))) {
-            return;
-        }
+    editEntity(entity: EntityType): void {
         if (!this.data.baseData.EntityClass) {
             throw new Error('No "EntityClass" specified for this table');
         }
@@ -304,10 +259,8 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
         const res: number | undefined = await firstValueFrom(dialogRef.afterClosed());
         this.unsavedDialogChanges.emit(false);
         if (res === 0) {
-            const data: EntityType[] = this.dataSource.data;
-            data[this.dataSource.data.findIndex((e) => e[this.entityService.idKey] === entity[this.entityService.idKey])] = entity;
-            this.dataSource.data = data;
-            this.selection.clear();
+            this.entities[this.entities.findIndex((e) => e[this.entityService.idKey] === entity[this.entityService.idKey])] = entity;
+            this.entities = this.entities;
         }
     }
 
@@ -367,7 +320,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
      */
     async runTableAction(action: TableActionInternal<EntityType>): Promise<void> {
         const requireConfirmDialog: boolean = runInInjectionContext(this.injector, () => {
-            return action.requireConfirmDialog(this.selection.selected);
+            return action.requireConfirmDialog(this.selected);
         });
 
         if (!requireConfirmDialog) {
@@ -387,7 +340,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
 
     private async confirmRunTableAction(action: TableActionInternal<EntityType>): Promise<void> {
         await runInInjectionContext(this.injector, async () => {
-            await action.action(this.selection.selected);
+            await action.action(this.selected);
         });
     }
 
@@ -398,17 +351,7 @@ export class NgxMatEntityTableComponent<EntityType extends BaseEntityType<Entity
      */
     tableActionDisabled(action: TableActionInternal<EntityType>): boolean {
         return runInInjectionContext(this.injector, () => {
-            return !action.enabled(this.selection.selected);
+            return !action.enabled(this.selected);
         });
     }
-
-    /**
-     * Applies the search input to filter the table entries.
-     * @param event - The keyup-event which contains the search-string of the user.
-     */
-    applyFilter(event: Event): void {
-        const filterValue: string = (event.target as HTMLInputElement).value;
-        this.dataSource.filter = filterValue.trim().toLowerCase();
-    }
-
 }

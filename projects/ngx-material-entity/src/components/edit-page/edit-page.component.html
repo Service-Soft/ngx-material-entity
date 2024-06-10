@@ -59,14 +59,15 @@
             <div class="bottom-row-container">
                 <div class="bottom-row container">
                     <button type="submit" mat-raised-button matBadgeColor="warn"
+                        [class.badge-changes]="!validationErrors.length"
                         [disabled]="isEntityReadOnly || !isEntityValid || !isEntityDirty"
-                        [matBadge]="validationErrors.length"
-                        [matBadgeHidden]="!validationErrors.length"
+                        [matBadge]="validationErrors.length > 0 ? validationErrors.length : changes.length"
+                        [matBadgeHidden]="!validationErrors.length && !changes.length"
                         (click)="edit()"
                     >
                         {{data.editData.confirmButtonLabel}}
                     </button>
-                    @if (validationErrors.length) {
+                    @if (validationErrors.length || changes.length) {
                         <ngx-mat-entity-tooltip [tooltipContent]="tooltipContent"></ngx-mat-entity-tooltip>
                     }
                 </div>

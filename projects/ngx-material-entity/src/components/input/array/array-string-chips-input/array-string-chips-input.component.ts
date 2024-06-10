@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
@@ -22,7 +22,7 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
         MatChipsModule,
         FormsModule,
         MatInputModule,
-        NgFor
+        CommonModule
     ]
 })
 export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<EntityType>>

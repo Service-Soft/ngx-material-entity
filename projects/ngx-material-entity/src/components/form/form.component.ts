@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, EnvironmentInjector, EventEmitter, Input, OnInit, Output, runInInjectionContext } from '@angular/core';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 
@@ -16,8 +16,7 @@ import { NgxMatEntityInputComponent } from '../input/input.component';
     styleUrls: ['./form.component.scss'],
     standalone: true,
     imports: [
-        NgIf,
-        NgFor,
+        CommonModule,
         MatTabsModule,
         NgxMatEntityInputComponent
     ]

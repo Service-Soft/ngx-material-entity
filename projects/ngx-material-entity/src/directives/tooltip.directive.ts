@@ -102,11 +102,14 @@ export class TooltipDirective implements OnDestroy {
         this.renderer.setStyle(this.tooltipElement, 'background-color', '#616161');
         this.renderer.setStyle(this.tooltipElement, 'color', 'white');
         this.renderer.setStyle(this.tooltipElement, 'max-height', '30vh');
+        this.renderer.setStyle(this.tooltipElement, 'max-width', '30vw');
         this.renderer.setStyle(this.tooltipElement, 'overflow-y', 'scroll');
         this.renderer.appendChild(this.el.nativeElement, this.tooltipElement);
 
         const marginBottom: number = this.tooltipElement.clientHeight + (this.el.nativeElement as HTMLElement).clientHeight + 15;
         this.renderer.setStyle(this.tooltipElement, 'margin-bottom', `${marginBottom}px`);
+        const marginLeft: number = this.tooltipElement.clientWidth + (this.el.nativeElement as HTMLElement).clientWidth - 50;
+        this.renderer.setStyle(this.tooltipElement, 'margin-left', `${marginLeft}px`);
     }
 
     private registerCloseListeners(): void {

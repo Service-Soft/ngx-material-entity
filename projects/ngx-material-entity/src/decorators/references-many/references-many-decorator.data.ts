@@ -1,5 +1,5 @@
 import { BaseEntityType } from '../../classes/entity.model';
-import { DisplayColumn } from '../../components/table/table-data';
+import { DisplayColumn, DynamicStyleClasses } from '../../components/table/table-data';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 
@@ -21,6 +21,20 @@ export interface ReferencesManyDecoratorConfig<EntityType extends BaseEntityType
      * Gets the referenced entity for the given id.
      */
     getEntityForId?: (entityId: string, allReferencedEntities: EntityType[]) => EntityType,
+
+    /**
+     * The error message to display when an array property is required and empty.
+     * @default 'Needs to contain at least one value'
+     */
+    emptyErrorMessage?: string,
+
+    /**
+     * Configuration for css classes that should be applied to table rows based on a condition.
+     * This could be used to eg. Set the background color to green when an item has the status completed etc.
+     * INFO: You need to use ng-deep or apply the styling in the styles.scss.
+     * @default () => []
+     */
+    dynamicRowStyleClasses?: DynamicStyleClasses<EntityType>,
 
     /**
      * The definition of the columns to display. Consists of the displayName to show in the header of the row

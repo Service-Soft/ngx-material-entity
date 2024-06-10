@@ -56,7 +56,8 @@ export * from './directives/number.directive';
 export * from './directives/tooltip.directive';
 // functions
 export * from './functions/get-validation-error-message.function';
-export * from './functions/get-validation-errors-tooltip-content.function.ts';
+export * from './functions/get-validation-errors-tooltip-content.function';
+export * from './functions/get-changes-tooltip-content.function';
 // services
 export * from './services/entity.service';
 export * from './services/unsaved-changes.guard';

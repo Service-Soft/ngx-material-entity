@@ -1,6 +1,6 @@
 /* eslint-disable sonar/no-duplicate-string */
 import { HttpClient } from '@angular/common/http';
-import { expect } from '@jest/globals';
+import { expect, test, jest } from '@jest/globals';
 
 import { EntityService } from './entity.service';
 import { TestEntity as SimpleTestEntity } from '../classes/entity.model.test';
@@ -9,7 +9,7 @@ import { HttpClientErrorMock, HttpClientMock } from '../mocks/http-client.mock';
 import { TestEntityWithoutCustomProperties, TestEntityWithoutCustomPropertiesMockBuilder } from '../mocks/test-entity.interface';
 import { TestEntity } from '../mocks/test-entity.mock';
 
-export class SimpleTestEntityService extends EntityService<SimpleTestEntity> {
+class SimpleTestEntityService extends EntityService<SimpleTestEntity> {
     baseUrl: string = 'http://api/test';
 }
 

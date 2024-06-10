@@ -11,7 +11,6 @@ import { customTableData, customTableDataReadOnly, defaultTableData, defaultTabl
 import { TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-entity.mock';
 
 @Component({
-
     selector: 'app-showcase-table',
     templateUrl: './showcase-table.component.html',
     styleUrls: ['./showcase-table.component.scss'],

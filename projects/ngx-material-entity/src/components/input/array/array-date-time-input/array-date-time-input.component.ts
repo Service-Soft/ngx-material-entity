@@ -1,16 +1,14 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, EnvironmentInjector, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
 
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DateTimeArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
@@ -19,6 +17,7 @@ import { DropdownValue } from '../../../../decorators/base/dropdown-value.interf
 import { ReflectUtilities } from '../../../../encapsulation/reflect.utilities';
 import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../../../global-configuration-values';
 import { DateUtilities, Time } from '../../../../utilities/date.utilities';
+import { CustomTableComponent } from '../../../custom-table/custom-table.component';
 import { ArrayTableComponent } from '../array-table.class';
 
 @Component({
@@ -28,16 +27,14 @@ import { ArrayTableComponent } from '../array-table.class';
     styleUrls: ['./array-date-time-input.component.scss'],
     standalone: true,
     imports: [
-        NgIf,
+        CommonModule,
         MatFormFieldModule,
         FormsModule,
         MatDatepickerModule,
         MatSelectModule,
-        MatTableModule,
-        MatCheckboxModule,
         MatInputModule,
         MatButtonModule,
-        NgFor
+        CustomTableComponent
     ]
 })
 export class ArrayDateTimeInputComponent<EntityType extends BaseEntityType<EntityType>>
@@ -51,12 +48,11 @@ export class ArrayDateTimeInputComponent<EntityType extends BaseEntityType<Entit
 
     constructor(
         matDialog: MatDialog,
-        injector: EnvironmentInjector,
         http: HttpClient,
         @Inject(NGX_COMPLETE_GLOBAL_DEFAULT_VALUES)
         private readonly globalConfig: NgxGlobalDefaultValues
     ) {
-        super(matDialog, injector, http);
+        super(matDialog, http);
     }
 
     override ngOnInit(): void {
@@ -68,6 +64,7 @@ export class ArrayDateTimeInputComponent<EntityType extends BaseEntityType<Entit
         if (this.entity[this.key] != undefined) {
             this.dateTime = new Date(this.entity[this.key] as Date);
         }
+        this.setTableConfig();
     }
 
     protected override resetInput(): void {
@@ -78,11 +75,11 @@ export class ArrayDateTimeInputComponent<EntityType extends BaseEntityType<Entit
     /**
      * Adds a date time to the array.
      */
-    addDateTime(): void {
+    async addDateTime(): Promise<void> {
         if (this.input && this.time) {
             this.input = new Date(this.input);
             this.input.setHours(this.time.hours, this.time.minutes, 0, 0);
-            this.add();
+            await this.add();
         }
     }
 }
