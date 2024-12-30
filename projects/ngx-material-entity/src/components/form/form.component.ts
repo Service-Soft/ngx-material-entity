@@ -13,7 +13,7 @@ import { NgxMatEntityInputComponent } from '../input/input.component';
 @Component({
     selector: 'ngx-mat-entity-form',
     templateUrl: './form.component.html',
-    styleUrls: ['./form.component.scss'],
+    styleUrls: ['./form.component.scss', '../../scss/tailwind-classes.scss'],
     standalone: true,
     imports: [
         CommonModule,

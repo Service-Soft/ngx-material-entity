@@ -16,11 +16,11 @@
             <mat-chip-row (removed)="removeFile(name)">
                 {{name}}
                 <span class="mat-mdc-chip-remove mat-mdc-chip-trailing-icon ngx-mat-grey" (click)="downloadFile(name)">
-                    <i class="fas fa-download"></i>
+                    <fa-icon [icon]="faDownload"></fa-icon>
                 </span>
                 @if (!isReadOnly) {
                     <button type="button" matChipRemove>
-                        <i [class]="metadata.deleteIcon"></i>
+                        <fa-icon [icon]="metadata.deleteIcon"></fa-icon>
                     </button>
                 }
             </mat-chip-row>
@@ -29,11 +29,11 @@
     </mat-chip-grid>
     @if (downloadAllEnabled()) {
         <button type="button" class="ngx-mat-grey" mat-icon-button matSuffix (click)="downloadAll()">
-            <i class="fas fa-file-zipper"></i>
+            <fa-icon [icon]="faFileZipper"></fa-icon>
         </button>
     }
     <button type="button" class="ngx-mat-grey" mat-icon-button matSuffix [disabled]="isReadOnly" (click)="fileInput.click()">
-        <i class="fas" [class.fa-plus-circle]="metadata.multiple" [class.fa-upload]="!metadata.multiple"></i>
+        <fa-icon [icon]="metadata.multiple ? faPlusCircle : faUpload"></fa-icon>
     </button>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>
 </mat-form-field>
@@ -41,7 +41,7 @@
 @if (metadata.dragAndDrop && !isReadOnly) {
     <div class="drag-drop" dragDrop (files)="setFile($event)">
         <button type="button" mat-icon-button [disabled]="isReadOnly" (click)="fileInput.click()">
-            <i class="fas fa-file-arrow-up ngx-mat-grey"></i>
+            <fa-icon class="ngx-mat-grey" [icon]="faFileArrowUp"></fa-icon>
         </button>
     </div>
 }

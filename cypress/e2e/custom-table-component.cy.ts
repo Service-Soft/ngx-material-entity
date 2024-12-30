@@ -1,5 +1,4 @@
 /* eslint-disable stylistic/newline-per-chained-call */
-/* eslint-disable sonar/no-duplicate-string */
 
 describe('custom table', () => {
     before('Reset Api', () => {
@@ -10,18 +9,20 @@ describe('custom table', () => {
         cy.visit('http://localhost:4200/table');
         cy.getInputByLabel('Table Configuration').click();
         cy.get('mat-option').contains('Custom').click();
+        // TODO: Why is this needed?
+        cy.wait(500);
     });
 
     it('should show the table', () => {
         cy.get('app-showcase-table').find('.title').should('have.length', 1).should('contain', 'Test Entities');
         cy.get('app-showcase-table').find('ngx-mat-entity-table').find('mat-label').should('have.length', 1).should('contain', 'Custom Search Label');
-        cy.getInputByLabel('Custom Search Label').should('have.class', 'col-lg-8');
+        cy.getInputByLabel('Custom Search Label').should('have.class', 'lg:col-span-8');
 
         cy.get('app-showcase-table').find('button').should('have.length', 4);
         cy.get('button').contains('Custom Multi Select Label').should('exist');
         cy.get('button').contains('Custom Create Button Label').should('have.length', 1);
-        cy.get('button').contains('Custom Create Button Label').parent().parent().should('have.class', 'col-lg-2');
-        cy.get('button').contains('Custom Multi Select Label').parent().parent().should('have.class', 'col-lg-2');
+        cy.get('button').contains('Custom Create Button Label').parent().parent().should('have.class', 'lg:col-span-2');
+        cy.get('button').contains('Custom Multi Select Label').parent().parent().should('have.class', 'lg:col-span-2');
 
         cy.get('mat-checkbox').should('have.length', 2);
         cy.get('mat-header-cell').should('have.length', 3);

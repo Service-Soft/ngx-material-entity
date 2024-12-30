@@ -4,7 +4,7 @@
         @for (tab of entityTabs; track $index) {
             <mat-tab [label]="tab.tabName">
                 @for (row of tab.rows; track $index) {
-                    <div class="row">
+                    <div class="grid grid-cols-12" style="column-gap: 24px;">
                         @for (key of row.keys; track key) {
                             <ngx-mat-entity-input
                                 [entity]="entity"
@@ -31,7 +31,7 @@
     }
     @else {
         @for (row of entityTabs[0].rows; track $index) {
-            <div class="row">
+            <div class="grid grid-cols-12" style="column-gap: 24px;">
                 @for (key of row.keys; track key) {
                     <ngx-mat-entity-input
                         [entity]="entity"

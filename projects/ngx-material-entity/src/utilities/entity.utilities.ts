@@ -132,17 +132,20 @@ export abstract class EntityUtilities {
             const type: DecoratorTypes | undefined = this.getPropertyType(entity, key);
             if (!await this.isEqual(entity[key], entityPriorChanges[key], metadata, type, http)) {
                 switch (type) {
-                    case DecoratorTypes.OBJECT:
+                    case DecoratorTypes.OBJECT: {
                         // eslint-disable-next-line typescript/no-explicit-any
                         (res[key] as object) = LodashUtilities.omit(entity[key] as any, this.getOmitForCreate(entity[key]));
                         break;
-                    case DecoratorTypes.ARRAY:
+                    }
+                    case DecoratorTypes.ARRAY: {
                         (res[key] as object[]) = (entity[key] as object[])
                             .map(value => LodashUtilities.omit(value, this.getOmitForCreate(value)));
                         break;
-                    default:
+                    }
+                    default: {
                         res[key] = entity[key];
                         break;
+                    }
                 }
             }
         }
@@ -238,14 +241,15 @@ export abstract class EntityUtilities {
             const type: DecoratorTypes | undefined = this.getPropertyType(target, key);
             let value: unknown = entity ? ReflectUtilities.get(entity, key) : undefined;
             switch (type) {
-                case DecoratorTypes.OBJECT:
+                case DecoratorTypes.OBJECT: {
                     // eslint-disable-next-line typescript/no-explicit-any
                     const objectMetadata: DefaultObjectDecoratorConfigInternal<any>
                         // eslint-disable-next-line typescript/no-explicit-any
                         = this.getPropertyMetadata(target, key, DecoratorTypes.OBJECT) as DefaultObjectDecoratorConfigInternal<any>;
                     value = new objectMetadata.EntityClass(value as object | undefined);
                     break;
-                case DecoratorTypes.ARRAY:
+                }
+                case DecoratorTypes.ARRAY: {
                     const inputArray: EntityType[] | undefined = value as EntityType[] | undefined;
                     const resArray: EntityType[] = [];
                     if (inputArray) {
@@ -260,8 +264,10 @@ export abstract class EntityUtilities {
                     }
                     value = resArray;
                     break;
-                default:
+                }
+                default: {
                     break;
+                }
             }
             ReflectUtilities.set(target, key, value);
         }
@@ -350,36 +356,45 @@ export abstract class EntityUtilities {
             return true;
         }
         switch (type) {
-            case DecoratorTypes.DATE_RANGE:
+            case DecoratorTypes.DATE_RANGE: {
                 return this.isEqualDateRange(
                     value,
                     valuePriorChanges,
                     (metadata as DateRangeDateDecoratorConfigInternal).filter
                 );
-            case DecoratorTypes.DATE:
+            }
+            case DecoratorTypes.DATE: {
                 return this.isEqualDate(value, valuePriorChanges);
-            case DecoratorTypes.DATE_TIME:
+            }
+            case DecoratorTypes.DATE_TIME: {
                 return this.isEqualDateTime(value, valuePriorChanges);
+            }
             case DecoratorTypes.ARRAY_DATE:
-            case DecoratorTypes.ARRAY_DATE_TIME:
+            case DecoratorTypes.ARRAY_DATE_TIME: {
                 return this.isEqualArrayDate(value, valuePriorChanges);
-            case DecoratorTypes.ARRAY_DATE_RANGE:
+            }
+            case DecoratorTypes.ARRAY_DATE_RANGE: {
                 return this.isEqualArrayDateRange(
                     value,
                     valuePriorChanges,
                     (metadata as DateRangeArrayDecoratorConfigInternal).filter
                 );
+            }
             case DecoratorTypes.ARRAY_STRING_CHIPS:
-            case DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS:
+            case DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS: {
                 return this.isEqualArrayString(value, valuePriorChanges);
+            }
             case DecoratorTypes.FILE_IMAGE:
-            case DecoratorTypes.FILE_DEFAULT:
+            case DecoratorTypes.FILE_DEFAULT: {
                 return this.isEqualFile(value, valuePriorChanges, (metadata as DefaultFileDecoratorConfigInternal).multiple, http);
-            case DecoratorTypes.CUSTOM:
+            }
+            case DecoratorTypes.CUSTOM: {
                 // eslint-disable-next-line typescript/no-explicit-any
                 return this.isEqualCustom(value, valuePriorChanges, metadata as CustomDecoratorConfigInternal<any, any, any, any>);
-            default:
+            }
+            default: {
                 return LodashUtilities.isEqual(value, valuePriorChanges);
+            }
         }
     }
 
@@ -562,10 +577,10 @@ export abstract class EntityUtilities {
     }
 
     /**
-     * Gets the bootstrap column classes for "lg", "md" and "sm".
-     * @param entity - Entity to get the bootstrap column values of the key.
-     * @param key - Key of the property to get bootstrap column values from.
-     * @returns Bootstrap column classes.
+     * Gets the responsive column classes for "lg", "md" and "sm".
+     * @param entity - Entity to get the responsive column classes for.
+     * @param key - Key of the property to get the responsive column classes from.
+     * @returns Responsive column classes for large, middle and small displays.
      * @throws When no metadata for the given key was found.
      */
     static getWidthClasses<EntityType extends BaseEntityType<EntityType>>(entity: EntityType, key: keyof EntityType): string {
@@ -573,7 +588,7 @@ export abstract class EntityUtilities {
         if (!metadata) {
             throw new Error(`Could not get metadata for property "${key.toString()}"`);
         }
-        return `col-lg-${metadata.defaultWidths[0]} col-md-${metadata.defaultWidths[1]} col-sm-${metadata.defaultWidths[2]}`;
+        return `lg:col-span-${metadata.defaultWidths[0]} md:col-span-${metadata.defaultWidths[1]} col-span-${metadata.defaultWidths[2]}`;
     }
 
     /**

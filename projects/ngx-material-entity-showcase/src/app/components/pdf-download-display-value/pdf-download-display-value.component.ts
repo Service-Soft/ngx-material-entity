@@ -5,8 +5,7 @@ import { Entity, NgxMatEntityBaseDisplayColumnValueComponent } from 'ngx-materia
 // eslint-disable-next-line angular/prefer-standalone
 @Component({
     selector: 'app-pdf-download-display-value',
-    templateUrl: './pdf-download-display-value.component.html',
-    styleUrls: ['./pdf-download-display-value.component.scss']
+    templateUrl: './pdf-download-display-value.component.html'
 })
 
 export class PdfDownloadDisplayValueComponent<T extends Entity> extends NgxMatEntityBaseDisplayColumnValueComponent<T> {

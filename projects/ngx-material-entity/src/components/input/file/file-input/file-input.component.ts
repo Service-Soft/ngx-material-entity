@@ -7,6 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
+import { faDownload, faFileArrowUp, faFileZipper, faPlusCircle, faUpload } from '@fortawesome/free-solid-svg-icons';
 
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DefaultFileDecoratorConfigInternal, FileDataWithFile, ImageFileDecoratorConfigInternal } from '../../../../decorators/file/file-decorator-internal.data';
@@ -30,10 +32,17 @@ import { NgxMatEntityConfirmDialogComponent } from '../../../confirm-dialog/conf
         FormsModule,
         CommonModule,
         DragDropDirective,
-        MatButtonModule
+        MatButtonModule,
+        FaIconComponent
     ]
 })
 export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
+
+    faFileArrowUp: IconDefinition = faFileArrowUp;
+    faUpload: IconDefinition = faUpload;
+    faPlusCircle: IconDefinition = faPlusCircle;
+    faFileZipper: IconDefinition = faFileZipper;
+    faDownload: IconDefinition = faDownload;
 
     get filenames(): string[] | undefined {
         return ReflectUtilities.getMetadata(EntityUtilities.FILENAMES_KEY, this.entity, this.key) as string[] | undefined;
@@ -92,12 +101,12 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
         }
     }
 
-    async setFileFromInput(event: Event): Promise<void> {
+    setFileFromInput(event: Event): void {
         const files: FileList | [] = (event.target as HTMLInputElement).files ?? [];
-        await this.setFile(Array.from(files));
+        this.setFile(Array.from(files));
     }
 
-    async setFile(files: File[]): Promise<void> {
+    setFile(files: File[]): void {
         // validation done inline
         if (files.find(f => !FileUtilities.isMimeTypeValid(f.type, this.metadata.allowedMimeTypes))) {
             this.dialog.open(NgxMatEntityConfirmDialogComponent, {
@@ -130,7 +139,12 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
             this.resetFileInputs();
             return;
         }
-        await (this.metadata.multiple ? this.setMultiFile(Array.from(files)) : this.setSingleFile(files[0]));
+        if (this.metadata.multiple) {
+            this.setMultiFile(Array.from(files));
+        }
+        else {
+            this.setSingleFile(files[0]);
+        }
         this.fileDataChangeEvent.emit(this.propertyValue);
     }
 
@@ -140,7 +154,7 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
         this.fileDataChangeEvent.emit(this.propertyValue);
     }
 
-    private async setMultiFile(files: File[]): Promise<void> {
+    private setMultiFile(files: File[]): void {
         this.propertyValue = this.propertyValue ?? [];
         for (const file of files) {
             const fileData: FileData = {
@@ -154,7 +168,7 @@ export class FileInputComponent<EntityType extends BaseEntityType<EntityType>> i
         this.filenames = (this.propertyValue as FileData[]).map(f => f.name);
     }
 
-    private async setSingleFile(file: File): Promise<void> {
+    private setSingleFile(file: File): void {
         this.propertyValue = {
             file: file,
             name: file.name,

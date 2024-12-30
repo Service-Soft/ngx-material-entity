@@ -13,14 +13,12 @@ import { firstValueFrom } from 'rxjs';
 
 import { CreateEntityDataInternal, CreateEntityDialogDataBuilder } from './create-dialog/create-entity-data.builder';
 import { NgxMatEntityCreateDialogComponent } from './create-dialog/create-entity-dialog.component';
-import { DisplayColumnValueComponent } from './display-column-value/display-column-value.component';
 import { EditEntityData } from './edit-dialog/edit-entity-data';
 import { NgxMatEntityEditDialogComponent } from './edit-dialog/edit-entity-dialog.component';
 import { EditEntityDataBuilder, EditEntityDataInternal } from './edit-dialog/edit-entity.builder';
 import { DisplayColumn, TableData } from './table-data';
 import { BaseTableActionInternal, TableActionInternal, TableDataBuilder, TableDataInternal } from './table-data.builder';
 import { BaseEntityType, Entity } from '../../classes/entity.model';
-import { DynamicStyleClassDirective } from '../../directives/dynamic-style-class.directive';
 import { NGX_COMPLETE_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { EntityService } from '../../services/entity.service';
 import { EntityUtilities } from '../../utilities/entity.utilities';
@@ -38,7 +36,7 @@ import { CustomTableComponent } from '../custom-table/custom-table.component';
 @Component({
     selector: 'ngx-mat-entity-table',
     templateUrl: './table.component.html',
-    styleUrls: ['./table.component.scss'],
+    styleUrls: ['./table.component.scss', '../../scss/tailwind-classes.scss'],
     standalone: true,
     imports: [
         CommonModule,
@@ -50,10 +48,6 @@ import { CustomTableComponent } from '../custom-table/custom-table.component';
         MatMenuModule,
         MatDialogModule,
         MatProgressSpinnerModule,
-        NgxMatEntityCreateDialogComponent,
-        NgxMatEntityEditDialogComponent,
-        DisplayColumnValueComponent,
-        DynamicStyleClassDirective,
         CustomTableComponent
     ]
 })

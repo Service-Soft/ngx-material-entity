@@ -1,32 +1,66 @@
 {
     "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-    "version": 1,
-    "newProjectRoot": "projects",
-    "schematics": {
-        "@schematics/angular:component": {
-            "style": "scss"
-        }
+    "cli": {
+        "analytics": false
     },
+    "newProjectRoot": "projects",
     "projects": {
         "ngx-material-entity": {
-            "projectType": "library",
-            "root": "projects/ngx-material-entity",
-            "sourceRoot": "projects/ngx-material-entity/src",
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:ng-packagr",
-                    "options": {
-                        "project": "projects/ngx-material-entity/ng-package.json"
-                    },
                     "configurations": {
-                        "production": {
-                            "tsConfig": "projects/ngx-material-entity/tsconfig.lib.prod.json"
-                        },
                         "development": {
                             "tsConfig": "projects/ngx-material-entity/tsconfig.lib.json"
+                        },
+                        "production": {
+                            "tsConfig": "projects/ngx-material-entity/tsconfig.lib.prod.json"
                         }
                     },
-                    "defaultConfiguration": "production"
+                    "defaultConfiguration": "production",
+                    "options": {
+                        "project": "projects/ngx-material-entity/ng-package.json"
+                    }
+                },
+                "cypress-open": {
+                    "builder": "@briebug/cypress-schematic:cypress",
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "ngx-material-entity:serve:production"
+                        }
+                    },
+                    "options": {
+                        "configFile": "projects/ngx-material-entity/cypress.json",
+                        "devServerTarget": "ngx-material-entity:serve",
+                        "headless": false,
+                        "watch": true
+                    }
+                },
+                "cypress-run": {
+                    "builder": "@briebug/cypress-schematic:cypress",
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "ngx-material-entity:serve:production"
+                        }
+                    },
+                    "options": {
+                        "configFile": "projects/ngx-material-entity/cypress.json",
+                        "devServerTarget": "ngx-material-entity:serve"
+                    }
+                },
+                "e2e": {
+                    "builder": "@briebug/cypress-schematic:cypress",
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "ngx-material-entity:serve:production"
+                        }
+                    },
+                    "options": {
+                        "configFile": "projects/ngx-material-entity/cypress.json",
+                        "devServerTarget": "ngx-material-entity:serve",
+                        "headless": false,
+                        "watch": true
+                    }
                 },
                 "lint": {
                     "builder": "@angular-eslint/builder:lint",
@@ -36,94 +70,36 @@
                             "projects/ngx-material-entity/**/*.html"
                         ]
                     }
-                },
-                "cypress-run": {
-                    "builder": "@briebug/cypress-schematic:cypress",
-                    "options": {
-                        "devServerTarget": "ngx-material-entity:serve",
-                        "configFile": "projects/ngx-material-entity/cypress.json"
-                    },
-                    "configurations": {
-                        "production": {
-                            "devServerTarget": "ngx-material-entity:serve:production"
-                        }
-                    }
-                },
-                "cypress-open": {
-                    "builder": "@briebug/cypress-schematic:cypress",
-                    "options": {
-                        "devServerTarget": "ngx-material-entity:serve",
-                        "watch": true,
-                        "headless": false,
-                        "configFile": "projects/ngx-material-entity/cypress.json"
-                    },
-                    "configurations": {
-                        "production": {
-                            "devServerTarget": "ngx-material-entity:serve:production"
-                        }
-                    }
-                },
-                "e2e": {
-                    "builder": "@briebug/cypress-schematic:cypress",
-                    "options": {
-                        "devServerTarget": "ngx-material-entity:serve",
-                        "watch": true,
-                        "headless": false,
-                        "configFile": "projects/ngx-material-entity/cypress.json"
-                    },
-                    "configurations": {
-                        "production": {
-                            "devServerTarget": "ngx-material-entity:serve:production"
-                        }
-                    }
-                }
-            }
-        },
-        "ngx-material-entity-showcase": {
-            "projectType": "application",
-            "schematics": {
-                "@schematics/angular:component": {
-                    "style": "scss"
-                },
-                "@schematics/angular:application": {
-                    "strict": true
                 }
             },
-            "root": "projects/ngx-material-entity-showcase",
-            "sourceRoot": "projects/ngx-material-entity-showcase/src",
-            "prefix": "app",
+            "projectType": "library",
+            "root": "projects/ngx-material-entity",
+            "sourceRoot": "projects/ngx-material-entity/src"
+        },
+        "ngx-material-entity-showcase": {
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
-                    "options": {
-                        "outputPath": "dist/ngx-material-entity-showcase",
-                        "index": "projects/ngx-material-entity-showcase/src/index.html",
-                        "main": "projects/ngx-material-entity-showcase/src/main.ts",
-                        "polyfills": "projects/ngx-material-entity-showcase/src/polyfills.ts",
-                        "tsConfig": "projects/ngx-material-entity-showcase/tsconfig.app.json",
-                        "inlineStyleLanguage": "scss",
-                        "assets": [
-                            "projects/ngx-material-entity-showcase/src/favicon.ico",
-                            "projects/ngx-material-entity-showcase/src/assets"
-                        ],
-                        "styles": [
-                            "projects/ngx-material-entity-showcase/src/styles.scss",
-                            "./node_modules/bootstrap/dist/css/bootstrap.min.css"
-                        ],
-                        "scripts": []
-                    },
                     "configurations": {
+                        "development": {
+                            "buildOptimizer": false,
+                            "extractLicenses": false,
+                            "namedChunks": true,
+                            "optimization": false,
+                            "sourceMap": true,
+                            "vendorChunk": true
+                        },
                         "production": {
                             "budgets": [
                                 {
-                                    "type": "initial",
+                                    "maximumError": "1mb",
                                     "maximumWarning": "500kb",
-                                    "maximumError": "1mb"
+                                    "type": "initial"
                                 },
                                 {
-                                    "type": "anyComponentStyle",
+                                    "maximumError": "4kb",
                                     "maximumWarning": "2kb",
-                                    "maximumError": "4kb"
+                                    "type": "anyComponentStyle"
                                 }
                             ],
                             "fileReplacements": [
@@ -133,34 +109,68 @@
                                 }
                             ],
                             "outputHashing": "all"
-                        },
-                        "development": {
-                            "buildOptimizer": false,
-                            "optimization": false,
-                            "vendorChunk": true,
-                            "extractLicenses": false,
-                            "sourceMap": true,
-                            "namedChunks": true
                         }
                     },
-                    "defaultConfiguration": "production"
+                    "defaultConfiguration": "production",
+                    "options": {
+                        "assets": [
+                            "projects/ngx-material-entity-showcase/src/favicon.ico",
+                            "projects/ngx-material-entity-showcase/src/assets"
+                        ],
+                        "index": "projects/ngx-material-entity-showcase/src/index.html",
+                        "inlineStyleLanguage": "css",
+                        "main": "projects/ngx-material-entity-showcase/src/main.ts",
+                        "outputPath": "dist/ngx-material-entity-showcase",
+                        "polyfills": "projects/ngx-material-entity-showcase/src/polyfills.ts",
+                        "scripts": [],
+                        "styles": ["projects/ngx-material-entity-showcase/src/styles.css"],
+                        "tsConfig": "projects/ngx-material-entity-showcase/tsconfig.app.json"
+                    }
                 },
-                "serve": {
-                    "builder": "@angular-devkit/build-angular:dev-server",
+                "cypress-open": {
+                    "builder": "@briebug/cypress-schematic:cypress",
                     "configurations": {
                         "production": {
-                            "browserTarget": "ngx-material-entity-showcase:build:production"
-                        },
-                        "development": {
-                            "browserTarget": "ngx-material-entity-showcase:build:development"
+                            "devServerTarget": "ngx-material-entity-showcase:serve:production"
                         }
                     },
-                    "defaultConfiguration": "development"
+                    "options": {
+                        "configFile": "projects/ngx-material-entity-showcase/cypress.json",
+                        "devServerTarget": "ngx-material-entity-showcase:serve",
+                        "headless": false,
+                        "watch": true
+                    }
+                },
+                "cypress-run": {
+                    "builder": "@briebug/cypress-schematic:cypress",
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "ngx-material-entity-showcase:serve:production"
+                        }
+                    },
+                    "options": {
+                        "configFile": "projects/ngx-material-entity-showcase/cypress.json",
+                        "devServerTarget": "ngx-material-entity-showcase:serve"
+                    }
+                },
+                "e2e": {
+                    "builder": "@briebug/cypress-schematic:cypress",
+                    "configurations": {
+                        "production": {
+                            "devServerTarget": "ngx-material-entity-showcase:serve:production"
+                        }
+                    },
+                    "options": {
+                        "configFile": "projects/ngx-material-entity-showcase/cypress.json",
+                        "devServerTarget": "ngx-material-entity-showcase:serve",
+                        "headless": false,
+                        "watch": true
+                    }
                 },
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "ngx-material-entity-showcase:build"
+                        "buildTarget": "ngx-material-entity-showcase:build"
                     }
                 },
                 "lint": {
@@ -172,52 +182,37 @@
                         ]
                     }
                 },
-                "cypress-run": {
-                    "builder": "@briebug/cypress-schematic:cypress",
-                    "options": {
-                        "devServerTarget": "ngx-material-entity-showcase:serve",
-                        "configFile": "projects/ngx-material-entity-showcase/cypress.json"
-                    },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
+                        "development": {
+                            "buildTarget": "ngx-material-entity-showcase:build:development"
+                        },
                         "production": {
-                            "devServerTarget": "ngx-material-entity-showcase:serve:production"
+                            "buildTarget": "ngx-material-entity-showcase:build:production"
                         }
-                    }
-                },
-                "cypress-open": {
-                    "builder": "@briebug/cypress-schematic:cypress",
-                    "options": {
-                        "devServerTarget": "ngx-material-entity-showcase:serve",
-                        "watch": true,
-                        "headless": false,
-                        "configFile": "projects/ngx-material-entity-showcase/cypress.json"
                     },
-                    "configurations": {
-                        "production": {
-                            "devServerTarget": "ngx-material-entity-showcase:serve:production"
-                        }
-                    }
-                },
-                "e2e": {
-                    "builder": "@briebug/cypress-schematic:cypress",
-                    "options": {
-                        "devServerTarget": "ngx-material-entity-showcase:serve",
-                        "watch": true,
-                        "headless": false,
-                        "configFile": "projects/ngx-material-entity-showcase/cypress.json"
-                    },
-                    "configurations": {
-                        "production": {
-                            "devServerTarget": "ngx-material-entity-showcase:serve:production"
-                        }
-                    }
+                    "defaultConfiguration": "development"
                 }
-            }
+            },
+            "prefix": "app",
+            "projectType": "application",
+            "root": "projects/ngx-material-entity-showcase",
+            "schematics": {
+                "@schematics/angular:application": {
+                    "strict": true
+                },
+                "@schematics/angular:component": {
+                    "style": "none"
+                }
+            },
+            "sourceRoot": "projects/ngx-material-entity-showcase/src"
         }
     },
-    "defaultProject": "ngx-material-entity",
-    "cli": {
-        "defaultCollection": "@angular-eslint/schematics",
-        "analytics": false
-    }
+    "schematics": {
+        "@schematics/angular:component": {
+            "style": "none"
+        }
+    },
+    "version": 1
 }

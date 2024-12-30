@@ -167,20 +167,20 @@ export abstract class DateUtilities {
         if (min) {
             const minTime: Time = min(date);
             times = times.filter(t => !t.value
-            || t.value.hours > minTime.hours
-            || (
-                t.value.hours === minTime.hours
-                && t.value.minutes >= minTime.minutes
-            ));
+                || t.value.hours > minTime.hours
+                || (
+                    t.value.hours === minTime.hours
+                    && t.value.minutes >= minTime.minutes
+                ));
         }
         if (max) {
             const maxTime: Time = max(date);
             times = times.filter(t => !t.value
-            || t.value.hours < maxTime.hours
-            || (
-                t.value.hours === maxTime.hours
-                && t.value.minutes <= maxTime.minutes
-            ));
+                || t.value.hours < maxTime.hours
+                || (
+                    t.value.hours === maxTime.hours
+                    && t.value.minutes <= maxTime.minutes
+                ));
         }
         if (filter) {
             times = times.filter(t => !t.value || filter(t.value));

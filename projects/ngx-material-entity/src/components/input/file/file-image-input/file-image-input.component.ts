@@ -2,6 +2,8 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
+import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
@@ -19,10 +21,13 @@ import { FileInputComponent } from '../file-input/file-input.component';
     templateUrl: './file-image-input.component.html',
     styleUrls: ['./file-image-input.component.scss'],
     standalone: true,
-    imports: [CommonModule, FileInputComponent]
+    imports: [CommonModule, FileInputComponent, FaIconComponent]
 })
 export class FileImageInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.FILE_IMAGE, FileData | FileData[]> implements OnInit {
+
+    faAngleLeft: IconDefinition = faAngleLeft;
+    faAngleRight: IconDefinition = faAngleRight;
 
     get multiPreviewImages(): string[] | undefined {
         return ReflectUtilities.getMetadata(EntityUtilities.MULTI_PREVIEW_IMAGES_KEY, this.entity, this.key) as string[] | undefined;

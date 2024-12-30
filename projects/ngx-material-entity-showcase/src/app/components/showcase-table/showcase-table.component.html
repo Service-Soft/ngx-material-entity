@@ -4,13 +4,12 @@
         [entity]="tableConfig"
         [propertyKey]="key"
         [hideOmitForCreate]="true"
-        class="col-lg-{{EntityUtilities.getWidth(tableConfig, key, 'lg')}} col-md-{{EntityUtilities.getWidth(tableConfig, key, 'md')}} col-sm-{{EntityUtilities.getWidth(tableConfig, key, 'sm')}}"
+        class="lg:col-span-{{EntityUtilities.getWidth(tableConfig, key, 'lg')}} md:col-span-{{EntityUtilities.getWidth(tableConfig, key, 'md')}} col-span-{{EntityUtilities.getWidth(tableConfig, key, 'sm')}}"
     >
     </ngx-mat-entity-input>
 </div> -->
 
-<div class="container">
-    <br>
+<div class="container my-8 mx-auto">
     <mat-form-field>
         <mat-label>Table Configuration</mat-label>
         <mat-select #config="ngModel" name="config" [(ngModel)]="selectedTableDataPreset">
@@ -30,5 +29,4 @@
         <ngx-mat-entity-table [tableData]="tableData">
         </ngx-mat-entity-table>
     }
-    <br>
 </div>

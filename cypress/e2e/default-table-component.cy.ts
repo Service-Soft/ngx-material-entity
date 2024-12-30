@@ -1,4 +1,3 @@
-/* eslint-disable sonar/no-duplicate-string */
 /* eslint-disable stylistic/newline-per-chained-call */
 describe('default table', () => {
     before('Reset Api', () => {
@@ -12,12 +11,12 @@ describe('default table', () => {
     it('should show the table', () => {
         cy.get('app-showcase-table').find('.title').should('have.length', 1).should('contain', 'Default Test Entities');
         cy.get('app-showcase-table').find('mat-label').contains('Search').should('have.length', 1);
-        cy.getInputByLabel('Search').should('have.class', 'col-lg-8');
+        cy.getInputByLabel('Search').should('have.class', 'lg:col-span-8');
 
         cy.get('app-showcase-table').find('ngx-mat-entity-table').find('button').should('have.length', 3);
         cy.get('button').contains('Actions').should('not.exist');
         cy.get('button').contains('Create').should('have.length', 1);
-        cy.get('button').contains('Create').parent().parent().should('have.class', 'col-lg-4');
+        cy.get('button').contains('Create').parent().parent().should('have.class', 'lg:col-span-4');
 
         cy.get('app-showcase-table').find('ngx-mat-entity-table').find('mat-checkbox').should('have.length', 0);
         cy.get('app-showcase-table').find('ngx-mat-entity-table').find('mat-header-cell').should('have.length', 2);

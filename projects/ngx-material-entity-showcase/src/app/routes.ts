@@ -1,5 +1,6 @@
-/* eslint-disable promise/prefer-await-to-then */
 import { Route, Routes } from '@angular/router';
+import { faAngular } from '@fortawesome/free-brands-svg-icons';
+import { faCircleExclamation, faHome, faKeyboard, faRotateRight, faTable, faUmbrellaBeach } from '@fortawesome/free-solid-svg-icons';
 import { CreateDataRoute, EditDataRoute, NGX_CREATE_DATA, NGX_CREATE_DATA_ENTITY, NGX_CREATE_DATA_ENTITY_SERVICE, NGX_EDIT_DATA, NGX_EDIT_DATA_ENTITY, NGX_EDIT_DATA_ENTITY_SERVICE, PageEditData, UnsavedChangesGuard, defaultCreateDataRoute, defaultEditDataRoute } from 'ngx-material-entity';
 import { NavElementTypes, NavUtilities, NavbarRow } from 'ngx-material-navigation';
 
@@ -12,7 +13,7 @@ export const navbarRows: NavbarRow[] = [
             {
                 type: NavElementTypes.TITLE_WITH_INTERNAL_LINK,
                 title: 'Showcase Project',
-                icon: 'fa-brands fa-angular',
+                icon: faAngular,
                 link: {
                     route: 'home'
                 },
@@ -21,7 +22,7 @@ export const navbarRows: NavbarRow[] = [
             {
                 type: NavElementTypes.INTERNAL_LINK,
                 name: 'Home',
-                icon: 'fas fa-home',
+                icon: faHome,
                 route: {
                     title: 'Home',
                     path: 'home',
@@ -32,7 +33,7 @@ export const navbarRows: NavbarRow[] = [
             {
                 type: NavElementTypes.INTERNAL_LINK,
                 name: 'Sandbox',
-                icon: 'fas fa-umbrella-beach',
+                icon: faUmbrellaBeach,
                 route: {
                     title: 'Sandbox',
                     path: 'sandbox',
@@ -44,7 +45,7 @@ export const navbarRows: NavbarRow[] = [
             {
                 type: NavElementTypes.INTERNAL_LINK,
                 name: 'Table',
-                icon: 'fas fa-table',
+                icon: faTable,
                 route: {
                     title: 'Table',
                     path: 'table',
@@ -56,7 +57,7 @@ export const navbarRows: NavbarRow[] = [
             {
                 type: NavElementTypes.MENU,
                 name: 'Inputs',
-                icon: 'fas fa-keyboard',
+                icon: faKeyboard,
                 elements: [
                     {
                         type: NavElementTypes.INTERNAL_LINK,
@@ -105,7 +106,7 @@ export const navbarRows: NavbarRow[] = [
             {
                 type: NavElementTypes.MENU,
                 name: 'Dialogs',
-                icon: 'fas fa-circle-exclamation',
+                icon: faCircleExclamation,
                 elements: [],
                 position: 'center',
                 collapse: 'md'
@@ -113,7 +114,7 @@ export const navbarRows: NavbarRow[] = [
             {
                 type: NavElementTypes.BUTTON,
                 name: 'Reset Data',
-                icon: 'fas fa-rotate-right',
+                icon: faRotateRight,
                 action: () => fetch('http://localhost:3000/reset/', { method: 'POST' }).then(() => location.reload()),
                 position: 'right',
                 collapse: 'sm'

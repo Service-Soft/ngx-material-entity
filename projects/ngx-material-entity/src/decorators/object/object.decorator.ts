@@ -14,9 +14,11 @@ export function object<EntityType extends BaseEntityType<EntityType>>(
 ): (target: object, propertyKey: string) => void {
     // eslint-disable-next-line sonar/no-small-switch
     switch (metadata.displayStyle) {
-        case 'dropdown':
+        case 'dropdown': {
             return baseProperty(new DropdownObjectDecoratorConfigInternal(metadata), DecoratorTypes.OBJECT_DROPDOWN);
-        default:
+        }
+        default: {
             return baseProperty(new DefaultObjectDecoratorConfigInternal(metadata), DecoratorTypes.OBJECT);
+        }
     }
 }

@@ -46,6 +46,7 @@ export class BaseTableActionInternal implements BaseTableAction {
 
     private functionToAsync(originalFunction: (() => unknown) | (() => Promise<unknown>)): () => Promise<unknown> {
         if (isAsyncFunction(originalFunction)) {
+            /* istanbul ignore next */
             return originalFunction as () => Promise<unknown>;
         }
 
@@ -97,6 +98,7 @@ export class MultiSelectActionInternal<EntityType extends BaseEntityType<EntityT
         originalFunction: ((selectedEntities: EntityType[]) => unknown) | ((selectedEntities: EntityType[]) => Promise<unknown>)
     ): (selectedEntities: EntityType[]) => Promise<unknown> {
         if (isAsyncFunction(originalFunction)) {
+            /* istanbul ignore next */
             return originalFunction as (selectedEntities: EntityType[]) => Promise<unknown>;
         }
 

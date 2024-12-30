@@ -12,11 +12,14 @@ export function number(
     metadata: DefaultNumberDecoratorConfig | DropdownNumberDecoratorConfig | SliderNumberDecoratorConfig
 ): (target: object, propertyKey: string) => void {
     switch (metadata.displayStyle) {
-        case 'dropdown':
+        case 'dropdown': {
             return baseProperty(new DropdownNumberDecoratorConfigInternal(metadata), DecoratorTypes.NUMBER_DROPDOWN);
-        case 'slider':
+        }
+        case 'slider': {
             return baseProperty(new SliderNumberDecoratorConfigInternal(metadata), DecoratorTypes.NUMBER_SLIDER);
-        default:
+        }
+        default: {
             return baseProperty(new DefaultNumberDecoratorConfigInternal(metadata), DecoratorTypes.NUMBER);
+        }
     }
 }

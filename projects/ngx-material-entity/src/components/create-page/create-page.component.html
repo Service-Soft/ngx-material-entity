@@ -1,5 +1,5 @@
 @if (!isLoaded && data.displayLoadingSpinner) {
-    <div class="container">
+    <div class="page-container">
         <br>
         <mat-spinner></mat-spinner>
         <br>
@@ -7,7 +7,7 @@
 }
 
 @if (isLoaded) {
-    <div class="container">
+    <div class="page-container">
         <br>
     
         <!------------>
@@ -16,10 +16,10 @@
         <div class="header">
             <div class="cancel-container">
                 <button type="button" mat-raised-button class="back-button" tabindex="-1" [class.unsavedChanges]="hasUnsavedChanges" (click)="navigateBack()">
-                    <i class="fas fa-chevron-left"></i>
+                    <fa-icon [icon]="faChevronLeft"></fa-icon>
                     {{data.createData.cancelButtonLabel}}
                     @if (hasUnsavedChanges) {
-                        <i class="fas fa-warning"></i>
+                        <fa-icon style="color: orange;" [icon]="faWarning"></fa-icon>
                     }
                 </button>
             </div>

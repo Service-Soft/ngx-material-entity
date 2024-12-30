@@ -5,6 +5,7 @@ import { FormsModule, NgModel } from '@angular/forms';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
@@ -22,7 +23,8 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
         MatChipsModule,
         FormsModule,
         MatInputModule,
-        CommonModule
+        CommonModule,
+        FaIconComponent
     ]
 })
 export class ArrayStringChipsInputComponent<EntityType extends BaseEntityType<EntityType>>

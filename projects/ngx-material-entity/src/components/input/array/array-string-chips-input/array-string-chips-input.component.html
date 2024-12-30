@@ -11,7 +11,7 @@
             <mat-chip-row (removed)="removeStringChipArrayValue(value)">
                 {{value}}
                 <button type="button" matChipRemove>
-                    <i [class]="metadata.deleteIcon"></i>
+                    <fa-icon [icon]="metadata.deleteIcon"></fa-icon>
                 </button>
             </mat-chip-row>
         }

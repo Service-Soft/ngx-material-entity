@@ -7,6 +7,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute } from '@angular/router';
+import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
+import { faChevronLeft, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { firstValueFrom } from 'rxjs';
 
 import { PageEditDataBuilder, PageEditDataInternal } from './page-edit-data.builder';
@@ -86,10 +88,16 @@ export const NGX_EDIT_DATA: InjectionToken<PageEditData<any>> = new InjectionTok
         MatMenuModule,
         MatBadgeModule,
         TooltipComponent,
-        NgxMatEntityFormComponent
+        NgxMatEntityFormComponent,
+        FaIconComponent
     ]
 })
 export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit, UnsavedChangesPage {
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    faChevronLeft: IconDefinition = faChevronLeft;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    faWarning: IconDefinition = faWarning;
 
     /**
      * Contains HelperMethods around handling Entities and their property-metadata.

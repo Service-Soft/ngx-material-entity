@@ -65,8 +65,6 @@ NgxMaterialEntity aims to have a fast way to get started with a lot of default o
 
 # Requirements
 This package relies on the [angular material library](https://material.angular.io/guide/getting-started) to render its components.
-<br>
-It also uses [bootstrap](https://getbootstrap.com/) for responsive design.
 
 # Basic Usage
 ## Create your entity
@@ -136,7 +134,7 @@ It is pretty easy to use the input component inside a for-loop that iterates ove
 <br>
 We thought this approach a bit further and build a complete CRUD table component with support for:
 - omitting values for creating or updating entities
-- layouting & responsive design (based on bootstrap)
+- layouting & responsive design
 - multi select actions
 - validation
 
@@ -250,7 +248,7 @@ export abstract class PropertyDecoratorConfig {
     omitForUpdate?: boolean;
     /**
      * Defines the width of the input property when used inside the default create or edit dialog.
-     * Has 3 bootstrap values for different breakpoints for simple responsive design.
+     * Has 3 values for different breakpoints for simple responsive design based on bootstrap (1-12).
      * The first value sets the columns for the screen size lg, the second for md and the third for sm.
      *
      * @default [6, 6, 12]
@@ -264,7 +262,6 @@ export abstract class PropertyDecoratorConfig {
     position?: Position
 }
 ```
-For more information regarding the "defaultWidths" see the bootstrap guide about the [Grid system](https://getbootstrap.com/docs/5.0/layout/grid/).
 
 ## @string default
 The "default" display of a string value. Inside a single line mat-input.
@@ -614,11 +611,11 @@ export interface StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig {
     displayStyle: 'chips',
 
     /**
-     * The class for the <i> tag used to remove an entry from the array.
+     * The icon used to remove an entry from the array.
      *
-     * @default 'fas fa-circle-minus'
+     * @default faCircleMinus
      */
-    deleteIcon?: string,
+    deleteIcon?: IconDefinition,
     /**
      * The minimum required length of the string.
      */
@@ -644,11 +641,11 @@ export interface AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecora
     displayStyle: 'chips',
 
     /**
-     * The class for the <i> tag used to remove an entry from the array.
+     * The icon used to remove an entry from the array.
      *
-     * @default 'fas fa-circle-minus'
+     * @default faCircleMinus
      */
-    deleteIcon?: string,
+    deleteIcon?: IconDefinition,
     /**
      * The autocomplete values.
      */
@@ -885,9 +882,9 @@ abstract class FileDecoratorConfig extends PropertyDecoratorConfig {
     type!: 'image' | 'other';
 
     /**
-     * The class for the <i> tag used to remove a file from the input.
+     * The icon used to remove a file from the input.
      *
-     * @default 'fas fa-circle-minus'
+     * @default faCircleMinus
      */
     deleteIcon?: string;
 
