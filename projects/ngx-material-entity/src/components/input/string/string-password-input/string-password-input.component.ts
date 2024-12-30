@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
@@ -31,11 +33,15 @@ export enum PasswordStrength {
         MatInputModule,
         CommonModule,
         MatButtonModule,
-        PasswordMatchValidatorDirective
+        PasswordMatchValidatorDirective,
+        FaIconComponent
     ]
 })
 export class StringPasswordInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.STRING_PASSWORD, string> implements OnInit {
+
+    faEye: IconDefinition = faEye;
+    faEyeSlash: IconDefinition = faEyeSlash;
 
     hide: boolean = true;
     hideConfirm: boolean = true;

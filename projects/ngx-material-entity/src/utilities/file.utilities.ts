@@ -171,12 +171,15 @@ export abstract class FileUtilities {
 
     private static transformToBytes(value: number, unit: 'B' | 'KB' | 'GB'): number {
         switch (unit) {
-            case 'B':
+            case 'B': {
                 return value;
-            case 'KB':
+            }
+            case 'KB': {
                 return value * 1000;
-            case 'GB':
+            }
+            case 'GB': {
                 return value * 1000000000;
+            }
         }
     }
 }

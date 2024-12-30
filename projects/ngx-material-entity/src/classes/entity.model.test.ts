@@ -1,4 +1,3 @@
-/* eslint-disable sonar/no-duplicate-string */
 import { expect } from '@jest/globals';
 
 import { Entity } from './entity.model';

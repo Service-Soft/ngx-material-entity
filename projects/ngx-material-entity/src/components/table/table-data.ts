@@ -260,7 +260,7 @@ export interface EditAction<EntityType extends BaseEntityType<EntityType>> {
      * The action itself.
      */
     action: ((entity: EntityType, entityPriorChanges: EntityType) => unknown)
-    | ((entity: EntityType, entityPriorChanges: EntityType) => Promise<unknown>),
+        | ((entity: EntityType, entityPriorChanges: EntityType) => Promise<unknown>),
     /**
      * A method that defines whether or not the action can be used.
      * @default () => true

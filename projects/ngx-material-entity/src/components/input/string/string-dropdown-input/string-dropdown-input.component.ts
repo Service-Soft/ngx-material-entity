@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
@@ -23,11 +25,14 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
         MatFormFieldModule,
         MatSelectModule,
         FormsModule,
-        CommonModule
+        CommonModule,
+        FaIconComponent
     ]
 })
 export class StringDropdownInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.STRING_DROPDOWN, string> implements OnInit {
+
+    faSearch: IconDefinition = faSearch;
 
     private dropdownValues: DropdownValue<string | undefined>[] = [];
     filteredDropdownValues: DropdownValue<string | undefined>[] = [];

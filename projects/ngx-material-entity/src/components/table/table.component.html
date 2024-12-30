@@ -2,19 +2,19 @@
 <!-- eslint-disable angular/no-call-expression -->
 <h1 class="title">{{data.baseData.title}}</h1>
 
-<div class="row">
-    <mat-form-field class="col-lg-8 col-md-6 col-sm-12">
+<div class="grid grid-cols-12" style="column-gap: 24px;">
+    <mat-form-field class="lg:col-span-8 md:col-span-6 col-span-12">
         <mat-label>{{data.baseData.searchLabel}}</mat-label>
         <input matInput [(ngModel)]="searchString">
     </mat-form-field>
     @if (data.baseData.tableActions.length) {
         <div
-            [class.col-lg-2]="allowCreate"
-            [class.col-lg-4]="!allowCreate"
-            [class.col-md-3]="allowCreate"
-            [class.col-md-6]="!allowCreate"
-            [class.col-sm-6]="allowCreate"
-            [class.col-sm-12]="!allowCreate"
+            [class.lg:col-span-2]="allowCreate"
+            [class.lg:col-span-4]="!allowCreate"
+            [class.md:col-span-3]="allowCreate"
+            [class.md:col-span-6]="!allowCreate"
+            [class.col-span-6]="allowCreate"
+            [class.col-span-12]="!allowCreate"
         >
             <button type="button" class="actions-button" mat-raised-button [matMenuTriggerFor]="menu">
                 {{data.baseData.tableActionsLabel}}
@@ -36,12 +36,12 @@
 
     @if (allowCreate) {
         <div
-            [class.col-lg-2]="data.baseData.tableActions.length"
-            [class.col-lg-4]="!data.baseData.tableActions.length"
-            [class.col-md-3]="data.baseData.tableActions.length"
-            [class.col-md-6]="!data.baseData.tableActions.length"
-            [class.col-sm-6]="data.baseData.tableActions.length"
-            [class.col-sm-12]="!data.baseData.tableActions.length"
+            [class.lg:col-span-2]="data.baseData.tableActions.length"
+            [class.lg:col-span-4]="!data.baseData.tableActions.length"
+            [class.md:col-span-3]="data.baseData.tableActions.length"
+            [class.md:col-span-6]="!data.baseData.tableActions.length"
+            [class.col-span-6]="data.baseData.tableActions.length"
+            [class.col-span-12]="!data.baseData.tableActions.length"
         >
             <button type="button" class="create-button" mat-raised-button (click)="createEntity()">
                 {{data.baseData.createButtonLabel}}

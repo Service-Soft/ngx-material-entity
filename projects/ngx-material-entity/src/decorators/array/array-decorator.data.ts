@@ -1,4 +1,5 @@
 import { DateFilterFn } from '@angular/material/datepicker';
+import { IconDefinition } from '@fortawesome/angular-fontawesome';
 
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
@@ -236,10 +237,10 @@ export interface StringChipsArrayDecoratorConfig extends ArrayDecoratorConfig<st
     itemType: DecoratorTypes.STRING,
 
     /**
-     * The class for the <i> tag used to remove an entry from the array.
-     * @default 'fas fa-circle-minus'
+     * The font awesome icon used to remove an entry from the array.
+     * @default faCircleMinus
      */
-    deleteIcon?: string,
+    deleteIcon?: IconDefinition,
     /**
      * The minimum required length of the string.
      */
@@ -262,10 +263,10 @@ export interface AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecora
     itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
 
     /**
-     * The class for the <i> tag used to remove an entry from the array.
-     * @default 'fas fa-circle-minus'
+     * The icon used to remove an entry from the array.
+     * @default faCircleMinus
      */
-    deleteIcon?: string,
+    deleteIcon?: IconDefinition,
     /**
      * The autocomplete values.
      */

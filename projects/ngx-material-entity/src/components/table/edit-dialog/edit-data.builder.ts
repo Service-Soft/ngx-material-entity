@@ -43,7 +43,7 @@ export class EditActionInternal<EntityType extends BaseEntityType<EntityType>> i
 
     private functionToAsync(
         originalFunction: ((e: EntityType, ePriorChanges: EntityType) => unknown)
-        | ((e: EntityType, ePriorChanges: EntityType) => Promise<unknown>)
+            | ((e: EntityType, ePriorChanges: EntityType) => Promise<unknown>)
     ): (e: EntityType, ePriorChanges: EntityType) => Promise<unknown> {
         if (isAsyncFunction(originalFunction)) {
             return originalFunction as (e: EntityType) => Promise<unknown>;

@@ -1,21 +1,20 @@
-<!-- eslint-disable angular/no-call-expression -->
-<div class="container">
-    <br>
-        <form class="row">
-            @for (key of keys; track key) {
-                <ngx-mat-entity-input
-                    [entity]="testEntity"
-                    [propertyKey]="key"
-                    [hideOmitForCreate]="true"
-                    [isReadOnly]="isReadOnly"
-                    [class]="EntityUtilities.getWidthClasses(testEntity, key)"
-                >
-                </ngx-mat-entity-input>
-            }
-            <hr style="margin-top: 10px;">
-            <button type="submit" mat-raised-button>dirty</button>
-            <button type="button" mat-raised-button (click)="toggleInputValues()">Toggle Input Values</button>
-            <button type="button" mat-raised-button (click)="toggleReadOnly()">Toggle Read Only</button>
-        </form>
-    <br>
+ 
+<div class="container my-8 mx-auto">
+    <form class="grid grid-cols-12 gap-x-8">
+        @for (key of keys; track key) {
+            <ngx-mat-entity-input
+                class="col-span-6"
+                [entity]="testEntity"
+                [propertyKey]="key"
+                [hideOmitForCreate]="true"
+                [isReadOnly]="isReadOnly"
+            >
+            </ngx-mat-entity-input>
+        }
+        <div class="flex items-center justify-between mt-4 col-span-12 gap-4">
+            <button type="submit" class="flex-1" mat-raised-button>dirty</button>
+            <button type="button" class="flex-1" mat-raised-button (click)="toggleInputValues()">Toggle Input Values</button>
+            <button type="button" class="flex-1" mat-raised-button (click)="toggleReadOnly()">Toggle Read Only</button>
+        </div>
+    </form>
 </div>

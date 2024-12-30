@@ -93,6 +93,7 @@ export class AutocompleteStringDecoratorConfigInternal
     // eslint-disable-next-line typescript/no-explicit-any
     private autocompleteValuesToFunction(autocompleteValues: StringAutocompleteValues): (entity: any) => Promise<string[]> {
         if (Array.isArray(autocompleteValues)) {
+            // eslint-disable-next-line typescript/require-await
             return async () => autocompleteValues;
         }
         // eslint-disable-next-line typescript/no-explicit-any

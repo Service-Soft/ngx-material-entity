@@ -282,7 +282,7 @@
                     <mat-form-field class="select-search-input">
                         <!-- eslint-disable-next-line angular/no-any -->
                         <input #selectSearchInput matInput (keyup)="filterObjectDropdownValues($any($event.target).value)">
-                        <i matSuffix class="fas fa-search"></i>
+                        <fa-icon matSuffix [icon]="faSearch"></fa-icon>
                     </mat-form-field>
                     @if (!metadata.required(entity)) {
                         <mat-option>-</mat-option>
@@ -314,7 +314,7 @@
                     <mat-form-field class="select-search-input">
                         <!-- eslint-disable-next-line angular/no-any -->
                         <input #selectSearchInput matInput (keyup)="filterReferencesOneValues($any($event.target).value)">
-                        <i matSuffix class="fas fa-search"></i>
+                        <fa-icon matSuffix [icon]="faSearch"></fa-icon>
                     </mat-form-field>
                     @if (!metadata.required(entity)) {
                         <mat-option>-</mat-option>
@@ -371,19 +371,19 @@
         @case (DecoratorTypes.HAS_MANY) {
             <div class="hasMany">
                 <h2 class="title">{{metadataHasMany.tableData.baseData.title}}</h2>
-                <div class="row">
-                    <mat-form-field class="col-lg-8 col-md-6 col-sm-12">
+                <div class="grid grid-cols-12" style="column-gap: 24px;">
+                    <mat-form-field class="lg:col-span-8 md:col-span-6 col-span-12">
                         <mat-label>{{metadataHasMany.tableData.baseData.searchLabel}}</mat-label>
                         <input matInput (keyup)="applyHasManyFilter($event)">
                     </mat-form-field>
                     @if (metadataHasMany.tableData.baseData.tableActions.length) {
                         <div
-                            [class.col-lg-2]="hasManyAllowCreate"
-                            [class.col-lg-4]="!hasManyAllowCreate"
-                            [class.col-md-3]="hasManyAllowCreate"
-                            [class.col-md-6]="!hasManyAllowCreate"
-                            [class.col-sm-6]="hasManyAllowCreate"
-                            [class.col-sm-12]="!hasManyAllowCreate"
+                            [class.lg:col-span-2]="hasManyAllowCreate"
+                            [class.lg:col-span-4]="!hasManyAllowCreate"
+                            [class.md:col-span-3]="hasManyAllowCreate"
+                            [class.md:col-span-6]="!hasManyAllowCreate"
+                            [class.col-span-6]="hasManyAllowCreate"
+                            [class.col-span-12]="!hasManyAllowCreate"
                         >
                             <button type="button" class="actions-button" mat-raised-button [matMenuTriggerFor]="menu">
                                 {{metadataHasMany.tableData.baseData.tableActionsLabel}}
@@ -404,12 +404,12 @@
                     </mat-menu>
                     @if (hasManyAllowCreate) {
                         <div
-                            [class.col-lg-2]="metadataHasMany.tableData.baseData.tableActions.length"
-                            [class.col-lg-4]="!metadataHasMany.tableData.baseData.tableActions.length"
-                            [class.col-md-3]="metadataHasMany.tableData.baseData.tableActions.length"
-                            [class.col-md-6]="!metadataHasMany.tableData.baseData.tableActions.length"
-                            [class.col-sm-6]="metadataHasMany.tableData.baseData.tableActions.length"
-                            [class.col-sm-12]="!metadataHasMany.tableData.baseData.tableActions.length"
+                            [class.lg:col-span-2]="metadataHasMany.tableData.baseData.tableActions.length"
+                            [class.lg:col-span-4]="!metadataHasMany.tableData.baseData.tableActions.length"
+                            [class.md:col-span-3]="metadataHasMany.tableData.baseData.tableActions.length"
+                            [class.md:col-span-6]="!metadataHasMany.tableData.baseData.tableActions.length"
+                            [class.col-span-6]="metadataHasMany.tableData.baseData.tableActions.length"
+                            [class.col-span-12]="!metadataHasMany.tableData.baseData.tableActions.length"
                         >
                             <button type="button" class="create-button" mat-raised-button (click)="createHasManyEntity()">
                                 {{metadataHasMany.tableData.baseData.createButtonLabel}}
@@ -495,7 +495,7 @@
             @for (tab of context.tabs; track $index) {
                 <mat-tab [label]="tab.tabName">
                     @for (row of tab.rows; track $index) {
-                        <div class="row">
+                        <div class="grid grid-cols-12" style="column-gap: 24px;">
                             @for (key of row.keys; track key) {
                                 <ngx-mat-entity-input
                                     [entity]="context.entity"
@@ -524,7 +524,7 @@
         }
         @else {
             @for (row of context.tabs[0].rows; track $index) {
-                <div class="row">
+                <div class="grid grid-cols-12" style="column-gap: 24px;">
                     @for (key of row.keys; track key) {
                         <ngx-mat-entity-input
                             [entity]="context.entity"
@@ -561,7 +561,7 @@
         </mat-dialog-content>
     
         <mat-dialog-actions>
-            <div class="d-flex align-items-center gap-3" style="margin-top: 10px;">
+            <div class="dialog-button-with-info-icon">
                 <button type="submit" mat-raised-button matBadgeColor="warn"
                     [disabled]="!isArrayItemValid"
                     [matBadge]="arrayItemValidationErrors.length"
@@ -598,7 +598,7 @@
         </mat-dialog-content>
         
         <mat-dialog-actions>
-            <div class="d-flex align-items-center gap-3" style="margin-top: 10px;">
+            <div class="dialog-button-with-info-icon">
                 <button type="submit" mat-raised-button matBadgeColor="warn"
                     [class.badge-changes]="!arrayItemValidationErrors.length"
                     [disabled]="internalIsReadOnly || !isArrayItemValid || !isArrayItemDirty"
@@ -635,7 +635,7 @@
         </mat-dialog-content>
         
         <mat-dialog-actions>
-            <div class="d-flex align-items-center gap-3" style="margin-top: 10px;">
+            <div class="dialog-button-with-info-icon">
                 <button type="submit" mat-raised-button matBadgeColor="warn"
                     [disabled]="!isHasManyEntityValid"
                     [matBadge]="hasManyValidationErrors.length"
@@ -693,7 +693,7 @@
         </mat-dialog-content>
         
         <mat-dialog-actions>
-            <div class="d-flex align-items-center gap-3" style="margin-top: 10px;">
+            <div class="dialog-button-with-info-icon">
                 <button type="submit" mat-raised-button matBadgeColor="warn"
                     [class.badge-changes]="!hasManyValidationErrors.length"
                     [disabled]="internalIsReadOnly || !isHasManyEntityValid || !isHasManyEntityDirty"

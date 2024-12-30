@@ -15,7 +15,7 @@ const editDataWithActions: EditData<TestEntityWithoutCustomProperties> = {
         },
         {
             displayName: 'Test Async',
-            // eslint-disable-next-line no-console
+            // eslint-disable-next-line no-console, typescript/require-await
             action: async () => console.log(42)
         }
     ]

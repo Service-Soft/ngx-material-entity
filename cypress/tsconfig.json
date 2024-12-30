@@ -1,18 +1,16 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
         "lib": [
             "es5",
             "dom"
         ],
+        "target": "es5",
         "types": [
             "cypress",
             "node"
-        ],
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
+        ]
     },
-    "include": [
-        "**/*.ts"
-    ]
+    "include": ["**/*.ts"]
 }

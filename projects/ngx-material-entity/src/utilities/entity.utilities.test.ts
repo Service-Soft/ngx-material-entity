@@ -33,7 +33,7 @@ function valueIsEntity(value: unknown): value is Entity {
 }
 
 describe('new', () => {
-    test('should define all values for testEntity', async () => {
+    test('should define all values for testEntity', () => {
         for (const key in testEntity) {
             const value: unknown = ReflectUtilities.get(testEntity, key as keyof TestEntityWithoutCustomProperties);
             expect(value).toBeDefined();
@@ -77,14 +77,14 @@ describe('new', () => {
 });
 
 describe('getOmitForCreate', () => {
-    test('should get correct omitForCreate values from metadata', async () => {
+    test('should get correct omitForCreate values from metadata', () => {
         expect(EntityUtilities.getOmitForCreate(testEntity)).toEqual(['id', 'omitForCreateValue', 'customFileValues', 'hasManyValues', 'notDecoratedValue']);
         expect(EntityUtilities.getOmitForCreate(testEntityWithoutData)).toEqual(['id', 'omitForCreateValue', 'customFileValues', 'hasManyValues', 'notDecoratedValue']);
     });
 });
 
 describe('getFileProperties', () => {
-    test('should get all file property keys from the entity', async () => {
+    test('should get all file property keys from the entity', () => {
         expect(EntityUtilities.getFileProperties(testEntity)).toEqual([
             'fileValue',
             'dragDropFileValue',
@@ -105,7 +105,7 @@ describe('getFileProperties', () => {
 });
 
 describe('getOmitForUpdate', () => {
-    test('should get correct omitForUpdate values from metadata', async () => {
+    test('should get correct omitForUpdate values from metadata', () => {
         expect(EntityUtilities.getOmitForUpdate(testEntity)).toEqual(['id', 'omitForUpdateValue', 'customFileValues', 'notDecoratedValue']);
         expect(EntityUtilities.getOmitForUpdate(testEntityWithoutData)).toEqual(['id', 'omitForUpdateValue', 'customFileValues', 'notDecoratedValue']);
     });
@@ -269,7 +269,7 @@ describe('compareOrder', () => {
 
 describe('getWidth', () => {
     test('should get the default width', () => {
-        expect(EntityUtilities.getWidthClasses(testEntity, 'maxLengthStringValue')).toBe('col-lg-6 col-md-6 col-sm-12');
+        expect(EntityUtilities.getWidthClasses(testEntity, 'maxLengthStringValue')).toBe('lg:col-span-6 md:col-span-6 col-span-12');
         const EXPECTED_EM: string = 'Could not get metadata for property "notDecoratedValue"';
         expect(() => EntityUtilities.getWidthClasses(testEntity, 'notDecoratedValue')).toThrow(EXPECTED_EM);
     });

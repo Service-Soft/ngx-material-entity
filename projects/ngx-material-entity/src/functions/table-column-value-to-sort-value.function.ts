@@ -9,7 +9,7 @@ import { TableColumnValue } from '../components/table/table-data';
  */
 export function tableColumnValueToSortValue(value: TableColumnValue): string | number {
     switch (typeof value) {
-        case 'string':
+        case 'string': {
             const stringDate: Date = new Date(value);
             if (!Number.isNaN(stringDate.getTime())) {
                 return stringDate.getTime();
@@ -19,12 +19,16 @@ export function tableColumnValueToSortValue(value: TableColumnValue): string | n
                 return number;
             }
             return value;
-        case 'number':
+        }
+        case 'number': {
             return value;
-        case 'object':
+        }
+        case 'object': {
             const date: Date = new Date(value);
             return date.getTime();
-        default:
+        }
+        default: {
             throw new Error(`Unsupported type for table value: ${typeof value}`);
+        }
     }
 }

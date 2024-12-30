@@ -17,6 +17,8 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
+import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { firstValueFrom } from 'rxjs';
 
 import { ArrayDateInputComponent } from './array/array-date-input/array-date-input.component';
@@ -164,7 +166,7 @@ type TableContext<T> = InternalCustomTableConfiguration & {
 @Component({
     selector: 'ngx-mat-entity-input',
     templateUrl: './input.component.html',
-    styleUrls: ['./input.component.scss', '../../scss/dialog-styles.scss'],
+    styleUrls: ['./input.component.scss', '../../scss/dialog-styles.scss', '../../scss/tailwind-classes.scss'],
     standalone: true,
     imports: [
         DisplayColumnValueComponent,
@@ -207,10 +209,15 @@ type TableContext<T> = InternalCustomTableConfiguration & {
         ReferencesManyInputComponent,
         CustomInputComponent,
         DynamicStyleClassDirective,
-        MatSortModule
+        MatSortModule,
+        FaIconComponent
     ]
 })
 export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    faSearch: IconDefinition = faSearch;
+
     /**
      * The entity on which the property exists. Used in conjunction with the "propertyKey"
      * to determine the property for which the input should be generated.
@@ -615,23 +622,29 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.metadata = foundMetadata;
 
         switch (this.type) {
-            case DecoratorTypes.OBJECT_DROPDOWN:
+            case DecoratorTypes.OBJECT_DROPDOWN: {
                 void this.initDropdownObjectInput();
                 break;
-            case DecoratorTypes.OBJECT:
+            }
+            case DecoratorTypes.OBJECT: {
                 this.initObjectInput();
                 break;
-            case DecoratorTypes.ARRAY:
+            }
+            case DecoratorTypes.ARRAY: {
                 this.initEntityArray();
                 break;
-            case DecoratorTypes.HAS_MANY:
+            }
+            case DecoratorTypes.HAS_MANY: {
                 this.initHasMany();
                 break;
-            case DecoratorTypes.REFERENCES_ONE:
+            }
+            case DecoratorTypes.REFERENCES_ONE: {
                 void this.initReferencesOne();
                 break;
-            default:
+            }
+            default: {
                 break;
+            }
         }
     }
 

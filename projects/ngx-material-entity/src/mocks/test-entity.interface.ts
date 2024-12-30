@@ -1,6 +1,7 @@
 /* eslint-disable sonar/no-duplicate-string */
 /* eslint-disable jsdoc/require-jsdoc */
 import { DateFilterFn } from '@angular/material/datepicker';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import { firstValueFrom, of } from 'rxjs';
 
@@ -408,7 +409,7 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
     @array({
         displayName: 'String Chips Array Value With Config',
         itemType: DecoratorTypes.STRING,
-        deleteIcon: 'fas fa-trash',
+        deleteIcon: faTrash,
         defaultWidths: [12, 12, 12],
         allowDuplicates: true
     })
@@ -427,7 +428,7 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         itemType: DecoratorTypes.STRING_AUTOCOMPLETE,
         // eslint-disable-next-line cspell/spellchecker
         autocompleteValues: () => ['ABCDE', 'FGHIJ'],
-        deleteIcon: 'fas fa-trash',
+        deleteIcon: faTrash,
         defaultWidths: [6, 6, 6],
         allowDuplicates: true,
         restrictToOptions: true
@@ -761,7 +762,7 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         multiple: true,
         displayName: 'Custom File Values',
         allowedMimeTypes: ['image/*', 'application/pdf', 'application/x-javascript'],
-        deleteIcon: 'fas fa-trash',
+        deleteIcon: faTrash,
         maxSize: FileUtilities.transformToMegaBytes(3, 'KB'),
         maxSizeTotal: FileUtilities.transformToMegaBytes(5, 'KB'),
         omitForCreate: true,
@@ -795,6 +796,7 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
     @referencesOne({
         displayName: 'References One Value',
         EntityClass: ReferencedEntity,
+        // eslint-disable-next-line typescript/require-await
         getReferencedEntities: async () => [{ stringValue: 'string value', id: '1' }],
         getDropdownValues: (entities: ReferencedEntity[]) => entities.map(e => {
             return { displayName: `Referenced Entity #${e.id}`, value: e.id };

@@ -13,7 +13,6 @@ import { TestEntity } from '../../../../../ngx-material-entity/src/mocks/test-en
 @Component({
     selector: 'app-showcase-table',
     templateUrl: './showcase-table.component.html',
-    styleUrls: ['./showcase-table.component.scss'],
     standalone: true,
     imports: [
         CommonModule,
@@ -44,14 +43,18 @@ export class ShowcaseTableComponent {
 
     private getTableData(): TableData<TestEntity> {
         switch (this.selectedTableDataPreset) {
-            case 'Custom':
+            case 'Custom': {
                 return customTableData;
-            case 'Read Only':
+            }
+            case 'Read Only': {
                 return customTableDataReadOnly;
-            case 'Default Dialog':
+            }
+            case 'Default Dialog': {
                 return defaultTableDataDialog;
-            default:
+            }
+            default: {
                 return defaultTableData;
+            }
         }
     }
 }

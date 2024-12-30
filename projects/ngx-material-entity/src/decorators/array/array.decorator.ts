@@ -13,39 +13,46 @@ import { DecoratorTypes } from '../base/decorator-types.enum';
  */
 export function array<EntityType extends BaseEntityType<EntityType>>(
     metadata: EntityArrayDecoratorConfig<EntityType>
-    | StringChipsArrayDecoratorConfig
-    | AutocompleteStringChipsArrayDecoratorConfig
-    | DateArrayDecoratorConfig
-    | DateTimeArrayDecoratorConfig
-    | DateRangeArrayDecoratorConfig
+        | StringChipsArrayDecoratorConfig
+        | AutocompleteStringChipsArrayDecoratorConfig
+        | DateArrayDecoratorConfig
+        | DateTimeArrayDecoratorConfig
+        | DateRangeArrayDecoratorConfig
 ): (target: object, propertyKey: string) => void {
     switch (metadata.itemType) {
-        case DecoratorTypes.OBJECT:
+        case DecoratorTypes.OBJECT: {
             return baseProperty(new EntityArrayDecoratorConfigInternal(metadata, needsUpdateGlobalDefaults), DecoratorTypes.ARRAY);
-        case DecoratorTypes.DATE:
+        }
+        case DecoratorTypes.DATE: {
             return baseProperty(new DateArrayDecoratorConfigInternal(metadata, needsUpdateGlobalDefaults), DecoratorTypes.ARRAY_DATE);
-        case DecoratorTypes.DATE_TIME:
+        }
+        case DecoratorTypes.DATE_TIME: {
             return baseProperty(
                 new DateTimeArrayDecoratorConfigInternal(metadata, needsUpdateGlobalDefaults),
                 DecoratorTypes.ARRAY_DATE_TIME
             );
-        case DecoratorTypes.DATE_RANGE:
+        }
+        case DecoratorTypes.DATE_RANGE: {
             return baseProperty(
                 new DateRangeArrayDecoratorConfigInternal(metadata, needsUpdateGlobalDefaults),
                 DecoratorTypes.ARRAY_DATE_RANGE
             );
-        case DecoratorTypes.STRING:
+        }
+        case DecoratorTypes.STRING: {
             return baseProperty(
                 new StringChipsArrayDecoratorConfigInternal(metadata, needsUpdateGlobalDefaults),
                 DecoratorTypes.ARRAY_STRING_CHIPS
             );
-        case DecoratorTypes.STRING_AUTOCOMPLETE:
+        }
+        case DecoratorTypes.STRING_AUTOCOMPLETE: {
             return baseProperty(
                 new AutocompleteStringChipsArrayDecoratorConfigInternal(metadata, needsUpdateGlobalDefaults),
                 DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS
             );
-        default:
+        }
+        default: {
             // eslint-disable-next-line typescript/no-explicit-any, typescript/no-unsafe-member-access
             throw new Error(`Unknown itemType ${(metadata as any).itemType}`);
+        }
     }
 }

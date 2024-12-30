@@ -1,4 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
+import { faInfo } from '@fortawesome/free-solid-svg-icons';
 
 import { TooltipDirective } from '../../directives/tooltip.directive';
 
@@ -10,9 +12,13 @@ import { TooltipDirective } from '../../directives/tooltip.directive';
     templateUrl: './tooltip.component.html',
     styleUrls: ['./tooltip.component.scss'],
     standalone: true,
-    imports: [TooltipDirective]
+    imports: [TooltipDirective, FaIconComponent]
 })
 export class TooltipComponent {
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    faInfo: IconDefinition = faInfo;
+
     /**
      * What to display inside the tooltip.
      */
