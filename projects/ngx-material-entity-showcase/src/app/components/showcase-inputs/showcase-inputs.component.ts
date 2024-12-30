@@ -11,7 +11,6 @@ import { TestEntity, TestEntityMockBuilder } from '../../../../../ngx-material-e
 
     selector: 'app-showcase-inputs',
     templateUrl: './showcase-inputs.component.html',
-    styleUrls: ['./showcase-inputs.component.scss'],
     standalone: true,
     imports: [
         CommonModule,
@@ -92,32 +91,41 @@ export class ShowcaseInputsComponent {
                 return;
             }
             switch (type) {
-                case 'string':
+                case 'string': {
                     this.setKeys(this.STRING_DECORATOR_TYPES);
                     break;
-                case 'number':
+                }
+                case 'number': {
                     this.setKeys(this.NUMBER_DECORATOR_TYPES);
                     break;
-                case 'array':
+                }
+                case 'array': {
                     this.setKeys(this.ARRAY_DECORATOR_TYPES);
                     break;
-                case 'boolean':
+                }
+                case 'boolean': {
                     this.setKeys(this.BOOLEAN_DECORATOR_TYPES);
                     break;
-                case 'object':
+                }
+                case 'object': {
                     this.setKeys(this.OBJECT_DECORATOR_TYPES);
                     break;
-                case 'date':
+                }
+                case 'date': {
                     this.setKeys(this.DATE_DECORATOR_TYPES);
                     break;
-                case 'file':
+                }
+                case 'file': {
                     this.setKeys(this.FILE_DECORATOR_TYPES);
                     break;
-                case 'custom':
+                }
+                case 'custom': {
                     this.setKeys([DecoratorTypes.CUSTOM]);
                     break;
-                default:
+                }
+                default: {
                     throw new Error(`The specified type ${type} is unknown`);
+                }
             }
         });
     }

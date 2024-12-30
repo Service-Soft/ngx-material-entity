@@ -11,22 +11,27 @@ import { DecoratorTypes } from '../base/decorator-types.enum';
  */
 export function string(
     metadata: DropdownStringDecoratorConfig | AutocompleteStringDecoratorConfig
-    | DefaultStringDecoratorConfig | TextboxStringDecoratorConfig | PasswordStringDecoratorConfig
+        | DefaultStringDecoratorConfig | TextboxStringDecoratorConfig | PasswordStringDecoratorConfig
 ): (target: object, propertyKey: string) => void {
     switch (metadata.displayStyle) {
-        case 'dropdown':
+        case 'dropdown': {
             return baseProperty(new DropdownStringDecoratorConfigInternal(metadata), DecoratorTypes.STRING_DROPDOWN);
-        case 'autocomplete':
+        }
+        case 'autocomplete': {
             return baseProperty(new AutocompleteStringDecoratorConfigInternal(metadata), DecoratorTypes.STRING_AUTOCOMPLETE);
-        case 'textbox':
+        }
+        case 'textbox': {
             return baseProperty(new TextboxStringDecoratorConfigInternal(metadata), DecoratorTypes.STRING_TEXTBOX);
-        case 'password':
+        }
+        case 'password': {
             return baseProperty(
                 new PasswordStringDecoratorConfigInternal(metadata),
                 DecoratorTypes.STRING_PASSWORD,
                 [EntityUtilities.CONFIRM_PASSWORD_KEY]
             );
-        default:
+        }
+        default: {
             return baseProperty(new DefaultStringDecoratorConfigInternal(metadata), DecoratorTypes.STRING);
+        }
     }
 }

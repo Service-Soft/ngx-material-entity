@@ -5,6 +5,8 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
+import { faChevronLeft, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { firstValueFrom } from 'rxjs';
 
 import { PageCreateDataBuilder, PageCreateDataInternal } from './page-create-data.builder';
@@ -86,10 +88,16 @@ export const NGX_CREATE_DATA: InjectionToken<PageCreateData<any>> = new Injectio
         MatProgressSpinnerModule,
         MatBadgeModule,
         TooltipComponent,
-        NgxMatEntityFormComponent
+        NgxMatEntityFormComponent,
+        FaIconComponent
     ]
 })
 export class NgxMatEntityCreatePageComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit, UnsavedChangesPage {
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    faChevronLeft: IconDefinition = faChevronLeft;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    faWarning: IconDefinition = faWarning;
 
     /**
      * Contains HelperMethods around handling Entities and their property-metadata.

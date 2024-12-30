@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { DecoratorTypes } from '../../../../decorators/base/decorator-types.enum';
@@ -32,11 +34,14 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
         FormsModule,
         CommonModule,
         MatButtonModule,
-        CustomTableComponent
+        CustomTableComponent,
+        FaIconComponent
     ]
 })
 export class ReferencesManyInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.REFERENCES_MANY, string[]> implements OnInit {
+
+    faSearch: IconDefinition = faSearch;
 
     private allReferencedEntities: EntityType[] = [];
 

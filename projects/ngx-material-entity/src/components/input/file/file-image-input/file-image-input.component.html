@@ -40,7 +40,7 @@
                 </div>
             
                 <div class="preview-nav">
-                    <i class="fas fa-angle-left left-button" [class.disabled]="imageIndex === 0" (click)="prev()"></i>
+                    <fa-icon class="left-button" [icon]="faAngleLeft" [class.disabled]="imageIndex === 0" (click)="prev()"></fa-icon>
                     @if (
                         multiPreviewImages
                         && multiPreviewImages[imageIndex-4]
@@ -95,7 +95,7 @@
                             <div class="image-index">{{imageIndex + 5}}</div>
                         </div>
                     }
-                    <i class="fas fa-angle-right right-button" [class.disabled]="!multiPreviewImages || !multiPreviewImages.length || imageIndex === (multiPreviewImages.length - 1)" (click)="next()"></i>
+                    <fa-icon class="right-button" [icon]="faAngleRight" [class.disabled]="!multiPreviewImages || !multiPreviewImages.length || imageIndex === (multiPreviewImages.length - 1)" (click)="next()"></fa-icon>
                 </div>
             }
             @else {

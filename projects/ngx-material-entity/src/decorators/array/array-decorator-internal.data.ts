@@ -1,4 +1,6 @@
 import { DateFilterFn } from '@angular/material/datepicker';
+import { IconDefinition } from '@fortawesome/angular-fontawesome';
+import { faCircleMinus } from '@fortawesome/free-solid-svg-icons';
 
 import { ArrayDecoratorConfig, AutocompleteStringChipsArrayDecoratorConfig, DateArrayDecoratorConfig, DateRangeArrayDecoratorConfig, DateTimeArrayDecoratorConfig, EditArrayItemDialogData, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from './array-decorator.data';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
@@ -255,7 +257,7 @@ export class StringChipsArrayDecoratorConfigInternal extends PropertyDecoratorCo
     // eslint-disable-next-line jsdoc/require-jsdoc
     duplicatesErrorDialog: ConfirmDialogData;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    deleteIcon: string;
+    deleteIcon: IconDefinition;
     // eslint-disable-next-line jsdoc/require-jsdoc
     minLength?: number;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -265,7 +267,7 @@ export class StringChipsArrayDecoratorConfigInternal extends PropertyDecoratorCo
 
     constructor(data: StringChipsArrayDecoratorConfig, globalConfig: NgxGlobalDefaultValues) {
         super(data);
-        this.deleteIcon = data.deleteIcon ?? 'fas fa-circle-minus';
+        this.deleteIcon = data.deleteIcon ?? faCircleMinus;
         this.itemType = data.itemType;
         this.allowDuplicates = data.allowDuplicates ?? false;
         this.duplicatesErrorDialog = getDefaultDuplicateErrorDialogData(data, globalConfig);
@@ -290,7 +292,7 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
     // eslint-disable-next-line jsdoc/require-jsdoc
     duplicatesErrorDialog: ConfirmDialogData;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    deleteIcon: string;
+    deleteIcon: IconDefinition;
     // eslint-disable-next-line jsdoc/require-jsdoc
     minLength?: number;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -303,7 +305,7 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
     constructor(data: AutocompleteStringChipsArrayDecoratorConfig, globalConfig: NgxGlobalDefaultValues) {
         super(data);
         this.autocompleteValues = this.autocompleteValuesToFunction(data.autocompleteValues);
-        this.deleteIcon = data.deleteIcon ?? 'fas fa-circle-minus';
+        this.deleteIcon = data.deleteIcon ?? faCircleMinus;
         this.itemType = data.itemType;
         this.allowDuplicates = data.allowDuplicates ?? false;
         this.duplicatesErrorDialog = getDefaultDuplicateErrorDialogData(data, globalConfig);
@@ -317,6 +319,7 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
     // eslint-disable-next-line typescript/no-explicit-any
     private autocompleteValuesToFunction(autocompleteValues: StringAutocompleteValues): (entity: any) => Promise<string[]> {
         if (Array.isArray(autocompleteValues)) {
+            // eslint-disable-next-line typescript/require-await
             return async () => autocompleteValues;
         }
         // eslint-disable-next-line typescript/no-explicit-any

@@ -282,7 +282,7 @@ function getDropdownValues(entities: Address[]): DropdownValue<string>[] {
 @Component({
     selector: 'app-sandbox',
     templateUrl: './sandbox.component.html',
-    styleUrls: ['./sandbox.component.scss'],
+    styleUrls: ['./sandbox.component.css'],
     standalone: true,
     imports: [
         CommonModule,

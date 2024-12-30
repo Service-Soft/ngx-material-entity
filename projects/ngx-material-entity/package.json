@@ -1,6 +1,6 @@
 {
     "name": "ngx-material-entity",
-    "version": "18.1.0",
+    "version": "18.2.0",
     "license": "MIT",
     "keywords": [
         "angular",
@@ -18,7 +18,9 @@
         "js2xmlparser": "^5.0.0",
         "jszip": "^3.10.1",
         "lodash": "4",
-        "uuid": "9"
+        "uuid": "9",
+        "@fortawesome/angular-fontawesome": "^0.15",
+        "@fortawesome/free-solid-svg-icons": "^6"
     },
     "dependencies": {
         "tslib": "^2.6.2"

@@ -6,6 +6,7 @@ import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/ma
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 import { BaseEntityType } from '../../../../classes/entity.model';
 import { AutocompleteStringChipsArrayDecoratorConfigInternal } from '../../../../decorators/array/array-decorator-internal.data';
@@ -26,7 +27,8 @@ import { ArrayStringChipsInputComponent } from '../array-string-chips-input/arra
         MatAutocompleteModule,
         IncludedInValidatorDirective,
         MatInputModule,
-        CommonModule
+        CommonModule,
+        FaIconComponent
     ]
 })
 export class ArrayStringAutocompleteChipsComponent<EntityType extends BaseEntityType<EntityType>>

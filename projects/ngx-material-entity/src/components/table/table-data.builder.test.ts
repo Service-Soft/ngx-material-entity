@@ -1,4 +1,3 @@
-/* eslint-disable sonar/no-duplicate-string */
 /* eslint-disable no-console */
 import { expect } from '@jest/globals';
 
@@ -98,6 +97,7 @@ const actionsTableData: TableData<TestEntityWithoutCustomProperties> = {
             {
                 type: 'default',
                 displayName: 'Default Action',
+                // eslint-disable-next-line typescript/require-await
                 action: async () => 42
             },
             {
@@ -108,6 +108,7 @@ const actionsTableData: TableData<TestEntityWithoutCustomProperties> = {
             {
                 type: 'multi-select',
                 displayName: 'Multi Select Action Async',
+                // eslint-disable-next-line typescript/require-await
                 action: async entities => entities.length
             }
         ]

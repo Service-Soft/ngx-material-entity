@@ -18,7 +18,7 @@ import { FileInputComponent } from '../file-input/file-input.component';
 export class FileDefaultInputComponent<EntityType extends BaseEntityType<EntityType>>
     extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.FILE_DEFAULT, FileData | FileData[]> implements OnInit {
 
-    async refreshFileData(fileData?: FileData | FileData[]): Promise<void> {
+    refreshFileData(fileData?: FileData | FileData[]): void {
         this.propertyValue = fileData;
         this.emitChange();
     }

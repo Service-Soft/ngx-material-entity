@@ -1,4 +1,3 @@
-/* eslint-disable sonar/no-duplicate-string */
 import { HttpClient } from '@angular/common/http';
 import { expect, test, jest } from '@jest/globals';
 

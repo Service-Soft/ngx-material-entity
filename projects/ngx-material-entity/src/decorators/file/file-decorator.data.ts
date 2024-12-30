@@ -1,3 +1,5 @@
+import { IconDefinition } from '@fortawesome/angular-fontawesome';
+
 import { FileDataWithFile, FileDataWithUrl } from './file-decorator-internal.data';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
@@ -22,10 +24,10 @@ abstract class FileDecoratorConfig extends PropertyDecoratorConfig<FileData> {
     type!: 'image' | 'other';
 
     /**
-     * The class for the <i> tag used to remove a file from the input.
-     * @default 'fas fa-circle-minus'
+     * The icon used to remove a file from the input.
+     * @default faCircleMinus
      */
-    deleteIcon?: string;
+    deleteIcon?: IconDefinition;
 
     /**
      * Whether or not the file should be displayed inside a preview.

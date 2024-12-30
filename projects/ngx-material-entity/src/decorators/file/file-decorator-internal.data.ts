@@ -1,3 +1,6 @@
+import { IconDefinition } from '@fortawesome/angular-fontawesome';
+import { faCircleMinus } from '@fortawesome/free-solid-svg-icons';
+
 import { DefaultFileDecoratorConfig, FileData, ImageFileDecoratorConfig } from './file-decorator.data';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
 import { PropertyDecoratorConfigInternal } from '../base/property-decorator-internal.data';
@@ -74,7 +77,7 @@ export class DefaultFileDecoratorConfigInternal extends PropertyDecoratorConfigI
     // eslint-disable-next-line jsdoc/require-jsdoc
     allowedMimeTypes: string[];
     // eslint-disable-next-line jsdoc/require-jsdoc
-    deleteIcon: string;
+    deleteIcon: IconDefinition;
     // eslint-disable-next-line jsdoc/require-jsdoc
     maxSize: number;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -93,7 +96,7 @@ export class DefaultFileDecoratorConfigInternal extends PropertyDecoratorConfigI
         this.type = data.type;
         this.preview = false;
         this.multiple = data.multiple;
-        this.deleteIcon = data.deleteIcon ?? 'fas fa-circle-minus';
+        this.deleteIcon = data.deleteIcon ?? faCircleMinus;
         this.allowedMimeTypes = data.allowedMimeTypes ?? ['*'];
         this.maxSize = data.maxSize ?? 10;
         this.maxSizeTotal = data.maxSizeTotal ?? 100;
@@ -119,7 +122,7 @@ export class ImageFileDecoratorConfigInternal extends PropertyDecoratorConfigInt
     // eslint-disable-next-line jsdoc/require-jsdoc
     previewPlaceholderUrl?: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    deleteIcon: string;
+    deleteIcon: IconDefinition;
     // eslint-disable-next-line jsdoc/require-jsdoc
     maxSize: number;
     // eslint-disable-next-line jsdoc/require-jsdoc
@@ -139,7 +142,7 @@ export class ImageFileDecoratorConfigInternal extends PropertyDecoratorConfigInt
         this.allowedMimeTypes = data.allowedMimeTypes ?? ['image/*'];
         this.multiple = data.multiple;
         this.preview = data.preview ?? true;
-        this.deleteIcon = data.deleteIcon ?? 'fas fa-circle-minus';
+        this.deleteIcon = data.deleteIcon ?? faCircleMinus;
         this.maxSize = data.maxSize ?? 10;
         this.maxSizeTotal = data.maxSizeTotal ?? 100;
         this.mimeTypeErrorDialog = data.mimeTypeErrorDialog ?? getDefaultMimeTypeErrorDialogData(data);

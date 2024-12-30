@@ -12,7 +12,7 @@
         <mat-form-field class="select-search-input">
             <!-- eslint-disable-next-line angular/no-any -->
             <input #selectSearchInput matInput (keyup)="filterDropdownValues($any($event.target).value)">
-            <i matSuffix class="fas fa-search"></i>
+            <fa-icon matSuffix [icon]="faSearch"></fa-icon>
         </mat-form-field>
         @if (!metadata.required(entity)) {
             <mat-option>-</mat-option>

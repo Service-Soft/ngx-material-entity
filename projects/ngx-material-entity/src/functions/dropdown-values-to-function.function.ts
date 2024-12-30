@@ -17,6 +17,7 @@ export type DropdownValues<T> = DropdownValue<T | undefined>[]
 // eslint-disable-next-line typescript/no-explicit-any
 export function dropdownValuesToFunction<T>(dropdownValues: DropdownValues<T>): (entity: any) => Promise<DropdownValue<T | undefined>[]> {
     if (Array.isArray(dropdownValues)) {
+        // eslint-disable-next-line typescript/require-await
         return async () => dropdownValues;
     }
     // eslint-disable-next-line typescript/no-explicit-any
