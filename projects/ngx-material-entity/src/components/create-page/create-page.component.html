@@ -30,7 +30,7 @@
         <!----------->
         <!-- Input -->
         <!----------->
-        <form>
+        <form (ngSubmit)="create()">
             <ngx-mat-entity-form [hideOmitForCreate]="true" [entity]="entity" (selectedTabChange)="checkOffset()" (formChange)="checkEntity()">
             </ngx-mat-entity-form>
     
@@ -40,7 +40,6 @@
                         [disabled]="!isEntityValid || !isEntityDirty"
                         [matBadge]="validationErrors.length"
                         [matBadgeHidden]="!validationErrors.length"
-                        (click)="create()"
                     >
                         {{data.createData.createButtonLabel}}
                     </button>

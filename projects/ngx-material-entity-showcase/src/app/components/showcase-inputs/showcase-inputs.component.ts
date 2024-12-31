@@ -131,12 +131,12 @@ export class ShowcaseInputsComponent {
     }
 
     toggleInputValues(): void {
-        this.loaded = false;
+        // this.loaded = false;
 
         this.testEntity = this.inputValues ? new TestEntityMockBuilder().testEntityWithoutData : new TestEntityMockBuilder().testEntity;
         this.inputValues = !this.inputValues;
 
-        setTimeout(() => this.loaded = true, 1);
+        // setTimeout(() => this.loaded = true, 1);
     }
 
     toggleReadOnly(): void {

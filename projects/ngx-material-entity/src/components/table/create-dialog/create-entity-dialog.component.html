@@ -2,7 +2,7 @@
     <div>{{data.createData.title}}</div>
 </div>
 
-<form>
+<form (ngSubmit)="create()">
     <mat-dialog-content>
         <ngx-mat-entity-form [hideOmitForCreate]="true" [entity]="data.entity" (formChange)="checkIsEntityValid()">
         </ngx-mat-entity-form>
@@ -15,7 +15,6 @@
                 [disabled]="!isEntityValid"
                 [matBadge]="validationErrors.length"
                 [matBadgeHidden]="!validationErrors.length"
-                (click)="create()"
             >
                 {{data.createData.createButtonLabel}}
             </button>

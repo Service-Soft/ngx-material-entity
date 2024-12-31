@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, EnvironmentInjector, EventEmitter, Inject, OnInit, Output, runInInjectionContext } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -37,7 +38,8 @@ import { TooltipComponent } from '../../tooltip/tooltip.component';
         MatButtonModule,
         MatBadgeModule,
         TooltipComponent,
-        NgxMatEntityFormComponent
+        NgxMatEntityFormComponent,
+        FormsModule
     ]
 })
 export class NgxMatEntityCreateDialogComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit {
