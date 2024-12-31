@@ -24,7 +24,7 @@
     </div>
 </div>
 
-<form>
+<form (ngSubmit)="edit()">
     <mat-dialog-content>
         <ngx-mat-entity-form [hideOmitForEdit]="true" [isEntityReadOnly]="isEntityReadOnly" [entity]="data.entity" (formChange)="checkEntity()">
         </ngx-mat-entity-form>
@@ -37,7 +37,6 @@
                 [disabled]="isEntityReadOnly || !isEntityValid || !isEntityDirty"
                 [matBadge]="validationErrors.length > 0 ? validationErrors.length : changes.length"
                 [matBadgeHidden]="!validationErrors.length && !changes.length"
-                (click)="edit()"
             >
                 {{data.editData.confirmButtonLabel}}
             </button>

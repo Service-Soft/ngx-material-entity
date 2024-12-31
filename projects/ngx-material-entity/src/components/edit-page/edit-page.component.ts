@@ -1,6 +1,7 @@
 import { CommonModule, Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, EnvironmentInjector, HostListener, Inject, InjectionToken, OnInit, Renderer2, runInInjectionContext } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -89,7 +90,8 @@ export const NGX_EDIT_DATA: InjectionToken<PageEditData<any>> = new InjectionTok
         MatBadgeModule,
         TooltipComponent,
         NgxMatEntityFormComponent,
-        FaIconComponent
+        FaIconComponent,
+        FormsModule
     ]
 })
 export class NgxMatEntityEditPageComponent<EntityType extends BaseEntityType<EntityType>> implements OnInit, UnsavedChangesPage {
