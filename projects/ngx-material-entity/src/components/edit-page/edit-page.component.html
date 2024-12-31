@@ -52,7 +52,7 @@
         <!----------->
         <!-- Input -->
         <!----------->
-        <form>
+        <form (ngSubmit)="edit()">
             <ngx-mat-entity-form [hideOmitForEdit]="true" [isEntityReadOnly]="isEntityReadOnly" [entity]="entity" (selectedTabChange)="checkOffset()" (formChange)="checkEntity()">
             </ngx-mat-entity-form>
     
@@ -63,7 +63,6 @@
                         [disabled]="isEntityReadOnly || !isEntityValid || !isEntityDirty"
                         [matBadge]="validationErrors.length > 0 ? validationErrors.length : changes.length"
                         [matBadgeHidden]="!validationErrors.length && !changes.length"
-                        (click)="edit()"
                     >
                         {{data.editData.confirmButtonLabel}}
                     </button>

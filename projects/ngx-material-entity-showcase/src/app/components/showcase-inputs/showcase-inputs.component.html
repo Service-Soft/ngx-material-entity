@@ -1,20 +1,21 @@
- 
 <div class="container my-8 mx-auto">
     <form class="grid grid-cols-12 gap-x-8">
-        @for (key of keys; track key) {
-            <ngx-mat-entity-input
-                class="col-span-6"
-                [entity]="testEntity"
-                [propertyKey]="key"
-                [hideOmitForCreate]="true"
-                [isReadOnly]="isReadOnly"
-            >
-            </ngx-mat-entity-input>
-        }
-        <div class="flex items-center justify-between mt-4 col-span-12 gap-4">
+        <div class="flex items-center justify-between my-4 mb-8 col-span-12 gap-4">
             <button type="submit" class="flex-1" mat-raised-button>dirty</button>
             <button type="button" class="flex-1" mat-raised-button (click)="toggleInputValues()">Toggle Input Values</button>
             <button type="button" class="flex-1" mat-raised-button (click)="toggleReadOnly()">Toggle Read Only</button>
         </div>
+        @if (loaded) {
+            @for (key of keys; track key) {
+                <ngx-mat-entity-input
+                    class="col-span-6"
+                    [entity]="testEntity"
+                    [propertyKey]="key"
+                    [hideOmitForCreate]="true"
+                    [isReadOnly]="isReadOnly"
+                >
+                </ngx-mat-entity-input>
+            }
+        }
     </form>
 </div>

@@ -553,7 +553,7 @@
         <div>{{addArrayItemDialogData.title}}</div>
     </div>
 
-    <form>
+    <form (ngSubmit)="addArrayItem()">
         <mat-dialog-content>
             @if (addArrayItemFormContext) {
                 <ng-container *ngTemplateOutlet="form; context: addArrayItemFormContext"></ng-container>
@@ -566,7 +566,6 @@
                     [disabled]="!isArrayItemValid"
                     [matBadge]="arrayItemValidationErrors.length"
                     [matBadgeHidden]="!arrayItemValidationErrors.length"
-                    (click)="addArrayItem()"
                 >
                     {{addArrayItemDialogData.createButtonLabel}}
                 </button>
@@ -590,7 +589,7 @@
         <div>{{editArrayItemDialogData.title(arrayItemPriorChanges)}}</div>
     </div>
     
-    <form>
+    <form (ngSubmit)="saveArrayItem()">
         <mat-dialog-content>
             @if (editArrayItemFormContext) {
                 <ng-container *ngTemplateOutlet="form; context: editArrayItemFormContext"></ng-container>
@@ -604,7 +603,6 @@
                     [disabled]="internalIsReadOnly || !isArrayItemValid || !isArrayItemDirty"
                     [matBadge]="arrayItemValidationErrors.length > 0 ? arrayItemValidationErrors.length : arrayItemChanges.length"
                     [matBadgeHidden]="!arrayItemValidationErrors.length && !arrayItemChanges.length"
-                    (click)="saveArrayItem()"
                 >
                     {{editArrayItemDialogData.confirmButtonLabel}}
                 </button>
@@ -627,7 +625,7 @@
         <div>{{metadataHasMany.tableData.createData.title}}</div>
     </div>
     
-    <form>
+    <form (ngSubmit)="dialogCreateHasMany()">
         <mat-dialog-content>
             @if (hasManyCreateFormContext) {
                 <ng-container *ngTemplateOutlet="form; context: hasManyCreateFormContext"></ng-container>
@@ -640,7 +638,6 @@
                     [disabled]="!isHasManyEntityValid"
                     [matBadge]="hasManyValidationErrors.length"
                     [matBadgeHidden]="!hasManyValidationErrors.length"
-                    (click)="dialogCreateHasMany()"
                 >
                     {{metadataHasMany.tableData.createData.createButtonLabel}}
                 </button>
@@ -685,7 +682,7 @@
         </div>
     </div>
     
-    <form>
+    <form (ngSubmit)="dialogEditHasMany()">
         <mat-dialog-content>
             @if (hasManyEditFormContext) {
                 <ng-container *ngTemplateOutlet="form; context: hasManyEditFormContext"></ng-container>
@@ -699,7 +696,6 @@
                     [disabled]="internalIsReadOnly || !isHasManyEntityValid || !isHasManyEntityDirty"
                     [matBadge]="hasManyValidationErrors.length > 0 ? hasManyValidationErrors.length : hasManyChanges.length"
                     [matBadgeHidden]="!hasManyValidationErrors.length && !hasManyChanges.length"
-                    (click)="dialogEditHasMany()"
                 >
                     {{metadataHasMany.tableData.editData.confirmButtonLabel}}
                 </button>
