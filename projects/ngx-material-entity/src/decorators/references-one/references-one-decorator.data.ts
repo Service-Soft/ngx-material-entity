@@ -24,5 +24,13 @@ export interface ReferencesOneDecoratorConfig<EntityType extends BaseEntityType<
     /**
      * The class of the entity that gets referenced.
      */
-    EntityClass: EntityClassNewable<EntityType>
+    EntityClass: EntityClassNewable<EntityType>,
+    /**
+     * Whether or not to only show the dropdown, instead of all data of the selected entity in read only.
+     */
+    dropdownOnly?: boolean,
+    /**
+     * Some properties of the objects entity class that should be omitted.
+     */
+    omit?: (keyof EntityType)[]
 }

@@ -209,6 +209,7 @@ const testEntityData: TestEntityWithoutCustomPropertiesInterface = {
     randomValue: '42',
     notDecoratedValue: '42',
     referencesOneId: '1',
+    referencesOneIdDropdownOnly: '1',
     hasManyValues: [
         {
             id: '1',
