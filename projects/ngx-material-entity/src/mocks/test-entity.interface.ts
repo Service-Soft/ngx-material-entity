@@ -193,6 +193,7 @@ export interface TestEntityWithoutCustomPropertiesInterface {
     randomValue: string,
     referencesManyIds: string[],
     referencesOneId: string,
+    referencesOneIdDropdownOnly: string,
     hasManyValues: HasManyEntity[],
     notDecoratedValue: string
 }
@@ -804,6 +805,18 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
     })
     referencesOneId!: string;
 
+    @referencesOne({
+        displayName: 'References One Value Dropdown Only',
+        EntityClass: ReferencedEntity,
+        // eslint-disable-next-line typescript/require-await
+        getReferencedEntities: async () => [{ stringValue: 'string value', id: '1' }],
+        getDropdownValues: (entities: ReferencedEntity[]) => entities.map(e => {
+            return { displayName: `Referenced Entity #${e.id}`, value: e.id };
+        }),
+        dropdownOnly: true
+    })
+    referencesOneIdDropdownOnly!: string;
+
     @referencesMany({
         displayName: 'Referenced Entities',
         getReferencedEntities: getReferencedEntities,
@@ -1068,6 +1081,7 @@ const testEntityData: TestEntityWithoutCustomProperties = {
     referencesManyIds: ['1'],
     randomValue: '42',
     referencesOneId: '1',
+    referencesOneIdDropdownOnly: '1',
     hasManyValues: [
         {
             id: '1',
