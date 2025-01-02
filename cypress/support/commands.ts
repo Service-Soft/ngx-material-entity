@@ -158,6 +158,9 @@ Cypress.Commands.add(
         cy.getInputByLabel('References One Value').click();
         cy.get('mat-option').contains('Referenced Entity #1').click();
 
+        cy.getInputByLabel('References One Value Dropdown Only').click();
+        cy.get('mat-option').contains('Referenced Entity #1').click();
+
         cy.getInputByLabel('Select').click();
         cy.get('mat-option').contains('#1: String Value').click();
         cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(4).click();

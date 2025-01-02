@@ -497,7 +497,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      */
     referencesOneName!: string;
     /**
-     * The form context for an object property.
+     * The form context for an references one property.
      */
     referencesOneFormContext!: TemplateContext<FormContext<EntityType>>;
 
@@ -928,7 +928,18 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             this.referencesOneAllReferencedEntities
         );
         const referencesOneObject: EntityType = new this.metadataReferencesOne.EntityClass(foundEntity);
-        const referencesOnePropertyTabs: EntityTab<EntityType>[] = EntityUtilities.getEntityTabs(referencesOneObject, this.injector);
+        const referencesOnePropertyTabs: EntityTab<EntityType>[] = EntityUtilities.getEntityTabs(
+            referencesOneObject,
+            this.injector,
+            undefined,
+            undefined,
+            this.metadataReferencesOne.omit
+        );
+
+        if (this.metadataReferencesOne.dropdownOnly) {
+            this.emitChange();
+            return;
+        }
 
         this.referencesOneFormContext = {
             $implicit: {
@@ -941,7 +952,6 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 validEmpty: () => !this.metadata.required(this.entity)
             }
         };
-
         this.emitChange();
     }
 

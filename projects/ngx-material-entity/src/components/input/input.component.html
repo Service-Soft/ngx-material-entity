@@ -1,5 +1,4 @@
 <!-- eslint-disable angular/no-call-expression -->
- 
 @if(!(hideOmitForCreate && metadata.omitForCreate) && !(hideOmitForEdit && metadata.omitForUpdate)) {
     @switch (type) {
         <!-------------------------------------------->
@@ -268,7 +267,7 @@
         <!---------------Object Dropdown-------------->
         <!-------------------------------------------->
         @case (DecoratorTypes.OBJECT_DROPDOWN) {
-            <mat-form-field class="object-dropdown">
+            <mat-form-field class="w-full">
                 <mat-label>{{metadata.displayName}}</mat-label>
                 <mat-select #model="ngModel"
                     [name]="objectDropdownName"
@@ -301,7 +300,7 @@
         <!-------------- references one -------------->
         <!-------------------------------------------->
         @case (DecoratorTypes.REFERENCES_ONE) {
-            <mat-form-field>
+            <mat-form-field [class.w-full]="metadataReferencesOne.dropdownOnly">
                 <mat-label>{{metadata.displayName}}</mat-label>
                 <mat-select #inputModel="ngModel"
                     [name]="referencesOneName"
