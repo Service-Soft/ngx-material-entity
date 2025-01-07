@@ -759,10 +759,10 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             this.metadata as EntityArrayDecoratorConfigInternal<EntityType>,
             this.globalConfig
         );
-        ReflectUtilities.defineMetadata('metadata', this.metadata, this.entity, this.propertyKey);
         this.metadataEntityArray = this.metadata as EntityArrayDecoratorConfigInternal<EntityType>;
         if (this.entity[this.propertyKey] == undefined) {
             (this.entity[this.propertyKey] as EntityType[]) = [];
+            ReflectUtilities.defineMetadata('metadata', this.metadata, this.entity, this.propertyKey);
         }
         if (!this.metadataEntityArray.createInline && !this.metadataEntityArray.createDialogData) {
             this.metadataEntityArray.createDialogData = {
@@ -818,18 +818,6 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
             .withDefault('title', this.globalConfig.addArrayItemTitle)
             .getResult();
 
-        this.editArrayItemFormContext = {
-            $implicit: {
-                entity: this.arrayItem,
-                tabs: EntityUtilities.getEntityTabs(this.arrayItem, this.injector, true),
-                isReadOnly: (property, key) => this.isPropertyReadOnly(property, key),
-                inputChangeEvent: () => {
-                    void this.checkArrayItem();
-                    this.editArrayItemFormContext.$implicit.tabs = EntityUtilities.getEntityTabs(this.arrayItem, this.injector, true);
-                },
-                hideOmitForEdit: true
-            }
-        };
         this.editArrayItemDialogData = this.metadataEntityArray.editDialogData;
     }
 
@@ -1419,6 +1407,21 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     async addEntity(): Promise<void> {
         await this.checkIsArrayItemValid();
         if (!this.metadataEntityArray.createInline) {
+            this.arrayItem = new this.metadataEntityArray.EntityClass();
+            this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
+            EntityUtilities.setDefaultValues(this.arrayItem);
+
+            this.addArrayItemFormContext = {
+                $implicit: {
+                    entity: this.arrayItem,
+                    tabs: EntityUtilities.getEntityTabs(this.arrayItem, this.injector, true),
+                    inputChangeEvent: () => {
+                        void this.checkIsArrayItemValid();
+                        this.addArrayItemFormContext.$implicit.tabs = EntityUtilities.getEntityTabs(this.arrayItem, this.injector, true);
+                    },
+                    hideOmitForCreate: true
+                }
+            };
             this.addArrayItemDialogRef = this.dialog.open(
                 this.addArrayItemDialog,
                 {
@@ -1484,6 +1487,19 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         this.indexOfEditedArrayItem = this.entityArrayTableContext.$implicit.dataSource.data.indexOf(entity);
         this.arrayItem = new this.metadataEntityArray.EntityClass(entity);
         this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
+
+        this.editArrayItemFormContext = {
+            $implicit: {
+                entity: this.arrayItem,
+                tabs: EntityUtilities.getEntityTabs(this.arrayItem, this.injector, true),
+                isReadOnly: (property, key) => this.isPropertyReadOnly(property, key),
+                inputChangeEvent: () => {
+                    void this.checkArrayItem();
+                    this.editArrayItemFormContext.$implicit.tabs = EntityUtilities.getEntityTabs(this.arrayItem, this.injector, true);
+                },
+                hideOmitForEdit: true
+            }
+        };
 
         await this.checkArrayItem();
 
