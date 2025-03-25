@@ -341,8 +341,13 @@
                     <div class="array-headline">
                         <b>{{metadataEntityArray.displayName}}</b>
                     </div>
-                    @if (metadataEntityArray.createInline && !internalIsReadOnly && addArrayItemFormContext) {
-                        <ng-container *ngTemplateOutlet="form; context: addArrayItemFormContext"></ng-container>
+                    @if (metadataEntityArray.createInline && !internalIsReadOnly) {
+                        @if (addArrayItemFormContext) {
+                            <ng-container *ngTemplateOutlet="form; context: addArrayItemFormContext"></ng-container>
+                        }
+                        @else if (addArrayItemFormContext2) {
+                            <ng-container *ngTemplateOutlet="form; context: addArrayItemFormContext2"></ng-container>
+                        }
                     }
                     @if (!internalIsReadOnly && entityArrayTableContext) {
                         <div class="buttons">
@@ -370,7 +375,7 @@
         @case (DecoratorTypes.HAS_MANY) {
             <div class="hasMany">
                 <h2 class="title">{{metadataHasMany.tableData.baseData.title}}</h2>
-                <div class="grid grid-cols-12" style="column-gap: 24px;">
+                <div class="grid grid-cols-12 gap-x-6">
                     <mat-form-field class="lg:col-span-8 md:col-span-6 col-span-12">
                         <mat-label>{{metadataHasMany.tableData.baseData.searchLabel}}</mat-label>
                         <input matInput (keyup)="applyHasManyFilter($event)">
@@ -488,13 +493,13 @@
 <!---------------------------Form-------------------------->
 <!--------------------------------------------------------->
 <ng-template #form let-context>
-     <!-- eslint-disable angular/no-call-expression -->
+    <!-- eslint-disable angular/no-call-expression -->
     @if (context.tabs.length > 1) {
         <mat-tab-group preserveContent>
             @for (tab of context.tabs; track $index) {
                 <mat-tab [label]="tab.tabName">
                     @for (row of tab.rows; track $index) {
-                        <div class="grid grid-cols-12" style="column-gap: 24px;">
+                        <div class="grid grid-cols-12 gap-x-6">
                             @for (key of row.keys; track key) {
                                 <ngx-mat-entity-input
                                     [entity]="context.entity"
@@ -523,7 +528,7 @@
         }
         @else {
             @for (row of context.tabs[0].rows; track $index) {
-                <div class="grid grid-cols-12" style="column-gap: 24px;">
+                <div class="grid grid-cols-12 gap-x-6">
                     @for (key of row.keys; track key) {
                         <ngx-mat-entity-input
                             [entity]="context.entity"
