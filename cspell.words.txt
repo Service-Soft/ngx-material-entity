@@ -10,3 +10,11 @@ maxlength
 cyclomatic
 ngsrc
 localstorage
+fussball
+Lülfstraße
+Suderwich
+Hörster
+GUENTER_HOERSTER
+TENNIQUOITS
+CYCLEBALL
+Rehasport

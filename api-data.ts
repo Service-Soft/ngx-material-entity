@@ -290,14 +290,125 @@ const addressData: Address = {
     city: 'Example City'
 };
 
+interface Member {
+    id: string,
+    name: string,
+    email: string | undefined,
+    phone: string | undefined
+}
+enum Weekday {
+    MONDAY = 'Montag',
+    TUESDAY = 'Dienstag',
+    WEDNESDAY = 'Mittwoch',
+    THURSDAY = 'Donnerstag',
+    FRIDAY = 'Freitag',
+    SATURDAY = 'Samstag',
+    SUNDAY = 'Sonntag'
+}
+interface Time {
+    hours: number,
+    minutes: number
+}
+interface SportTime {
+    day: Weekday,
+    from: Time,
+    until: Time,
+    location: string
+
+}
+interface SportTimes {
+    times: SportTime[],
+    fromMonth: number,
+    untilMonth: number
+}
+interface Team {
+    id: string,
+    name: string,
+    sportId: string,
+    times: SportTimes[],
+    contactId: string,
+    contact: Member,
+    playerIds: string[],
+    players: Member[],
+    league: string | undefined,
+    handballNetTeamId: string | undefined,
+    myTischtennisUrl: string | undefined,
+    fussballDeTableId: string | undefined,
+    fussballDeMatchScheduleId: string | undefined
+}
+interface ContactData {
+    email: string,
+    phone: string | undefined
+}
+interface CalendarConfiguration {
+    id: string,
+    name: string,
+    type: 'GOOGLE',
+    googleCalendarId: string | undefined,
+    sportId: string
+}
+interface Sport {
+    id: string,
+    name: string,
+    description: string,
+    teams: Team[],
+    calendars: CalendarConfiguration[],
+    'calendar-configurations': CalendarConfiguration[],
+    href: string | undefined,
+    contact: ContactData
+}
+
+const memberData: Member = {
+    id: '1',
+    email: 'member@test.com',
+    name: 'Member',
+    phone: undefined
+};
+const teamData: Team = {
+    id: '1',
+    name: 'U18',
+    contactId: memberData.id,
+    contact: memberData,
+    players: [],
+    playerIds: [],
+    fussballDeMatchScheduleId: undefined,
+    fussballDeTableId: undefined,
+    handballNetTeamId: undefined,
+    league: undefined,
+    myTischtennisUrl: undefined,
+    sportId: '1',
+    times: []
+};
+const sportData: Sport = {
+    id: '1',
+    calendars: [],
+    'calendar-configurations': [],
+    contact: {
+        email: 'info@test.com',
+        phone: undefined
+    },
+    description: 'Lorem ipsum',
+    href: undefined,
+    name: 'Soccer',
+    teams: [teamData]
+};
+
 export interface ApiData {
     testEntities: TestEntityWithoutCustomPropertiesInterface[],
     hasManyEntities: HasManyEntity[],
+    teams: Team[],
+    'calendar-configurations': CalendarConfiguration[],
     persons: Person[],
-    addresses: Address[]
+    addresses: Address[],
+    sports: Sport[],
+    members: Member[]
 }
 export const apiData: ApiData = {
     testEntities: [testEntityData],
+    sports: [sportData],
+    teams: [teamData],
+    'calendar-configurations': [],
+    members: [memberData],
     hasManyEntities: [
         {
             id: '1',

@@ -6,6 +6,8 @@ import { NavElementTypes, NavUtilities, NavbarRow } from 'ngx-material-navigatio
 
 import { TestEntity } from '../../../ngx-material-entity/src/mocks/test-entity.mock';
 import { TestEntityService } from '../services/test-entity.service';
+import { Sport } from './components/playground/models/sport.model';
+import { SportService } from './components/playground/services/sport.service';
 
 export const navbarRows: NavbarRow[] = [
     {
@@ -39,6 +41,16 @@ export const navbarRows: NavbarRow[] = [
                     path: 'sandbox',
                     loadComponent: () => import('./components/sandbox/sandbox.component').then(m => m.SandboxComponent),
                     canDeactivate: [UnsavedChangesGuard]
+                },
+                collapse: 'md'
+            },
+            {
+                type: NavElementTypes.INTERNAL_LINK,
+                name: 'Playground',
+                route: {
+                    path: 'sports',
+                    title: 'Sportarten | Admin',
+                    loadComponent: () => import('./components/playground/playground.component').then(m => m.PlaygroundComponent)
                 },
                 collapse: 'md'
             },
@@ -178,4 +190,30 @@ const createTestEntityRoute: CreateDataRoute = {
     ]
 };
 
-export const routes: Routes = NavUtilities.getAngularRoutes(navbarRows, [], [inputRoute, editTestEntityRoute, createTestEntityRoute]);
+const editSportData: PageEditData<Sport> = {
+    editData: {
+        title: (entity: Sport) => entity.name
+    },
+    allowDelete: () => false
+};
+
+const editSportRoute: EditDataRoute = {
+    ...defaultEditDataRoute,
+    path: 'sports/:id',
+    providers: [
+        {
+            provide: NGX_EDIT_DATA_ENTITY_SERVICE,
+            useExisting: SportService
+        },
+        {
+            provide: NGX_EDIT_DATA_ENTITY,
+            useValue: Sport
+        },
+        {
+            provide: NGX_EDIT_DATA,
+            useValue: editSportData
+        }
+    ]
+};
+
+export const routes: Routes = NavUtilities.getAngularRoutes(navbarRows, [], [inputRoute, editTestEntityRoute, createTestEntityRoute, editSportRoute]);
