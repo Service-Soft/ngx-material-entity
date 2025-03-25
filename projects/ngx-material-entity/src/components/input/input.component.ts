@@ -378,6 +378,8 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
      * The form context for adding an array item.
      */
     addArrayItemFormContext!: TemplateContext<FormContext<EntityType>>;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    addArrayItemFormContext2!: TemplateContext<FormContext<EntityType>>;
     /**
      * The form context for editing an array item.
      */
@@ -813,6 +815,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 hideOmitForCreate: true
             }
         };
+        this.addArrayItemFormContext2 = LodashUtilities.cloneDeep(this.addArrayItemFormContext);
         this.addArrayItemDialogData = new CreateDataBuilder(this.globalConfig, this.metadataEntityArray.createDialogData)
             .withDefault('createButtonLabel', this.globalConfig.addLabel)
             .withDefault('title', this.globalConfig.addArrayItemTitle)
@@ -1422,6 +1425,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                     hideOmitForCreate: true
                 }
             };
+            this.addArrayItemFormContext2 = LodashUtilities.cloneDeep(this.addArrayItemFormContext);
             this.addArrayItemDialogRef = this.dialog.open(
                 this.addArrayItemDialog,
                 {
@@ -1444,12 +1448,37 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 }
             }
         }
+
         (this.entity[this.propertyKey] as EntityType[]).push(LodashUtilities.cloneDeep(this.arrayItem));
         this.entityArrayTableContext.$implicit.dataSource.data = (this.entity[this.propertyKey] as EntityType[]);
-        EntityUtilities.resetChangesOnEntity(this.arrayItem, this.arrayItemPriorChanges);
+
+        this.addArrayItemFormContext = undefined as unknown as TemplateContext<FormContext<EntityType>>;
+        this.arrayItem = new this.metadataEntityArray.EntityClass();
+        this.arrayItemPriorChanges = LodashUtilities.cloneDeep(this.arrayItem);
         EntityUtilities.setDefaultValues(this.arrayItem);
-        await this.checkIsArrayItemValid();
-        this.emitChange();
+
+        setTimeout(
+            // eslint-disable-next-line typescript/no-misused-promises
+            async () => {
+                this.addArrayItemFormContext = {
+                    $implicit: {
+                        entity: this.arrayItem,
+                        tabs: EntityUtilities.getEntityTabs(this.arrayItem, this.injector, true),
+                        inputChangeEvent: () => {
+                            void this.checkIsArrayItemValid();
+                            // eslint-disable-next-line stylistic/max-len
+                            this.addArrayItemFormContext.$implicit.tabs = EntityUtilities.getEntityTabs(this.arrayItem, this.injector, true);
+                        },
+                        hideOmitForCreate: true
+                    }
+                };
+
+                await this.checkIsArrayItemValid();
+
+                this.emitChange();
+            },
+            1
+        );
     }
 
     /**
