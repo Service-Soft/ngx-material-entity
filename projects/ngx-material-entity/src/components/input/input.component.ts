@@ -808,8 +808,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 isLoading: false,
                 shouldShowMissingError: this.metadataEntityArray.required(this.entity),
                 selection: new SelectionModel<EntityType>(true, []),
-                // eslint-disable-next-line typescript/no-misused-promises
-                clickCell: (entity, dCol) => this.editArrayItem(entity, dCol)
+                clickCell: (entity, dCol) => void this.editArrayItem(entity, dCol)
             }
         };
         this.entityArrayTableContext.$implicit.dataSource.data = this.entity[this.propertyKey] as EntityType[];
@@ -829,7 +828,15 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 hideOmitForCreate: true
             }
         };
-        this.addArrayItemFormContext2 = LodashUtilities.cloneDeep(this.addArrayItemFormContext);
+        this.addArrayItemFormContext2 = {
+            $implicit: {
+                entity: this.arrayItem,
+                tabs: EntityUtilities.getEntityTabs(this.arrayItem, this.injector, true),
+                inputChangeEvent: () => {},
+                hideOmitForCreate: true,
+                isReadOnly: () => true
+            }
+        };
         this.addArrayItemDialogData = new CreateDataBuilder(this.globalConfig, this.metadataEntityArray.createDialogData)
             .withDefault('createButtonLabel', this.globalConfig.addLabel)
             .withDefault('title', this.globalConfig.addArrayItemTitle)
@@ -1439,7 +1446,6 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                     hideOmitForCreate: true
                 }
             };
-            this.addArrayItemFormContext2 = LodashUtilities.cloneDeep(this.addArrayItemFormContext);
             this.addArrayItemDialogRef = this.dialog.open(
                 this.addArrayItemDialog,
                 {
@@ -1491,7 +1497,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
 
                 this.emitChange();
             },
-            1
+            150
         );
     }
 
