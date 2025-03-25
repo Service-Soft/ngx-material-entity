@@ -280,35 +280,32 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
     readonly inputChangeEvent: EventEmitter<void> = new EventEmitter<void>();
 
     /**
-     * A setter for the has many sort.
+     * A setter for the has many and array sort.
      * Is needed because the sort is inside a switch case,
      * which means that at ngOnInit it can't be initialized.
      */
     @ViewChild(MatSort)
     private set sort(sort: MatSort) {
-        // eslint-disable-next-line typescript/strict-boolean-expressions
-        if (this.hasManyTableContext) {
+        if (this.hasManyTableContext != undefined) {
             this.hasManyTableContext.$implicit.dataSource.sort = this.hasManyTableContext.$implicit.dataSource.sort ?? sort;
         }
-        // eslint-disable-next-line typescript/strict-boolean-expressions
-        if (this.entityArrayTableContext) {
+        if (this.entityArrayTableContext != undefined) {
             this.entityArrayTableContext.$implicit.dataSource.sort = this.entityArrayTableContext.$implicit.dataSource.sort ?? sort;
         }
     }
 
     /**
-     * A setter for the has many sort.
-     * Is needed because the sort is inside a switch case,
+     * A setter for the has many and array paginator.
+     * Is needed because the paginator is inside a switch case,
      * which means that at ngOnInit it can't be initialized.
      */
     @ViewChild(MatPaginator)
     private set paginator(paginator: MatPaginator) {
-        // eslint-disable-next-line typescript/strict-boolean-expressions
-        if (this.hasManyTableContext) {
+        if (this.hasManyTableContext != undefined) {
             this.hasManyTableContext.$implicit.dataSource.paginator = this.hasManyTableContext.$implicit.dataSource.paginator ?? paginator;
         }
-        // eslint-disable-next-line typescript/strict-boolean-expressions
-        if (this.entityArrayTableContext) {
+        if (this.entityArrayTableContext != undefined) {
+            // eslint-disable-next-line stylistic/max-len
             this.entityArrayTableContext.$implicit.dataSource.paginator = this.entityArrayTableContext.$implicit.dataSource.paginator ?? paginator;
         }
     }
