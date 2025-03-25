@@ -10,7 +10,7 @@ import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dial
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -293,6 +293,23 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         // eslint-disable-next-line typescript/strict-boolean-expressions
         if (this.entityArrayTableContext) {
             this.entityArrayTableContext.$implicit.dataSource.sort = this.entityArrayTableContext.$implicit.dataSource.sort ?? sort;
+        }
+    }
+
+    /**
+     * A setter for the has many sort.
+     * Is needed because the sort is inside a switch case,
+     * which means that at ngOnInit it can't be initialized.
+     */
+    @ViewChild(MatPaginator)
+    private set paginator(paginator: MatPaginator) {
+        // eslint-disable-next-line typescript/strict-boolean-expressions
+        if (this.hasManyTableContext) {
+            this.hasManyTableContext.$implicit.dataSource.paginator = this.hasManyTableContext.$implicit.dataSource.paginator ?? paginator;
+        }
+        // eslint-disable-next-line typescript/strict-boolean-expressions
+        if (this.entityArrayTableContext) {
+            this.entityArrayTableContext.$implicit.dataSource.paginator = this.entityArrayTableContext.$implicit.dataSource.paginator ?? paginator;
         }
     }
 
@@ -792,7 +809,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 displayedColumns: this.internalIsReadOnly ? givenDisplayColumns : ['select'].concat(givenDisplayColumns),
                 dataSource: new MatTableDataSource(),
                 isLoading: false,
-                shouldShowMissingError: true,
+                shouldShowMissingError: this.metadataEntityArray.required(this.entity),
                 selection: new SelectionModel<EntityType>(true, []),
                 // eslint-disable-next-line typescript/no-misused-promises
                 clickCell: (entity, dCol) => this.editArrayItem(entity, dCol)

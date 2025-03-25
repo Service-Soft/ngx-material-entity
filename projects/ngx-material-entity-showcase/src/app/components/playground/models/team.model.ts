@@ -37,7 +37,8 @@ export class Team extends BaseEntity {
                 value: t => `${monthNames[t.fromMonth]} - ${monthNames[t.untilMonth]}`
             }
         ],
-        createInline: false
+        createInline: false,
+        required: false
     })
     times: SportTimes[];
 
