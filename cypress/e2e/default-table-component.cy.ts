@@ -1,3 +1,4 @@
+/* eslint-disable cspell/spellchecker */
 /* eslint-disable stylistic/newline-per-chained-call */
 describe('default table', () => {
     before('Reset Api', () => {

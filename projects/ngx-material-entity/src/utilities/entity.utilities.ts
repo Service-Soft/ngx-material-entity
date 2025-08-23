@@ -131,19 +131,20 @@ export abstract class EntityUtilities {
             const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = this.getPropertyMetadata(entity, key);
             const type: DecoratorTypes | undefined = this.getPropertyType(entity, key);
             if (!await this.isEqual(entity[key], entityPriorChanges[key], metadata, type, http)) {
+                // eslint-disable-next-line typescript/switch-exhaustiveness-check
                 switch (type) {
                     case DecoratorTypes.OBJECT: {
-                        // eslint-disable-next-line typescript/no-explicit-any
-                        (res[key] as object) = LodashUtilities.omit(entity[key] as any, this.getOmitForCreate(entity[key]));
+                        (res[key] as object) = this.getWithoutOmitCreateValues(entity[key]);
                         break;
                     }
                     case DecoratorTypes.ARRAY: {
                         (res[key] as object[]) = (entity[key] as object[])
-                            .map(value => LodashUtilities.omit(value, this.getOmitForCreate(value)));
+                            .map(value => this.getWithoutOmitCreateValues(value));
                         break;
                     }
                     default: {
-                        res[key] = entity[key];
+                        // eslint-disable-next-line unicorn/no-null
+                        res[key] = entity[key] ?? null as unknown as undefined;
                         break;
                     }
                 }
@@ -240,6 +241,7 @@ export abstract class EntityUtilities {
         for (const key in target) {
             const type: DecoratorTypes | undefined = this.getPropertyType(target, key);
             let value: unknown = entity ? ReflectUtilities.get(entity, key) : undefined;
+            // eslint-disable-next-line typescript/switch-exhaustiveness-check
             switch (type) {
                 case DecoratorTypes.OBJECT: {
                     // eslint-disable-next-line typescript/no-explicit-any
@@ -355,6 +357,7 @@ export abstract class EntityUtilities {
         ) {
             return true;
         }
+        // eslint-disable-next-line typescript/switch-exhaustiveness-check
         switch (type) {
             case DecoratorTypes.DATE_RANGE: {
                 return this.isEqualDateRange(
@@ -729,14 +732,14 @@ export abstract class EntityUtilities {
     private static getTabName<EntityType extends BaseEntityType<EntityType>>(entity: EntityType, tab: number): string {
         const providedTabName: string | undefined = ReflectUtilities.ownKeys(entity)
             .map(k => this.getPropertyMetadata(entity, k))
-            .find(m => m?.position.tab === tab && m.position.tabName)?.position.tabName;
+            .find(m => m?.position.tab === tab && m.position.tabName != undefined)?.position.tabName;
         return providedTabName ?? `Tab ${tab}`;
     }
 
     private static getFirstTabName<EntityType extends BaseEntityType<EntityType>>(entity: EntityType): string {
         const providedTabName: string | undefined = ReflectUtilities.ownKeys(entity)
             .map(k => this.getPropertyMetadata(entity, k))
-            .find(m => m?.position.tabName && m.position.tab === -1)?.position.tabName;
+            .find(m => m?.position.tabName != undefined && m.position.tab === -1)?.position.tabName;
         return providedTabName ?? 'Tab 1';
     }
 

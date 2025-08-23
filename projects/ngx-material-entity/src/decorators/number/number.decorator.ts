@@ -18,7 +18,7 @@ export function number(
         case 'slider': {
             return baseProperty(new SliderNumberDecoratorConfigInternal(metadata), DecoratorTypes.NUMBER_SLIDER);
         }
-        default: {
+        case 'line': {
             return baseProperty(new DefaultNumberDecoratorConfigInternal(metadata), DecoratorTypes.NUMBER);
         }
     }

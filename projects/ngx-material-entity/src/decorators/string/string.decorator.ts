@@ -30,7 +30,7 @@ export function string(
                 [EntityUtilities.CONFIRM_PASSWORD_KEY]
             );
         }
-        default: {
+        case 'line': {
             return baseProperty(new DefaultStringDecoratorConfigInternal(metadata), DecoratorTypes.STRING);
         }
     }

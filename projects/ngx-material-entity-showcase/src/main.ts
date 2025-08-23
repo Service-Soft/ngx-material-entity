@@ -3,7 +3,6 @@ import { EnvironmentInjector, Injectable, enableProdMode } from '@angular/core';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDateFormats } from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { EntityService, NGX_GLOBAL_DEFAULT_VALUES, NgxGlobalDefaultValues } from 'ngx-material-entity';
 
@@ -58,7 +57,6 @@ bootstrapApplication(
     {
         providers: [
             provideRouter(routes),
-            provideAnimations(),
             provideHttpClient(),
             {
                 provide: DateAdapter,
