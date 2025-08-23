@@ -1,6 +1,6 @@
 {
     "name": "ngx-material-entity",
-    "version": "18.2.6",
+    "version": "20.0.0",
     "license": "MIT",
     "keywords": [
         "angular",
@@ -9,20 +9,20 @@
         "entity"
     ],
     "peerDependencies": {
-        "@angular/animations": "18",
-        "@angular/cdk": "18",
-        "@angular/common": "18",
-        "@angular/core": "18",
-        "@angular/forms": "18",
-        "@angular/material": "18",
+        "@angular/animations": "20",
+        "@angular/cdk": "20",
+        "@angular/common": "20",
+        "@angular/core": "20",
+        "@angular/forms": "20",
+        "@angular/material": "20",
         "js2xmlparser": "^5.0.0",
         "jszip": "^3.10.1",
         "lodash": "4",
         "uuid": "9",
-        "@fortawesome/angular-fontawesome": "^0.15",
-        "@fortawesome/free-solid-svg-icons": "^6"
+        "@fortawesome/angular-fontawesome": "^3",
+        "@fortawesome/free-solid-svg-icons": "^7"
     },
     "dependencies": {
-        "tslib": "^2.6.2"
+        "tslib": "^2.8.1"
     }
 }

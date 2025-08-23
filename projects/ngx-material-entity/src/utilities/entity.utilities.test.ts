@@ -128,6 +128,7 @@ describe('getWithoutOmitUpdateValues', () => {
             rowValue2: 'test',
             id: 'id'
         });
+        tE.optionalValue = undefined;
         const res: Partial<TestEntityWithoutCustomProperties> = await EntityUtilities.getWithoutOmitUpdateValues(
             tE,
             tEPriorChanges,
@@ -135,6 +136,8 @@ describe('getWithoutOmitUpdateValues', () => {
             mockInjector
         );
         expect(res).toEqual({
+            // eslint-disable-next-line unicorn/no-null
+            optionalValue: null,
             objectValue: {
                 maxLengthStringValue: 'test',
                 rowValue1: 'test',

@@ -95,7 +95,7 @@ Cypress.Commands.add(
         cy.get('button').filter((i, elt) => elt.innerText === 'Custom Add').eq(0).click();
         cy.getInputByLabel('Array Object Value', 1).click().type('arrayObjectValueWithConfig');
         cy.get('.mdc-tab__text-label').eq(7).click({ force: true });
-        cy.getInputByLabel('Second Tab Value', 1).click().type('secondTabValue');
+        cy.getInputByLabel('Second Tab Value').click().type('secondTabValue');
         cy.get('button').filter((i, elt) => elt.innerText === 'Add').eq(5).click();
 
         cy.getInputByLabel('Date Array Value').click().type('1/1/2022');

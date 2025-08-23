@@ -64,6 +64,7 @@ export class StringDropdownInputComponent<EntityType extends BaseEntityType<Enti
      */
     filterDropdownValues(searchInput: string): void {
         const filter: string = searchInput.toLowerCase();
+        // eslint-disable-next-line typescript/strict-boolean-expressions
         this.filteredDropdownValues = LodashUtilities.cloneDeep(this.dropdownValues).filter(option => {
             return option.displayName.toLowerCase().includes(filter) || option.value?.toLowerCase().includes(filter);
         });
