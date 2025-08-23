@@ -8,6 +8,7 @@ import { TableColumnValue } from '../components/table/table-data';
  * @throws When a value with an unknown type has been provided.
  */
 export function tableColumnValueToSortValue(value: TableColumnValue): string | number {
+    // eslint-disable-next-line typescript/switch-exhaustiveness-check
     switch (typeof value) {
         case 'string': {
             const stringDate: Date = new Date(value);

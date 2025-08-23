@@ -637,6 +637,7 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
         }
         this.metadata = foundMetadata;
 
+        // eslint-disable-next-line typescript/switch-exhaustiveness-check
         switch (this.type) {
             case DecoratorTypes.OBJECT_DROPDOWN: {
                 void this.initDropdownObjectInput();

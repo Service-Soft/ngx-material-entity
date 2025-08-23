@@ -1,7 +1,9 @@
-const config = require('eslint-config-service-soft');
+import { configs } from 'eslint-config-service-soft';
 
-module.exports = [
-    ...config,
+// eslint-disable-next-line jsdoc/require-description
+/** @type {import('eslint').Linter.Config} */
+export default [
+    ...configs,
     {
         files: ['**/ngx-material-entity/**/*.ts'],
         rules: {
