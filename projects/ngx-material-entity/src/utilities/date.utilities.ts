@@ -82,7 +82,13 @@ export abstract class DateUtilities {
         return res;
     }
 
-    private static getTimeDropdownValue(format: 12 | 24, hour: Hour, minute: Minute): DropdownValue<Time> {
+    /**
+     *
+     * @param format
+     * @param hour
+     * @param minute
+     */
+    static getTimeDropdownValue(format: 12 | 24, hour: Hour, minute: Minute): DropdownValue<Time> {
         const displayHour: number = DateUtilities.getFormattedHour(format, LodashUtilities.cloneDeep(hour));
         const displayMinute: string = DateUtilities.getFormattedMinute(format, hour, minute);
         return {
