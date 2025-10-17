@@ -3,12 +3,12 @@ import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type ObjectDropdownValues<EntityType extends BaseEntityType<EntityType>> =
-    DropdownValue<EntityType | undefined>[]
+export type ObjectDropdownValues<EntityType extends BaseEntityType<EntityType>>
+    = DropdownValue<EntityType | undefined>[]
     // eslint-disable-next-line typescript/no-explicit-any
-    | ((entity: any) => DropdownValue<EntityType | undefined>[])
+        | ((entity: any) => DropdownValue<EntityType | undefined>[])
     // eslint-disable-next-line typescript/no-explicit-any
-    | ((entity: any) => Promise<DropdownValue<EntityType | undefined>[]>);
+        | ((entity: any) => Promise<DropdownValue<EntityType | undefined>[]>);
 
 /**
  * Definition for the @object metadata.

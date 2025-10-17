@@ -21,7 +21,6 @@ import { EntityUtilities } from '../../utilities/entity.utilities';
  * - ngOnInit: Gets the metadata for the property, be aware of this when overriding this method.
  * - emitChange: Should be called when the input has changed. This is needed to trigger validation and dirty checks.
  */
-// eslint-disable-next-line angular/prefer-standalone
 @Component({
     selector: 'ngx-mat-entity-base-input',
     template: ''

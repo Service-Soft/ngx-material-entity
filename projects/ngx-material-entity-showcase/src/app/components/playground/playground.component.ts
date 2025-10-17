@@ -5,9 +5,9 @@ import { Sport } from './models/sport.model';
 import { SportService } from './services/sport.service';
 
 @Component({
-    standalone: true,
     selector: 'app-playground',
     templateUrl: './playground.component.html',
+    standalone: true,
     imports: [NgxMatEntityTableComponent]
 })
 export class PlaygroundComponent {
