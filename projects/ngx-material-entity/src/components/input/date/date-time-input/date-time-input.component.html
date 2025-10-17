@@ -34,7 +34,7 @@
                 <mat-option [value]="validTime.value">{{validTime.displayName}}</mat-option>
             }
             @if (time && !timeIncludedInDropdownValues) {
-                <mat-option [value]="time">{{time}}</mat-option>
+                <mat-option [value]="time">{{DateUtilities.getTimeDropdownValue(24, time.hours, time.minutes).displayName}}</mat-option>
             }
         </mat-select>
         <mat-error>{{getValidationErrorMessage(timeModel)}}</mat-error>
