@@ -21,9 +21,9 @@ export class EditActionInternal<EntityType extends BaseEntityType<EntityType>> i
     // eslint-disable-next-line jsdoc/require-jsdoc
     action: (entity: EntityType, entityPriorChanges: EntityType) => Promise<unknown>;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    enabled: ((e: EntityType) => boolean);
+    enabled: (e: EntityType) => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    requireConfirmDialog: ((e: EntityType) => boolean);
+    requireConfirmDialog: (e: EntityType) => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
     confirmDialogData: ConfirmDialogData;
 

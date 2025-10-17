@@ -39,7 +39,7 @@ export class DropdownObjectDecoratorConfigInternal<EntityType extends BaseEntity
     // eslint-disable-next-line jsdoc/require-jsdoc
     omit: (keyof EntityType)[];
     // eslint-disable-next-line jsdoc/require-jsdoc, typescript/no-explicit-any
-    dropdownValues: ((entity: any) => Promise<DropdownValue<EntityType | undefined>[]>);
+    dropdownValues: (entity: any) => Promise<DropdownValue<EntityType | undefined>[]>;
 
     constructor(data: DropdownObjectDecoratorConfig<EntityType>) {
         super(data);

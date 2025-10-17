@@ -40,6 +40,17 @@ export class DateTimeInputComponent<EntityType extends BaseEntityType<EntityType
 
     timeDropdownValues!: DropdownValue<Time | undefined>[];
 
+    get timeIncludedInDropdownValues(): boolean {
+        return DateUtilities.getValidTimesForDropdown(
+            this.metadata.times,
+            this.propertyValue,
+            this.metadata.minTime,
+            this.metadata.maxTime,
+            this.metadata.filterTime
+        ).map(t => t.value)
+            .includes(this.time);
+    }
+
     get time(): Time | undefined {
         return ReflectUtilities.getMetadata(EntityUtilities.TIME_KEY, this.entity, this.key) as Time | undefined;
     }

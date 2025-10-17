@@ -11,7 +11,7 @@ export class DropdownStringDecoratorConfigInternal extends PropertyDecoratorConf
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown';
     // eslint-disable-next-line jsdoc/require-jsdoc, typescript/no-explicit-any
-    dropdownValues: ((entity: any) => Promise<DropdownValue<string | undefined>[]>);
+    dropdownValues: (entity: any) => Promise<DropdownValue<string | undefined>[]>;
 
     constructor(data: DropdownStringDecoratorConfig) {
         super(data);

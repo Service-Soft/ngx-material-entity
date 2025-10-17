@@ -36,11 +36,7 @@
         </div>
     }
 
-    <custom-table
-        [configuration]="tableConfig"
-        [data]="propertyValue"
-        [required]="metadata.required(entity)"
-        (selectionChanged)="selected = $any($event)"
-    >
+    <!-- eslint-disable-next-line angular/no-any -->
+    <custom-table [configuration]="tableConfig" [data]="propertyValue" [required]="metadata.required(entity)" (selectionChanged)="selected = $any($event)">
     </custom-table>
-</div>
+</div> 

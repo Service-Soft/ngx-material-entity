@@ -33,6 +33,9 @@
             @for (validTime of DateUtilities.getValidTimesForDropdown(metadata.times, propertyValue, metadata.minTime, metadata.maxTime, metadata.filterTime); track $index) {
                 <mat-option [value]="validTime.value">{{validTime.displayName}}</mat-option>
             }
+            @if (time && !timeIncludedInDropdownValues) {
+                <mat-option [value]="time">{{time}}</mat-option>
+            }
         </mat-select>
         <mat-error>{{getValidationErrorMessage(timeModel)}}</mat-error>
     </mat-form-field>

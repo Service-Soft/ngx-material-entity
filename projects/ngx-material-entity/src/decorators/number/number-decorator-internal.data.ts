@@ -30,7 +30,7 @@ export class DropdownNumberDecoratorConfigInternal extends PropertyDecoratorConf
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayStyle: 'dropdown';
     // eslint-disable-next-line jsdoc/require-jsdoc, typescript/no-explicit-any
-    dropdownValues: ((entity: any) => Promise<DropdownValue<number | undefined>[]>);
+    dropdownValues: (entity: any) => Promise<DropdownValue<number | undefined>[]>;
 
     constructor(data: DropdownNumberDecoratorConfig) {
         super(data);

@@ -7,8 +7,8 @@ import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from '@an
  */
 @Directive({
     selector: '[includedIn]',
-    providers: [{ provide: NG_VALIDATORS, useExisting: IncludedInValidatorDirective, multi: true }],
-    standalone: true
+    standalone: true,
+    providers: [{ provide: NG_VALIDATORS, useExisting: IncludedInValidatorDirective, multi: true }]
 })
 export class IncludedInValidatorDirective implements Validator {
 

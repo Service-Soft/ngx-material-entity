@@ -2,7 +2,6 @@
 import { Component } from '@angular/core';
 import { Entity, NgxMatEntityBaseDisplayColumnValueComponent } from 'ngx-material-entity';
 
-// eslint-disable-next-line angular/prefer-standalone
 @Component({
     selector: 'app-pdf-download-display-value',
     templateUrl: './pdf-download-display-value.component.html'
