@@ -138,7 +138,7 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
                 DecoratorTypes.FILE_DEFAULT
             ) as DefaultFileDecoratorConfigInternal;
             if (metadata.multiple) {
-                const fileDataValues: FileData[] = body[key] as FileData[];
+                const fileDataValues: FileData[] = body[key] as FileData[] ?? [];
                 for (const value of fileDataValues) {
                     formData.append(key as string, (await FileUtilities.getFileData(value, this.http)).file, value.name);
                 }
@@ -262,7 +262,7 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
                 DecoratorTypes.FILE_DEFAULT
             ) as DefaultFileDecoratorConfigInternal;
             if (metadata.multiple) {
-                const fileDataValues: FileData[] = body[key] as FileData[];
+                const fileDataValues: FileData[] = body[key] as FileData[] ?? [];
                 for (const value of fileDataValues) {
                     formData.append(key as string, (await FileUtilities.getFileData(value, this.http)).file, value.name);
                 }
