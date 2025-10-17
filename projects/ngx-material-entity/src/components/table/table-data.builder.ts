@@ -24,9 +24,9 @@ export class BaseTableActionInternal implements BaseTableAction {
     // eslint-disable-next-line jsdoc/require-jsdoc
     action: () => Promise<unknown>;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    enabled: (() => boolean);
+    enabled: () => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    requireConfirmDialog: (() => boolean);
+    requireConfirmDialog: () => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
     confirmDialogData: ConfirmDialogDataInternal;
 
@@ -74,9 +74,9 @@ export class MultiSelectActionInternal<EntityType extends BaseEntityType<EntityT
     // eslint-disable-next-line jsdoc/require-jsdoc
     action: (selectedEntities: EntityType[]) => Promise<unknown>;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    enabled: ((selectedEntities: EntityType[]) => boolean);
+    enabled: (selectedEntities: EntityType[]) => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    requireConfirmDialog: ((selectedEntities: EntityType[]) => boolean);
+    requireConfirmDialog: (selectedEntities: EntityType[]) => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
     confirmDialogData: ConfirmDialogDataInternal;
 
@@ -118,8 +118,8 @@ export class MultiSelectActionInternal<EntityType extends BaseEntityType<EntityT
 /**
  * The Internal Table Action. Sets default values.
  */
-export type TableActionInternal<EntityType extends BaseEntityType<EntityType>> =
-    BaseTableActionInternal | MultiSelectActionInternal<EntityType>;
+export type TableActionInternal<EntityType extends BaseEntityType<EntityType>>
+    = BaseTableActionInternal | MultiSelectActionInternal<EntityType>;
 
 /**
  * The internal TableData. Requires all default values the user can leave out.
@@ -263,7 +263,7 @@ export class BaseDataInternal<EntityType extends BaseEntityType<EntityType>> imp
         return data;
     }
 
-    private allowDataToFunction(value?: boolean | ((entity?: EntityType) => boolean)): ((entity?: EntityType) => boolean) {
+    private allowDataToFunction(value?: boolean | ((entity?: EntityType) => boolean)): (entity?: EntityType) => boolean {
         if (value == undefined) {
             return defaultTrue;
         }

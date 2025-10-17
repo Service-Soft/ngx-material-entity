@@ -2,12 +2,12 @@ import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type NumberDropdownValues =
-    DropdownValue<number | undefined>[]
+export type NumberDropdownValues
+    = DropdownValue<number | undefined>[]
     // eslint-disable-next-line typescript/no-explicit-any
-    | ((entity: any) => DropdownValue<number | undefined>[])
+        | ((entity: any) => DropdownValue<number | undefined>[])
     // eslint-disable-next-line typescript/no-explicit-any
-    | ((entity: any) => Promise<DropdownValue<number | undefined>[]>);
+        | ((entity: any) => Promise<DropdownValue<number | undefined>[]>);
 
 /**
  * Definition for the @number metadata.

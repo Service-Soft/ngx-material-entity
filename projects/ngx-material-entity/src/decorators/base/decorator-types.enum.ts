@@ -48,8 +48,8 @@ export enum DecoratorTypes {
 /**
  * Gives the metadata-config Type based on the DecoratorTypes enum.
  */
-export type DecoratorType<T, CustomMetadataType extends Record<string, unknown>> =
-    T extends DecoratorTypes.STRING ? DefaultStringDecoratorConfigInternal
+export type DecoratorType<T, CustomMetadataType extends Record<string, unknown>>
+    = T extends DecoratorTypes.STRING ? DefaultStringDecoratorConfigInternal
     : T extends DecoratorTypes.STRING_TEXTBOX ? TextboxStringDecoratorConfigInternal
     : T extends DecoratorTypes.STRING_DROPDOWN ? DropdownStringDecoratorConfigInternal
     : T extends DecoratorTypes.STRING_AUTOCOMPLETE ? AutocompleteStringDecoratorConfigInternal

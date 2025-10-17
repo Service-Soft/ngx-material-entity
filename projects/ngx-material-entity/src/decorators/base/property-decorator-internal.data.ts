@@ -50,7 +50,7 @@ export abstract class PropertyDecoratorConfigInternal<ValueType> implements Prop
     // eslint-disable-next-line jsdoc/require-jsdoc
     displayName: string;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    required: ((entity: unknown) => boolean);
+    required: (entity: unknown) => boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc
     omitForCreate: boolean;
     // eslint-disable-next-line jsdoc/require-jsdoc

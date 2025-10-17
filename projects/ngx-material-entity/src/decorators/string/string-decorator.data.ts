@@ -2,20 +2,20 @@ import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type StringDropdownValues =
-    DropdownValue<string | undefined>[]
+export type StringDropdownValues
+    = DropdownValue<string | undefined>[]
     // eslint-disable-next-line typescript/no-explicit-any
-    | ((entity: any) => DropdownValue<string | undefined>[])
+        | ((entity: any) => DropdownValue<string | undefined>[])
     // eslint-disable-next-line typescript/no-explicit-any
-    | ((entity: any) => Promise<DropdownValue<string | undefined>[]>);
+        | ((entity: any) => Promise<DropdownValue<string | undefined>[]>);
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type StringAutocompleteValues =
-    string[]
+export type StringAutocompleteValues
+    = string[]
     // eslint-disable-next-line typescript/no-explicit-any
-    | ((entity: any) => string[])
+        | ((entity: any) => string[])
     // eslint-disable-next-line typescript/no-explicit-any
-    | ((entity: any) => Promise<string[]>);
+        | ((entity: any) => Promise<string[]>);
 
 /**
  * Definition for the @string metadata.

@@ -38,10 +38,7 @@
         </button>
     </div>
 
-    <custom-table
-        [configuration]="tableConfig"
-        [data]="propertyValue"
-        (selectionChanged)="selected = $any($event)"
-    >
+     <!-- eslint-disable-next-line angular/no-any -->
+    <custom-table [configuration]="tableConfig" [data]="propertyValue" (selectionChanged)="selected = $any($event)">
     </custom-table>
 </div>

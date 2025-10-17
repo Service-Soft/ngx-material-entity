@@ -21,7 +21,6 @@ type ArrayTableType = DecoratorTypes.ARRAY | DecoratorTypes.ARRAY_DATE
 /**
  * The base component needed for all arrays that are displayed as a table.
  */
-// eslint-disable-next-line angular/prefer-standalone
 @Component({
     selector: 'ngx-mat-entity-array-table',
     template: ''
