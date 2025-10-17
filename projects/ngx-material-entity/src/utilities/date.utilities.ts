@@ -83,10 +83,11 @@ export abstract class DateUtilities {
     }
 
     /**
-     *
-     * @param format
-     * @param hour
-     * @param minute
+     * Creates a time dropdown value for the given data.
+     * @param format - The time format. Defaults to 24.
+     * @param hour - The hour value of the time.
+     * @param minute - The minute value of the time.
+     * @returns The dropdown value.
      */
     static getTimeDropdownValue(format: 12 | 24, hour: Hour, minute: Minute): DropdownValue<Time> {
         const displayHour: number = DateUtilities.getFormattedHour(format, LodashUtilities.cloneDeep(hour));
