@@ -69,7 +69,7 @@ export const navbarRows: NavbarRow[] = [
             {
                 type: NavElementTypes.MENU,
                 name: 'Inputs',
-                icon: faKeyboard,
+                iconState: faKeyboard,
                 elements: [
                     {
                         type: NavElementTypes.INTERNAL_LINK,
@@ -118,7 +118,7 @@ export const navbarRows: NavbarRow[] = [
             {
                 type: NavElementTypes.MENU,
                 name: 'Dialogs',
-                icon: faCircleExclamation,
+                iconState: faCircleExclamation,
                 elements: [],
                 position: 'center',
                 collapse: 'md'
