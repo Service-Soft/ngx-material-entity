@@ -256,6 +256,9 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
         const formData: FormData = new FormData();
         formData.append('body', JSON.stringify(LodashUtilities.omit(body, filePropertyKeys)));
         for (const key of filePropertyKeys) {
+            if (body[key] === undefined) {
+                continue;
+            }
             const metadata: DefaultFileDecoratorConfigInternal = EntityUtilities.getPropertyMetadata(
                 entity,
                 key,
@@ -266,11 +269,14 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
                 for (const value of fileDataValues) {
                     formData.append(key as string, (await FileUtilities.getFileData(value, this.http)).file, value.name);
                 }
+                continue;
             }
-            else {
-                const fileData: FileData = body[key] as FileData;
+            const fileData: FileData | null = body[key] as FileData | null;
+            if (fileData) {
                 formData.append(key as string, (await FileUtilities.getFileData(fileData, this.http)).file, fileData.name);
+                continue;
             }
+            formData.append(key as string, '');
         }
         const updatedEntity: EntityType | undefined = await firstValueFrom(
             this.http.patch<EntityType | undefined>(`${this.baseUrl}/${id}`, formData)
