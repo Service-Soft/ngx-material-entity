@@ -27,9 +27,6 @@
         "copyToDist:license": "ncp ./LICENSE.md ./dist/ngx-material-entity/LICENSE.md"
     },
     "private": true,
-    "repository": {
-        "url": "https://github.com/Service-Soft/ngx-material-entity"
-    },
     "dependencies": {
         "@angular/animations": "~20.2.1",
         "@angular/cdk": "^20.2.0",
