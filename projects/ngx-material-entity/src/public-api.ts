@@ -21,6 +21,7 @@ export * from './components/table/edit-dialog/edit-entity-data';
 export * from './components/table/edit-dialog/edit-entity-dialog.component';
 export * from './components/table/table-data';
 export * from './components/table/table.component';
+export * from './components/form/form.component';
 export * from './components/tooltip/tooltip.component';
 // decorators
 export * from './decorators/array/array-decorator.data';
