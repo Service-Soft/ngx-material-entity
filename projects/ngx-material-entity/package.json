@@ -8,6 +8,9 @@
         "crud",
         "entity"
     ],
+    "repository": {
+        "url": "https://github.com/Service-Soft/ngx-material-entity"
+    },
     "peerDependencies": {
         "@angular/animations": "20",
         "@angular/cdk": "20",
