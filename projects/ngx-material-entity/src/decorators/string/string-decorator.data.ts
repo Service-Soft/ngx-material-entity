@@ -10,6 +10,14 @@ export type StringDropdownValues
         | ((entity: any) => Promise<DropdownValue<string | undefined>[]>);
 
 // eslint-disable-next-line jsdoc/require-jsdoc
+export type RequiredStringDropdownValues
+    = DropdownValue<string>[]
+    // eslint-disable-next-line typescript/no-explicit-any
+        | ((entity: any) => DropdownValue<string>[])
+    // eslint-disable-next-line typescript/no-explicit-any
+        | ((entity: any) => Promise<DropdownValue<string>[]>);
+
+// eslint-disable-next-line jsdoc/require-jsdoc
 export type StringAutocompleteValues
     = string[]
     // eslint-disable-next-line typescript/no-explicit-any

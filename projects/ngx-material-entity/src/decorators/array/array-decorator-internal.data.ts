@@ -2,12 +2,13 @@ import { DateFilterFn } from '@angular/material/datepicker';
 import { IconDefinition } from '@fortawesome/angular-fontawesome';
 import { faCircleMinus } from '@fortawesome/free-solid-svg-icons';
 
-import { ArrayDecoratorConfig, AutocompleteStringChipsArrayDecoratorConfig, DateArrayDecoratorConfig, DateRangeArrayDecoratorConfig, DateTimeArrayDecoratorConfig, EditArrayItemDialogData, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from './array-decorator.data';
+import { ArrayDecoratorConfig, AutocompleteStringChipsArrayDecoratorConfig, DateArrayDecoratorConfig, DateRangeArrayDecoratorConfig, DateTimeArrayDecoratorConfig, EditArrayItemDialogData, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig, StringDropdownArrayDecoratorConfig } from './array-decorator.data';
 import { BaseEntityType, EntityClassNewable } from '../../classes/entity.model';
 import { ConfirmDialogData } from '../../components/confirm-dialog/confirm-dialog-data';
 import { ConfirmDialogDataBuilder } from '../../components/confirm-dialog/confirm-dialog-data.builder';
 import { CreateData, DisplayColumn, DynamicStyleClasses } from '../../components/table/table-data';
 import { defaultDynamicStyleClasses } from '../../functions/default-style-classes.function';
+import { dropdownValuesToFunction } from '../../functions/dropdown-values-to-function.function';
 import { getConfigValue } from '../../functions/get-config-value.function';
 import { NgxGlobalDefaultValues } from '../../global-configuration-values';
 import { DateUtilities, Time } from '../../utilities/date.utilities';
@@ -324,6 +325,25 @@ export class AutocompleteStringChipsArrayDecoratorConfigInternal
         }
         // eslint-disable-next-line typescript/no-explicit-any
         return async (e: any) => await autocompleteValues(e);
+    }
+}
+
+/**
+ * The internal StringDropdownArrayDecoratorConfig. Sets default values.
+ */
+export class StringDropdownArrayDecoratorConfigInternal extends PropertyDecoratorConfigInternal<string[]>
+    implements StringDropdownArrayDecoratorConfig {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    itemType: DecoratorTypes.STRING_DROPDOWN;
+    // eslint-disable-next-line jsdoc/require-jsdoc, typescript/no-explicit-any
+    dropdownValues: (entity: any) => Promise<DropdownValue<string>[]>;
+
+    constructor(data: StringDropdownArrayDecoratorConfig) {
+        super(data);
+        this.itemType = data.itemType;
+        // eslint-disable-next-line typescript/no-explicit-any
+        this.dropdownValues = dropdownValuesToFunction(data.dropdownValues) as (entity: any) => Promise<DropdownValue<string>[]>;
+        this.defaultWidths = data.defaultWidths ?? [6, 12, 12];
     }
 }
 

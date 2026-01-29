@@ -4,7 +4,7 @@ import { DateUtilities, Time } from './date.utilities';
 import { EntityUtilities } from './entity.utilities';
 import { FileUtilities } from './file.utilities';
 import { BaseEntityType } from '../classes/entity.model';
-import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
+import { AutocompleteStringChipsArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, StringDropdownArrayDecoratorConfigInternal } from '../decorators/array/array-decorator-internal.data';
 import { DecoratorTypes } from '../decorators/base/decorator-types.enum';
 import { PropertyDecoratorConfigInternal } from '../decorators/base/property-decorator-internal.data';
 import { ToggleBooleanDecoratorConfigInternal } from '../decorators/boolean/boolean-decorator-internal.data';
@@ -210,6 +210,12 @@ export abstract class ValidationUtilities {
                 // eslint-disable-next-line stylistic/max-len
                 return await this.getArrayStringAutocompleteChipsValidationError(entity, stringAutocompleteArrayMetadata, stringAutocompleteArray);
             }
+            case DecoratorTypes.ARRAY_STRING_DROPDOWN: {
+                const stringDropdownArray: string[] = entity[key] as string[];
+                // eslint-disable-next-line stylistic/max-len
+                const stringDropdownArrayMetadata: StringDropdownArrayDecoratorConfigInternal = metadata as StringDropdownArrayDecoratorConfigInternal;
+                return await this.getArrayStringDropdownValidationError(entity, stringDropdownArrayMetadata, stringDropdownArray);
+            }
             case DecoratorTypes.ARRAY_STRING_CHIPS:
             case DecoratorTypes.ARRAY_DATE:
             case DecoratorTypes.ARRAY_DATE_TIME:
@@ -222,6 +228,7 @@ export abstract class ValidationUtilities {
                 if (arrayMetadata.required(entity) && !entityArray.length) {
                     return {
                         property: metadata.displayName,
+                        // eslint-disable-next-line sonar/no-duplicate-string
                         message: 'no items in array'
                     };
                 }
@@ -291,6 +298,29 @@ export abstract class ValidationUtilities {
                         message: `The value "${value}" needs to be one of the provided values`
                     };
                 }
+            }
+        }
+        return undefined;
+    }
+
+    private static async getArrayStringDropdownValidationError<EntityType extends BaseEntityType<EntityType>>(
+        entity: EntityType,
+        metadata: StringDropdownArrayDecoratorConfigInternal,
+        stringDropdownArray: string[]
+    ): Promise<ValidationError | undefined> {
+        if (metadata.required(entity) && !stringDropdownArray.length) {
+            return {
+                property: metadata.displayName,
+                message: 'no items in array'
+            };
+        }
+        const dropdownValues: string[] = (await metadata.dropdownValues(entity)).map(d => d.value);
+        for (const value of stringDropdownArray) {
+            if (!dropdownValues.includes(value)) {
+                return {
+                    property: metadata.displayName,
+                    message: `The value "${value}" needs to be one of the provided values`
+                };
             }
         }
         return undefined;

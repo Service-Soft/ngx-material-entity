@@ -23,7 +23,7 @@ export function getChangesTooltipContent<EntityType extends BaseEntityType<Entit
     const title: string = inject(NgxChangesTooltipTitle);
     let res: string = `${title}\n<br>\n<ul style="margin-bottom: 0px; padding-left: 16px;">`;
     for (const change of changes) {
-        res = res.concat(`\n\t<li>${String(change.key)}</li>`);
+        res = res.concat(`\n\t<li>${change.name ?? String(change.key)}</li>`);
     }
     res = res.concat('\n</ul>');
     return res;

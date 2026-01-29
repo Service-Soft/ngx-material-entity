@@ -157,9 +157,11 @@ export interface TestEntityWithoutCustomPropertiesInterface {
     dropdownObjectValue: TestObjectEntity,
     optionalObjectValue?: TestObjectEntity,
     stringChipsArrayValue: string[],
-    stringChipsAutocompleteArrayValue: string[],
     stringChipsArrayValueWithConfig: string[],
+    stringChipsAutocompleteArrayValue: string[],
     stringChipsAutocompleteArrayValueWithConfig: string[],
+    stringDropdownArrayValue: string[],
+    stringDropdownArrayValueWithConfig: string[],
     orderValue1: string,
     orderValue2: string,
     orderValue3: string,
@@ -435,6 +437,22 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         restrictToOptions: true
     })
     stringChipsAutocompleteArrayValueWithConfig!: string[];
+
+    @array({
+        displayName: 'String Dropdown Array Value',
+        itemType: DecoratorTypes.STRING_DROPDOWN,
+        // eslint-disable-next-line cspell/spellchecker
+        dropdownValues: [{ displayName: 'ABCDE', value: 'ABCDE' }, { displayName: 'FGHIJ', value: 'FGHIJ' }]
+    })
+    stringDropdownArrayValue!: string[];
+
+    @array({
+        displayName: 'String Dropdown Array Value With Config',
+        itemType: DecoratorTypes.STRING_DROPDOWN,
+        // eslint-disable-next-line cspell/spellchecker
+        dropdownValues: [{ displayName: 'ABCDE', value: 'ABCDE' }, { displayName: 'FGHIJ', value: 'FGHIJ' }]
+    })
+    stringDropdownArrayValueWithConfig!: string[];
 
     @array({
         displayName: 'Entity Array',
@@ -929,11 +947,15 @@ const testEntityData: TestEntityWithoutCustomProperties = {
         rowValue1: ''
     } as TestObjectEntity,
     stringChipsArrayValue: ['01234', '56789'],
-    // eslint-disable-next-line cspell/spellchecker
-    stringChipsAutocompleteArrayValue: ['ABCDE', 'FGHIJ'],
     stringChipsArrayValueWithConfig: ['01234', '56789'],
     // eslint-disable-next-line cspell/spellchecker
+    stringChipsAutocompleteArrayValue: ['ABCDE', 'FGHIJ'],
+    // eslint-disable-next-line cspell/spellchecker
     stringChipsAutocompleteArrayValueWithConfig: ['ABCDE', 'FGHIJ'],
+    // eslint-disable-next-line cspell/spellchecker
+    stringDropdownArrayValue: ['ABCDE', 'FGHIJ'],
+    // eslint-disable-next-line cspell/spellchecker
+    stringDropdownArrayValueWithConfig: ['ABCDE', 'FGHIJ'],
     orderValue1: '1',
     orderValue2: '2',
     orderValue3: '3',

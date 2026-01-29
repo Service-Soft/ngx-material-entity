@@ -78,12 +78,24 @@ Cypress.Commands.add(
 
         // eslint-disable-next-line cspell/spellchecker
         cy.getInputByLabel('String Chips Array Value').click().type('abcd{enter}efgh{enter}');
-        cy.getInputByLabel('String Chips Autocomplete Array Value').click().type('123{enter}456{enter}');
-
         // eslint-disable-next-line cspell/spellchecker
         cy.getInputByLabel('String Chips Array Value With Config').click().type('abcd{enter}efgh{enter}');
+
+        cy.getInputByLabel('String Chips Autocomplete Array Value').click().type('123{enter}456{enter}');
         // eslint-disable-next-line cspell/spellchecker
         cy.getInputByLabel('String Chips Autocomplete Array Value With Config').click().type('ABCDE{enter}FGHIJ{enter}');
+
+        cy.getInputByLabel('String Dropdown Array Value').click();
+        cy.get('mat-option').contains('ABCDE').click();
+        // eslint-disable-next-line cspell/spellchecker
+        cy.get('mat-option').contains('FGHIJ').click();
+        cy.get('body').type('{esc}');
+
+        cy.getInputByLabel('String Dropdown Array Value With Config').click();
+        cy.get('mat-option').contains('ABCDE').click();
+        // eslint-disable-next-line cspell/spellchecker
+        cy.get('mat-option').contains('FGHIJ').click();
+        cy.get('body').type('{esc}');
 
         cy.getInputByLabel('Array Object Value').click().type('arrayObjectValue');
         cy.get('.mdc-tab__text-label').eq(5).click({ force: true });

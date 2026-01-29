@@ -76,6 +76,7 @@ import { EditActionInternal } from '../table/edit-dialog/edit-data.builder';
 import { DisplayColumn, DynamicStyleClasses } from '../table/table-data';
 import { BaseTableActionInternal, TableActionInternal } from '../table/table-data.builder';
 import { TooltipComponent } from '../tooltip/tooltip.component';
+import { ArrayStringDropdownInputComponent } from './array/array-string-dropdown-input/array-string-dropdown-input.component';
 
 /**
  * Generic type for contexts that can fill an inline template.
@@ -201,6 +202,7 @@ type TableContext<T> = InternalCustomTableConfiguration & {
         ArrayDateTimeInputComponent,
         ArrayStringAutocompleteChipsComponent,
         ArrayStringChipsInputComponent,
+        ArrayStringDropdownInputComponent,
         DateInputComponent,
         DateRangeInputComponent,
         DateTimeInputComponent,
