@@ -39,6 +39,7 @@ export class ShowcaseInputsComponent {
         DecoratorTypes.ARRAY,
         DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS,
         DecoratorTypes.ARRAY_STRING_CHIPS,
+        DecoratorTypes.ARRAY_STRING_DROPDOWN,
         DecoratorTypes.ARRAY_DATE,
         DecoratorTypes.ARRAY_DATE_TIME,
         DecoratorTypes.ARRAY_DATE_RANGE

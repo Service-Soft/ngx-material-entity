@@ -2,6 +2,7 @@
 <mat-form-field>
     <mat-label>{{metadata.displayName}}</mat-label>
     <mat-select #model="ngModel"
+        [multiple]="true"
         [name]="name"
         [required]="metadata.required(entity)"
         [disabled]="isReadOnly"
@@ -15,14 +16,13 @@
             <input #selectSearchInput matInput (keyup)="filterDropdownValues($any($event.target).value)">
             <fa-icon matSuffix [icon]="faSearch"></fa-icon>
         </mat-form-field>
-        @if (!metadata.required(entity)) {
-            <mat-option>-</mat-option>
-        }
-        @if (shouldDisplayCurrentValue) {
-            <mat-option [value]="currentDropdownValue?.value">{{currentDropdownValue?.displayName}}</mat-option>
-        }
         @for (value of filteredDropdownValues; track $index) {
             <mat-option [value]="value.value">{{value.displayName}}</mat-option>
+        }
+        @for (value of propertyValue; track $index) {
+            @if (shouldDisplayCurrentValue(value)) {
+                <mat-option [value]="value">{{getDisplayNameForValue(value)}}</mat-option>
+            }
         }
     </mat-select>
     <mat-error>{{getValidationErrorMessage(model)}}</mat-error>

@@ -52,7 +52,7 @@ export class ReferencesManyInputComponent<EntityType extends BaseEntityType<Enti
     input: string = '';
 
     get currentDropdownValue(): DropdownValue<string> | undefined {
-        return LodashUtilities.cloneDeep(this.dropdownValues ?? [])
+        return LodashUtilities.cloneDeep(this.dropdownValues)
             .find(v => v.value === this.input);
     }
 

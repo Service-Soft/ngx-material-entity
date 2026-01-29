@@ -9,7 +9,7 @@ import { DecoratorTypes } from '../base/decorator-types.enum';
 import { DropdownValue } from '../base/dropdown-value.interface';
 import { PropertyDecoratorConfig } from '../base/property-decorator.data';
 import { DateRange } from '../date/date-decorator.data';
-import { StringAutocompleteValues } from '../string/string-decorator.data';
+import { RequiredStringDropdownValues, StringAutocompleteValues } from '../string/string-decorator.data';
 
 /**
  * Base definition for the @array metadata.
@@ -288,4 +288,17 @@ export interface AutocompleteStringChipsArrayDecoratorConfig extends ArrayDecora
      * @default false
      */
     restrictToOptions?: boolean
+}
+
+/**
+ * Definition for an array of strings displayed in a dropdown.
+ */
+export interface StringDropdownArrayDecoratorConfig extends ArrayDecoratorConfig<string[]> {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    itemType: DecoratorTypes.STRING_DROPDOWN,
+    /**
+     * The values of the dropdown, consisting of a name to display and the actual value
+     * Can also receive a function to determine the values.
+     */
+    dropdownValues: RequiredStringDropdownValues
 }

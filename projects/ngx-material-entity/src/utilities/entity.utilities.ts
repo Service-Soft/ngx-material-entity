@@ -26,6 +26,10 @@ export interface Difference<EntityType extends BaseEntityType<EntityType>> {
      */
     key: keyof EntityType,
     /**
+     * The display name resolved from metadata.
+     */
+    name: string | undefined,
+    /**
      * The value before any changes.
      */
     before: unknown,
@@ -321,6 +325,7 @@ export abstract class EntityUtilities {
             const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = this.getPropertyMetadata(entity, key);
             if (!await this.isEqual(entity[key], entityPriorChanges[key], metadata, type, http)) {
                 res.push({
+                    name: metadata?.displayName,
                     key: key,
                     before: entityPriorChanges[key],
                     after: entity[key]

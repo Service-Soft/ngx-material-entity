@@ -16,9 +16,9 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
 
 @Component({
     // eslint-disable-next-line angular/component-selector
-    selector: 'string-dropdown-input',
-    templateUrl: './string-dropdown-input.component.html',
-    styleUrls: ['./string-dropdown-input.component.scss'],
+    selector: 'array-string-dropdown-input',
+    templateUrl: './array-string-dropdown-input.component.html',
+    styleUrls: ['./array-string-dropdown-input.component.scss'],
     standalone: true,
     imports: [
         MatInputModule,
@@ -29,25 +29,27 @@ import { NgxMatEntityBaseInputComponent } from '../../base-input.component';
         FaIconComponent
     ]
 })
-export class StringDropdownInputComponent<EntityType extends BaseEntityType<EntityType>>
-    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.STRING_DROPDOWN, string> implements OnInit {
+export class ArrayStringDropdownInputComponent<EntityType extends BaseEntityType<EntityType>>
+    extends NgxMatEntityBaseInputComponent<EntityType, DecoratorTypes.ARRAY_STRING_DROPDOWN, string[]> implements OnInit {
 
     faSearch: IconDefinition = faSearch;
 
-    private dropdownValues: DropdownValue<string | undefined>[] = [];
-    filteredDropdownValues: DropdownValue<string | undefined>[] = [];
-
-    get currentDropdownValue(): DropdownValue<string | undefined> | undefined {
-        return LodashUtilities.cloneDeep(this.dropdownValues)
-            .find(v => v.value === this.propertyValue);
-    }
-
-    get shouldDisplayCurrentValue(): boolean {
-        return !!this.currentDropdownValue && !this.filteredDropdownValues.find(v => v.value === this.currentDropdownValue?.value);
-    }
+    private dropdownValues: DropdownValue<string>[] = [];
+    filteredDropdownValues: DropdownValue<string>[] = [];
 
     constructor(private readonly injector: EnvironmentInjector) {
         super();
+    }
+
+    shouldDisplayCurrentValue(value: string): boolean {
+        return !this.filteredDropdownValues.find(v => v.value === value);
+    }
+
+    getDisplayNameForValue(value: string): string | undefined {
+        const currentDropdownValues: DropdownValue<string>[] = LodashUtilities.cloneDeep(this.dropdownValues)
+            // eslint-disable-next-line typescript/strict-boolean-expressions
+            .filter(v => this.propertyValue?.includes(v.value));
+        return currentDropdownValues.find(v => v.value === value)?.displayName;
     }
 
     override ngOnInit(): void {
@@ -64,7 +66,6 @@ export class StringDropdownInputComponent<EntityType extends BaseEntityType<Enti
      */
     filterDropdownValues(searchInput: string): void {
         const filter: string = searchInput.toLowerCase();
-        // eslint-disable-next-line typescript/strict-boolean-expressions
         this.filteredDropdownValues = LodashUtilities.cloneDeep(this.dropdownValues).filter(option => {
             return option.displayName.toLowerCase().includes(filter) || option.value?.toLowerCase().includes(filter);
         });

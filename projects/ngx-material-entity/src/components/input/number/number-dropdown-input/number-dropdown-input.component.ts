@@ -38,7 +38,7 @@ export class NumberDropdownInputComponent<EntityType extends BaseEntityType<Enti
     filteredDropdownValues: DropdownValue<number | undefined>[] = [];
 
     get currentDropdownValue(): DropdownValue<number | undefined> | undefined {
-        return LodashUtilities.cloneDeep(this.dropdownValues ?? [])
+        return LodashUtilities.cloneDeep(this.dropdownValues)
             .find(v => v.value === this.propertyValue);
     }
 
