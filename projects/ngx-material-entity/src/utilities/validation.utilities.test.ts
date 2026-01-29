@@ -231,6 +231,22 @@ describe('isEntityValid', () => {
         tE.stringChipsAutocompleteArrayValue = ['1234'];
         expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(true);
     });
+    test('ARRAY_STRING_DROPDOWN required', async () => {
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
+        tE.stringDropdownArrayValue = [];
+        expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(false);
+        tE.stringDropdownArrayValue = ['ABCDE'];
+        expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(true);
+    });
+    test('ARRAY_STRING_DROPDOWN restrictToOptions', async () => {
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
+        tE.stringDropdownArrayValue = ['ABC'];
+        expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(false);
+        tE.stringDropdownArrayValue = ['ABCDE'];
+        expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(true);
+    });
 
     // DATE
     test('DATE max', async () => {

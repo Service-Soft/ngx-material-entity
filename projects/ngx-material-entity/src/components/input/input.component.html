@@ -174,6 +174,16 @@
             >
             </array-string-autocomplete-chips>
         }
+        @case (DecoratorTypes.ARRAY_STRING_DROPDOWN) {
+            <array-string-dropdown-input
+                [entity]="entity"
+                [key]="propertyKey"
+                [getValidationErrorMessage]="internalGetValidationErrorMessage"
+                [isReadOnly]="internalIsReadOnly"
+                (inputChangeEvent)="emitChange()"
+            >
+            </array-string-dropdown-input>
+        }
         <!-------------------------------------------->
         <!-------------------Dates-------------------->
         <!-------------------------------------------->
@@ -278,6 +288,7 @@
                     [(ngModel)]="entity[propertyKey]"
                     (selectionChange)="emitChange()"
                     (opened)="selectSearchInput.focus()"
+                    (closed)="selectSearchInput.value = ''; filterObjectDropdownValues('');"
                 >
                     <mat-form-field class="select-search-input">
                         <!-- eslint-disable-next-line angular/no-any -->
@@ -310,6 +321,7 @@
                     [(ngModel)]="entity[propertyKey]"
                     (selectionChange)="setReferencesOneObject()"
                     (opened)="selectSearchInput.focus()"
+                    (closed)="selectSearchInput.value = ''; filterReferencesOneValues('');"
                 >
                     <mat-form-field class="select-search-input">
                         <!-- eslint-disable-next-line angular/no-any -->

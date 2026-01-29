@@ -8,6 +8,7 @@
         [(ngModel)]="propertyValue"
         (selectionChange)="emitChange()"
         (opened)="selectSearchInput.focus()"
+        (closed)="selectSearchInput.value = ''; filterDropdownValues('');"
     >
         <mat-form-field class="select-search-input">
             <!-- eslint-disable-next-line angular/no-any -->

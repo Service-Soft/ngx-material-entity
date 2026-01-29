@@ -1,5 +1,5 @@
-import { AutocompleteStringChipsArrayDecoratorConfigInternal, DateArrayDecoratorConfigInternal, DateRangeArrayDecoratorConfigInternal, DateTimeArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal } from './array-decorator-internal.data';
-import { AutocompleteStringChipsArrayDecoratorConfig, DateArrayDecoratorConfig, DateRangeArrayDecoratorConfig, DateTimeArrayDecoratorConfig, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig } from './array-decorator.data';
+import { AutocompleteStringChipsArrayDecoratorConfigInternal, DateArrayDecoratorConfigInternal, DateRangeArrayDecoratorConfigInternal, DateTimeArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal, StringDropdownArrayDecoratorConfigInternal } from './array-decorator-internal.data';
+import { AutocompleteStringChipsArrayDecoratorConfig, DateArrayDecoratorConfig, DateRangeArrayDecoratorConfig, DateTimeArrayDecoratorConfig, EntityArrayDecoratorConfig, StringChipsArrayDecoratorConfig, StringDropdownArrayDecoratorConfig } from './array-decorator.data';
 import { BaseEntityType } from '../../classes/entity.model';
 import { needsUpdateGlobalDefaults } from '../../default-global-configuration-values';
 import { baseProperty } from '../base/base-property.decorator';
@@ -15,6 +15,7 @@ export function array<EntityType extends BaseEntityType<EntityType>>(
     metadata: EntityArrayDecoratorConfig<EntityType>
         | StringChipsArrayDecoratorConfig
         | AutocompleteStringChipsArrayDecoratorConfig
+        | StringDropdownArrayDecoratorConfig
         | DateArrayDecoratorConfig
         | DateTimeArrayDecoratorConfig
         | DateRangeArrayDecoratorConfig
@@ -48,6 +49,12 @@ export function array<EntityType extends BaseEntityType<EntityType>>(
             return baseProperty(
                 new AutocompleteStringChipsArrayDecoratorConfigInternal(metadata, needsUpdateGlobalDefaults),
                 DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS
+            );
+        }
+        case DecoratorTypes.STRING_DROPDOWN: {
+            return baseProperty(
+                new StringDropdownArrayDecoratorConfigInternal(metadata),
+                DecoratorTypes.ARRAY_STRING_DROPDOWN
             );
         }
         default: {

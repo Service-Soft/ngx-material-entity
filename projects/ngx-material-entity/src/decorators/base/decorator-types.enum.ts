@@ -1,5 +1,5 @@
 /* eslint-disable stylistic/indent */
-import { AutocompleteStringChipsArrayDecoratorConfigInternal, DateArrayDecoratorConfigInternal, DateRangeArrayDecoratorConfigInternal, DateTimeArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal } from '../array/array-decorator-internal.data';
+import { AutocompleteStringChipsArrayDecoratorConfigInternal, DateArrayDecoratorConfigInternal, DateRangeArrayDecoratorConfigInternal, DateTimeArrayDecoratorConfigInternal, EntityArrayDecoratorConfigInternal, StringChipsArrayDecoratorConfigInternal, StringDropdownArrayDecoratorConfigInternal } from '../array/array-decorator-internal.data';
 import { CheckboxBooleanDecoratorConfigInternal, DropdownBooleanDecoratorConfigInternal, ToggleBooleanDecoratorConfigInternal } from '../boolean/boolean-decorator-internal.data';
 import { CustomDecoratorConfigInternal } from '../custom/custom-decorator-internal.data';
 import { DateRangeDateDecoratorConfigInternal, DateTimeDateDecoratorConfigInternal, DefaultDateDecoratorConfigInternal } from '../date/date-decorator-internal.data';
@@ -34,6 +34,7 @@ export enum DecoratorTypes {
     ARRAY_DATE_RANGE = 'arrayDateRange',
     ARRAY_STRING_CHIPS = 'arrayStringChips',
     ARRAY_STRING_AUTOCOMPLETE_CHIPS = 'arrayStringAutocompleteChips',
+    ARRAY_STRING_DROPDOWN = 'arrayStringDropdown',
     DATE = 'date',
     DATE_RANGE = 'dateRange',
     DATE_TIME = 'dateTime',
@@ -71,6 +72,7 @@ export type DecoratorType<T, CustomMetadataType extends Record<string, unknown>>
     : T extends DecoratorTypes.ARRAY_DATE_RANGE ? DateRangeArrayDecoratorConfigInternal
     : T extends DecoratorTypes.ARRAY_STRING_CHIPS ? StringChipsArrayDecoratorConfigInternal
     : T extends DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS ? AutocompleteStringChipsArrayDecoratorConfigInternal
+    : T extends DecoratorTypes.ARRAY_STRING_DROPDOWN ? StringDropdownArrayDecoratorConfigInternal
     : T extends DecoratorTypes.DATE ? DefaultDateDecoratorConfigInternal
     : T extends DecoratorTypes.DATE_RANGE ? DateRangeDateDecoratorConfigInternal
     : T extends DecoratorTypes.DATE_TIME ? DateTimeDateDecoratorConfigInternal
