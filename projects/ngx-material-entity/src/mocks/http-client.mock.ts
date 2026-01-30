@@ -2,29 +2,29 @@
 /* eslint-disable typescript/no-unsafe-assignment */
 /* eslint-disable typescript/no-unsafe-member-access */
 /* eslint-disable typescript/no-explicit-any */
-
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 
 /**
  * A Mock for the angular http-client. Is needed for testing crud inside a ngx-mat-entity-table.
  */
-export class HttpClientMock {
+export class HttpClientMock implements Pick<HttpClient, 'get' | 'post' | 'patch'> {
     exampleData: any[];
-    constructor(exampleData: any[]) {
-        this.exampleData = exampleData;
-    }
-    post(url: string, body: any): Observable<any> {
-        body.id = '1';
-        this.exampleData.push(body);
-        return of(body);
-    }
-    get(url: string): Observable<any> {
+
+    get: HttpClient['get'] = jest.fn((url) => {
         if (url.charAt(url.length - 2) == '/') {
             return of(this.exampleData[0]);
         }
         return of(this.exampleData);
-    }
-    patch(url: string, body: any): Observable<any> {
+    });
+
+    post: HttpClient['post'] = jest.fn((url, body) => {
+        body.id = '1';
+        this.exampleData.push(body);
+        return of(body);
+    });
+
+    patch: HttpClient['patch'] = jest.fn((url, body) => {
         const id: string = this.getIdFromUrl(url);
         const res: any = this.exampleData[this.exampleData.findIndex((e) => e.id === id)];
         for (const key in body) {
@@ -33,10 +33,15 @@ export class HttpClientMock {
             }
         }
         return of(res);
-    }
-    delete(url: string): Observable<any> {
+    });
+
+    delete: (url: string) => Observable<undefined> = jest.fn((url) => {
         this.exampleData.splice(this.exampleData.findIndex((e) => e.id === this.getIdFromUrl(url)), 1);
         return of(undefined);
+    });
+
+    constructor(exampleData: any[]) {
+        this.exampleData = exampleData;
     }
 
     /**
