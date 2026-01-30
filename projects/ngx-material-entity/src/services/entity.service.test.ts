@@ -37,7 +37,8 @@ const simpleTestEntityApiData: SimpleTestEntity[] = [];
 const testEntityApiData: TestEntityWithoutCustomProperties[] = [];
 
 test('should request TestEntities', async () => {
-    const service: SimpleTestEntityService = new SimpleTestEntityService(new HttpClientMock(simpleTestEntityApiData) as unknown as HttpClient, mockInjector);
+    const http: HttpClientMock = new HttpClientMock(simpleTestEntityApiData);
+    const service: SimpleTestEntityService = new SimpleTestEntityService(http as unknown as HttpClient, mockInjector);
     const simpleTestEntity: SimpleTestEntity = new SimpleTestEntity({ id: '1', name: 'John Smith' });
     expect(service.baseUrl).toBe('http://api/test');
     expect(service.entities).toEqual([]);
@@ -57,6 +58,9 @@ test('should request TestEntities', async () => {
     await service.create(new SimpleTestEntity({ id: '2', name: 'Jane Smith' }));
     const entitiesFoundByRead: SimpleTestEntity[] = await service.read();
     expect(entitiesFoundByRead.length).toBe(2);
+    // should hit cache on second read
+    await service.read();
+    expect(http.get).toHaveBeenCalledTimes(1);
     // findById
     const findByIdService: SimpleTestEntityService = new SimpleTestEntityService(new HttpClientMock([]) as unknown as HttpClient, mockInjector);
     await findByIdService.create(new SimpleTestEntity({ id: '1', name: 'John Smith' }));
