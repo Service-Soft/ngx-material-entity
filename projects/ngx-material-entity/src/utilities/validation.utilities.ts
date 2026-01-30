@@ -1,4 +1,4 @@
-import { EnvironmentInjector } from '@angular/core';
+import { EnvironmentInjector, runInInjectionContext } from '@angular/core';
 
 import { DateUtilities, Time } from './date.utilities';
 import { EntityUtilities } from './entity.utilities';
@@ -68,7 +68,7 @@ export abstract class ValidationUtilities {
     ): Promise<ValidationError[]> {
         const res: ValidationError[] = [];
         for (const key of EntityUtilities.keysOf(entity, injector)) {
-            const err: ValidationError | undefined = await this.getPropertyValidationError(entity, key, omit);
+            const err: ValidationError | undefined = await this.getPropertyValidationError(entity, key, injector, omit);
             if (err) {
                 res.push(err);
             }
@@ -97,185 +97,202 @@ export abstract class ValidationUtilities {
      * Validates the property on the given entity with the given key.
      * @param entity - The entity on which the property to check is.
      * @param key - The key of the property to validate.
+     * @param injector - An angular environment injector.
      * @param omit - What keys not to check. An empty value means no keys are omitted.
      * @returns A validation error when the property is not valid, undefined otherwise.
      * @throws When the type of the property is not known.
      */
-    // eslint-disable-next-line sonar/cognitive-complexity
     static async getPropertyValidationError<EntityType extends BaseEntityType<EntityType>>(
         entity: EntityType,
         key: keyof EntityType,
+        injector: EnvironmentInjector,
         omit?: 'create' | 'update'
     ): Promise<ValidationError | undefined> {
-        const type: DecoratorTypes | undefined = EntityUtilities.getPropertyType(entity, key);
-        if (type == undefined) {
-            return undefined;
-        }
-        const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = EntityUtilities.getPropertyMetadata(entity, key, type);
+        // eslint-disable-next-line sonar/cognitive-complexity
+        return runInInjectionContext(injector, async () => {
+            const type: DecoratorTypes | undefined = EntityUtilities.getPropertyType(entity, key);
+            if (type == undefined) {
+                return undefined;
+            }
+            const metadata: PropertyDecoratorConfigInternal<unknown> | undefined = EntityUtilities.getPropertyMetadata(entity, key, type);
 
-        // istanbul ignore next
-        if (metadata == undefined) {
-            return undefined;
-        }
+            // istanbul ignore next
+            if (metadata == undefined) {
+                return undefined;
+            }
 
-        if (metadata.omitForCreate && omit === 'create') {
-            return undefined;
-        }
-        if (metadata.omitForUpdate && omit === 'update') {
-            return undefined;
-        }
-        if (type !== DecoratorTypes.HAS_MANY && metadata.required(entity) && (entity[key] == undefined || entity[key] === '')) {
-            return {
-                property: metadata.displayName,
-                message: 'required'
-            };
-        }
-        if (!metadata.required(entity) && (entity[key] == undefined || entity[key] === '')) {
-            return undefined;
-        }
-        switch (type) {
-            case DecoratorTypes.BOOLEAN_DROPDOWN: {
-                // Because only valid values can be selected, this is always true when it has a value
+            if (metadata.omitForCreate && omit === 'create') {
                 return undefined;
             }
-            case DecoratorTypes.BOOLEAN_CHECKBOX:
-            case DecoratorTypes.BOOLEAN_TOGGLE: {
-                const entityBoolean: boolean = entity[key] as boolean;
-                const booleanMetadata: ToggleBooleanDecoratorConfigInternal = metadata as ToggleBooleanDecoratorConfigInternal;
-                return this.getBooleanValidationError(entity, entityBoolean, booleanMetadata);
-            }
-            case DecoratorTypes.STRING_DROPDOWN: {
-                // Because only valid values can be selected, this is always true when it has a value
+            if (metadata.omitForUpdate && omit === 'update') {
                 return undefined;
             }
-            case DecoratorTypes.STRING: {
-                const entityString: string = entity[key] as string;
-                const stringMetadata: DefaultStringDecoratorConfigInternal = metadata as DefaultStringDecoratorConfigInternal;
-                return this.getStringValidationError(entityString, stringMetadata);
+            if (type !== DecoratorTypes.HAS_MANY && metadata.required(entity) && (entity[key] == undefined || entity[key] === '')) {
+                return {
+                    property: metadata.displayName,
+                    message: 'required'
+                };
             }
-            case DecoratorTypes.STRING_AUTOCOMPLETE: {
-                const entityAutocompleteString: string = entity[key] as string;
-                // eslint-disable-next-line stylistic/max-len
-                const stringAutocompleteMetadata: AutocompleteStringDecoratorConfigInternal = metadata as AutocompleteStringDecoratorConfigInternal;
-                return this.getAutocompleteStringValidationError(entity, entityAutocompleteString, stringAutocompleteMetadata);
-            }
-            case DecoratorTypes.STRING_TEXTBOX: {
-                const entityTextbox: string = entity[key] as string;
-                const textboxMetadata: TextboxStringDecoratorConfigInternal = metadata as TextboxStringDecoratorConfigInternal;
-                return this.getTextboxValidationError(entityTextbox, textboxMetadata);
-            }
-            case DecoratorTypes.STRING_PASSWORD: {
-                const entityPassword: string = entity[key] as string;
-                const passwordMetadata: PasswordStringDecoratorConfigInternal = metadata as PasswordStringDecoratorConfigInternal;
-                const confirmPassword: string = ReflectUtilities.getMetadata(EntityUtilities.CONFIRM_PASSWORD_KEY, entity, key) as string;
-                return this.getPasswordValidationError(entityPassword, passwordMetadata, confirmPassword);
-            }
-            case DecoratorTypes.NUMBER_DROPDOWN: {
-                // Because only valid values can be selected, this is always true when it has a value
+            if (!metadata.required(entity) && (entity[key] == undefined || entity[key] === '')) {
                 return undefined;
             }
-            case DecoratorTypes.NUMBER:
-            case DecoratorTypes.NUMBER_SLIDER: {
-                const entityNumber: number = entity[key] as number;
-                const numberMetadata: DefaultNumberDecoratorConfigInternal = metadata as DefaultNumberDecoratorConfigInternal;
-                return this.getNumberValidationError(entityNumber, numberMetadata);
-            }
-            case DecoratorTypes.OBJECT: {
-                const entityObject: EntityType = entity[key] as EntityType;
-                for (const parameterKey in entityObject) {
-                    const value: unknown = entityObject[parameterKey];
-                    if (
-                        !(metadata as DefaultObjectDecoratorConfigInternal<EntityType>).omit.includes(parameterKey)
-                        && !(!metadata.required(entity) && (value == undefined || value == ''))
-                    ) {
-                        const err: ValidationError | undefined = await this.getPropertyValidationError(entityObject, parameterKey, omit);
-                        if (err) {
-                            return {
-                                property: metadata.displayName,
-                                message: `${err.property} is invalid: ${err.message}`
-                            };
+            switch (type) {
+                case DecoratorTypes.BOOLEAN_DROPDOWN: {
+                // Because only valid values can be selected, this is always true when it has a value
+                    return undefined;
+                }
+                case DecoratorTypes.BOOLEAN_CHECKBOX:
+                case DecoratorTypes.BOOLEAN_TOGGLE: {
+                    const entityBoolean: boolean = entity[key] as boolean;
+                    const booleanMetadata: ToggleBooleanDecoratorConfigInternal = metadata as ToggleBooleanDecoratorConfigInternal;
+                    return this.getBooleanValidationError(entity, entityBoolean, booleanMetadata);
+                }
+                case DecoratorTypes.STRING_DROPDOWN: {
+                // Because only valid values can be selected, this is always true when it has a value
+                    return undefined;
+                }
+                case DecoratorTypes.STRING: {
+                    const entityString: string = entity[key] as string;
+                    const stringMetadata: DefaultStringDecoratorConfigInternal = metadata as DefaultStringDecoratorConfigInternal;
+                    return this.getStringValidationError(entityString, stringMetadata);
+                }
+                case DecoratorTypes.STRING_AUTOCOMPLETE: {
+                    const entityAutocompleteString: string = entity[key] as string;
+                    // eslint-disable-next-line stylistic/max-len
+                    const stringAutocompleteMetadata: AutocompleteStringDecoratorConfigInternal = metadata as AutocompleteStringDecoratorConfigInternal;
+                    return this.getAutocompleteStringValidationError(entity, entityAutocompleteString, stringAutocompleteMetadata);
+                }
+                case DecoratorTypes.STRING_TEXTBOX: {
+                    const entityTextbox: string = entity[key] as string;
+                    const textboxMetadata: TextboxStringDecoratorConfigInternal = metadata as TextboxStringDecoratorConfigInternal;
+                    return this.getTextboxValidationError(entityTextbox, textboxMetadata);
+                }
+                case DecoratorTypes.STRING_PASSWORD: {
+                    const entityPassword: string = entity[key] as string;
+                    const passwordMetadata: PasswordStringDecoratorConfigInternal = metadata as PasswordStringDecoratorConfigInternal;
+                    const confirmPassword: string = ReflectUtilities.getMetadata(
+                        EntityUtilities.CONFIRM_PASSWORD_KEY,
+                        entity,
+                        key
+                    ) as string;
+                    return this.getPasswordValidationError(entityPassword, passwordMetadata, confirmPassword);
+                }
+                case DecoratorTypes.NUMBER_DROPDOWN: {
+                // Because only valid values can be selected, this is always true when it has a value
+                    return undefined;
+                }
+                case DecoratorTypes.NUMBER:
+                case DecoratorTypes.NUMBER_SLIDER: {
+                    const entityNumber: number = entity[key] as number;
+                    const numberMetadata: DefaultNumberDecoratorConfigInternal = metadata as DefaultNumberDecoratorConfigInternal;
+                    return this.getNumberValidationError(entityNumber, numberMetadata);
+                }
+                case DecoratorTypes.OBJECT: {
+                    const entityObject: EntityType = entity[key] as EntityType;
+                    for (const parameterKey in entityObject) {
+                        const value: unknown = entityObject[parameterKey];
+                        if (
+                            !(metadata as DefaultObjectDecoratorConfigInternal<EntityType>).omit.includes(parameterKey)
+                            && !(!metadata.required(entity) && (value == undefined || value == ''))
+                        ) {
+                            const err: ValidationError | undefined = await this.getPropertyValidationError(
+                                entityObject,
+                                parameterKey,
+                                injector,
+                                omit
+                            );
+                            if (err) {
+                                return {
+                                    property: metadata.displayName,
+                                    message: `${err.property} is invalid: ${err.message}`
+                                };
+                            }
                         }
                     }
+                    break;
                 }
-                break;
-            }
-            case DecoratorTypes.OBJECT_DROPDOWN: {
+                case DecoratorTypes.OBJECT_DROPDOWN: {
                 // Because only valid values can be selected, this is always true when it has a value
-                return undefined;
-            }
-            case DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS: {
-                const stringAutocompleteArray: string[] = entity[key] as string[];
-                // eslint-disable-next-line stylistic/max-len
-                const stringAutocompleteArrayMetadata: AutocompleteStringChipsArrayDecoratorConfigInternal = metadata as AutocompleteStringChipsArrayDecoratorConfigInternal;
-                // eslint-disable-next-line stylistic/max-len
-                return await this.getArrayStringAutocompleteChipsValidationError(entity, stringAutocompleteArrayMetadata, stringAutocompleteArray);
-            }
-            case DecoratorTypes.ARRAY_STRING_DROPDOWN: {
-                const stringDropdownArray: string[] = entity[key] as string[];
-                // eslint-disable-next-line stylistic/max-len
-                const stringDropdownArrayMetadata: StringDropdownArrayDecoratorConfigInternal = metadata as StringDropdownArrayDecoratorConfigInternal;
-                return await this.getArrayStringDropdownValidationError(entity, stringDropdownArrayMetadata, stringDropdownArray);
-            }
-            case DecoratorTypes.ARRAY_STRING_CHIPS:
-            case DecoratorTypes.ARRAY_DATE:
-            case DecoratorTypes.ARRAY_DATE_TIME:
-            case DecoratorTypes.ARRAY_DATE_RANGE:
-            case DecoratorTypes.ARRAY:
-            case DecoratorTypes.REFERENCES_MANY: {
-                const entityArray: unknown[] = entity[key] as unknown[];
-                // eslint-disable-next-line stylistic/max-len
-                const arrayMetadata: EntityArrayDecoratorConfigInternal<EntityType> = metadata as EntityArrayDecoratorConfigInternal<EntityType>;
-                if (arrayMetadata.required(entity) && !entityArray.length) {
-                    return {
-                        property: metadata.displayName,
-                        // eslint-disable-next-line sonar/no-duplicate-string
-                        message: 'no items in array'
-                    };
+                    return undefined;
                 }
-                break;
-            }
-            case DecoratorTypes.DATE: {
-                const entityDate: Date = new Date(entity[key] as Date);
-                const dateMetadata: DefaultDateDecoratorConfigInternal = metadata as DefaultDateDecoratorConfigInternal;
-                return this.getDateValidationError(entityDate, dateMetadata);
-            }
-            case DecoratorTypes.DATE_RANGE: {
-                const entityDateRange: DateRange = LodashUtilities.cloneDeep(entity[key] as DateRange);
-                const dateRangeMetadata: DateRangeDateDecoratorConfigInternal = metadata as DateRangeDateDecoratorConfigInternal;
-                return this.getDateRangeValidationError(entity, entityDateRange, dateRangeMetadata);
-            }
-            case DecoratorTypes.DATE_TIME: {
-                const entityDateTime: Date = new Date(entity[key] as Date);
-                const dateTimeMetadata: DateTimeDateDecoratorConfigInternal = metadata as DateTimeDateDecoratorConfigInternal;
-                const hasTime: boolean = ReflectUtilities.hasMetadata(EntityUtilities.TIME_KEY, entity, key);
-                return this.getDateTimeValidationError(entityDateTime, dateTimeMetadata, hasTime);
-            }
-            case DecoratorTypes.FILE_DEFAULT:
-            case DecoratorTypes.FILE_IMAGE: {
-                const entityFile: FileData | FileData[] = entity[key] as FileData | FileData[];
-                const entityFileMetadata: DefaultFileDecoratorConfigInternal = metadata as DefaultFileDecoratorConfigInternal;
-                return this.getFileDataValidationError(entityFile, entityFileMetadata);
-            }
-            case DecoratorTypes.REFERENCES_ONE:
-            case DecoratorTypes.HAS_MANY: {
-                break;
-            }
-            case DecoratorTypes.CUSTOM: {
+                case DecoratorTypes.ARRAY_STRING_AUTOCOMPLETE_CHIPS: {
+                    const stringAutocompleteArray: string[] = entity[key] as string[];
+                    // eslint-disable-next-line stylistic/max-len
+                    const stringAutocompleteArrayMetadata: AutocompleteStringChipsArrayDecoratorConfigInternal = metadata as AutocompleteStringChipsArrayDecoratorConfigInternal;
+                    // eslint-disable-next-line stylistic/max-len
+                    return await this.getArrayStringAutocompleteChipsValidationError(entity, stringAutocompleteArrayMetadata, stringAutocompleteArray);
+                }
+                case DecoratorTypes.ARRAY_STRING_DROPDOWN: {
+                    const stringDropdownArray: string[] = entity[key] as string[];
+                    // eslint-disable-next-line stylistic/max-len
+                    const stringDropdownArrayMetadata: StringDropdownArrayDecoratorConfigInternal = metadata as StringDropdownArrayDecoratorConfigInternal;
+                    return await this.getArrayStringDropdownValidationError(
+                        entity,
+                        stringDropdownArrayMetadata,
+                        stringDropdownArray
+                    );
+                }
+                case DecoratorTypes.ARRAY_STRING_CHIPS:
+                case DecoratorTypes.ARRAY_DATE:
+                case DecoratorTypes.ARRAY_DATE_TIME:
+                case DecoratorTypes.ARRAY_DATE_RANGE:
+                case DecoratorTypes.ARRAY:
+                case DecoratorTypes.REFERENCES_MANY: {
+                    const entityArray: unknown[] = entity[key] as unknown[];
+                    // eslint-disable-next-line stylistic/max-len
+                    const arrayMetadata: EntityArrayDecoratorConfigInternal<EntityType> = metadata as EntityArrayDecoratorConfigInternal<EntityType>;
+                    if (arrayMetadata.required(entity) && !entityArray.length) {
+                        return {
+                            property: metadata.displayName,
+                            // eslint-disable-next-line sonar/no-duplicate-string
+                            message: 'no items in array'
+                        };
+                    }
+                    break;
+                }
+                case DecoratorTypes.DATE: {
+                    const entityDate: Date = new Date(entity[key] as Date);
+                    const dateMetadata: DefaultDateDecoratorConfigInternal = metadata as DefaultDateDecoratorConfigInternal;
+                    return this.getDateValidationError(entityDate, dateMetadata);
+                }
+                case DecoratorTypes.DATE_RANGE: {
+                    const entityDateRange: DateRange = LodashUtilities.cloneDeep(entity[key] as DateRange);
+                    const dateRangeMetadata: DateRangeDateDecoratorConfigInternal = metadata as DateRangeDateDecoratorConfigInternal;
+                    return this.getDateRangeValidationError(entity, entityDateRange, dateRangeMetadata);
+                }
+                case DecoratorTypes.DATE_TIME: {
+                    const entityDateTime: Date = new Date(entity[key] as Date);
+                    const dateTimeMetadata: DateTimeDateDecoratorConfigInternal = metadata as DateTimeDateDecoratorConfigInternal;
+                    const hasTime: boolean = ReflectUtilities.hasMetadata(EntityUtilities.TIME_KEY, entity, key);
+                    return this.getDateTimeValidationError(entityDateTime, dateTimeMetadata, hasTime);
+                }
+                case DecoratorTypes.FILE_DEFAULT:
+                case DecoratorTypes.FILE_IMAGE: {
+                    const entityFile: FileData | FileData[] = entity[key] as FileData | FileData[];
+                    const entityFileMetadata: DefaultFileDecoratorConfigInternal = metadata as DefaultFileDecoratorConfigInternal;
+                    return this.getFileDataValidationError(entityFile, entityFileMetadata);
+                }
+                case DecoratorTypes.REFERENCES_ONE:
+                case DecoratorTypes.HAS_MANY: {
+                    break;
+                }
+                case DecoratorTypes.CUSTOM: {
                 // eslint-disable-next-line typescript/no-explicit-any, stylistic/max-len
-                const customMetadata: CustomDecoratorConfigInternal<EntityType, any, any, any> = metadata as CustomDecoratorConfigInternal<EntityType, any, any, any>;
-                if (!customMetadata.isValid(entity[key], omit)) {
-                    return {
-                        property: metadata.displayName,
-                        message: 'invalid'
-                    };
+                    const customMetadata: CustomDecoratorConfigInternal<EntityType, any, any, any> = metadata as CustomDecoratorConfigInternal<EntityType, any, any, any>;
+                    if (!customMetadata.isValid(entity[key], omit)) {
+                        return {
+                            property: metadata.displayName,
+                            message: 'invalid'
+                        };
+                    }
+                    break;
                 }
-                break;
+                default: {
+                    throw new Error(`Could not validate the input because the DecoratorType ${type} is not known`);
+                }
             }
-            default: {
-                throw new Error(`Could not validate the input because the DecoratorType ${type} is not known`);
-            }
-        }
-        return undefined;
+            return undefined;
+        });
     }
 
     private static async getArrayStringAutocompleteChipsValidationError<EntityType extends BaseEntityType<EntityType>>(

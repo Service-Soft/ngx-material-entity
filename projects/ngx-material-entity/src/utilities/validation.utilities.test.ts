@@ -497,7 +497,7 @@ describe('getPropertyValidationError', () => {
     test('should return undefined for properties that are not decorated', async () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
-        const validationError: ValidationError | undefined = await ValidationUtilities.getPropertyValidationError(tE, 'notDecoratedValue');
+        const validationError: ValidationError | undefined = await ValidationUtilities.getPropertyValidationError(tE, 'notDecoratedValue', mockInjector);
         expect(validationError).toBe(undefined);
     });
 });
