@@ -188,6 +188,9 @@ export abstract class EntityService<EntityType extends BaseEntityType<EntityType
      * @returns A Promise of all received Entities.
      */
     async read(baseUrl = this.baseUrl): Promise<EntityType[]> {
+        if (this.lastRead != undefined && (Date.now() - this.lastRead.getTime()) <= this.READ_EXPIRATION_IN_MS) {
+            return this.entitiesSubject.value;
+        }
         const e: EntityType[] = await firstValueFrom(this.http.get<EntityType[]>(baseUrl));
         this.entitiesSubject.next(e);
         this.lastRead = new Date();
