@@ -722,7 +722,7 @@ export class TestEntityWithoutCustomProperties extends Entity implements TestEnt
         displayName: 'Custom Date Range Value',
         displayStyle: 'daterange',
         maxStart: () => new Date(2022, 11, 30, 0, 0, 0, 0),
-        minStart: () => new Date(2022, 0, 1, 0, 0, 0, 0),
+        minStart: () => new Date(2021, 0, 1, 0, 0, 0, 0),
         maxEnd: () => new Date(2022, 11, 30, 0, 0, 0, 0),
         minEnd: () => new Date(2022, 0, 1, 0, 0, 0, 0),
         filter: (date: Date | null | undefined) => new Date(date as Date).getDate() !== 1,
