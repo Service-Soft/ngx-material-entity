@@ -875,7 +875,16 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 hideOmitForCreate: this.hideOmitForCreate,
                 hideOmitForEdit: this.hideOmitForEdit,
                 isReadOnly: (property, key) => this.isPropertyReadOnly(property, key),
-                inputChangeEvent: () => this.emitChange(),
+                inputChangeEvent: () => {
+                    this.emitChange();
+                    this.objectFormContext.$implicit.tabs = EntityUtilities.getEntityTabs(
+                        objectProperty,
+                        this.injector,
+                        this.hideOmitForCreate,
+                        this.hideOmitForEdit,
+                        this.metadataDefaultObject.omit
+                    );
+                },
                 validEmpty: () => !this.metadata.required(this.entity)
             }
         };
@@ -963,7 +972,16 @@ export class NgxMatEntityInputComponent<EntityType extends BaseEntityType<Entity
                 hideOmitForCreate: this.hideOmitForCreate,
                 hideOmitForEdit: this.hideOmitForEdit,
                 isReadOnly: () => true,
-                inputChangeEvent: () => this.emitChange(),
+                inputChangeEvent: () => {
+                    this.emitChange();
+                    this.referencesOneFormContext.$implicit.tabs = EntityUtilities.getEntityTabs(
+                        referencesOneObject,
+                        this.injector,
+                        undefined,
+                        undefined,
+                        this.metadataReferencesOne.omit
+                    );
+                },
                 validEmpty: () => !this.metadata.required(this.entity)
             }
         };

@@ -13,6 +13,7 @@ export const navbarRows: NavbarRow[] = [
     {
         elements: [
             {
+                id: 'Showcase Project',
                 type: NavElementTypes.TITLE_WITH_INTERNAL_LINK,
                 title: 'Showcase Project',
                 icon: faAngular,
@@ -22,6 +23,7 @@ export const navbarRows: NavbarRow[] = [
                 collapse: 'never'
             },
             {
+                id: 'Home',
                 type: NavElementTypes.INTERNAL_LINK,
                 name: 'Home',
                 icon: faHome,
@@ -33,6 +35,7 @@ export const navbarRows: NavbarRow[] = [
                 collapse: 'md'
             },
             {
+                id: 'Sandbox',
                 type: NavElementTypes.INTERNAL_LINK,
                 name: 'Sandbox',
                 icon: faUmbrellaBeach,
@@ -45,6 +48,7 @@ export const navbarRows: NavbarRow[] = [
                 collapse: 'md'
             },
             {
+                id: 'Playground',
                 type: NavElementTypes.INTERNAL_LINK,
                 name: 'Playground',
                 route: {
@@ -55,6 +59,7 @@ export const navbarRows: NavbarRow[] = [
                 collapse: 'md'
             },
             {
+                id: 'Table',
                 type: NavElementTypes.INTERNAL_LINK,
                 name: 'Table',
                 icon: faTable,
@@ -67,11 +72,13 @@ export const navbarRows: NavbarRow[] = [
                 collapse: 'md'
             },
             {
+                id: 'Inputs',
                 type: NavElementTypes.MENU,
                 name: 'Inputs',
                 iconState: faKeyboard,
                 elements: [
                     {
+                        id: '@string',
                         type: NavElementTypes.INTERNAL_LINK,
                         name: '@string',
                         route: 'inputs/string'
@@ -79,34 +86,41 @@ export const navbarRows: NavbarRow[] = [
                     {
                         type: NavElementTypes.INTERNAL_LINK,
                         name: '@number',
+                        id: '@number',
                         route: 'inputs/number'
                     },
                     {
+                        id: '@boolean',
                         type: NavElementTypes.INTERNAL_LINK,
                         name: '@boolean',
                         route: 'inputs/boolean'
                     },
                     {
+                        id: '@array',
                         type: NavElementTypes.INTERNAL_LINK,
                         name: '@array',
                         route: 'inputs/array'
                     },
                     {
+                        id: '@object',
                         type: NavElementTypes.INTERNAL_LINK,
                         name: '@object',
                         route: 'inputs/object'
                     },
                     {
+                        id: '@date',
                         type: NavElementTypes.INTERNAL_LINK,
                         name: '@date',
                         route: 'inputs/date'
                     },
                     {
+                        id: '@file',
                         type: NavElementTypes.INTERNAL_LINK,
                         name: '@file',
                         route: 'inputs/file'
                     },
                     {
+                        id: '@custom',
                         type: NavElementTypes.INTERNAL_LINK,
                         name: '@custom',
                         route: 'inputs/custom'
@@ -116,6 +130,7 @@ export const navbarRows: NavbarRow[] = [
                 collapse: 'md'
             },
             {
+                id: 'Dialogs',
                 type: NavElementTypes.MENU,
                 name: 'Dialogs',
                 iconState: faCircleExclamation,
@@ -124,6 +139,7 @@ export const navbarRows: NavbarRow[] = [
                 collapse: 'md'
             },
             {
+                id: 'Reset Data',
                 type: NavElementTypes.BUTTON,
                 name: 'Reset Data',
                 icon: faRotateRight,
