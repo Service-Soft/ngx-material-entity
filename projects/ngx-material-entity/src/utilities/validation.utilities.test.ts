@@ -1,4 +1,3 @@
-/* eslint-disable cspell/spellchecker */
 import { expect } from '@jest/globals';
 
 import { EntityUtilities } from './entity.utilities';
