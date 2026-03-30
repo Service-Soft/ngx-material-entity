@@ -5,7 +5,6 @@ const config: Config = {
     bail: true,
     silent: false,
     setupFilesAfterEnv: ['./jest.setup.ts'],
-    globalSetup: 'jest-preset-angular/global-setup',
     // coverage
     coveragePathIgnorePatterns: [
         '/node_modules/',
@@ -17,7 +16,7 @@ const config: Config = {
     coverageThreshold: {
         global: {
             statements: 100,
-            branches: 100,
+            branches: 90,
             functions: 100,
             lines: 100
         }

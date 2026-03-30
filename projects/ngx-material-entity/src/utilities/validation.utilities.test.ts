@@ -1,3 +1,4 @@
+/* eslint-disable cspell/spellchecker */
 import { expect } from '@jest/globals';
 
 import { EntityUtilities } from './entity.utilities';
@@ -288,18 +289,28 @@ describe('isEntityValid', () => {
         tE.customDateRangeValue.end = new Date(testEntity.customDateRangeValue.end);
         expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(true);
     });
+    test('DATE_RANGE end before start', async () => {
+        const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
+        TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
+        tE.customDateRangeValue.start = new Date();
+        expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(false);
+        tE.customDateRangeValue.start = new Date(testEntity.customDateRangeValue.start);
+        expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(true);
+    });
     test('DATE_RANGE maxStart', async () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
         tE.customDateRangeValue.start.setFullYear(2023);
+        tE.customDateRangeValue.end.setFullYear(2023);
         expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(false);
         tE.customDateRangeValue.start.setFullYear(2022);
+        tE.customDateRangeValue.end.setFullYear(2022);
         expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(true);
     });
     test('DATE_RANGE minStart', async () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
-        tE.customDateRangeValue.start.setFullYear(2021);
+        tE.customDateRangeValue.start.setFullYear(2020);
         expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(false);
         tE.customDateRangeValue.start.setFullYear(2022);
         expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(true);
@@ -316,8 +327,10 @@ describe('isEntityValid', () => {
         const tE: TestEntityWithoutCustomProperties = LodashUtilities.cloneDeep(testEntity);
         TestEntityWithoutCustomPropertiesMockBuilder.setupMetadata(tE);
         tE.customDateRangeValue.end.setFullYear(2021);
+        tE.customDateRangeValue.start.setFullYear(2021);
         expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(false);
         tE.customDateRangeValue.end.setFullYear(2022);
+        tE.customDateRangeValue.start.setFullYear(2022);
         expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(true);
     });
     test('DATE_RANGE filter', async () => {
@@ -328,8 +341,10 @@ describe('isEntityValid', () => {
         tE.customDateRangeValue.start.setDate(2);
         expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(true);
 
+        tE.customDateRangeValue.start.setFullYear(2021);
         tE.customDateRangeValue.end.setDate(1);
         expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(false);
+        tE.customDateRangeValue.start.setFullYear(2022);
         tE.customDateRangeValue.end.setDate(2);
         expect(await ValidationUtilities.isEntityValid(tE, mockInjector, 'create')).toBe(true);
 

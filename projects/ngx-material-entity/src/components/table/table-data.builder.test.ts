@@ -122,7 +122,7 @@ describe('generateBaseData', () => {
     test('should have correct default search function', () => {
         const data: TestEntityWithoutCustomProperties = new TestEntityWithoutCustomPropertiesMockBuilder().testEntity;
         expect(new TableDataBuilder(defaultGlobalDefaults, tableData).getResult().baseData.searchString.toString()).toBe(defaultSearchFunction.toString());
-        expect(() => new TableDataBuilder(defaultGlobalDefaults, tableData).getResult().baseData.searchString(data)).not.toThrowError();
+        expect(() => new TableDataBuilder(defaultGlobalDefaults, tableData).getResult().baseData.searchString(data)).not.toThrow();
     });
     test('should build the actions correctly', async () => {
         const tableData: TableDataInternal<TestEntityWithoutCustomProperties> = new TableDataBuilder(defaultGlobalDefaults, actionsTableData).getResult();

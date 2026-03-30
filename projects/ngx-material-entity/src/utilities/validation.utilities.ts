@@ -509,6 +509,18 @@ export abstract class ValidationUtilities {
                 message: 'required'
             };
         }
+
+        if (value.end && value.start) {
+            const start: Date = new Date(value.start);
+            const end: Date = new Date(value.end);
+            if (start.getTime() > end.getTime()) {
+                return {
+                    property: metadata.displayName,
+                    message: `start date needs to be before ${formatDate(end)}`
+                };
+            }
+        }
+
         if (value.start) {
             value.start = new Date(value.start);
             if (metadata.minStart && value.start.getTime() < metadata.minStart(value.start).getTime()) {
