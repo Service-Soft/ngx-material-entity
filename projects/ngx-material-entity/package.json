@@ -1,6 +1,6 @@
 {
     "name": "ngx-material-entity",
-    "version": "20.0.8",
+    "version": "20.0.9",
     "license": "MIT",
     "keywords": [
         "angular",
@@ -12,7 +12,6 @@
         "url": "https://github.com/Service-Soft/ngx-material-entity"
     },
     "peerDependencies": {
-        "@angular/animations": "20",
         "@angular/cdk": "20",
         "@angular/common": "20",
         "@angular/core": "20",
